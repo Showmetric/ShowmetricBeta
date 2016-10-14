@@ -1,7 +1,7 @@
 //"use strict";
 var _ = require('lodash');
 var async = require("async");
-var AdwordsReport = require('node-adwords').AdwordsReport
+var AdwordsReport = require('node-adwords').AdwordsReport;
 var channels = require('../models/channels');
 var FB = require('fb');
 var exports = module.exports = {};

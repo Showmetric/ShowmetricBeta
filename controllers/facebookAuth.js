@@ -29,6 +29,7 @@ module.exports = function (app) {
     });
 
 // Callback service parsing the authorization token and asking for the access token
+
     app.get(configAuth.facebookAuth.localCallbackURL, function (req, res) {
         var code = req.query.code;
         oauth2.authCode.getToken({

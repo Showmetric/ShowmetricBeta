@@ -245,7 +245,6 @@ module.exports = {
         FBAccessExpire:5097600,
         linkedInAccessExpire:60
     },
-
     apiVersions:{
         FBVersion:'2.7',
         FBInsights:'v2.7',

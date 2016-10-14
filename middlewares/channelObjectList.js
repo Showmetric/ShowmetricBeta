@@ -24,6 +24,7 @@ var OAuth2 = googleapis.auth.OAuth2;
 var configAuth = require('../config/auth');
 //Importing the fb module
 var FB = require('fb');
+
 FB.options({version: configAuth.apiVersions.FBADs});
 
 //set credentials in OAuth2
