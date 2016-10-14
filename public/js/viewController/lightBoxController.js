@@ -18,6 +18,7 @@ function LightBoxController($scope, $uibModal, $log, $state) {
             $state.go('^');$log.info('Modal dismissed at: ' + new Date());
         });
     };
+
     $scope.openRecommendDashboard = function (size) {
         var modalInstance = $uibModal.open({
             animation: $scope.animationsEnabled,
@@ -27,6 +28,7 @@ function LightBoxController($scope, $uibModal, $log, $state) {
             windowClass : 'modal-background'
         });
     };
+
     $scope.openPDFModal = function (size) {
         var modalInstance = $uibModal.open({
             animation: $scope.animationsEnabled,

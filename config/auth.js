@@ -246,8 +246,9 @@ module.exports = {
     },
 
     apiVersions:{
-        FBInsights:'v2.6',
-        FBADs:'v2.6',
+        FBVersion:'2.7',
+        FBInsights:'v2.7',
+        FBADs:'v2.7',
         FBInsightsUpdated:'v2.7'
     },
 

@@ -45,7 +45,8 @@ var PDK = require('node-pinterest');
 
 //Load the auth file
 var configAuth = require('../config/auth');
-
+FB.options({version: configAuth.apiVersions.FBADs});
+graph.setVersion(configAuth.apiVersions.FBVersion);
 //set googleAdwords node module
 //var googleAds = require('../lib/googleAdwords');
 //var spec = {host: configAuth.googleAdwordsStatic.host};
