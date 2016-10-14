@@ -49,10 +49,23 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
                             $scope.populateDashboardWidgets();
                         }
                 });
+        $scope.setChartSize = function (index,childIndex) {
+            $timeout(callAtTimeout, 1000);
+            function callAtTimeout() {
+                if(document.getElementById('chartOptions'+index)!=null){
+                    var parentWidth = document.getElementById('chartOptions'+index).offsetWidth;
+                    var parentHeight = document.getElementById('chartOptions'+index).offsetHeight;
+                    document.getElementById('chartRepeat'+index+'-'+childIndex).style.height = parentHeight + 'px'
+                    document.getElementById('chartRepeat'+index+'-'+childIndex).style.width =parentWidth + 'px';
+                }
+            }
+
+        }
         
         //Setting up grid configuration for widgets
         $scope.gridsterOptions = {
             margins: [20, 20],
+            maxRows: 500,
             columns: 6,
             defaultSizeX: 2,
             defaultSizeY: 2,
@@ -84,17 +97,26 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
                     $(".getBox-"+widget.id).css('border','3px solid '+getWidgetColor);
                 },
                 resize: function (event, $element, widget) {
-                    var getWidgetColor = $("#getWidgetColor-"+widget.id).attr('ref');
-                    if(getWidgetColor == ''){
-                        getWidgetColor= '#288DC0';
+                    var getWidgetColor = $("#getWidgetColor-" + widget.id).attr('ref');
+                    if (getWidgetColor == '') {
+                        getWidgetColor = '#288DC0';
                     }
-                    $(".getBox-"+widget.id).css('border','3px solid '+getWidgetColor);
-                    var ind = $scope.dashboard.widgets.indexOf(widget);
-                    for(var i=0;i<$scope.dashboard.widgetData[ind].chart.length;i++){
-                        if ($scope.dashboard.widgetData[ind].chart[i].api){
-                            $scope.dashboard.widgetData[ind].chart[i].api.update();
+                    $(".getBox-" + widget.id).css('border', '3px solid ' + getWidgetColor);
+                    $timeout(resizeChartsInTimeInterval,1000)
+                    function resizeChartsInTimeInterval() {
+                        var ind = $scope.dashboard.widgets.indexOf(widget);
+                        if(document.getElementById('chartOptions'+ind)!=null){
+                            var parentWidth = document.getElementById('chartOptions'+ind).offsetWidth;
+                            var parentHeight = document.getElementById('chartOptions'+ind).offsetHeight;
+                            for(var i=0;i<Highcharts.charts.length;i++){
+                                if(Highcharts.charts[i].container.parentElement.id.includes('chartRepeat'+ind)){
+                                    Highcharts.charts[i].setSize(parentWidth,parentHeight); // reflow the first chart..
+                                    Highcharts.charts[i].reflow(); // reflow the chart..
+                                }
+                            }
                         }
                     }
+
                 },
                 stop: function (event, $element, widget) {
                     $(".getBox-"+widget.id).css('border','1px solid #ccc');
@@ -137,16 +159,20 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
                                 }
                             }
                             var ind = $scope.dashboard.widgets.indexOf(widget);
-                            for(var i=0;i<$scope.dashboard.widgetData[ind].chart.length;i++){
-                                if ($scope.dashboard.widgetData[ind].chart[i].api)
-                                    $scope.dashboard.widgetData[ind].chart[i].api.update();
+                            if(document.getElementById('chartOptions'+ind)!=null){
+                                var parentWidth = document.getElementById('chartOptions'+ind).offsetWidth;
+                                var parentHeight = document.getElementById('chartOptions'+ind).offsetHeight;
+                                for(var i=0;i<Highcharts.charts.length;i++){
+                                    if(Highcharts.charts[i].container.parentElement.id.includes('chartRepeat'+ind)){
+                                        Highcharts.charts[i].setSize(parentWidth,parentHeight); // reflow the first chart..
+                                        Highcharts.charts[i].reflow(); // reflow the chart..
+                                    }
+                                }
                             }
                         }
                     }
-                    $timeout(updateCharts(widget),400);
-                    
-                    
-                    
+
+                    $timeout(updateCharts(widget), 400);
                 }
             }
         };
@@ -231,16 +257,19 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
             );
         };
 
-        $scope.$on('gridster-resized', function(sizes, gridster,$element) {
-            for(var i=0;i<$scope.dashboard.widgets.length;i++){
-                $timeout(resizeWidget(i), 100);
+        $scope.$on('gridster-resized', function (sizes, gridster, $element) {
+            for (var i = 0; i < $scope.dashboard.widgets.length; i++) {
+                $timeout(resizeWidget(i), 10);
             }
-            function resizeWidget(i) {
-                return function() {
-                    if(typeof $scope.dashboard.widgetData[i].chart != 'undefined'){
-                        for(var j=0;j<$scope.dashboard.widgetData[i].chart.length;j++){
-                            if ($scope.dashboard.widgetData[i].chart[j].api){
-                                $scope.dashboard.widgetData[i].chart[j].api.update();
+            function resizeWidget(k) {
+                return function () {
+                    if(document.getElementById('chartOptions'+k)!=null){
+                        var parentWidth = document.getElementById('chartOptions'+k).offsetWidth;
+                        var parentHeight = document.getElementById('chartOptions'+k).offsetHeight;
+                        for(var i=0;i<Highcharts.charts.length;i++){
+                            if(Highcharts.charts[i].container.parentElement.id.includes('chartRepeat'+k)){
+                                Highcharts.charts[i].setSize(parentWidth,parentHeight); // reflow the first chart..
+                                Highcharts.charts[i].reflow(); // reflow the chart..
                             }
                         }
                     }
@@ -319,16 +348,20 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
             $scope.$broadcast('resize');
         });
 
-        $scope.$on('resize',function(e){
-            for(var i=0;i<$scope.dashboard.widgets.length;i++){
+        $scope.$on('resize', function (e) {
+            for (var i = 0; i < $scope.dashboard.widgets.length; i++) {
                 $timeout(resizeWidget(i), 100);
             }
-            function resizeWidget(i) {
-                return function() {
-                    if(typeof $scope.dashboard.widgetData[i].chart != 'undefined'){
-                        for(j=0;j<$scope.dashboard.widgetData[i].chart.length;j++){
-                            if ($scope.dashboard.widgetData[i].chart[j].api)
-                                $scope.dashboard.widgetData[i].chart[j].api.update();
+            function resizeWidget(k) {
+                return function () {
+                    if(document.getElementById('chartOptions'+k)!=null){
+                        var parentWidth = document.getElementById('chartOptions'+k).offsetWidth;
+                        var parentHeight = document.getElementById('chartOptions'+k).offsetHeight;
+                        for(var i=0;i<Highcharts.charts.length;i++){
+                            if(Highcharts.charts[i].container.parentElement.id.includes('chartRepeat'+k)){
+                                Highcharts.charts[i].setSize(parentWidth,parentHeight); // reflow the first chart..
+                                Highcharts.charts[i].reflow(); // reflow the chart..
+                            }
                         }
                     }
                 };
@@ -427,13 +460,18 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
             return {'height': (heightPercent + '%')};
 
         };
-        $scope.calculateChartHeight = function(widgetHeight,noOfItems) {
-            var heightPercent;
-                if(noOfItems==1 && widgetHeight ==1)
+        $scope.calculateChartHeight = function (widgetHeight, noOfItems,index) {
+            $timeout(function () {
+                var heightPercent;
+                if (noOfItems == 1 && widgetHeight == 1)
                     heightPercent = 80;
                 else
-                    heightPercent = 100-(100/widgetHeight);
-                return {'height':(heightPercent+'%')};
+                    heightPercent = 100 - (100 / widgetHeight);
+                $scope.chartOptions = (heightPercent + '%')
+                var heightUpdate = document.getElementById("updateHeight"+index);
+                heightUpdate.style.margin = '0px';
+                heightUpdate.style.height = heightPercent + '%';
+            },1000)
 
 
         };
