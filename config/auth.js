@@ -247,8 +247,9 @@ module.exports = {
     },
 
     apiVersions:{
-        FBInsights:'v2.6',
-        FBADs:'v2.6',
+        FBVersion:'2.7',
+        FBInsights:'v2.7',
+        FBADs:'v2.7',
         FBInsightsUpdated:'v2.7'
     },
 
@@ -295,7 +296,7 @@ module.exports = {
     },
     
     'batchJobs':{
-        dataBase:"mongodb://admin:admin@localhost:27017/datapoolt_19082016",
+        dataBase:'mongodb://admin:admin@ds035613.mlab.com:35613/datapoolt_19082016',
         mail:{
             user: 'rajalakshmi.c@habile.in',
             password: 'habile3238'
