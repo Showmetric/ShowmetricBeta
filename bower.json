@@ -29,6 +29,7 @@
     "angular-xeditable": "*",
     "jspdf": "*",
     "angular-gridster": "*",
-    "lodash": "*"
+    "lodash": "*",
+    "highcharts": "^5.0.0"
   }
 }
