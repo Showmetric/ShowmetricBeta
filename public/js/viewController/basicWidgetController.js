@@ -2019,14 +2019,12 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
                     $scope.customMessageEnable=true;
                 else {
                     $scope.customMessageEnable=false;
-                    var add = 0;
+                    var add = 1;
                     for (var data in $scope.selectedTempChannelList) {
                         if ($scope.selectedTempChannelList[data].id == channel._id) {
                             var add = 0;
                             removeByAttr($scope.selectedTempChannelList, 'id', channel._id);
                         }
-                        else
-                            var add = 1;
                     }
                     if (add == 1) {
                         $scope.selectedTempChannelList.push({name: channel.name, id: channel._id});
