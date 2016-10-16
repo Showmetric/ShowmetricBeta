@@ -14,16 +14,15 @@
                             <div style="width:100%" class="daterange daterange--double three"></div>
                         </div>
                         <div class="col-sm-3 pull-right dashboardTitleIcons" id="dashboardTitleIcons" >
-                            <form class="dashboardIcons">
-                                <button class="grey rightMargin auto-arrange"  ng-click="setAutoArrange()" ng-class="{'arrangeDisabled': loadedWidgetCount != dashboard.widgets.length}" ng-disabled="loadedWidgetCount != dashboard.widgets.length">
+                            <form class="dashboardIcons autoarrange-export-delete">
+                                <!--<button class="grey rightMargin auto-arrange"  ng-click="setAutoArrange()" ng-class="{'arrangeDisabled': loadedWidgetCount != dashboard.widgets.length}" ng-disabled="loadedWidgetCount != dashboard.widgets.length">
                                     Auto-arrange
-                                </button>
-                                <button class="grey rightMargin export"  ng-click="exportModal('app.reporting.dashboard.exportModal')" ng-class="{'exportDisabled': loadedWidgetCount != dashboard.widgets.length}" ng-disabled="loadedWidgetCount != dashboard.widgets.length">
-                                    Export
-                                </button>
-                                <button class="grey rightMargin delete"  ng-click="deleteDashboard()">
-                                    Delete
-                                </button>
+                                </button>-->
+                                <!--<button  class="grey rightMargin export"  ng-click="exportModal('app.reporting.dashboard.exportModal')" ng-class="{'exportDisabled': loadedWidgetCount != dashboard.widgets.length}" ng-disabled="loadedWidgetCount != dashboard.widgets.length" title="Export"></button>
+                                <button  class="grey rightMargin delete"  ng-click="deleteDashboard()" title="Delete"></button>-->
+                                <img src="https://cdn1.iconfinder.com/data/icons/networking-cool-vector-1/128/46-32.png" ng-click="setAutoArrange()" ng-class="{'arrangeDisabled': loadedWidgetCount != dashboard.widgets.length}" ng-disabled="loadedWidgetCount != dashboard.widgets.length" title="Auto-arrange">
+                                <img src=" https://cdn0.iconfinder.com/data/icons/design-and-development-cool-vector-2/128/75-32.png" ng-click="exportModal('app.reporting.dashboard.exportModal')" ng-class="{'exportDisabled': loadedWidgetCount != dashboard.widgets.length}" ng-disabled="loadedWidgetCount != dashboard.widgets.length" title="Export">
+                                <img src=" https://cdn0.iconfinder.com/data/icons/design-and-development-cool-vector-3/128/102-32.png" ng-click="deleteDashboard()" title="Delete">
                             </form>
                         </div>
                     </div>
@@ -98,13 +97,13 @@
                                 </div>
                                 <div class="row getWidgetGraph" style="height: 100%;margin:0px;" ng-if="dashboard.widgetData[widgetIndex].visibility == true">
                                     <div ng-repeat="(chartIndex,chart) in dashboard.widgetData[widgetIndex].chart" ng-if="chart.options.chart.type=== 'lineChart'  || chart.options.chart.type=== 'pieChart' || chart.options.chart.type=== 'multiBarChart' || chart.options.chart.type=== 'multiChart'" style="float: left;padding-left: 2px;padding-right: 2px;" ng-style="{'height': (100/dashboard.widgetData[widgetIndex].layoutOptionsY)+'%', 'width': (100/dashboard.widgetData[widgetIndex].layoutOptionsX)+'%'}">
-                                        <div class="row scrollbar scroller" style="margin:0px;"  ng-style="calculateSummaryHeight(widget.sizeY,chart.data.length)">
+                                        <div class="col col-lg-3 scrollbar scroller" style="margin:0px;height:100%;padding-left:5px;padding-right:5px;"><!--  ng-style="calculateSummaryHeight(widget.sizeY,chart.data.length)">-->
                                             <ul style="height:100%;font-size:12px;padding-left: 5px;">
-                                                <li  ng-repeat="data in chart.data" ng-class="calculateColumnWidth(chart.data.length,widget.sizeX,dashboard.widgetData[widgetIndex].layoutOptionsX)" ng-style="calculateRowHeight(data,chart.data.length,widget.sizeX,widget.sizeY,dashboard.widgetData[widgetIndex].layoutOptionsX)" style="text-align: center;padding-top: 1px;padding-left:0px;padding-right: 2px;font-size: 1.0em!important;" id="li-{{widget.id}}-{{$index}}" ><!--size-watcher-width="data.mywidth"-->
+                                                <li  ng-repeat="data in chart.data" style="text-align: center;padding-top: 1px;padding-left:0px;padding-right: 2px;font-size: 1.0em!important;" id="li-{{widget.id}}-{{$index}}" class="col col-lg-12" ng-style="calculateRowHeight(data,chart.data.length,widget.sizeX,widget.sizeY,dashboard.widgetData[widgetIndex].layoutOptionsX)"><!--size-watcher-width="data.mywidth"--><!--ng-class="calculateColumnWidth(chart.data.length,widget.sizeX,dashboard.widgetData[widgetIndex].layoutOptionsX)" ng-style="calculateRowHeight(data,chart.data.length,widget.sizeX,widget.sizeY,dashboard.widgetData[widgetIndex].layoutOptionsX)"-->
                                                     <div style="margin: 0px;height: 100%;overflow: hidden;white-space: nowrap;color: #000000;text-align: center;">
                                                         <p ng-show="data.showComparision==false" ng-style="{'color': '#979797', 'font-family' : 'Heebo-Medium','font-size':'10px', 'text-transform':'uppercase', 'background-color': '#eaeff3', 'border-bottom': '4px solid', 'border-color': data.color, 'padding-left': '3px'}" style="margin:0px 0px 3px!important;font-weight: bold;padding-top: 2px;padding-bottom: 2px;"> {{data.key}} - {{data.summaryDisplay}}</p>
-                                                        <p ng-show="data.showComparision==true" ng-style="{'color': '#979797', 'font-family' : 'Heebo-Medium','font-size':'14px', 'text-transform':'uppercase', 'background-color': '#eaeff3', 'border-bottom': '4px solid', 'border-color': data.color, 'padding-left': '3px'}" style="margin:0px 0px 3px!important;font-weight: bold;padding-top: 2px;padding-bottom: 2px;"> {{data.key}}</p>
-                                                        <p ng-show="data.showComparision==true" ng-style="{'color': '#979797', 'font-family' : 'Heebo-Medium','font-size':'14px', 'text-transform':'uppercase', 'padding-left': '3px', 'border-right': '3px solid white'}" style="margin:0px 0px 3px!important;font-weight: bold;"> {{data.summaryDisplay}}</p>
+                                                        <p ng-show="data.showComparision==true" ng-style="{'color': '#979797', 'font-family' : 'Heebo-Medium','font-size':'14px', 'text-transform':'uppercase', 'background-color': '#ffffff', 'border-bottom': '4px solid', 'border-color': data.color, 'padding-left': '3px'}" style="margin:0px 0px 3px!important;font-weight: bold;padding-top: 2px;padding-bottom: 2px;"> {{data.key}}</p>
+                                                        <p ng-show="data.showComparision==true" ng-style="{'color': '#000000', 'font-family' : 'Heebo-Medium','font-size':'20px', 'text-transform':'uppercase', 'padding-left': '3px', 'border-right': '3px solid white'}" style="margin:0px 0px 3px!important;font-weight: bold;"> {{data.summaryDisplay}}</p>
                                                         <!--<p ng-style="{'color': '#979797', 'font-family' : 'Heebo-Medium','font-size':'12px', 'text-transform':'uppercase', 'background-color': 'whitesmoke'}" style="margin:0px 0px 3px!important;font-weight: bold;">{{data.key}} - <b ng-style="{'color':data.color, 'font-family' : 'Heebo-Medium'}"> {{data.summaryDisplay}} </b></p>-->
                                                         <p ng-if="chart.options.chart.type != 'pieChart'" ng-show="data.showComparision==true" style="margin:1px 0px 1px!important;overflow: hidden">{{data.period}}: <span ng-if="data.variance !=0">{{data.variance}}%  </span><i ng-if="data.arrow==='up' && data.variance !=0" style="font-size: 0.8em;color:#2A8539" class="fa fa-arrow-up" aria-hidden="true"></i><i ng-if='data.arrow==="down" && data.variance !=0' style="font-size: 0.8em;color:#FF1B1B" class="fa fa-arrow-down" aria-hidden="true"></i></p>
                                                         <!--<p ng-if="chart.options.chart.type != 'pieChart'" style="font-size: 14px;font-family: Heebo-Light;">{{data.period}}- <span ng-if="data.variance !=0">{{data.variance}}%</span><i ng-if="data.arrow==='up' && data.variance !=0" style="font-size: 0.8em;color:#2A8539" class="fa fa-arrow-up" aria-hidden="true"></i><i ng-if='data.arrow==="down" && data.variance !=0' style="font-size: 0.8em;color:#FF1B1B" class="fa fa-arrow-down" aria-hidden="true"></i></p>-->
@@ -112,8 +111,10 @@
                                                 </li>
                                             </ul>
                                         </div>
-                                        <div id="{{'updateHeight'+widgetIndex}}" class="row"
+                                        <div id="{{'updateHeight'+widgetIndex}}" class="col col-lg-9" style="height:100%;padding-left:5px;padding-right:5px;">
+<!--
                                              ng-init="calculateChartHeight(widget.sizeY,chart.data.length,widgetIndex)">
+-->
                                             <!--<nvd3 options="chart.options" data="chart.data" api="chart.api" config="{refreshDataOnly:true, deepWatchDataDepth: 0}" events="events" ng-if="dashboard.widgetData[widgetIndex].visibility == true"></nvd3>-->
                                             <div id="{{'chartOptions'+widgetIndex}}"   style="width:100%;height:100%;">
                                                 <hc-chart options="chart.chartOptions"
@@ -152,7 +153,6 @@
                                             </div>
                                         </div>
                                     </div>
-
                                     <div ng-repeat="chart in dashboard.widgetData[widgetIndex].chart" ng-if="chart.options.chart.type=== 'emptyCharts'" style="float: left;padding-left: 2px;padding-right: 2px;" ng-style="{'height': (100/dashboard.widgetData[widgetIndex].layoutOptionsY)+'%', 'width': (100/dashboard.widgetData[widgetIndex].layoutOptionsX)+'%'}">
                                         <div class="row" style="margin: 0px;height: 100%">
                                             <div events="events" style="height: 99%;" ng-if="dashboard.widgetData[widgetIndex].visibility == true">

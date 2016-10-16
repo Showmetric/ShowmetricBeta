@@ -3,6 +3,20 @@ var showMetricApp = angular.module('inspinia');
 showMetricApp.service('createWidgets', function ($http, $q) {
 
     this.widgetHandler = function (widget, dateRange, isPublic) {
+        var months = [
+            'Jan',
+            'Feb',
+            'Mar',
+            'Apr',
+            'May',
+            'Jun',
+            'Jul',
+            'Aug',
+            'Sep',
+            'Oct',
+            'Nov',
+            'Dec'
+        ];
         var deferredWidget = $q.defer();
         var tempWidget = JSON.parse(JSON.stringify(widget));
         if (widget.widgetType == 'customFusion') {
@@ -385,17 +399,16 @@ showMetricApp.service('createWidgets', function ($http, $q) {
             var widgetCharts = [];
             var totalNonZeroPoints = -1;
             var summaryValueinChart = 0;
-
             if (widget.charts.length > 0) {
-
                 for (var charts in widget.charts) {
                     var chartType = widget.charts[charts].chartType;
                     if (chartType == "line" || chartType == "area" || chartType == "bar" || chartType == "column" || chartType == "mozoverview") {
                         if (typeof widget.charts[charts].chartData[0].total == 'object') {
                             var endpoint;
                             for (objectTypes in widget.charts[charts].metricDetails.objectTypes) {
-                                if (widget.charts[charts].metricDetails.objectTypes[objectTypes].objectTypeId == widget.charts[charts].chartObjectTypeId)
+                                if (widget.charts[charts].metricDetails.objectTypes[objectTypes].objectTypeId == widget.charts[charts].chartObjectTypeId) {
                                     endpoint = widget.charts[charts].metricDetails.objectTypes[objectTypes].meta.endpoint;
+                                }
                             }
                             var formattedChartDataArray = [];
                             for (items in endpoint) {
@@ -1130,7 +1143,6 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                         }
                                     }
                                 }
-
                                 if (chartType == 'line' || chartType == 'bar' || chartType == 'column' || chartType == 'mozoverview') {
                                     if ((widget.channelName == 'FacebookAds') && (widget.charts[charts].metricDetails.name == 'Cost Per Unique Action Type')) {
                                         widgetCharts.push({
@@ -1955,7 +1967,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                     var dateArray = [];
                     var chartValues = [];
                     for (var k = 0; k < finalCharts.lineCharts[i].values.length; k++) {
-                        dateArray.push(finalCharts.lineCharts[i].values[k].x.format('YYYY-DD-MM'));
+                        dateArray.push(finalCharts.lineCharts[i].values[k].x.format('YYYY-MM-DD'));
                         var yValue = String(finalCharts.lineCharts[i].values[k].y).indexOf('.') ? parseFloat(finalCharts.lineCharts[i].values[k].y) : parseInt(finalCharts.lineCharts[i].values[k].y);
                         chartValues.push(yValue);
                     }
@@ -1965,18 +1977,62 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                     });
                 }
                 chartOptions = {
+                    /*plotOptions: {
+                        area: { animation: false, enableMouseTracking: false, stickyTracking: true, shadow: false, dataLabels: { style: { textShadow: false } } },
+                        arearange: { animation: false, enableMouseTracking: false, stickyTracking: true, shadow: false, dataLabels: { style: { textShadow: false } } },
+                        areaspline: { animation: false, enableMouseTracking: false, stickyTracking: true, shadow: false, dataLabels: { style: { textShadow: false } } },
+                        areasplinerange: { animation: false, enableMouseTracking: false, stickyTracking: true, shadow: false, dataLabels: { style: { textShadow: false } } },
+                        bar: { animation: false, enableMouseTracking: false, stickyTracking: true, shadow: false, dataLabels: { style: { textShadow: false } } },
+                        boxplot: { animation: false, enableMouseTracking: false, stickyTracking: true, shadow: false, dataLabels: { style: { textShadow: false } } },
+                        bubble: { animation: false, enableMouseTracking: false, stickyTracking: true, shadow: false, dataLabels: { style: { textShadow: false } } },
+                        column: { animation: false, enableMouseTracking: false, stickyTracking: true, shadow: false, dataLabels: { style: { textShadow: false } } },
+                        columnrange: { animation: false, enableMouseTracking: false, stickyTracking: true, shadow: false, dataLabels: { style: { textShadow: false } } },
+                        errorbar: { animation: false, enableMouseTracking: false, stickyTracking: true, shadow: false, dataLabels: { style: { textShadow: false } } },
+                        funnel: { animation: false, enableMouseTracking: false, stickyTracking: true, shadow: false, dataLabels: { style: { textShadow: false } } },
+                        gauge: { animation: false, enableMouseTracking: false, stickyTracking: true, shadow: false, dataLabels: { style: { textShadow: false } } },
+                        heatmap: { animation: false, enableMouseTracking: false, stickyTracking: true, shadow: false, dataLabels: { style: { textShadow: false } } },
+                        line: { animation: false, enableMouseTracking: false, stickyTracking: true, shadow: false, dataLabels: { style: { textShadow: false } } },
+                        pie: { animation: false, enableMouseTracking: false, stickyTracking: true, shadow: false, dataLabels: { style: { textShadow: false } } },
+                        polygon: { animation: false, enableMouseTracking: false, stickyTracking: true, shadow: false, dataLabels: { style: { textShadow: false } } },
+                        pyramid: { animation: false, enableMouseTracking: false, stickyTracking: true, shadow: false, dataLabels: { style: { textShadow: false } } },
+                        scatter: { animation: false, enableMouseTracking: false, stickyTracking: true, shadow: false, dataLabels: { style: { textShadow: false } } },
+                        series: { animation: false, enableMouseTracking: false, stickyTracking: true, shadow: false, dataLabels: { style: { textShadow: false } } },
+                        solidgauge: { animation: false, enableMouseTracking: false, stickyTracking: true, shadow: false, dataLabels: { style: { textShadow: false } } },
+                        spline: { animation: false, enableMouseTracking: false, stickyTracking: true, shadow: false, dataLabels: { style: { textShadow: false } } },
+                        treemap: { animation: false, enableMouseTracking: false, stickyTracking: true, shadow: false, dataLabels: { style: { textShadow: false } } },
+                        waterfall: { animation: false, enableMouseTracking: false, stickyTracking: true, shadow: false, dataLabels: { style: { textShadow: false } } },
+                    },*/
                     chart: {
                         type: finalCharts.lineCharts[0].type,
                         reflow: true,
                         zoomType: 'x'
+                    },
+                    exporting: { enabled: false },
+                    tooltip: {
+                        //enabled:true,
+                        shared: true
                     },
                     credits: {
                         enabled: false
                     },
                     xAxis: {
                         type: 'datetime',
-                        categories: dateArray
+                        categories: dateArray,
+                        labels: {
+                            formatter: function () {
+                                var date = new Date(this.value);
+                                return months[date.getMonth()] + ' ' + date.getDate();
+                            }
+                        },
+                        tickInterval: 7,
+                        min: 0,
+                        max: dateArray.length,
                     },
+                    yAxis: [{ // left y axis
+                        title: {
+                            text: null
+                        }
+                    }],
                     title: {
                         text: '',
                         style: {
@@ -2016,7 +2072,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                         }
                     }
                     for (var k = 0; k < finalCharts.lineCharts[charts].values.length; k++) {
-                        dateArray.push(finalCharts.lineCharts[charts].values[k].x.format('YYYY-DD-MM'));
+                        dateArray.push(finalCharts.lineCharts[charts].values[k].x.format('YYYY-MM-DD'));
                         var yValue = String(finalCharts.lineCharts[charts].values[k].y).indexOf('.') ? parseFloat(finalCharts.lineCharts[charts].values[k].y) : parseInt(finalCharts.lineCharts[charts].values[k].y);
                         chartValues.push(yValue);
                     }
@@ -2034,9 +2090,20 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                     credits: {
                         enabled: false
                     },
+                    exporting: { enabled: false },
+                    tooltip: {
+                        enabled:true,
+                        shared: true
+                    },
                     xAxis: {
                         type: 'datetime',
-                        categories: dateArray
+                        categories: dateArray,
+                        labels: {
+                            formatter: function () {
+                                var date = new Date(this.value);
+                                return months[date.getMonth()] + ' ' + date.getDate();
+                            }
+                        }
                     },
                     title: {
                         text: '',
@@ -2098,8 +2165,8 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                     }
 
                     for (var k = 0; k < finalCharts.barCharts[charts].values.length; k++) {
-                        dateArray.push(finalCharts.barCharts[charts].values[k].x.format('YYYY-DD-MM'));
-                        var yValue = String(finalCharts.barCharts[charts].values[k].y).indexOf('.') ? parseFloat(finalCharts.lineCharts[charts].values[k].y) : parseInt(finalCharts.lineCharts[charts].values[k].y);
+                        dateArray.push(finalCharts.barCharts[charts].values[k].x.format('YYYY-MM-DD'));
+                        var yValue = String(finalCharts.barCharts[charts].values[k].y).indexOf('.') ? parseFloat(finalCharts.barCharts[charts].values[k].y) : parseInt(finalCharts.barCharts[charts].values[k].y);
                         chartValues.push(yValue);
                     }
                     chartSeriesArray.push({
@@ -2118,9 +2185,20 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                     credits: {
                         enabled: false
                     },
+                    exporting: { enabled: false },
+                    tooltip: {
+                        enabled:true,
+                        shared: true
+                    },
                     xAxis: {
                         type: 'datetime',
-                        categories: dateArray
+                        categories: dateArray,
+                        labels: {
+                            formatter: function () {
+                                var date = new Date(this.value);
+                                return months[date.getMonth()] + ' ' + date.getDate();
+                            }
+                        }
                     },
                     title: {
                         text: '',
@@ -2182,6 +2260,11 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                     },
                     credits: {
                         enabled: false
+                    },
+                    exporting: { enabled: false },
+                    tooltip: {
+                        enabled:true,
+                        shared: true
                     },
                     title: {
                         text: '',
@@ -2359,7 +2442,6 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                         'data': finalCharts.instagramHashtagLeaderBoard[0].values
                     });
                 }
-
             }
             if (finalChartData.length == 0) {
                 if (widget.widgetType == 'custom') {

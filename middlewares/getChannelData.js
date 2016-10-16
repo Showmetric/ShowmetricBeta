@@ -67,6 +67,9 @@ var moz = require('mozscape-request')({
     secret: configAuth.batchJobsMoz.secret,
     expires: configAuth.batchJobsMoz.expires
 });
+graph.setVersion(configAuth.apiVersions.FBVersion);
+FB.options({version: configAuth.apiVersions.FBADs});
+//graph.setVersion(configAuth.apiVersions.FBVersion);
 //To get the channel data
 exports.getChannelData = function (req, res, next) {
 
@@ -909,8 +912,9 @@ exports.getChannelData = function (req, res, next) {
                                         var fbDataLength = dataFromRemote[key].res.data[0].values.length;
                                         for (var index in dataFromRemote[key].res.data[0].values) {
                                             var value = {};
+                                             if(dataFromRemote[key].res.data[0].values[index].value) var totalValue= dataFromRemote[key].res.data[0].values[index].value; else var totalValue =0;
                                             value = {
-                                                total: dataFromRemote[key].res.data[0].values[index].value,
+                                                total: totalValue,
                                                 date: dataFromRemote[key].res.data[0].values[index].end_time.substr(0, 10)
                                             };
                                             if (String(metric[j]._id) === String(dataFromRemote[key].metricId)) {

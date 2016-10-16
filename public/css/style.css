@@ -8,7 +8,7 @@
 .sideBar-wrapper {
 
     position: relative;
-    margin :20px auto
+    margin :40px auto
 }
 /*.sideBar-wrapper .tooltip {*/
     /*background: #2b3947;*/
@@ -475,7 +475,7 @@ h5 {
     color: #000000;
     font-weight: 600;
     font-size: 16px;
-    padding: 14px 20px 14px 25px;
+    padding: 14px 0px 14px 5px;
 }
 .nav.navbar-right > li > a {
     color: #999c9e;
@@ -485,7 +485,7 @@ h5 {
 }
 .navbar-default .nav > li > a:hover,
 .navbar-default .nav > li > a:focus {
-    background-color: #293846;
+    background-color: #ffffff;
     color: #000000;
 }
 .nav .open > a,
@@ -5065,4 +5065,7 @@ input:focus{
         margin-right:0px !important;
     }
 
+}
+.autoarrange-export-delete img {
+    padding: 0px 10px;
 }

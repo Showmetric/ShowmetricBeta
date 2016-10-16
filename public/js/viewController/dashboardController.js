@@ -256,7 +256,6 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
                 }
             );
         };
-
         $scope.$on('gridster-resized', function (sizes, gridster, $element) {
             for (var i = 0; i < $scope.dashboard.widgets.length; i++) {
                 $timeout(resizeWidget(i), 10);
@@ -407,7 +406,8 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
         };
 
         $scope.calculateRowHeight = function(data,noOfItems,widgetWidth,widgetHeight,noOfCharts) {
-                widgetWidth = Math.floor(widgetWidth/noOfCharts);
+/*
+            widgetWidth = Math.floor(widgetWidth/noOfCharts);
             if(widgetWidth < 1)
                 widgetWidth = 1;
 
@@ -439,6 +439,8 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
             }
             else
                 data.showComparision = true;
+*/
+            data.showComparision = true;
         };
 
         $scope.calculateSummaryHeight = function(widgetHeight,noOfItems) {
