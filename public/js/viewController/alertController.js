@@ -1,6 +1,6 @@
 showMetricApp.controller('AlertController', AlertController)
 function AlertController($scope, $http, $q, $state, $rootScope, $window, $stateParams, generateChartColours) {
-
+    var startWidget=0;
     var isEdit = false;
     $scope.alert, $scope.metricName, $scope.currentView = 'step_one', $scope.operation;
     $scope.widgetAlerts = [];
@@ -108,7 +108,25 @@ function AlertController($scope, $http, $q, $state, $rootScope, $window, $stateP
         );
         return deferred.promise;
     };
-
+    angular.element(document).ready(function () {
+        $(' .ladda-button').addClass('icon-arrow-right');
+        Ladda.bind('.ladda-button',{
+            callback: function( instance ){
+                $('.ladda-button').removeClass('icon-arrow-right');
+                $scope.saveAlert();
+                var progress = 0;
+                var interval = setInterval( function(){
+                    progress = Math.min( progress + Math.random() * 0.1, 1 );
+                    instance.setProgress( progress );
+                    if( progress === 1 && startWidget===1 ){
+                        instance.stop();
+                        clearInterval( interval );
+                        $scope.changeViewsInAlertModal('step_one');
+                    }
+                }, 50 );
+            }
+        });
+    });
     $scope.alertFunction = function () {
         if (isEdit == true)
             var widgetId = $scope.alert.widgetId;
@@ -228,7 +246,7 @@ function AlertController($scope, $http, $q, $state, $rootScope, $window, $stateP
                     data: updatedData
                 }).then(
                     function successCallback(alert) {
-                        $scope.changeViewsInAlertModal('step_one');
+                        startWidget=1
                     },
                     function errorCallback(error) {
                         $scope.$parent.closeBasicWidgetModal('');

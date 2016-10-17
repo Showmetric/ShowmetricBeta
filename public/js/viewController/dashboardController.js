@@ -167,8 +167,7 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
                             }
                         }
                     }
-
-                    $timeout(updateCharts(widget), 100);
+                    $timeout(updateCharts(widget), 500);
                 }
             }
         };
@@ -345,7 +344,7 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
 
         $scope.$on('resize', function (e) {
             for (var i = 0; i < $scope.dashboard.widgets.length; i++) {
-                $timeout(resizeWidget(i), 100);
+                $timeout(resizeWidget(i), 10);
             }
             function resizeWidget(k) {
                 return function () {
@@ -574,12 +573,12 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
                         $scope.dashboard.widgets.push({
                             'row': (typeof dashboardWidgetList[getWidgetInfo].row != 'undefined'? dashboardWidgetList[getWidgetInfo].row : 0),
                             'col': (typeof dashboardWidgetList[getWidgetInfo].col != 'undefined'? dashboardWidgetList[getWidgetInfo].col : 0),
-                            'sizeY': (typeof dashboardWidgetList[getWidgetInfo].size != 'undefined'? dashboardWidgetList[getWidgetInfo].size.h : 2),
-                            'sizeX': (typeof dashboardWidgetList[getWidgetInfo].size != 'undefined'? dashboardWidgetList[getWidgetInfo].size.w : 2),
-                            'minSizeY': (typeof dashboardWidgetList[getWidgetInfo].minSize != 'undefined'? dashboardWidgetList[getWidgetInfo].minSize.h : 1),
-                            'minSizeX': (typeof dashboardWidgetList[getWidgetInfo].minSize != 'undefined'? dashboardWidgetList[getWidgetInfo].minSize.w : 1),
-                            'maxSizeY': (typeof dashboardWidgetList[getWidgetInfo].maxSize != 'undefined'? dashboardWidgetList[getWidgetInfo].maxSize.h : 3),
-                            'maxSizeX': (typeof dashboardWidgetList[getWidgetInfo].maxSize != 'undefined'? dashboardWidgetList[getWidgetInfo].maxSize.w : 3),
+                            'sizeY': (typeof dashboardWidgetList[getWidgetInfo].size != 'undefined'? 2 : 2),
+                            'sizeX': (typeof dashboardWidgetList[getWidgetInfo].size != 'undefined'? 3 : 3),
+                            'minSizeY': (typeof dashboardWidgetList[getWidgetInfo].minSize != 'undefined'? 2 : 2),
+                            'minSizeX': (typeof dashboardWidgetList[getWidgetInfo].minSize != 'undefined'? 3 : 3),
+                            'maxSizeY': (typeof dashboardWidgetList[getWidgetInfo].maxSize != 'undefined'? 3 : 3),
+                            'maxSizeX': (typeof dashboardWidgetList[getWidgetInfo].maxSize != 'undefined'? 6 : 3),
                             'name': (typeof dashboardWidgetList[getWidgetInfo].name != 'undefined'? dashboardWidgetList[getWidgetInfo].name : ''),
                             'widgetType': (typeof dashboardWidgetList[getWidgetInfo].widgetType != 'undefined'? dashboardWidgetList[getWidgetInfo].widgetType : ''),
                             'isAlert':(typeof dashboardWidgetList[getWidgetInfo].isAlert != 'undefined'? dashboardWidgetList[getWidgetInfo].isAlert : false),
@@ -650,17 +649,16 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
         }));
 
         $scope.widgetsPresent = true;
-
         //To temporarily create an empty widget with same id as the widgetId till all the data required for the widget is fetched by the called service
         $scope.dashboard.widgets.push({
             'row': (typeof widget.row != 'undefined'? widget.row : 0),
             'col': (typeof widget.col != 'undefined'? widget.col : 0),
-            'sizeY': (typeof widget.size != 'undefined'? widget.size.h : 2),
-            'sizeX': (typeof widget.size != 'undefined'? widget.size.w : 2),
-            'minSizeY': (typeof widget.minSize != 'undefined'? widget.minSize.h : 1),
-            'minSizeX': (typeof widget.minSize != 'undefined'? widget.minSize.w : 1),
-            'maxSizeY': (typeof widget.maxSize != 'undefined'? widget.maxSize.h : 3),
-            'maxSizeX': (typeof widget.maxSize != 'undefined'? widget.maxSize.w : 3),
+            'sizeY': (typeof widget.size != 'undefined'? 2 : 2),
+            'sizeX': (typeof widget.size != 'undefined'? 3 : 3),
+            'minSizeY': (typeof widget.minSize != 'undefined'? 2 : 2),
+            'minSizeX': (typeof widget.minSize != 'undefined'? 3 : 3),
+            'maxSizeY': (typeof widget.maxSize != 'undefined'? 3 : 3),
+            'maxSizeX': (typeof widget.maxSize != 'undefined'? 6 : 3),
             'name': (typeof widget.name != 'undefined'? widget.name : ''),
             'widgetType':(typeof widget.widgetType != 'undefined'? widget.widgetType : ''),
             'isAlert':(typeof widget.isAlert != 'undefined'? widget.isAlert : false),
@@ -771,12 +769,12 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
 
         for(var getWidgetInfo in tempWidgetList) {
             $scope.dashboard.widgets.push({
-                'sizeY': (typeof tempWidgetList[getWidgetInfo].sizeY != 'undefined'? tempWidgetList[getWidgetInfo].sizeY : 2),
-                'sizeX': (typeof tempWidgetList[getWidgetInfo].sizeX != 'undefined'? tempWidgetList[getWidgetInfo].sizeX : 2),
-                'minSizeY': (typeof tempWidgetList[getWidgetInfo].minSizeY != 'undefined'? tempWidgetList[getWidgetInfo].minSizeY : 1),
-                'minSizeX': (typeof tempWidgetList[getWidgetInfo].minSizeX != 'undefined'? tempWidgetList[getWidgetInfo].minSizeX : 1),
-                'maxSizeY': (typeof tempWidgetList[getWidgetInfo].maxSizeY != 'undefined'? tempWidgetList[getWidgetInfo].maxSizeY : 3),
-                'maxSizeX': (typeof tempWidgetList[getWidgetInfo].maxSizeX != 'undefined'? tempWidgetList[getWidgetInfo].maxSizeX : 3),
+                'sizeY': (typeof tempWidgetList[getWidgetInfo].sizeY != 'undefined'? 2 : 2),
+                'sizeX': (typeof tempWidgetList[getWidgetInfo].sizeX != 'undefined'? 3 : 3),
+                'minSizeY': (typeof tempWidgetList[getWidgetInfo].minSizeY != 'undefined'? 2 : 2),
+                'minSizeX': (typeof tempWidgetList[getWidgetInfo].minSizeX != 'undefined'? 3 : 3),
+                'maxSizeY': (typeof tempWidgetList[getWidgetInfo].maxSizeY != 'undefined'? 3 : 3),
+                'maxSizeX': (typeof tempWidgetList[getWidgetInfo].maxSizeX != 'undefined'? 6 : 3),
                 'name': (typeof tempWidgetList[getWidgetInfo].name != 'undefined'? tempWidgetList[getWidgetInfo].name : ''),
                 'widgetType': (typeof tempWidgetList[getWidgetInfo].widgetType != 'undefined'? tempWidgetList[getWidgetInfo].widgetType : ''),
                 'isAlert':(typeof tempWidgetList[getWidgetInfo].isAlert != 'undefined'? tempWidgetList[getWidgetInfo].isAlert : false),

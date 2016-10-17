@@ -145,6 +145,8 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
             $scope.campaign = null;
             $scope.adSet = null;
             $scope.adSetAds = null;
+            var myDiv = document.getElementById('scroller');
+            myDiv.scrollTop = 0;
         }
     };
 
@@ -340,6 +342,11 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
             if($scope.selectedTempChannelList[key].uniqueObjectCount !='') {
                 $scope.selectedChannelList.push($scope.selectedTempChannelList[key]);
             }
+        }
+        for(var key in $scope.selectedChannelList){
+            if($scope.profileOptionsModel[key])
+                    $scope.profileOptionsModel[key].hasNoAccess=false;
+            $scope.tokenExpired[key]=false;
         }
         if($scope.selectedChannelList.length==1&&$scope.selectedChannelList[0].name=='Moz')
             $scope.headerHide=true;

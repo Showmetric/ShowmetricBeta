@@ -76,7 +76,7 @@ function hcChart($timeout){
                 options: '='
             },
             link: function (scope, element) {
-                $timeout(drawCharts, 500);
+                $timeout(drawCharts, 200);
                 function drawCharts(){
                 Highcharts.chart(element[0], scope.options);
             }

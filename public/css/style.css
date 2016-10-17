@@ -168,15 +168,20 @@ svg:hover #Calendar-Icon { fill: #293846; }
     margin-bottom: 15px;
     text-transform: capitalize;
 }
-@media(max-width : 767px) and (min-width : 370px) {
+@media(max-width : 767px) and (min-width : 451px) {
     .dashboardSelect{
-        width:300px;
+        width:250px;
         text-transform: capitalize;
+    }
+}
+@media(max-width : 370px) and (min-width : 450px) {
+    .dashboardSelect{
+        width:200px;
     }
 }
 @media(max-width : 369px) and (min-width : 319px) {
     .dashboardSelect{
-        width:250px;
+        width:170px;
     }
 }
 .sidebarword{
@@ -237,7 +242,7 @@ svg:hover #Calendar-Icon { fill: #293846; }
 .wizard > .steps .current a, .wizard > .steps{
     background-color:#fff !important;
 }
-.dashboardTitleIcons{padding-right: 0px;}
+.dashboardTitleIcons{right: -75px;}
 .editable-buttons {
     vertical-align: middle !important;}
 .editable-click, a.editable-click { background-color:#fff !important}
@@ -403,7 +408,7 @@ svg:hover #Calendar-Icon { fill: #293846; }
     right:0px;
     z-index: 3;
     background-color: #f9f9f9;
-    min-width: 280px;
+    min-width: 250px;
     overflow: auto;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
 }
@@ -2362,6 +2367,14 @@ body.mini-navbar .branding {
     vertical-align: bottom;
     height: inherit;
 }
+.summaryAlign{
+    text-align: center!important;
+    padding-top: 1px!important;
+    padding-left:0px!important;
+    padding-right: 2px!important;
+    font-size: 1.0em!important;
+    top: 30% !important;
+}
 .spiner-mobile-example {
     display:none;
 }
@@ -2450,6 +2463,7 @@ body.mini-navbar .logo-element {
 }
 .navbar-static-side .profile-element{
     display: none;
+    pointer-events: none;
 }
 /*Defining Media Query for Side Bar in Mobile view*/
 @media (min-width: 768px) {
@@ -4520,6 +4534,13 @@ body.rtls.top-navigation .footer.fixed {
     float: right;
     height: inherit;
 }
+@media(min-width: 319px) and (max-width : 367px) {
+    .topName{
+        float: right;
+        height: inherit;
+        width:250px;
+    }
+}
 @media(max-width: 320px) and (min-width : 767px) {
     .topName{
         margin-top:0px;
@@ -4549,7 +4570,6 @@ body.rtls.top-navigation .footer.fixed {
         /*border-right: 2px solid #ffffff;*/
         box-shadow: 4px 0 5px rgba(0,0,0,0.2);
         cursor: pointer;
-
     }
     .navbar-static-side .nav-label{
         display: none;
@@ -4744,19 +4764,19 @@ body.rtls.top-navigation .footer.fixed {
 }
 @media(max-width : 320px)  {
     .triangle-topright{
-        margin:-13px 0px 0px 86% !important;
+        margin:-13px 0px 0px 84% !important;
     }
 }
 
 @media(max-width :380px) and (min-width:321px){
     .triangle-topright{
-        margin:-13px 0px 0px 88% !important;
+        margin:-13px 0px 0px 87% !important;
     }
 }
 
 @media(max-width :414px) and (min-width:380px){
     .triangle-topright {
-        margin: -13px 0px 0px 93px !important;
+        margin: -13px 0px 0px 76% !important;
     }
 }
 

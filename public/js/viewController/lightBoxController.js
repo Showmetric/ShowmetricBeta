@@ -1,6 +1,6 @@
 showMetricApp.controller('LightBoxController', LightBoxController)
 
-function LightBoxController($scope, $uibModal, $log, $state) {
+function LightBoxController($scope, $uibModal, $log, $state,$rootScope) {
     $scope.state = $state;
     $scope.animationsEnabled = true;
     $scope.open = function (size) {
@@ -27,6 +27,13 @@ function LightBoxController($scope, $uibModal, $log, $state) {
             size: size,
             windowClass : 'modal-background'
         });
+        modalInstance.result.then(function (selectedItem) {
+            $scope.selected = selectedItem;
+            $state.go('app.reporting.dashboard',{id:$rootScope.stateDashboard._id});
+        }, function () {
+            $state.go('app.reporting.dashboard',{id:$rootScope.stateDashboard._id});$log.info('Modal dismissed at: ' + new Date());
+        });
+
     };
 
     $scope.openPDFModal = function (size) {

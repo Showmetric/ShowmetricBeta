@@ -1973,7 +1973,8 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                     }
                     chartSeriesArray.push({
                         name: finalCharts.lineCharts[i].key,
-                        data: chartValues
+                        data: chartValues,
+                        color:finalCharts.lineCharts[charts].color
                     });
                 }
                 chartOptions = {
@@ -2078,7 +2079,8 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                     }
                     chartSeriesArray.push({
                         name: finalCharts.lineCharts[charts].key,
-                        data: chartValues, type: finalCharts.lineCharts[charts].type
+                        data: chartValues, type: finalCharts.lineCharts[charts].type,
+                        color:finalCharts.lineCharts[charts].color
                     });
                     chartColorChecker.push(finalCharts.lineCharts[charts].color);
                 }
@@ -2174,7 +2176,8 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                     }
                     chartSeriesArray.push({
                         name: finalCharts.barCharts[charts].key,
-                        data: chartValues
+                        data: chartValues,
+                        color:finalCharts.barCharts[charts].color
                     });
                     chartColorChecker.push(finalCharts.barCharts[charts].color);
                 }
@@ -2252,7 +2255,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                     chartColorChecker.push(finalCharts.pieCharts[charts].color);
                     var y = String(finalCharts.pieCharts[charts].y).indexOf('.') ? parseFloat(finalCharts.pieCharts[charts].y) : parseInt(finalCharts.pieCharts[charts].y);
                     var name = finalCharts.pieCharts[charts].key;
-                    chartValues.push({y: y, name: name});
+                    chartValues.push({y: y, name: name,color:finalCharts.pieCharts[charts].color});
 
                 }
                 chartSeriesArray.push({

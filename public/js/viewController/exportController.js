@@ -580,10 +580,10 @@ function ExportController($scope, $http, $state, $rootScope, $window,$q,$statePa
                     document.getElementById('submitExportButton').disabled = false;
             }
         }, 600);
-
     };
 
     $scope.closeExport = function () {
+        $("input").attr("disable",true);
         var setJPEGOption = $("#exportOptionJpeg").prop("checked");
         var setPDFOption = $("#exportOptionPDF").prop("checked");
         var setUrlOption = $("#exportOptionUrl").prop("checked");
