@@ -5,7 +5,7 @@ function ProfileListController($scope, $http, $window, $stateParams) {
         $scope.profileListArray=[];
         $http({
             method: 'GET',
-            url: '/api/v1/get/profileList'
+            url: '/api/v1/get/profileList'+'?buster='+new Date()
         }).then(
             function successCallback(response) {
                 $scope.profileListArray = response.data.profileList;

@@ -35,7 +35,7 @@ function FusionSettingsController($scope, $uibModalInstance, widget, $http, $sta
         else {
             $http({
                 method: 'GET',
-                url: '/api/v1/dashboards/widgets/' + $state.params.id
+                url: '/api/v1/dashboards/widgets/' + $state.params.id+'?buster='+new Date()
             }).then(
                 function successCallback(response) {
                     var widgetsList;

@@ -39,6 +39,12 @@
                     <div class="sk-double-bounce2"></div>
                 </div>
             </div>
+            <div class="spiner-example" ng-if="spinerEnable==true">
+                <div class="sk-spinner sk-spinner-double-bounce">
+                    <div class="sk-double-bounce1"></div>
+                    <div class="sk-double-bounce2"></div>
+                </div>
+            </div>
             <div gridster="gridsterOptions" class="row gridsterStlyeOptions" id="gridsterItems" ng-hide="(isMobile)&&(loadedWidgetCount != dashboard.widgets.length)"><!--ng-switch-when="true"-->
                 <ul>
                     <li gridster-item="widget" ng-repeat="(widgetIndex,widget) in dashboard.widgets">
@@ -61,7 +67,7 @@
                                         <a title="Toggle Legends" ng-click="toggleLegends(widget.id)"><i class="fa fa-filter"></i> Filter</a>
                                         <a title="Delete Widget" ng-click="removeWid(widget);deleteWidget(widget)"><i class="glyphicon glyphicon-trash favigon-img"></i>Delete</a>
                                         <a title="Click to fuse this widget with other widgets" ng-show="widget.widgetType != 'customFusion'" ng-click="openSettings(widget)"><i class="fa fa-random"></i> Fusion</a>
-                                        <a title="Click to export this widget in PNG format" ng-show="dashboard.widgetData[widgetIndex].chart.length === 0 " ng-click="exportWidgetInPng(widget.id,dashboard.widgetData[widgetIndex].name)"><i class="fa fa-download"></i> &nbsp;PNG &nbsp;  </a>
+                                        <a title="Click to export this widget in PNG format"  ng-click="exportWidgetInPng(widget.id,dashboard.widgetData[widgetIndex].name)"><i class="fa fa-download"></i> &nbsp;PNG &nbsp;  </a>
                                         <a title="Find out how to send data for custom widgets - Documentation" ng-if="widget.widgetType==='custom'" href="/customDataDocumentation" target="_blank" class="findOutHow">Custom Documentation</a>
                                     </div>
                                 </div>
@@ -102,8 +108,8 @@
                                                 <li  ng-repeat="data in chart.data" style="text-align: center;padding-top: 1px;padding-left:0px;padding-right: 2px;font-size: 1.0em!important;" id="li-{{widget.id}}-{{$index}}" class="col col-lg-12" ng-style="calculateRowHeight(data,chart.data.length,widget.sizeX,widget.sizeY,dashboard.widgetData[widgetIndex].layoutOptionsX)"><!--size-watcher-width="data.mywidth"--><!--ng-class="calculateColumnWidth(chart.data.length,widget.sizeX,dashboard.widgetData[widgetIndex].layoutOptionsX)" ng-style="calculateRowHeight(data,chart.data.length,widget.sizeX,widget.sizeY,dashboard.widgetData[widgetIndex].layoutOptionsX)"-->
                                                     <div style="margin: 0px;height: 100%;overflow: hidden;white-space: nowrap;color: #000000;text-align: center;">
                                                         <p ng-show="data.showComparision==false" ng-style="{'color': '#979797', 'font-family' : 'Heebo-Medium','font-size':'10px', 'text-transform':'uppercase', 'background-color': '#eaeff3', 'border-bottom': '4px solid', 'border-color': data.color, 'padding-left': '3px'}" style="margin:0px 0px 3px!important;font-weight: bold;padding-top: 2px;padding-bottom: 2px;"> {{data.key}} - {{data.summaryDisplay}}</p>
-                                                        <p ng-show="data.showComparision==true" ng-style="{'color': '#979797', 'font-family' : 'Heebo-Medium','font-size':'14px', 'text-transform':'uppercase', 'background-color': '#ffffff', 'border-bottom': '4px solid', 'border-color': data.color, 'padding-left': '3px'}" style="margin:0px 0px 3px!important;font-weight: bold;padding-top: 2px;padding-bottom: 2px;"> {{data.key}}</p>
-                                                        <p ng-show="data.showComparision==true" ng-style="{'color': '#000000', 'font-family' : 'Heebo-Medium','font-size':'20px', 'text-transform':'uppercase', 'padding-left': '3px', 'border-right': '3px solid white'}" style="margin:0px 0px 3px!important;font-weight: bold;"> {{data.summaryDisplay}}</p>
+                                                        <p ng-show="data.showComparision==true" ng-style="{'color': '#979797', 'font-family' : 'Heebo-Medium','font-size':'14px', 'text-transform':'uppercase', 'background-color': '#eaeff3', 'border-bottom': '4px solid', 'border-color': data.color, 'padding-left': '3px'}" style="margin:0px 0px 3px!important;font-weight: bold;padding-top: 2px;padding-bottom: 2px;"> {{data.key}}</p>
+                                                        <p ng-show="data.showComparision==true" ng-style="{'color': '#979797', 'font-family' : 'Heebo-Medium','font-size':'14px', 'text-transform':'uppercase', 'padding-left': '3px', 'border-right': '3px solid white'}" style="margin:0px 0px 3px!important;font-weight: bold;"> {{data.summaryDisplay}}</p>
                                                         <!--<p ng-style="{'color': '#979797', 'font-family' : 'Heebo-Medium','font-size':'12px', 'text-transform':'uppercase', 'background-color': 'whitesmoke'}" style="margin:0px 0px 3px!important;font-weight: bold;">{{data.key}} - <b ng-style="{'color':data.color, 'font-family' : 'Heebo-Medium'}"> {{data.summaryDisplay}} </b></p>-->
                                                         <p ng-if="chart.options.chart.type != 'pieChart'" ng-show="data.showComparision==true" style="margin:1px 0px 1px!important;overflow: hidden">{{data.period}}: <span ng-if="data.variance !=0">{{data.variance}}%  </span><i ng-if="data.arrow==='up' && data.variance !=0" style="font-size: 0.8em;color:#2A8539" class="fa fa-arrow-up" aria-hidden="true"></i><i ng-if='data.arrow==="down" && data.variance !=0' style="font-size: 0.8em;color:#FF1B1B" class="fa fa-arrow-down" aria-hidden="true"></i></p>
                                                         <!--<p ng-if="chart.options.chart.type != 'pieChart'" style="font-size: 14px;font-family: Heebo-Light;">{{data.period}}- <span ng-if="data.variance !=0">{{data.variance}}%</span><i ng-if="data.arrow==='up' && data.variance !=0" style="font-size: 0.8em;color:#2A8539" class="fa fa-arrow-up" aria-hidden="true"></i><i ng-if='data.arrow==="down" && data.variance !=0' style="font-size: 0.8em;color:#FF1B1B" class="fa fa-arrow-down" aria-hidden="true"></i></p>-->

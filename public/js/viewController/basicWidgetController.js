@@ -116,6 +116,7 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
                 googleAdsPresent=false;
                 $scope.fbSelectEnable=false;
                 $scope.googleSelectEnable=false;
+                $scope.headerHide=false;
                 document.getElementById('basicWidgetFinishButton').disabled = true;
                 $scope.getReferenceWidgetsForChosenChannel();
                 $scope.getProfilesForDropdown();
@@ -202,7 +203,7 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
     $scope.getReferenceWidgetsForChosenChannel = function () {
         $http({
             method: 'GET',
-            url: '/api/v1/get/referenceWidgets/' + widgetType
+            url: '/api/v1/get/referenceWidgets/' + widgetType+'?buster='+new Date()
         }).then(
             function successCallback(response) {
                 for(var j in $scope.selectedTempChannelList) {
@@ -297,7 +298,7 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
         var deferred = $q.defer();
         $http({
             method: 'GET',
-            url: '/api/v1/get/profiles/' + channelId
+            url: '/api/v1/get/profiles/' + channelId+'?buster='+new Date().getTime()
         }).then(
             function successCallback(response) {
                 deferred.resolve({
@@ -340,6 +341,8 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
                 $scope.selectedChannelList.push($scope.selectedTempChannelList[key]);
             }
         }
+        if($scope.selectedChannelList.length==1&&$scope.selectedChannelList[0].name=='Moz')
+            $scope.headerHide=true;
     };
 
     $scope.selectLevelChosen = function (level,index) {
@@ -550,7 +553,7 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
         var profileId = $scope.profileId;
         $http({
             method: 'GET',
-            url: '/api/v1/get/objects/' + profileId + '?objectTypeId=' + objectTypeId + '&accountId=' + accountId
+            url: '/api/v1/get/objects/' + profileId + '?objectTypeId=' + objectTypeId + '&accountId=' + accountId+'&buster='+new Date()
         }).then(
             function successCallback(response) {
                 $scope.campaignList = response.data.objectList;
@@ -572,7 +575,7 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
         var profileId = $scope.profileId;
         $http({
             method: 'GET',
-            url: '/api/v1/get/objects/' + profileId + '?objectTypeId=' + objectTypeId + '&campaignId=' + campaignId
+            url: '/api/v1/get/objects/' + profileId + '?objectTypeId=' + objectTypeId + '&campaignId=' + campaignId+'&buster='+new Date()
         }).then(
             function successCallback(response) {
                 $scope.adSetList = response.data.objectList;
@@ -594,7 +597,7 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
         var profileId = $scope.profileId;
         $http({
             method: 'GET',
-            url: '/api/v1/get/objects/' + profileId + '?objectTypeId=' + objectTypeId + '&adSetId=' + adSetId
+            url: '/api/v1/get/objects/' + profileId + '?objectTypeId=' + objectTypeId + '&adSetId=' + adSetId+'&buster='+new Date()
         }).then(
             function successCallback(response) {
                 $scope.adSetAdsList = response.data.objectList;
@@ -617,7 +620,7 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
         var profileId = $scope.profileId;
         $http({
             method: 'GET',
-            url: '/api/v1/channel/profiles/objectsList/' + profileId + '?objectType=' + objectTypeId + '&accountId=' + accountId
+            url: '/api/v1/channel/profiles/objectsList/' + profileId + '?objectType=' + objectTypeId + '&accountId=' + accountId+'&buster='+new Date()
         }).then(
             function successCallback(response) {
                 $scope.campaignList = response.data;
@@ -651,7 +654,7 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
         var profileId = $scope.profileId;
         $http({
             method: 'GET',
-            url: '/api/v1/channel/profiles/objectsList/' + profileId + '?objectType=' + objectTypeId + '&campaignId=' + accountId
+            url: '/api/v1/channel/profiles/objectsList/' + profileId + '?objectType=' + objectTypeId + '&campaignId=' + accountId+'&buster='+new Date()
         }).then(
             function successCallback(response) {
                 $scope.adSetList = response.data;
@@ -685,7 +688,7 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
         var profileId = $scope.profileId;
         $http({
             method: 'GET',
-            url: '/api/v1/channel/profiles/objectsList/' + profileId + '?objectType=' + objectTypeId + '&adSetId=' + accountId
+            url: '/api/v1/channel/profiles/objectsList/' + profileId + '?objectType=' + objectTypeId + '&adSetId=' + accountId+'&buster='+new Date()
         }).then(
             function successCallback(response) {
 
@@ -904,7 +907,7 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
         var profileId = $scope.googleProfileId;
         $http({
             method: 'GET',
-            url: '/api/v1/get/objects/' + profileId + '?objectTypeId=' + objectTypeId + '&accountId=' + accountId
+            url: '/api/v1/get/objects/' + profileId + '?objectTypeId=' + objectTypeId + '&accountId=' + accountId+'&buster='+new Date()
         }).then(
             function successCallback(response) {
                 $scope.googleCampaignList = response.data.objectList;
@@ -927,9 +930,9 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
         var accountId= $scope.googleAccountId;
         var url='';
         if($scope.canManageClients==true)
-            url='/api/v1/get/objects/' + profileId + '?objectTypeId=' + objectTypeId + '&campaignId=' + campaignId+'&accountId='+accountId;
+            url='/api/v1/get/objects/' + profileId + '?objectTypeId=' + objectTypeId + '&campaignId=' + campaignId+'&accountId='+accountId+'&buster='+new Date();
         else
-            url='/api/v1/get/objects/' + profileId + '?objectTypeId=' + objectTypeId + '&campaignId=' + campaignId+'&accountId='+accountId;
+            url='/api/v1/get/objects/' + profileId + '?objectTypeId=' + objectTypeId + '&campaignId=' + campaignId+'&accountId='+accountId+'&buster='+new Date();
         $http({
             method: 'GET',
             url: url
@@ -955,9 +958,9 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
         var accountId= $scope.googleAccountId;
         var url='';
         if($scope.canManageClients==true)
-            url='/api/v1/get/objects/' + profileId + '?objectTypeId=' + objectTypeId + '&adSetId=' + adSetId +'&accountId='+accountId;
+            url='/api/v1/get/objects/' + profileId + '?objectTypeId=' + objectTypeId + '&adSetId=' + adSetId +'&accountId='+accountId+'&buster='+new Date();
         else
-            url='/api/v1/get/objects/' + profileId + '?objectTypeId=' + objectTypeId + '&adSetId=' + adSetId +'&accountId='+accountId;
+            url='/api/v1/get/objects/' + profileId + '?objectTypeId=' + objectTypeId + '&adSetId=' + adSetId +'&accountId='+accountId+'&buster='+new Date();
         $http({
             method: 'GET',
             url: url
@@ -983,7 +986,7 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
         var profileId = $scope.googleProfileId;
         $http({
             method: 'GET',
-            url: '/api/v1/channel/profiles/objectsList/' + profileId + '?objectType=' + objectTypeId + '&accountId=' + accountId
+            url: '/api/v1/channel/profiles/objectsList/' + profileId + '?objectType=' + objectTypeId + '&accountId=' + accountId+'&buster='+new Date()
         }).then(
             function successCallback(response) {
                 $scope.googleCampaignList = response.data;
@@ -1018,9 +1021,9 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
         var accountId= $scope.googleAccountId;
         var url='';
         if($scope.canManageClients==true)
-            url='/api/v1/channel/profiles/objectsList/' + profileId + '?objectType=' + objectTypeId + '&campaignId=' + campaignId +'&accountId='+accountId;
+            url='/api/v1/channel/profiles/objectsList/' + profileId + '?objectType=' + objectTypeId + '&campaignId=' + campaignId +'&accountId='+accountId+'&buster='+new Date();
         else
-            url='/api/v1/channel/profiles/objectsList/' + profileId + '?objectType=' + objectTypeId + '&campaignId=' + campaignId
+            url='/api/v1/channel/profiles/objectsList/' + profileId + '?objectType=' + objectTypeId + '&campaignId=' + campaignId+'&buster='+new Date()
         $http({
             method: 'GET',
             url: url
@@ -1058,9 +1061,9 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
         var accountId= $scope.googleAccountId;
         var url='';
         if($scope.canManageClients==true)
-            url='/api/v1/channel/profiles/objectsList/' + profileId + '?objectType=' + objectTypeId + '&adSetId=' + adSetId +'&accountId='+accountId;
+            url='/api/v1/channel/profiles/objectsList/' + profileId + '?objectType=' + objectTypeId + '&adSetId=' + adSetId +'&accountId='+accountId+'&buster='+new Date();
         else
-            url='/api/v1/channel/profiles/objectsList/' + profileId + '?objectType=' + objectTypeId + '&adSetId=' + adSetId
+            url='/api/v1/channel/profiles/objectsList/' + profileId + '?objectType=' + objectTypeId + '&adSetId=' + adSetId+'&buster='+new Date()
         $http({
             method: 'GET',
             url: url
@@ -1192,7 +1195,7 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
                         $scope.tokenExpired[index] = true;
                     $http({
                         method: 'GET',
-                        url: '/api/v1/get/objects/' + profileId
+                        url: '/api/v1/get/objects/' + profileId+'?buster='+new Date()
                     }).then(
                         function successCallback(response) {
                             var uniqueObject;
@@ -1257,7 +1260,7 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
                             $scope.tokenExpired[index] = true;
                         $http({
                             method: 'GET',
-                            url: '/api/v1/get/objects/' + profileId
+                            url: '/api/v1/get/objects/' + profileId+'?buster='+new Date()
                         }).then(
                             function successCallback(response) {
                                 var uniqueObject;
@@ -1310,7 +1313,7 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
                             $scope.tokenExpired[index] = true;
                         $http({
                             method: 'GET',
-                            url: '/api/v1/get/objects/' + profileId
+                            url: '/api/v1/get/objects/' + profileId+'?buster='+new Date()
                         }).then(
                             function successCallback(response) {
                                 var uniqueObject;
@@ -1362,7 +1365,7 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
 
                 $http({
                     method: 'GET',
-                    url: '/api/v1/get/objects/' + profileId
+                    url: '/api/v1/get/objects/' + profileId+'?buster='+new Date()
                 }).then(
                     function successCallback(response) {
                         var uniqueObject;
@@ -1452,13 +1455,13 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
             var profileId = profileId;
             $http({
                 method: 'GET',
-                url: '/api/v1/get/objectTypeDetail/' + objectTypeId
+                url: '/api/v1/get/objectTypeDetail/' + objectTypeId+'?buster='+new Date()
             }).then(
                 function successCallback(response) {
                     var objectTypeName = response.data.objectType.type;
                     $http({
                         method: 'GET',
-                        url: '/api/v1/channel/profiles/objectsList/' + profileId + '?objectType=' + objectTypeName
+                        url: '/api/v1/channel/profiles/objectsList/' + profileId + '?objectType=' + objectTypeName+'&buster='+new Date()
                     }).then(
                         function successCallback(response) {
                             var uniqueObjectTypeWithIndex = [];
@@ -1602,7 +1605,7 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
 
     $scope.getProfileAfterLink=function(){
         $http({
-            method: 'GET', url: '/api/v1/get/profiles/' + linkChannelId
+            method: 'GET', url: '/api/v1/get/profiles/' + linkChannelId+'?buster='+new Date().getTime()
         }).then(
             function successCallback(response) {
                 for(var key in $scope.selectedChannelList){
@@ -2211,7 +2214,7 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
                 $scope.accountId = chosenObject[5];
                 $scope.fbSelectEnable = true;
                 $http({
-                    method: 'GET', url: '/api/v1/get/objectType/' + $scope.selectedChannelList[chosenObject[4]].id
+                    method: 'GET', url: '/api/v1/get/objectType/' + $scope.selectedChannelList[chosenObject[4]].id+'?buster='+new Date()
                 }).then(
                     function successCallback(response) {
                         $scope.fbObjectTypeList = response.data.objectType;
@@ -2259,7 +2262,7 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
                 $scope.googleAccountId = chosenObject[5];
                 $scope.googleSelectEnable = true;
                 $http({
-                    method: 'GET', url: '/api/v1/get/objectType/' + $scope.selectedChannelList[chosenObject[4]].id
+                    method: 'GET', url: '/api/v1/get/objectType/' + $scope.selectedChannelList[chosenObject[4]].id+'?buster='+new Date()
                 }).then(
                     function successCallback(response) {
                         $scope.googleObjectTypeList = response.data.objectType;

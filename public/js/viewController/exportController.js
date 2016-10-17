@@ -646,6 +646,8 @@ function ExportController($scope, $http, $state, $rootScope, $window,$q,$statePa
                         $rootScope.closePdfModal();
                     },
                     function errorCallback(error) {
+                        $("#dashboardContent").removeClass('dashboardContentJpeg');
+                        $("#dashboardContent").addClass('dashboardContent');
                         $("#exportJPEGModalContent").removeClass('md-show');
                         $(".md-overlay").css("background", "rgba(0,0,0,0.5)");
                         $("#exportPDFModalContent").addClass('md-show');
@@ -696,7 +698,6 @@ function ExportController($scope, $http, $state, $rootScope, $window,$q,$statePa
                         "dashboardId": $state.params.id,
                         "dashboardName": dashboardName
                     };
-
                     $http({
                         method: 'POST',
                         url: '/api/v1/createHtml5ToPdf/dashboard',
@@ -758,7 +759,7 @@ function ExportController($scope, $http, $state, $rootScope, $window,$q,$statePa
           /*  $rootScope.closePdfModal();*/
             $http({
                 method: 'GET',
-                url: '/api/v1/get/dashboards/' + $state.params.id
+                url: '/api/v1/get/dashboards/' + $state.params.id+'?buster='+new Date()
             }).then(
                 function successCallback(response) {
                     var reportId = response.data.reportId;
@@ -1023,12 +1024,16 @@ function ExportController($scope, $http, $state, $rootScope, $window,$q,$statePa
                 tempArray.push(JSONToCSVConvertor(finalData[i].data, finalData[i].title, true));
             }
             $q.all(tempArray).then(function(tempArray){
+                if (navigator.msSaveBlob) { // IE10 ie
+                    var fileName = "Report_"+newDateFormat;
+                    return navigator.msSaveBlob(new Blob([tempArray], {type: 'text/csv;charset=utf-8'}), fileName);
+                }
                 var excel ='data:text/csv;charset=utf-8,'+escape(tempArray);
                 var link = document.createElement("a");
                 link.href = excel;
                 var fileName = "Report_"+newDateFormat;
                 //this will remove the blank-spaces from the title and replace it with an underscore
-                //fileName += ReportTitle.replace(/ /g,"_");
+                escape(fileName);
                 //set the visibility hidden so it will not effect on your web-layout
                 link.style = "visibility:hidden";
                 link.download = fileName + ".csv";
@@ -1038,6 +1043,15 @@ function ExportController($scope, $http, $state, $rootScope, $window,$q,$statePa
                 link.click();
                 document.body.removeChild(link);
                 readyToExcel=1;
+                $rootScope.closePdfModal();
+            }, function errCallback(error) {
+                $("#exportPDFModalContent").removeClass('md-show');
+                $(".md-overlay").css("background", "rgba(0,0,0,0.5)");
+                $("#exportPDFModalContent").addClass('md-show');
+                $(".loadingStatus").hide();
+                $(".pdfHeadText").show().text("Oh!!").css({"font-style": 'normal', "color": "red"});
+                $(".pdfContentText").html('<b>Something went wrong. Please try again</b>');
+                $scope.expAct = false;
                 $rootScope.closePdfModal();
             });
             //JSONToCSVConvertor(data, "Vehicle Report", true);
@@ -1058,11 +1072,10 @@ function ExportController($scope, $http, $state, $rootScope, $window,$q,$statePa
                     //This loop will extract the label from 1st index of on array
                     for (var index in arrData[0]) {
                             //Now convert each value to string and comma-seprated
-                            row += index + ',';
+                            row += '="'+index +'"'+ ',';
                         }
 
                     row = row.slice(0, -1);
-
                     //append Label row with line break
                     CSV += row + '\r\n';
                 }
@@ -1070,10 +1083,9 @@ function ExportController($scope, $http, $state, $rootScope, $window,$q,$statePa
                 //1st loop is to extract each row
                 for (var i = 0; i < arrData.length; i++) {
                     var row = "";
-
                     //2nd loop will extract each column and convert it in string comma-seprated
                     for (var index in arrData[i]) {
-                        row += '"' + arrData[i][index] + '",';
+                        row += '="' + arrData[i][index] + '",';
                     }
 
                     row.slice(0, row.length - 1);

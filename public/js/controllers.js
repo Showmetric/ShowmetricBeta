@@ -2103,7 +2103,10 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                 var date = new Date(this.value);
                                 return months[date.getMonth()] + ' ' + date.getDate();
                             }
-                        }
+                        },
+                        tickInterval: 7,
+                        min: 0,
+                        max: dateArray.length,
                     },
                     title: {
                         text: '',
@@ -2198,7 +2201,10 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                 var date = new Date(this.value);
                                 return months[date.getMonth()] + ' ' + date.getDate();
                             }
-                        }
+                        },
+                        tickInterval: 7,
+                        min: 0,
+                        max: dateArray.length,
                     },
                     title: {
                         text: '',

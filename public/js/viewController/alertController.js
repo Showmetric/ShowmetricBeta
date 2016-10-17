@@ -5,6 +5,7 @@ function AlertController($scope, $http, $q, $state, $rootScope, $window, $stateP
     $scope.alert, $scope.metricName, $scope.currentView = 'step_one', $scope.operation;
     $scope.widgetAlerts = [];
     $scope.alertMetrics = [];
+    $scope.inAlertMetric='';
     var storeMetricDetails = [], widgetMetricDetails = [];
 
     $scope.changeViewsInAlertModal = function (obj) {
@@ -53,14 +54,17 @@ function AlertController($scope, $http, $q, $state, $rootScope, $window, $stateP
     $scope.fetchWidgetAlerts = function () {
         $http({
             method: 'GET',
-            url: '/api/v1/get/alerts/' + $rootScope.selectedWidget.id
+            url: '/api/v1/get/alerts/' + $rootScope.selectedWidget.id+'?buster='+new Date()
         }).then(
             function successCallback(response) {
+                widgetMetricDetails=[];
                 if(response.status == '200') {
                     widgetMetricDetails.length=0;
                     $scope.widgetAlerts = response.data;
-                    for (var i = 0; i < $scope.widgetAlerts.length; i++)
+                    for (var i = 0; i < $scope.widgetAlerts.length; i++){
                         widgetMetricDetails.push($scope.getMetricDetails($scope.widgetAlerts[i].metricId, i));
+                    }
+
                     $q.all(widgetMetricDetails).then(
                         function successCallback(widgetMetricDetails) {
                             for(var alerts in $scope.widgetAlerts) {
@@ -90,7 +94,7 @@ function AlertController($scope, $http, $q, $state, $rootScope, $window, $stateP
         var deferred = $q.defer();
         $http({
             method: 'GET',
-            url: '/api/v1/get/metricDetails/' + metricId
+            url: '/api/v1/get/metricDetails/' + metricId+'?buster='+new Date()
         }).then(
             function successCallback(metric) {
                 deferred.resolve({
@@ -112,7 +116,7 @@ function AlertController($scope, $http, $q, $state, $rootScope, $window, $stateP
             var widgetId = $rootScope.selectedWidget.id;
         $http({
             method: 'GET',
-            url: '/api/v1/widget/' + widgetId
+            url: '/api/v1/widget/' + widgetId+'?buster='+new Date()
         }).then(
             function successCallback(response) {
                 $scope.widgetDetails = response.data[0];

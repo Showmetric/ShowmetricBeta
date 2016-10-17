@@ -34,7 +34,8 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
         //Defining configuration parameters for dashboard layout
         $scope.dashboard = { widgets: [], widgetData: [] };
         $scope.dashboard.dashboardName = '';
-        $scope.widgetsPresent = false;
+        $scope.widgetsPresent = true;
+        $scope.spinerEnable = true;
         $scope.loadedWidgetCount = 0;
         $scope.widgetErrorCode=0;
         //To define the calendar in dashboard header
@@ -50,7 +51,7 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
                         }
                 });
         $scope.setChartSize = function (index,childIndex) {
-            $timeout(callAtTimeout, 1000);
+            $timeout(callAtTimeout, 100);
             function callAtTimeout() {
                 if(document.getElementById('chartOptions'+index)!=null){
                     var parentWidth = document.getElementById('chartOptions'+index).offsetWidth;
@@ -102,8 +103,6 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
                         getWidgetColor = '#288DC0';
                     }
                     $(".getBox-" + widget.id).css('border', '3px solid ' + getWidgetColor);
-                    $timeout(resizeChartsInTimeInterval,1000)
-                    function resizeChartsInTimeInterval() {
                         var ind = $scope.dashboard.widgets.indexOf(widget);
                         if(document.getElementById('chartOptions'+ind)!=null){
                             var parentWidth = document.getElementById('chartOptions'+ind).offsetWidth;
@@ -115,8 +114,6 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
                                 }
                             }
                         }
-                    }
-
                 },
                 stop: function (event, $element, widget) {
                     $(".getBox-"+widget.id).css('border','1px solid #ccc');
@@ -126,7 +123,6 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
                             var ind = $scope.dashboard.widgets.indexOf(widget);
                             for (var i = 0; i < $scope.dashboard.widgetData[ind].chart.length; i++) {
                                 if ($scope.dashboard.widgetData[ind].chart[i].options.chart.type === 'lineChart' || $scope.dashboard.widgetData[ind].chart[i].options.chart.type === 'pieChart' || $scope.dashboard.widgetData[ind].chart[i].options.chart.type === 'multiBarChart' || $scope.dashboard.widgetData[ind].chart[i].options.chart.type === 'multiChart') {
-
                                     for (var j = 0; j < $scope.dashboard.widgetData[ind].chart[i].data.length; j++) {
                                             var elemHeight = document.getElementById('li-' + widget.id + '-' + String(j)).offsetHeight;
                                             $scope.dashboard.widgetData[ind].chart[i].data[j].myheight = elemHeight;
@@ -172,7 +168,7 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
                         }
                     }
 
-                    $timeout(updateCharts(widget), 400);
+                    $timeout(updateCharts(widget), 100);
                 }
             }
         };
@@ -181,7 +177,7 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
         $scope.fetchDashboardName = function () {
             $http({
                 method: 'GET',
-                url: '/api/v1/get/dashboards/'+ $state.params.id
+                url: '/api/v1/get/dashboards/'+ $state.params.id+'?buster='+new Date()
             }).then(
                 function successCallback(response) {
                     if(response.status == '200'){
@@ -513,7 +509,7 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
         $scope.submitEnable[widgetId]=false;
         var dataUrl = {
             method: 'GET',
-            url: '/api/v1/widget/'+ widgetId + '?meta=' +meta.meta
+            url: '/api/v1/widget/'+ widgetId + '?meta=' +meta.meta+'&buster='+new Date()
         };
         $http(dataUrl).then(
             function successCallback() {
@@ -547,7 +543,7 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
 
         $http({
             method: 'GET',
-            url: '/api/v1/dashboards/widgets/'+ $state.params.id
+            url: '/api/v1/dashboards/widgets/'+ $state.params.id+'?buster='+new Date()
         })
             .then(
                 function successCallback(response) {
@@ -561,9 +557,13 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
                     if(dashboardWidgetList.length > 0) {
                         $scope.loadedWidgetCount = 0;
                         $scope.widgetsPresent = true;
+                        $scope.spinerEnable = false;
                     }
                     else
+                    {
                         $scope.widgetsPresent = false;
+                        $scope.spinerEnable = false;
+                    }
                     var widgetID=0;
                     var dashboardWidgets = [];
                     for(var getWidgetInfo in dashboardWidgetList){

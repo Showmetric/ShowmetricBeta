@@ -635,7 +635,7 @@
                             <h5 class="model-title">{{selectCustomLinkHead}}</h5>
                             <div class="col-lg-12">
                                 <div class="col-lg-12" ng-repeat="referenceWidgetsList in referenceWidgetsList">
-                                    <div class="col-xs-12"><img src="image/lightbox/{{referenceWidgetsList.channelName}}.png" style="width:150px;"/></div>
+                                    <div class="col-xs-12"><img src="image/lightbox/{{referenceWidgetsList.channelName}}.png" style="width:150px;" ng-class="{'mozImage': referenceWidgetsList.channelName=='Moz'}"/></div>
                                     <div ng-repeat="referenceWidgets in referenceWidgetsList.widgets"
                                          name="{{referenceWidgets.name}}" ref="{{referenceWidgets.isSelectedMetric}}"
                                          id="referenceWidgets-{{referenceWidgets._id}}"
@@ -684,7 +684,7 @@
                             </div>
                         </div>
                         <div class="row" ng-if="currentView === 'step_three'" ng-cloak>
-                            <h5 class="model-title">Step 3 : Choose the Accounts</h5>
+                            <h5 class="model-title" ng-hide="headerHide==true">Step 3 : Choose the Accounts</h5>
                             <div ng-repeat="channel in selectedChannelList track by $index" >
                                 <div ng-hide="channel.name=='Moz'">
                                     <div class="col-lg-12" style="background-color: #f3f3f4">
@@ -891,7 +891,7 @@
                                                                         <option value="">Choose the Granularity</option>
                                                                     </select>
                                                                 </div>
-                                                                <p ng-show="messageEnable==true" style="margin:0px 0px 3px!important ; color: #FF0000 ; font-family : Heebo-Medium  ; text-align:center ; padding-left : 3px ; border-right : 3px solid white ; ">One of the chosen metrics is available only at campaign level </p>
+                                                                <p ng-show="messageEnable==true" style="margin:0px 0px 3px!important ; color: #FF0000 ; font-family : Heebo-Medium  ; text-align:center ; padding-left : 3px ; border-right : 3px solid white ; ">One of the chosen metric is available only at campaign level </p>
                                                             </div>
                                                             <div class="form-group">
                                                                 <div class="col-lg-12">
@@ -1124,7 +1124,6 @@
                                         </div>
                                     </div>
                                 </div>
-
                                 <div ng-show="channel.name=='Moz'">
                                     <h5 class="model-title">Step 3 : Enter an URL</h5>
                                     <div class="col-lg-12" style="background-color: #f3f3f4">
@@ -1134,7 +1133,7 @@
                                                 <div class="ibox float-e-margins">
                                                     <div class="ibox-title" style="vertical-align: middle">
                                                         <h5><img src="image/lightbox/{{channel.name}}.png" align="left"
-                                                                 style="max-height: 30px;max-width: 60px"/>  {{channel.name}}</h5>
+                                                                 style="max-height: 15px;max-width: 60px"/>&nbsp&nbsp&nbsp{{channel.name}}</h5>
                                                     </div>
                                                     <div class="ibox-content" style="display: block;">
                                                         <form name="form1" class="form-horizontal">
@@ -1179,7 +1178,7 @@
                                 disabled="disabled" ng-click="changeViewsInBasicWidget('step_three')">
                             Next
                         </button>
-                         <span  class="progress-demo2">
+                        <span  class="progress-demo2">
                             <button class="ladda-button  componentBtn btn-4 btn-4a " data-style="expand-right" id="basicWidgetFinishButtonCustom"
                                     ng-show="currentView === 'step_two'">
                                 <span class="ladda-label">Finish</span>
@@ -1187,7 +1186,7 @@
                                 <div class="ladda-progress" style="width: 72px;"></div>
                             </button>
                          </span>
-                         <span  class="progress-demo2">
+                        <span  class="progress-demo2">
                             <button class="ladda-button  componentBtn btn-4 btn-4a " data-style="expand-right" id="basicWidgetFinishButton"
                                     ng-show="currentView === 'step_three'"
                                     disabled="disabled">
