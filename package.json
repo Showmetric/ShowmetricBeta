@@ -6,7 +6,9 @@
   ],
   "main": "server.js",
   "scripts": {
-    "test": "mocha /tests/server/googleAuth.js -w"
+    "test": "mocha /tests/server/googleAuth.js -w",
+    "start":"node server.js",
+    "batch":"node batchJobs.js"
   },
   "dependencies": {
     "adwords-auth": "0.0.10",
