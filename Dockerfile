@@ -18,8 +18,8 @@ COPY . /usr/src/app
 
 EXPOSE 8080
 
-#CMD [ "npm", "start" ]
+CMD npm start && npm batch
 
 #CMD ["node","server.js"]
 
-CMD node server.js && node batchJobs.js
+# CMD node server.js && node batchJobs.js
