@@ -5,15 +5,6 @@
  *   version 0.1
  *
 */
-/* heebo-regular - latin */
-@font-face {
-    font-family: 'Heebo';
-    font-style: normal;
-    font-weight: 400;
-    src: local('Heebo'), local('Heebo-Regular'),
-    url('../fonts/heebo-v2-latin-regular.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
-    url('../fonts/heebo-v2-latin-regular.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
-}
 .sideBar-wrapper {
 
     position: relative;
@@ -76,8 +67,6 @@
 }
 #refreshButtonFusion{
     width:16px;
-    height:16px;
-    margin:-77px 0 0 0;
 }
 #refreshButton{
     width:16px;
@@ -97,6 +86,9 @@
 .dropdown{
     background-color: transparent !important;
     padding: 5px 5px 0px 24px;
+}
+.reportDropdown{
+    padding: 0px !important;
 }
 .nav .dropdown dropdown-toggle:hover{
     background-color: transparent !important;
@@ -146,6 +138,7 @@ border-radius:0px !important}
 .fontClass{color:#999;}
 .unfontClass{color:#000;}
 .graph-icon a{color:#979797;}
+.textwidget-icon a{color:#1074ae;}
 .alertList{margin: 30px;}
 .createAlert{margin-top:8px !important;}
 svg:hover #Calendar-Icon { fill: #293846; }
@@ -168,20 +161,15 @@ svg:hover #Calendar-Icon { fill: #293846; }
     margin-bottom: 15px;
     text-transform: capitalize;
 }
-@media(max-width : 767px) and (min-width : 451px) {
+@media(max-width : 767px) and (min-width : 370px) {
     .dashboardSelect{
-        width:250px;
+        width:300px;
         text-transform: capitalize;
-    }
-}
-@media(max-width : 370px) and (min-width : 450px) {
-    .dashboardSelect{
-        width:200px;
     }
 }
 @media(max-width : 369px) and (min-width : 319px) {
     .dashboardSelect{
-        width:170px;
+        width:250px;
     }
 }
 .sidebarword{
@@ -201,6 +189,13 @@ svg:hover #Calendar-Icon { fill: #293846; }
     justify-content: center;}
 .dashboards{width: 83%;line-height: 15px;white-space: nowrap;text-overflow: ellipsis;overflow: hidden;}
 .grid-header{height:55px !important;font-size: 20px !important;}
+.report-header{height:55px !important;font-size: 15px !important;}
+@media (min-width: 768px) {
+    .report-header {
+        height: 55px !important;
+        font-size: 20px !important;
+    }
+}
 .dashboards a:hover{text-decoration: underline;}
 .gridAlign{padding: 27px 50px 40px !important; overflow-y: scroll !important;}
 .grid-text{padding: 5px;
@@ -225,6 +220,18 @@ svg:hover #Calendar-Icon { fill: #293846; }
     height: 25px !important;
     font-size: 14px;
 }
+.editable-wrap {
+    display: inline-block;
+    white-space: pre;
+    margin: 0 !important;
+    width: 100% !important;
+    height: 90% !important;
+}
+.editable-wrap .editable-controls>textarea {
+    width: 100% !important;
+    height:95% !important;
+    margin-bottom: 0;
+}
 /*.box-header h3{
     overflow: hidden;
     text-overflow: ellipsis;
@@ -242,7 +249,7 @@ svg:hover #Calendar-Icon { fill: #293846; }
 .wizard > .steps .current a, .wizard > .steps{
     background-color:#fff !important;
 }
-.dashboardTitleIcons{right: -75px;}
+.dashboardTitleIcons{padding-right: 0px;}
 .editable-buttons {
     vertical-align: middle !important;}
 .editable-click, a.editable-click { background-color:#fff !important}
@@ -351,7 +358,20 @@ svg:hover #Calendar-Icon { fill: #293846; }
     padding-left:3px;}
 .daterange .dr-input{border: 1px solid #e8e8e8 !important; color: #000 !important;}
 .dashboardName pre{
-    background-color: #fff !important;
+     background-color: #fff !important;
+     border-radius: 5px !important;
+     font-size: 18px !important;
+     font-family: Heebo-Medium !important ;
+     font-style: normal !important;
+     padding: 6.5px !important;
+     border:none;
+     float: left;
+     text-transform: capitalize;
+ }
+
+.reportName pre{
+    background-color: #1c84c6 !important;
+    color:#ffffff !important;
     border-radius: 5px !important;
     font-size: 18px !important;
     font-family: Heebo-Medium !important ;
@@ -361,9 +381,43 @@ svg:hover #Calendar-Icon { fill: #293846; }
     float: left;
     text-transform: capitalize;
 }
+.textWidget {
+    width:100% !important;
+    height:100% !important;
+    border:none;
+    float: left;
+    display: block;
+    padding: 0px;
+    margin: 0 0 10px;
+    /*line-height: inherit;*/
+    overflow: hidden;
+    /*overflow-x: hidden;*/
+    /*overflow-y: scroll;*/
+    color: #333;
+    word-break: break-all;
+    word-wrap: break-word;
+    background-color: #fff !important;
+    border: none;
+    border-radius: 4px;
+}
+.para-widget{
+    width: 100%;height: 100%;font-size: 14px!important;font-family: Heebo-Light !important;line-height:17px !important;
+}
+.head-widget{
+    width: 100%;height: 100%;font-size: 28px!important;font-family: Heebo-Medium !important;font-family:bold;line-height:34px !important;
+}
 .dashboardName a:hover .hover-icon{
     display:block !important;
+}.reportName a:hover .hover-icon{
+    display:block !important;
 }
+.textWidget a:hover .hover-icon{
+    display:block !important;
+}
+.pageBreak a:hover .hover-icon{
+     display:block !important;
+ }
+
 .box-header a:hover .hover-icon{
     display:block !important;
 }
@@ -387,6 +441,9 @@ svg:hover #Calendar-Icon { fill: #293846; }
     border:none;
     color:#000!important;
 }
+
+
+
 .dropbtn {
     border: none;
     cursor: pointer;
@@ -408,14 +465,14 @@ svg:hover #Calendar-Icon { fill: #293846; }
     right:0px;
     z-index: 3;
     background-color: #f9f9f9;
-    min-width: 250px;
+    min-width: 85px;
     overflow: auto;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
 }
 
 .dropdown-content a {
     color: black;
-    padding: 12px 6px;
+    padding: 12px 16px;
     text-decoration: none;
     display: block;
 }
@@ -424,6 +481,7 @@ svg:hover #Calendar-Icon { fill: #293846; }
 .shw {display:flex;}
 
 .graph-icon{float: right; margin-top: 7px;margin-right: -25px;}
+.textwidget-icon{float: right; margin-top: 4px;margin-right: -25px;}
 .wizard > .steps > ul > li{width:auto !important;	position: relative !important;}
 .svg-line1{margin-top: 25px; margin-left: 43px;}
 .svg-line2{margin-top: 25px;margin-left: 43px;}
@@ -433,7 +491,7 @@ svg:hover #Calendar-Icon { fill: #293846; }
     content: url('data:image/svg+xml;utf8,<svg width="326px" height="6px" class="svg-line"  viewBox="446 30 217 6" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">&lt;!&ndash; Generator: Sketch 3.7.1 (28215) - http://www.bohemiancoding.com/sketch &ndash;&gt;<desc>Created with Sketch.</desc><defs></defs><path d="M448,35 L770,35" id="Line-Copy" stroke="#F0F0F0" stroke-width="3" stroke-linecap="square" fill="none"></path></svg>');
     position: absolute;
 }
-.empty-dashboard{background: #E6E3E3 url('data:image/svg+xml;utf8,<svg width="81px" height="78px" viewBox="410 173 81 78" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><!-- Generator: Sketch 3.7.1 (28215) - http://www.bohemiancoding.com/sketch --> <desc>Created with Sketch.</desc> <defs></defs> <polygon id="Fill-2-Copy" stroke="none" fill="%238C8C8C" fill-rule="evenodd" points="461.530563 222.636364 461.530563 251 439.46169 251 439.46169 222.636364 410.036525 222.636364 410.036525 201.363636 439.46169 201.363636 439.46169 173 461.530563 173 461.530563 201.363636 490.955727 201.363636 490.955727 222.636364"></polygon> </svg>') no-repeat center ;
+.empty-dashboard{background: #E6E3E3 url('data:image/svg+xml;utf8,<svg width="81px" height="78px" viewBox="410 173 81 78" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><!-- Generator: Sketch 3.7.1 (28215) - http://www.bohemiancoding.com/sketch --> <desc>Created with Sketch.</desc> <defs></defs> <polygon id="Fill-2-Copy" stroke="none" fill="#8C8C8C" fill-rule="evenodd" points="461.530563 222.636364 461.530563 251 439.46169 251 439.46169 222.636364 410.036525 222.636364 410.036525 201.363636 439.46169 201.363636 439.46169 173 461.530563 173 461.530563 201.363636 490.955727 201.363636 490.955727 222.636364"></polygon> </svg>') no-repeat center;
     width: 100%;height: 300px;text-align: center}
 .empty-dashboard span{position: relative;
     top: 190px;
@@ -2319,8 +2377,8 @@ body.mini-navbar .branding {
     color: #ffffff;
 }
 .blue-bg {
-    background-color: #1c84c6;
-    color: #ffffff;
+    background-color: #1c84c6 !important;
+    color: #ffffff !important;
 }
 
 
@@ -2366,14 +2424,6 @@ body.mini-navbar .branding {
     align-items: center;
     vertical-align: bottom;
     height: inherit;
-}
-.summaryAlign{
-    text-align: center!important;
-    padding-top: 1px!important;
-    padding-left:0px!important;
-    padding-right: 2px!important;
-    font-size: 1.0em!important;
-    top: 30% !important;
 }
 .spiner-mobile-example {
     display:none;
@@ -2463,7 +2513,6 @@ body.mini-navbar .logo-element {
 }
 .navbar-static-side .profile-element{
     display: none;
-    pointer-events: none;
 }
 /*Defining Media Query for Side Bar in Mobile view*/
 @media (min-width: 768px) {
@@ -2566,7 +2615,6 @@ del {
 }
 .channelSelect{
     border: 2px solid #1074ae;
-    box-shadow: 0px 0px 20px 0px ;
 }
 .scrollbar{
     height: 400px;
@@ -2645,20 +2693,9 @@ del {
     padding-top: 0px !important;
     align-content: center;
     box-sizing: border-box;
+    width: 230px;
     font-weight: bold;
     display: inline-table;
-}
-@media (max-width: 1090px){
-    .dashboardIcons {
-        float: right;
-        height: 20px;
-        padding-top: 0px !important;
-        align-content: center;
-        box-sizing: border-box;
-        font-weight: bold;
-        display: inline-table;
-        width:230px;
-    }
 }
 .menuButton{
     display:none;
@@ -2670,9 +2707,7 @@ del {
     }
 }
 
-.mozImage{
-    width:75px !important;
-}
+
 
 
 .dashboardIcons .form-control {
@@ -3091,6 +3126,37 @@ div.context a.commentLink {
     z-index: 0;
     padding-bottom: 50px!important;
 }
+.reportLayoutContent{
+    overflow-y: scroll !important;
+    padding-bottom: 50px!important;
+    z-index: 0;
+}
+@media(max-width: 992px) and (min-width : 767px) {
+    .reportDashboardContent {
+        width: 720px !important;
+        position: relative;
+        top: 20px;
+        z-index: 1;
+    }
+}
+@media(max-width: 1390px) and (min-width : 992px) {
+    .reportDashboardContent {
+        width: 900px !important;
+        position: relative;
+        top: 20px;
+        z-index: 1;
+    }
+}
+@media(min-width : 1390px) {
+    .reportDashboardContent {
+        width: 1080px !important;
+        position: relative;
+        top: 20px;
+        z-index: 1;
+    }
+}
+
+
 
 .daterange{
     position: relative;
@@ -4534,13 +4600,6 @@ body.rtls.top-navigation .footer.fixed {
     float: right;
     height: inherit;
 }
-@media(min-width: 319px) and (max-width : 367px) {
-    .topName{
-        float: right;
-        height: inherit;
-        width:250px;
-    }
-}
 @media(max-width: 320px) and (min-width : 767px) {
     .topName{
         margin-top:0px;
@@ -4570,6 +4629,7 @@ body.rtls.top-navigation .footer.fixed {
         /*border-right: 2px solid #ffffff;*/
         box-shadow: 4px 0 5px rgba(0,0,0,0.2);
         cursor: pointer;
+
     }
     .navbar-static-side .nav-label{
         display: none;
@@ -4764,19 +4824,19 @@ body.rtls.top-navigation .footer.fixed {
 }
 @media(max-width : 320px)  {
     .triangle-topright{
-        margin:-13px 0px 0px 84% !important;
+        margin:-13px 0px 0px 86% !important;
     }
 }
 
 @media(max-width :380px) and (min-width:321px){
     .triangle-topright{
-        margin:-13px 0px 0px 87% !important;
+        margin:-13px 0px 0px 88% !important;
     }
 }
 
 @media(max-width :414px) and (min-width:380px){
     .triangle-topright {
-        margin: -13px 0px 0px 76% !important;
+        margin: -13px 0px 0px 93px !important;
     }
 }
 
@@ -4797,7 +4857,7 @@ body.rtls.top-navigation .footer.fixed {
 
 .dropdown dd, .dropdown dt, .dropdown ul { margin:0px; padding:0px; }
 .dropdown dd { position:relative; }
-.dropdown a, .dropdown a:visited { color:#816c5b; text-decoration:none;text-align: -webkit-center; text-align: center;outline:none;}
+.dropdown a, .dropdown a:visited { color:#816c5b; text-decoration:none;text-align: -webkit-center; outline:none;}
 .dropdown a:hover { color:#5d4617;background-color: rgba(204, 204, 204, 0.15);}
 .dropdown dt a:hover { color:#5d4617; border: 1px solid #d0c9af;}
 .dropdown dt a {background:#ffffff url('http://www.jankoatwarpspeed.com/wp-content/uploads/examples/reinventing-drop-down/arrow.png') no-repeat scroll right center; display:block; padding-right:20px;
@@ -4903,8 +4963,19 @@ body.rtls.top-navigation .footer.fixed {
     padding-top: 0px;
     text-align: center
 }
-
-.uploadbutton-mode{
+.add-text{
+    width:110px;
+    height:30px;
+    padding-top: 0px;
+    text-align: center
+}
+.build-report{
+    width:116px;
+    height:43px;
+    padding-top: 0px;
+    text-align: center
+}
+.uploadbutton-mode{border: 1px solid #f5f5f5 !important;
     background-color: #04509B !important;
     color:#fff !important;}
 .iconClicked {
@@ -4971,51 +5042,21 @@ hr{
         margin-top: 15px;
     }
 }
-@media(min-width: 768px) and (max-width : 900px) {
-    .summaryFont{
-        font-size: 12px!important;
+@media(min-width : 769px) {
+    .reportGridsterStlye
+    {
+        border: 1px solid #efefef;
+        min-height: 500px;
+        margin: 100px 0px 0px 200px!important;
     }
 }
-@media(min-width: 901px) and (max-width : 1000px) {
-    .summaryFont{
-        font-size: 12px!important;
+@media(min-width : 400px) and (max-width:768px) {
+    .reportGridsterStlye
+    {
+        border: 1px solid #efefef;
+        min-height: 500px;
+        margin: 100px 50px!important;
     }
-}
-@media(min-width: 1001px) and (max-width : 1100px) {
-    .summaryFont{
-        font-size: 14px!important;
-    }
-}
-@media(min-width: 1101px) and (max-width : 1200px) {
-    .summaryFont{
-        font-size: 18px!important;
-    }
-}
-@media (min-width : 1200px){
-    .summaryFont{
-        font-size: 20px!important;
-    }
-}
-@media(min-width: 768px) and (max-width : 900px) {
-    .summaryKeyFont{
-        font-size: 10px!important;
-    }
-}
-@media(min-width: 901px) and (max-width : 1050px) {
-    .summaryKeyFont{
-        font-size: 12px!important;
-    }
-}
-@media (min-width : 1050px){
-    .summaryKeyFont{
-        font-size: 14px!important;
-    }
-}
-.summaryDoubleFont{
-    font-size:9px !important;
-}
-.summaryKeyDoubleFont{
-    font-size:10px !important;
 }
 .titleMargin{
     margin-left: 0px!important;margin-right: 0px!important;
@@ -5025,6 +5066,12 @@ hr{
     border: 1px solid #efefef;
     min-height: 500px;
     margin-bottom: 60px !important;
+}
+.reportGridsterStlye
+{
+    border: 1px solid #efefef;
+    min-height: 500px;
+    margin: 100px 0px;
 }
 .modal-background{
     background-image:url(/image/overlay_bg.png) ;
@@ -5065,6 +5112,17 @@ button.overlayCloseButton:hover{
     font-family: Heebo-Medium !important;
     text-transform: capitalize !important;
 }
+@media(min-width : 768px) {
+    .dashboard-report{
+        font-family: Heebo-Medium !important;
+        text-transform: capitalize !important;
+        font-size: 20px;
+        font-weight: 600;
+        /*text-align:center ;*/
+    }
+}
+
+
 .mozOverViewTitle{
     float: left;
     font-weight: bolder;
@@ -5130,12 +5188,9 @@ input:focus{
 }
 .goButton{
     background-color: white;
-    border: 1px solid black;
-    border-left: none;
+    border: none;
     position: relative;
-    left: -3px;
-    top: 2px !important;
-    height: 32px;
+    left: -28px;
 }
 .chooseDashboardquestion{
     font-size: 18px;
@@ -5154,17 +5209,22 @@ input:focus{
     }
 
 }
-.chooseDashboardName{
-    padding-left: 5px;
-    height: 32px;
-    width: 25%;
-    border: 1px solid black;
-    border-right: none;
-}
 .autoarrange-export-delete img {
     padding: 0px 10px;
-    cursor:pointer;
 }
-.autoarrange-export-delete {
-    float:left
+.addReportBtn{
+    color: #283544 !important;
+}
+.addReportBtn:hover{
+    color: #1074ae !important;
+}
+.pagebreak-header {
+    width: 100%;
+    height: 35px;
+    color:#000 !important;
+    background: linear-gradient(to bottom, #f8f9fa 0%, #dadfe3 100%);
+    background-color: rgba(0, 0, 0, 0.12);
+    padding: 0 30px 0 10px;
+    border-bottom: 0px solid #ffffff !important;
+    position: relative;
 }

@@ -26,7 +26,7 @@ function NavigationController($scope,$state,$http,$stateParams,$rootScope) {
                      $state.go('app.reporting.'+targetState);
                     break;
                 case 'insights':
-                    toastr.info('Coming Soon');
+                    $state.go('app.reporting.dashboard.'+targetState);
                     break;
             }
     };

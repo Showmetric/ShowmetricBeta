@@ -51,6 +51,19 @@ var self = module.exports = {
                 done(null, user);
         })
     },
+    checkUserReportAccess: function (req, res, done) {
+        User.findOne({
+            _id: req.user._id,
+            dashboards: {$elemMatch: {dashboardId: {$in:req.dashboards}}}
+        }, function (err, user) {
+            if (err)
+                return res.status(500).json({error: 'Internal Server Error'});
+            else if (!user)
+                return res.status(401).json({error: 'Authentication required to perform this action'});
+            else
+                done(null, user);
+        })
+    },
     findObjectsForProfile: function (req, res, done) {
         if(req.query.metaCondition === undefined && req.query.objectTypeId!=undefined){var condition = {profileId: req.params.profileID,objectTypeId:req.query.objectTypeId};}
         else if(req.query.metaCondition!=undefined) {var condition={profileId: req.params.profileID,meta:req.query.metaCondition};}

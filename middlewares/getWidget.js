@@ -5,6 +5,7 @@ var getDashboards = require('../middlewares/dashboards');
 var mongoose = require('mongoose');
 var userPermission = require('../helpers/utility');
 var widgetsList = require('../models/widgets');
+var textWidgetsList = require('../models/textWidgets');
 var objectList=require('../models/objects');
 /**
  Function to get the widgets's details such as channel id,name,desciption ..
@@ -203,6 +204,120 @@ exports.deleteWidgets = function (req, res, next) {
 
 };
 
+exports.saveTextWidgets = function (req, res, next) {
+    if (req.user) {
+        async.auto({storeAllWidgets: processAllTextWidgets},
+            function (err, result) {
+                if (err)
+                    return res.status(500).json({error: 'Internal server error'});
+                else {
+                    console.log("text widgets",result.storeAllWidgets)
+                    req.app.result = result.storeAllWidgets;
+                    next();
+                }
+            }
+        );
+
+        function processAllTextWidgets(callback) {
+            var textData;
+            var colCount;
+            var reportId;
+            var rowCount;
+            var widgetSizeX;
+            var widgetSizeY;
+            var widgetType;
+            var textData;
+            var widgetName;
+            var widgets = req.body;
+
+            async.concatSeries(widgets, saveAllWidgets, callback);
+
+            function saveAllWidgets(result, callback) {
+                req.reportId = result.reportId;
+                textData = result.textData;
+                colCount = result.col;
+                reportId = result.reportId;
+                rowCount = result.row;
+                widgetSizeX = result.sizeX;
+                widgetSizeY = result.sizeY;
+                widgetType = result.widgetType;
+                widgetName=result.name;
+                //To store the widget
+                        var createWidget = new textWidgetsList();
+                        //To check whether new dashboard or not
+                        if (result.widgetId === undefined) {
+                            createWidget.reportId = reportId;
+                            createWidget.widgetType = widgetType;
+                            createWidget.textData = textData;
+                            createWidget.name = widgetName;
+                            createWidget.row = rowCount;
+                            createWidget.col = colCount;
+                            createWidget.sizeX = widgetSizeX;
+                            createWidget.sizeY = widgetSizeY;
+                            createWidget.created = new Date();
+                            createWidget.updated = new Date();
+                            createWidget.save(function (err, widgetDetail) {
+                                if (err)
+                                    return res.status(500).json({error: 'Internal server error'});
+                                else if (!widgetDetail)
+                                    return res.status(501).json({error: 'Not implemented'})
+                                else {
+                                        req.app.result = widgetDetail;
+                                        callback(null, widgetDetail);
+                                }
+                            });
+                        }
+
+                        //To update already existing database
+                        else {
+                            var widgetId = result.widgetId;
+
+                            // set all of the user data that we need
+                            var textData = req.body.textData == undefined ? '' : textData;
+                            var row = rowCount == undefined ? '' : rowCount;
+                             var col = colCount == undefined ? '' : colCount;
+                            var sizeX = widgetSizeX == undefined ? '' : widgetSizeX;
+                            var sizeY = widgetSizeY == undefined ? '' : widgetSizeY;
+                            var updated = new Date();
+                            // update the dashboard data
+                            widgetsList.update({_id: widgetId}, {
+                                $set: {
+                                    textData: textData,
+                                    row: row,
+                                    col: col,
+                                    sizeX: sizeX,
+                                    sizeY: sizeY,
+                                    updated: updated
+                                }
+                            }, {upsert: true}, function (err, widget) {
+                                if (err)
+                                    return res.status(500).json({error: 'Internal server error'});
+                                else if (widget === 0)
+                                    return res.status(501).json({error: 'Not Saved in Widget Collection'});
+                                else {
+                                    widgetsList.findOne({_id: widgetId}, function (err, widgetDetails) {
+                                        if (err)
+                                            return res.status(500).json({error: 'Internal server error'});
+                                        else if (!widgetDetails)
+                                            return res.status(204).json({error: 'No records found'});
+                                        else {
+                                            req.app.result = widgetId;
+                                            callback(null, widgetDetails);
+                                        }
+                                    })
+                                }
+                            });
+                        }
+
+
+            }
+        }
+    }
+    else
+        res.status(401).json({error: 'Authentication required to perform this action'})
+
+
+};
 exports.saveWidgets = function (req, res, next) {
     var bulk = widgetsList.collection.initializeOrderedBulkOp();
     var bulkExecute;

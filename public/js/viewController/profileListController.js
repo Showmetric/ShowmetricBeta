@@ -1,13 +1,11 @@
 showMetricApp.controller('ProfileListController',ProfileListController);
 function ProfileListController($scope, $http, $window, $stateParams) {
     $scope.profile={};
-    $scope.channelList=[];
-    $scope.currentView='step_one';
-    $scope.configProfileListModal=function(){
+   $scope.configProfileListModal=function(){
         $scope.profileListArray=[];
         $http({
             method: 'GET',
-            url: '/api/v1/get/profileList'+'?buster='+new Date()
+            url: '/api/v1/get/profileList'
         }).then(
             function successCallback(response) {
                 $scope.profileListArray = response.data.profileList;
@@ -29,94 +27,6 @@ function ProfileListController($scope, $http, $window, $stateParams) {
                 });
             }
         );
-    };
-    $scope.changeViewsInProfileList=function (obj) {
-        $scope.currentView = obj;
-        if ($scope.currentView === 'step_one') {
-            $scope.configProfileListModal()
-        }
-        else if ($scope.currentView === 'step_two') {
-            $scope.listChannels();
-        }
-    }
-    $scope.listChannels = function () {
-        $http({
-            method: 'GET',
-            url: '/api/v1/get/channels'
-        }).then(
-            function successCallback(response) {
-                var channels = response.data;
-                    for(i in channels)
-                    $scope.channelList=channels
-            },
-            function errorCallback(error) {
-                swal({
-                    title: "",
-                    text: "<span style='sweetAlertFont'>Something went wrong! Please reopen widgets link</span> .",
-                    html: true
-                });
-            }
-        );
-    };
-    $scope.linkProfile = function (channel) {
-        var storedChannelName= channel;
-        var url, title;
-        function popupwindow(url, title, w, h) {
-            switch (storedChannelName) {
-                case 'Facebook':
-                    url = '/api/v1/auth/facebook';
-                    title = storedChannelName;
-                    break;
-                case 'Google Analytics':
-                    url = '/api/v1/auth/google';
-                    title = storedChannelName;
-                    break;
-                case 'FacebookAds':
-                    url = '/api/auth/facebookads';
-                    title = storedChannelName;
-                    break;
-                case 'Twitter':
-                    url = '/api/auth/twitter';
-                    title = storedChannelName;
-                    break;
-                case 'Instagram':
-                    url = '/api/auth/instagram';
-                    title = storedChannelName;
-                    break;
-                case 'GoogleAdwords':
-                    url = '/api/auth/adwords';
-                    title = storedChannelName;
-                    break;
-                case 'YouTube':
-                    url = '/api/v1/auth/youTube';
-                    title = storedChannelName;
-                    break;
-                case 'Mailchimp':
-                    url = '/api/auth/mailchimp';
-                    title = storedChannelName;
-                    break;
-                case 'linkedin':
-                    url = '/api/auth/linkedIn';
-                    title = storedChannelName;
-                    break;
-                case 'Aweber':
-                    url = '/api/auth/aweber';
-                    title = storedChannelName;
-                    break;
-                case 'Vimeo':
-                    url = '/api/auth/vimeo';
-                    title = storedChannelName;
-                    break;
-                case 'Pinterest':
-                    url = '/api/auth/pinterest';
-                    title = storedChannelName;
-                    break;
-            }
-            var left = (screen.width / 2) - (w / 2);
-            var top = (screen.height / 2) - (h / 2);
-            return window.open(url, title, 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width=' + w + ', height=' + h + ', top=' + top + ', left=' + left);
-        }
-        popupwindow(url, title, 1000, 500);
     };
     $scope.refreshProfile = function (profile) {
       var storedChannelName= profile.channelName;
@@ -181,44 +91,6 @@ function ProfileListController($scope, $http, $window, $stateParams) {
     };
     $window.afterAuthentication = function () {
          $scope.configProfileListModal();
-        if ($scope.currentView === 'step_one') {
-            $scope.configProfileListModal()
-        }
-        else if ($scope.currentView === 'step_two') {
-            $scope.configProfileListModal();
-            $scope.changeViewsInProfileList('step_one')
-        }
-    };
-    $scope.removeExistingProfile = function (profile) {
-        var profileOptionsModel = profile;
-        swal({
-                title: "Confirm Profile Delink?",
-                text: "All data, widgets associated with this profile will be deleted! Confirm?",
-                type: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#DD6B55",
-                confirmButtonText: "Confirm",
-                closeOnConfirm: true
-            },
-            function () {
-                if (profileOptionsModel) {
-                    $http({
-                        method: 'POST',
-                        url: '/api/v1/post/removeProfiles/' + profileOptionsModel._id
-                    }).then(
-                        function successCallback(response) {
-                            $scope.configProfileListModal();
-                        },
-                        function errorCallback(error) {
-                            swal({
-                                title: "",
-                                text: "<span style='sweetAlertFont'>Something went wrong with Profile delink.Please try again</span>",
-                                html: true
-                            });
-                        }
-                    );
-                }
-            }
-        );
+
     };
 }

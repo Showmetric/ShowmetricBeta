@@ -16,7 +16,8 @@
         'nvd3',
         /*'daterangepicker',*/
         'xeditable',
-        'uiSwitch'
+        'uiSwitch',
+        
     ])
 })();
 

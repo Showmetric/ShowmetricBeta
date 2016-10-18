@@ -1089,7 +1089,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                             pastWeek += parseFloat(widget.charts[charts].chartData[i].y);
                                         count++;
                                     }
-                                    granularity = 'WK';
+                                    granularity = 'Week';
                                 }
                                 else {
                                     var lastIndex = _.last(widget.charts[charts].chartData);
@@ -1257,7 +1257,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                                 pastWeek += parseFloat(widget.charts[charts].chartData[items][i].y);
                                             count++;
                                         }
-                                        granularity = 'WK';
+                                        granularity = 'Week';
                                     }
                                     else {
                                         var lastIndex = _.last(widget.charts[charts].chartData[items]);
@@ -1973,8 +1973,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                     }
                     chartSeriesArray.push({
                         name: finalCharts.lineCharts[i].key,
-                        data: chartValues,
-                        color:finalCharts.lineCharts[charts].color
+                        data: chartValues
                     });
                 }
                 chartOptions = {
@@ -2079,8 +2078,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                     }
                     chartSeriesArray.push({
                         name: finalCharts.lineCharts[charts].key,
-                        data: chartValues, type: finalCharts.lineCharts[charts].type,
-                        color:finalCharts.lineCharts[charts].color
+                        data: chartValues, type: finalCharts.lineCharts[charts].type
                     });
                     chartColorChecker.push(finalCharts.lineCharts[charts].color);
                 }
@@ -2105,10 +2103,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                 var date = new Date(this.value);
                                 return months[date.getMonth()] + ' ' + date.getDate();
                             }
-                        },
-                        tickInterval: 7,
-                        min: 0,
-                        max: dateArray.length,
+                        }
                     },
                     title: {
                         text: '',
@@ -2176,8 +2171,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                     }
                     chartSeriesArray.push({
                         name: finalCharts.barCharts[charts].key,
-                        data: chartValues,
-                        color:finalCharts.barCharts[charts].color
+                        data: chartValues
                     });
                     chartColorChecker.push(finalCharts.barCharts[charts].color);
                 }
@@ -2204,10 +2198,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                 var date = new Date(this.value);
                                 return months[date.getMonth()] + ' ' + date.getDate();
                             }
-                        },
-                        tickInterval: 7,
-                        min: 0,
-                        max: dateArray.length,
+                        }
                     },
                     title: {
                         text: '',
@@ -2255,7 +2246,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                     chartColorChecker.push(finalCharts.pieCharts[charts].color);
                     var y = String(finalCharts.pieCharts[charts].y).indexOf('.') ? parseFloat(finalCharts.pieCharts[charts].y) : parseInt(finalCharts.pieCharts[charts].y);
                     var name = finalCharts.pieCharts[charts].key;
-                    chartValues.push({y: y, name: name,color:finalCharts.pieCharts[charts].color});
+                    chartValues.push({y: y, name: name});
 
                 }
                 chartSeriesArray.push({
@@ -2731,7 +2722,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                             pastWeek += parseFloat(widget.charts[charts].chartData[i].y);
                                         count++;
                                     }
-                                    granularity = 'WK';
+                                    granularity = 'Week';
                                 }
                                 else {
                                     var lastIndex = _.last(widget.charts[charts].chartData);
@@ -2854,7 +2845,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                                 pastWeek += parseFloat(widget.charts[charts].chartData[items][i].y);
                                             count++;
                                         }
-                                        granularity = 'WK';
+                                        granularity = 'Week';
                                     }
                                     else {
                                         var lastIndex = _.last(widget.charts[charts].chartData[items]);

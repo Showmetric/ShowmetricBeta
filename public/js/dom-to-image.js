@@ -442,6 +442,7 @@
                 }
 
                 function fail(message) {
+                    console.error(message);
                     resolve('');
                 }
             });

@@ -1,6 +1,7 @@
 showMetricApp.controller('TopNavbarController',TopNavbarController)
 
 function TopNavbarController($scope,$http,$rootScope,$state) {
+    $scope.recentDashboardList=[];
     $(".modifyUserModalContent").on( 'click', function( ev ) {
         $(".navbar").css('z-index','1');
         $(".md-overlay").css("background","rgba(0,0,0,0.5)");
@@ -13,6 +14,7 @@ function TopNavbarController($scope,$http,$rootScope,$state) {
         $("#newAccountModalContent").addClass('md-show');
     });
 
+
     function removeModal( hasPerspective ) {
         classie.remove( modal, 'md-show' );
 
@@ -24,32 +26,32 @@ function TopNavbarController($scope,$http,$rootScope,$state) {
     function removeModalHandler() {
         removeModal( classie.has( el, 'md-setperspective' ) );
     }
-    // $rootScope.fetchRecentDashboards = function(){
-    //     $scope.recentDashboardList=[];
-    //     $http({
-    //         method: 'GET', url: '/api/v1/get/dashboardList'
-    //     }).then(
-    //         function successCallback(response){
-    //             this.recentDashboardModel=''
-    //             $scope.recentDashboardList=[];
-    //             if(response.status == '200'){
-    //                 var sortedDashboard= _.orderBy(response.data.dashboardList, ['updated'],['desc']);
-    //                 if(sortedDashboard.length<=5)
-    //                     $scope.recentDashboardList = sortedDashboard;
-    //                 else{
-    //                     for(var i=0;i<5;i++)
-    //                         $scope.recentDashboardList.push(sortedDashboard[i]);
-    //                 }
-    //                 $rootScope.stateDashboard=$scope.recentDashboardList[0];
-    //             }
-    //             else
-    //                 $scope.recentDashboardList  = null;
-    //         },
-    //         function errorCallback(error){
-    //                 $scope.recentDashboardList  = null;
-    //         }
-    //     );
-    // };
+    $rootScope.fetchRecentDashboards = function(){
+        $scope.recentDashboardList=[];
+        $http({
+            method: 'GET', url: '/api/v1/get/dashboardList'
+        }).then(
+            function successCallback(response){
+                this.recentDashboardModel=''
+                $scope.recentDashboardList=[];
+                if(response.status == '200'){
+                    var sortedDashboard= _.orderBy(response.data.dashboardList, ['updated'],['desc']);
+                    if(sortedDashboard.length<=5)
+                        $scope.recentDashboardList = sortedDashboard;
+                    else{
+                        for(var i=0;i<5;i++)
+                            $scope.recentDashboardList.push(sortedDashboard[i]);
+                    }
+                    $rootScope.stateDashboard=$scope.recentDashboardList[0];
+                }
+                else
+                    $scope.recentDashboardList  = null;
+            },
+            function errorCallback(error){
+                    $scope.recentDashboardList  = null;
+            }
+        );
+    };
 
     $scope.chosenDashboard=function(dashboard){
         this.recentDashboardModel=''
@@ -64,7 +66,7 @@ function TopNavbarController($scope,$http,$rootScope,$state) {
     $scope.getDropdown=function(){
         document.getElementById("myDropdown").classList.toggle("show");
     };
-    window.onclick = function(event) {
+   /* window.onclick = function(event) {
         if(event.target.matches('.topdropbtn')||event.target.matches('.glyphicon.glyphicon-chevron-down')){
             var dropdowns = document.getElementsByClassName("dropdown-content");
             var i;
@@ -103,7 +105,7 @@ function TopNavbarController($scope,$http,$rootScope,$state) {
         // }
         // else if(!event.target.matches('.fa.fa-cog')){
         //     console.log('.fa.f')
-        //     var dropdowns = document.getElementsByClassName("dropdown-content");
+        //     var dropdowns = docNument.getElementsByClassName("dropdown-content");
         //     var i;
         //     for (i = 0; i < dropdowns.length; i++) {
         //         var openDropdown = dropdowns[i];
@@ -112,6 +114,5 @@ function TopNavbarController($scope,$http,$rootScope,$state) {
         //         }
         //     }
         // }
-    }
-    
+    }*/
 }

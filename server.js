@@ -186,6 +186,7 @@ require('./controllers/exportHtml5ToPDF')(app);
 require('./controllers/alert')(app);
 require('./controllers/bgFetchUpdation')(app);
 require('./controllers/youTubeAuth')(app);
+require('./controllers/reports')(app);
 
 router.use(function (req, res, next) {
     req.app = {};

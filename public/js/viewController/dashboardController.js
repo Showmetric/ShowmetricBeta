@@ -34,8 +34,7 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
         //Defining configuration parameters for dashboard layout
         $scope.dashboard = { widgets: [], widgetData: [] };
         $scope.dashboard.dashboardName = '';
-        $scope.widgetsPresent = true;
-        $scope.spinerEnable = true;
+        $scope.widgetsPresent = false;
         $scope.loadedWidgetCount = 0;
         $scope.widgetErrorCode=0;
         //To define the calendar in dashboard header
@@ -51,7 +50,7 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
                         }
                 });
         $scope.setChartSize = function (index,childIndex) {
-            $timeout(callAtTimeout, 100);
+            $timeout(callAtTimeout, 1000);
             function callAtTimeout() {
                 if(document.getElementById('chartOptions'+index)!=null){
                     var parentWidth = document.getElementById('chartOptions'+index).offsetWidth;
@@ -103,6 +102,8 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
                         getWidgetColor = '#288DC0';
                     }
                     $(".getBox-" + widget.id).css('border', '3px solid ' + getWidgetColor);
+                    $timeout(resizeChartsInTimeInterval,1000)
+                    function resizeChartsInTimeInterval() {
                         var ind = $scope.dashboard.widgets.indexOf(widget);
                         if(document.getElementById('chartOptions'+ind)!=null){
                             var parentWidth = document.getElementById('chartOptions'+ind).offsetWidth;
@@ -114,6 +115,8 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
                                 }
                             }
                         }
+                    }
+
                 },
                 stop: function (event, $element, widget) {
                     $(".getBox-"+widget.id).css('border','1px solid #ccc');
@@ -123,6 +126,7 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
                             var ind = $scope.dashboard.widgets.indexOf(widget);
                             for (var i = 0; i < $scope.dashboard.widgetData[ind].chart.length; i++) {
                                 if ($scope.dashboard.widgetData[ind].chart[i].options.chart.type === 'lineChart' || $scope.dashboard.widgetData[ind].chart[i].options.chart.type === 'pieChart' || $scope.dashboard.widgetData[ind].chart[i].options.chart.type === 'multiBarChart' || $scope.dashboard.widgetData[ind].chart[i].options.chart.type === 'multiChart') {
+
                                     for (var j = 0; j < $scope.dashboard.widgetData[ind].chart[i].data.length; j++) {
                                             var elemHeight = document.getElementById('li-' + widget.id + '-' + String(j)).offsetHeight;
                                             $scope.dashboard.widgetData[ind].chart[i].data[j].myheight = elemHeight;
@@ -167,7 +171,8 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
                             }
                         }
                     }
-                    $timeout(updateCharts(widget), 500);
+
+                    $timeout(updateCharts(widget), 400);
                 }
             }
         };
@@ -176,7 +181,7 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
         $scope.fetchDashboardName = function () {
             $http({
                 method: 'GET',
-                url: '/api/v1/get/dashboards/'+ $state.params.id+'?buster='+new Date()
+                url: '/api/v1/get/dashboards/'+ $state.params.id
             }).then(
                 function successCallback(response) {
                     if(response.status == '200'){
@@ -344,7 +349,7 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
 
         $scope.$on('resize', function (e) {
             for (var i = 0; i < $scope.dashboard.widgets.length; i++) {
-                $timeout(resizeWidget(i), 10);
+                $timeout(resizeWidget(i), 100);
             }
             function resizeWidget(k) {
                 return function () {
@@ -508,7 +513,7 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
         $scope.submitEnable[widgetId]=false;
         var dataUrl = {
             method: 'GET',
-            url: '/api/v1/widget/'+ widgetId + '?meta=' +meta.meta+'&buster='+new Date()
+            url: '/api/v1/widget/'+ widgetId + '?meta=' +meta.meta
         };
         $http(dataUrl).then(
             function successCallback() {
@@ -524,6 +529,22 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
         )
     };
 
+    $scope.chartOptions = {
+        width: 500,
+        height: 100,
+        title: {
+            text: 'Temperature data'
+        },
+        xAxis: {
+            categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+        },
+
+        series: [{
+            data: [29.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4]
+        }]
+    };
+   
     //To populate all the widgets in a dashboard when the dashboard is refreshed or opened or calendar date range in the dashboard header is changed
     $rootScope.populateDashboardWidgets = function() {
 
@@ -542,7 +563,7 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
 
         $http({
             method: 'GET',
-            url: '/api/v1/dashboards/widgets/'+ $state.params.id+'?buster='+new Date()
+            url: '/api/v1/dashboards/widgets/'+ $state.params.id
         })
             .then(
                 function successCallback(response) {
@@ -556,13 +577,9 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
                     if(dashboardWidgetList.length > 0) {
                         $scope.loadedWidgetCount = 0;
                         $scope.widgetsPresent = true;
-                        $scope.spinerEnable = false;
                     }
                     else
-                    {
                         $scope.widgetsPresent = false;
-                        $scope.spinerEnable = false;
-                    }
                     var widgetID=0;
                     var dashboardWidgets = [];
                     for(var getWidgetInfo in dashboardWidgetList){
@@ -573,18 +590,22 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
                         $scope.dashboard.widgets.push({
                             'row': (typeof dashboardWidgetList[getWidgetInfo].row != 'undefined'? dashboardWidgetList[getWidgetInfo].row : 0),
                             'col': (typeof dashboardWidgetList[getWidgetInfo].col != 'undefined'? dashboardWidgetList[getWidgetInfo].col : 0),
-                            'sizeY': (typeof dashboardWidgetList[getWidgetInfo].size != 'undefined'? 2 : 2),
-                            'sizeX': (typeof dashboardWidgetList[getWidgetInfo].size != 'undefined'? 3 : 3),
-                            'minSizeY': (typeof dashboardWidgetList[getWidgetInfo].minSize != 'undefined'? 2 : 2),
-                            'minSizeX': (typeof dashboardWidgetList[getWidgetInfo].minSize != 'undefined'? 3 : 3),
-                            'maxSizeY': (typeof dashboardWidgetList[getWidgetInfo].maxSize != 'undefined'? 3 : 3),
-                            'maxSizeX': (typeof dashboardWidgetList[getWidgetInfo].maxSize != 'undefined'? 6 : 3),
+                            'sizeY': (typeof dashboardWidgetList[getWidgetInfo].size != 'undefined'? dashboardWidgetList[getWidgetInfo].size.h : 2),
+                            'sizeX': (typeof dashboardWidgetList[getWidgetInfo].size != 'undefined'? dashboardWidgetList[getWidgetInfo].size.w : 2),
+                            'minSizeY': (typeof dashboardWidgetList[getWidgetInfo].minSize != 'undefined'? dashboardWidgetList[getWidgetInfo].minSize.h : 1),
+                            'minSizeX': (typeof dashboardWidgetList[getWidgetInfo].minSize != 'undefined'? dashboardWidgetList[getWidgetInfo].minSize.w : 1),
+                            'maxSizeY': (typeof dashboardWidgetList[getWidgetInfo].maxSize != 'undefined'? dashboardWidgetList[getWidgetInfo].maxSize.h : 3),
+                            'maxSizeX': (typeof dashboardWidgetList[getWidgetInfo].maxSize != 'undefined'? dashboardWidgetList[getWidgetInfo].maxSize.w : 3),
                             'name': (typeof dashboardWidgetList[getWidgetInfo].name != 'undefined'? dashboardWidgetList[getWidgetInfo].name : ''),
                             'widgetType': (typeof dashboardWidgetList[getWidgetInfo].widgetType != 'undefined'? dashboardWidgetList[getWidgetInfo].widgetType : ''),
                             'isAlert':(typeof dashboardWidgetList[getWidgetInfo].isAlert != 'undefined'? dashboardWidgetList[getWidgetInfo].isAlert : false),
                             'id': dashboardWidgetList[getWidgetInfo]._id,
                             'visibility': false,
-                            'channelName':(typeof dashboardWidgetList[getWidgetInfo].channelName != 'undefined'? dashboardWidgetList[getWidgetInfo].channelName : '')
+                            'channelName':(typeof dashboardWidgetList[getWidgetInfo].channelName != 'undefined'? dashboardWidgetList[getWidgetInfo].channelName : ''),
+                            /*'dashboardDate': {
+                                'startDate': moment($scope.dashboardCalendar.start_date).format('YYYY-MM-DD'),
+                                'endDate': moment($scope.dashboardCalendar.end_date).format('YYYY-MM-DD')
+                            }*/
                         });
                         $scope.dashboard.widgetData.push({
                             'id':  dashboardWidgetList[getWidgetInfo]._id,
@@ -649,16 +670,17 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
         }));
 
         $scope.widgetsPresent = true;
+
         //To temporarily create an empty widget with same id as the widgetId till all the data required for the widget is fetched by the called service
         $scope.dashboard.widgets.push({
             'row': (typeof widget.row != 'undefined'? widget.row : 0),
             'col': (typeof widget.col != 'undefined'? widget.col : 0),
-            'sizeY': (typeof widget.size != 'undefined'? 2 : 2),
-            'sizeX': (typeof widget.size != 'undefined'? 3 : 3),
-            'minSizeY': (typeof widget.minSize != 'undefined'? 2 : 2),
-            'minSizeX': (typeof widget.minSize != 'undefined'? 3 : 3),
-            'maxSizeY': (typeof widget.maxSize != 'undefined'? 3 : 3),
-            'maxSizeX': (typeof widget.maxSize != 'undefined'? 6 : 3),
+            'sizeY': (typeof widget.size != 'undefined'? widget.size.h : 2),
+            'sizeX': (typeof widget.size != 'undefined'? widget.size.w : 2),
+            'minSizeY': (typeof widget.minSize != 'undefined'? widget.minSize.h : 1),
+            'minSizeX': (typeof widget.minSize != 'undefined'? widget.minSize.w : 1),
+            'maxSizeY': (typeof widget.maxSize != 'undefined'? widget.maxSize.h : 3),
+            'maxSizeX': (typeof widget.maxSize != 'undefined'? widget.maxSize.w : 3),
             'name': (typeof widget.name != 'undefined'? widget.name : ''),
             'widgetType':(typeof widget.widgetType != 'undefined'? widget.widgetType : ''),
             'isAlert':(typeof widget.isAlert != 'undefined'? widget.isAlert : false),
@@ -666,6 +688,10 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
             //'chart': {'api': {}},
             'visibility': false,
             'channelName':(typeof widget.channelName != 'undefined'? widget.channelName : '')
+            /*'dashboarDate':{
+                'startDate': moment($scope.dashboardCalendar.start_date).format('YYYY-MM-DD'),
+                'endDate': moment($scope.dashboardCalendar.end_date).format('YYYY-MM-DD')
+            }*/
         });
         $scope.dashboard.widgetData.push({
             'id':  widget._id,
@@ -710,6 +736,7 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
 
     //To download a pdf/jpeg version of the dashboard
     $scope.exportModal = function(val){
+        console.log($scope.dashboard);
         $rootScope.expObj = $scope.dashboard;
         $state.go(val);
     };
@@ -769,12 +796,12 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
 
         for(var getWidgetInfo in tempWidgetList) {
             $scope.dashboard.widgets.push({
-                'sizeY': (typeof tempWidgetList[getWidgetInfo].sizeY != 'undefined'? 2 : 2),
-                'sizeX': (typeof tempWidgetList[getWidgetInfo].sizeX != 'undefined'? 3 : 3),
-                'minSizeY': (typeof tempWidgetList[getWidgetInfo].minSizeY != 'undefined'? 2 : 2),
-                'minSizeX': (typeof tempWidgetList[getWidgetInfo].minSizeX != 'undefined'? 3 : 3),
-                'maxSizeY': (typeof tempWidgetList[getWidgetInfo].maxSizeY != 'undefined'? 3 : 3),
-                'maxSizeX': (typeof tempWidgetList[getWidgetInfo].maxSizeX != 'undefined'? 6 : 3),
+                'sizeY': (typeof tempWidgetList[getWidgetInfo].sizeY != 'undefined'? tempWidgetList[getWidgetInfo].sizeY : 2),
+                'sizeX': (typeof tempWidgetList[getWidgetInfo].sizeX != 'undefined'? tempWidgetList[getWidgetInfo].sizeX : 2),
+                'minSizeY': (typeof tempWidgetList[getWidgetInfo].minSizeY != 'undefined'? tempWidgetList[getWidgetInfo].minSizeY : 1),
+                'minSizeX': (typeof tempWidgetList[getWidgetInfo].minSizeX != 'undefined'? tempWidgetList[getWidgetInfo].minSizeX : 1),
+                'maxSizeY': (typeof tempWidgetList[getWidgetInfo].maxSizeY != 'undefined'? tempWidgetList[getWidgetInfo].maxSizeY : 3),
+                'maxSizeX': (typeof tempWidgetList[getWidgetInfo].maxSizeX != 'undefined'? tempWidgetList[getWidgetInfo].maxSizeX : 3),
                 'name': (typeof tempWidgetList[getWidgetInfo].name != 'undefined'? tempWidgetList[getWidgetInfo].name : ''),
                 'widgetType': (typeof tempWidgetList[getWidgetInfo].widgetType != 'undefined'? tempWidgetList[getWidgetInfo].widgetType : ''),
                 'isAlert':(typeof tempWidgetList[getWidgetInfo].isAlert != 'undefined'? tempWidgetList[getWidgetInfo].isAlert : false),

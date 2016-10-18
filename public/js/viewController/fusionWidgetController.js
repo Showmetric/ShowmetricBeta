@@ -60,7 +60,7 @@ function FusionWidgetController($scope, $http, $q, $window, $state, $rootScope, 
     $scope.listOfReferenceWidget = function () {
         $http({
             method: 'GET',
-            url: '/api/v1/get/referenceWidgets/' + $scope.widgetType+'?buster='+new Date()
+            url: '/api/v1/get/referenceWidgets/' + $scope.widgetType
         }).then(
             function successCallback(response) {
                 $http({
@@ -247,7 +247,7 @@ function FusionWidgetController($scope, $http, $q, $window, $state, $rootScope, 
         var deferred = $q.defer();
         $http({
             method: 'GET',
-            url: '/api/v1/get/profiles/' + channel+'?buster='+new Date()
+            url: '/api/v1/get/profiles/' + channel
         }).then(
             function successCallback(response) {
                 deferred.resolve({
@@ -256,7 +256,7 @@ function FusionWidgetController($scope, $http, $q, $window, $state, $rootScope, 
                 });
                 $scope.objectList = [];
                 $http({
-                    method: 'GET', url: '/api/v1/get/objectType/' + channel+'?buster='+new Date()
+                    method: 'GET', url: '/api/v1/get/objectType/' + channel
                 }).then(
                     function successCallback(response) {
                         $scope.objectTypeList=response.data.objectType;
@@ -329,7 +329,7 @@ function FusionWidgetController($scope, $http, $q, $window, $state, $rootScope, 
 
             $http({
                 method: 'GET',
-                url: '/api/v1/get/objects/' + profileObj._id+'?buster='+new Date()
+                url: '/api/v1/get/objects/' + profileObj._id
             }).then(
                 function successCallback(response) {
                     if ($scope.uniquechannelNames[index] === 'FacebookAds'){
@@ -471,7 +471,7 @@ function FusionWidgetController($scope, $http, $q, $window, $state, $rootScope, 
             }
             $http({
                 method: 'GET',
-                url: '/api/v1/channel/profiles/objectsList/' + this.profileOptionsModel[index]._id + '?objectType=' + $scope.objectType+'&buster='+new Date()
+                url: '/api/v1/channel/profiles/objectsList/' + this.profileOptionsModel[index]._id + '?objectType=' + $scope.objectType
             }).then(
                 function successCallback(response) {
                     $scope.objectList[index] = response.data;

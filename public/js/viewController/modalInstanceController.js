@@ -1,7 +1,8 @@
 showMetricApp.controller('ModalInstanceController', ModalInstanceController)
 
-function ModalInstanceController($scope, $rootScope, $http, $uibModalInstance) {
+function ModalInstanceController($scope, $rootScope, $http, $uibModalInstance,$state) {
     $scope.ok = function () {
+        console.log('Currentstate',$state.params,$state.current,$state.current.params)
         $uibModalInstance.close();
     };
 

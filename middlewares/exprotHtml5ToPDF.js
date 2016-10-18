@@ -149,14 +149,16 @@ exports.createHtml5ToPdf = function (req, res, next) {
     }
     else{
         doc = new PDFDocument({size: 'A4',
-            layout: 'landscape', margin: 10});
+            layout: 'portrait', margin: 18});
         // stream = doc.pipe(blobStream());
       //  doc.image('images/test.jpeg',{scale: 0.80})
-        doc.image(req.body.dashboardLayout[0],{scale: 0.67});
+      //   doc.image(req.body.dashboardLayout[0],{scale: 0.67});
+        doc.image(req.body.dashboardLayout[0],{width: 540,height:800});
         if(req.body.dashboardLayout.length>0){
             for(var ind=1;ind<requestLength;ind++){
                 doc.addPage();
-                doc.image(req.body.dashboardLayout[ind],{scale: 0.67});
+                // doc.image(req.body.dashboardLayout[ind],{scale: 0.67});
+                doc.image(req.body.dashboardLayout[0],{width: 520,height:790});
             }
         }
 

@@ -21,7 +21,10 @@ module.exports = function (app) {
     app.post('/api/v1/widgets', widgetsList.saveWidgets, function (req, res) {
             res.json({widgetsList: req.app.result});
     });
-
+    //To store the report's text containing widgets
+    app.post('/api/v1/create/textWidgets', widgetsList.saveTextWidgets, function (req, res) {
+        res.json({widgetsList: req.app.result});
+    });
     //To store the custom widgets
     app.post('/api/v1/create/customwidgets', widgetsList.saveCustomWidgets, function (req, res) {
             res.json({widgetsList: req.app.result});

@@ -113,14 +113,16 @@
             <div class="modal-footer">
                 <div class="row">
                     <div class="col-lg-12 text-right">
-                        <button class="componentBtn btn-4 btn-4b icon-arrow-left" id="basicWidgetBackButton1" ng-show="currentView === 'step_two'" ng-click="changeViewsInAlertModal('step_one')">Previous</button>
-                        <!--<button class="btn btn-primary button-mode" id="" ng-hide="currentView === 'step_one'" ng-click="saveAlert();" ng-disabled="alertForm.$invalid">Submit</button>-->
-                        <button class="ladda-button  componentBtn btn-4 btn-4a " data-style="expand-right" id="basicWidgetFinishButton"
-                                ng-disabled="alertForm.$invalid">
-                            <span class="ladda-label">Submit</span>
-                            <span class="ladda-spinner"></span>
-                            <div class="ladda-progress"  style="width:72px;"></div>
+                        <button class="btn btn-primary button-mode" id="basicWidgetBackButton1" ng-show="currentView === 'step_two'" ng-click="changeViewsInAlertModal('step_one')">Previous</button>
+                        <button class="ladda-button  componentBtn btn-4 btn-4a " data-style="expand-right" ng-hide="currentView === 'step_one'" ng-click="saveAlert();" ng-disabled="alertForm.$invalid">Submit</button>
+                    <span  class="progress-demo2">
+                            <button class="ladda-button  componentBtn btn-4 btn-4a " data-style="expand-right" id="basicWidgetFinishButton"
+                                    ng-hide="currentView === 'step_one'" ng-click="saveAlert();" ng-disabled="alertForm.$invalid">
+                                <span class="ladda-label">Submit</span>
+                                <span class="ladda-spinner"></span>
+                                <div class="ladda-progress"  style="width:72px;"></div>
                         </button>
+                        </span>
                     </div>
                 </div>
             </div>

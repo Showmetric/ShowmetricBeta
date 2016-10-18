@@ -76,7 +76,7 @@ function hcChart($timeout){
                 options: '='
             },
             link: function (scope, element) {
-                $timeout(drawCharts, 200);
+                $timeout(drawCharts, 3000);
                 function drawCharts(){
                 Highcharts.chart(element[0], scope.options);
             }
@@ -608,7 +608,234 @@ function expSizeWatcher (){
         }
     }
 }
+ function chosenLinker() {
+    return {
+        restrict: 'A',
+        link: function(scope, element, attr) {
+            // update the select when data is loaded
+            scope.$watch(attr.chosen, function(oldVal, newVal) {
+                element.trigger('liszt:updated');
+                element.trigger('chosen:updated');
+            });
 
+            // update the select when the model changes
+            scope.$watch(attr.ngModel, function() {
+                element.trigger('liszt:updated');
+                element.trigger('chosen:updated');
+            });
+
+            element.chosen();
+        }
+        }
+        }
+ function lineCount(){
+    this.countLines = function(ta, options) {
+        var defaults = {
+            recalculateCharWidth: true,
+            charsMode: "random",
+            fontAttrs: ["font-family", "font-size", "text-decoration", "font-style", "font-weight"]
+        };
+
+        options = $.extend({}, defaults, options);
+
+        var masterCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+        var counter;
+
+        if (!ta.jquery) {
+            ta = $(ta);
+        }
+
+        var value = ta.val();
+        switch (options.charsMode) {
+            case "random":
+                // Build a random collection of characters
+                options.chars = "";
+                masterCharacters += ".,?!-+;:'\"";
+                for (counter = 1; counter <= 12; counter++) {
+                    options.chars += masterCharacters[(Math.floor(Math.random() * masterCharacters.length))];
+                }
+                break;
+            case "alpha":
+                options.chars = masterCharacters;
+                break;
+            case "alpha_extended":
+                options.chars = masterCharacters + ".,?!-+;:'\"";
+                break;
+            case "from_ta":
+                // Build a random collection of characters from the textarea
+                if (value.length < 15) {
+                    options.chars = masterCharacters;
+                } else {
+                    for (counter = 1; counter <= 15; counter++) {
+                        options.chars += value[(Math.floor(Math.random() * value.length))];
+                    }
+                }
+                break;
+            case "custom":
+                // Already defined in options.chars
+                break;
+        }
+
+        // Decode chars
+        if (!$.isArray(options.chars)) {
+            options.chars = options.chars.split("");
+        }
+
+        // Generate a span after the textarea with a random ID
+        var id = "";
+        for (counter = 1; counter <= 10; counter++) {
+            id += (Math.floor(Math.random() * 10) + 1);
+        }
+
+        ta.after("<span id='s" + id + "'></span>");
+        var span = $("#s" + id);
+
+        // Hide the span
+        span.hide();
+
+        // Apply the font properties of the textarea to the span class
+        $.each(options.fontAttrs, function(i, v) {
+            span.css(v, ta.css(v));
+        });
+
+        // Get the number of lines
+        var lines = value.split("\n");
+        var linesLen = lines.length;
+
+        var averageWidth;
+
+        // Check if the textarea has a cached version of the average character width
+        if (options.recalculateCharWidth || ta.data("average_char") == null) {
+            // Get a pretty good estimation of the width of a character in the textarea. To get a better average, add more characters and symbols to this list
+            var chars = options.chars;
+
+            var charLen = chars.length;
+            var totalWidth = 0;
+
+            $.each(chars, function(i, v) {
+                span.text(v);
+                totalWidth += span.width();
+            });
+
+            // Store average width on textarea
+            ta.data("average_char", Math.ceil(totalWidth / charLen));
+        }
+
+        averageWidth = ta.data("average_char");
+
+        // We are done with the span, so kill it
+        span.remove();
+
+        // Determine missing width (from padding, margins, borders, etc); this is what we will add to each line width
+        var missingWidth = (ta.outerWidth() - ta.width()) * 2;
+
+        // Calculate the number of lines that occupy more than one line
+        var lineWidth;
+
+        var wrappingLines = 0;
+        var wrappingCount = 0;
+        var blankLines = 0;
+
+        $.each(lines, function(i, v) {
+            // Calculate width of line
+            lineWidth = ((v.length + 1) * averageWidth) + missingWidth;
+            // Check if the line is wrapped
+            if (lineWidth >= ta.outerWidth()) {
+                // Calculate number of times the line wraps
+                var wrapCount = Math.floor(lineWidth / ta.outerWidth());
+                wrappingCount += wrapCount;
+                wrappingLines++;
+            }
+
+            if ($.trim(v) === "") {
+                blankLines++;
+            }
+        });
+
+        var ret = {};
+        ret["actual"] = linesLen;
+        ret["wrapped"] = wrappingLines;
+        ret["wraps"] = wrappingCount;
+        ret["visual"] = linesLen + wrappingCount;
+        ret["blank"] = blankLines;
+
+        return ret;
+    };
+}
+function textSizeWatcher (lineCount){
+    return {
+        scope: {
+            textSizeWatcherData:'=',
+            textSizeWatcherWidget:'=',
+            textSizeLeft:'=',
+            textSizeFilled:'='
+
+        },
+        link: function( scope, elem, attrs) {
+            scope.$watch('textSizeWatcherData', function(newValue, oldValue) {
+                if (newValue){
+                    console.log('text watcher',scope.textSizeWatcherData.length,scope.textSizeWatcherWidget)
+                    console.log("I see a data change!",scope.textSizeLeft,scope.textSizeFilled);
+                    if(scope.textSizeWatcherData != undefined) {
+                            (function($) {
+                                $.fn.hasScrollBar = function() {
+                                    console.log(this.get(0).scrollHeight,this.get(0).clientHeight)
+                                    return this.get(0).scrollHeight > this.get(0).clientHeight;
+                                }
+                            })(jQuery);
+                            var scroll = $(elem).hasScrollBar();
+                            if(scroll){
+                                if(scope.textSizeWatcherWidget.widgetType=='reportParaWidget'){
+                                if(scope.textSizeLeft>=1 &&  scope.textSizeWatcherWidget.sizeY<2) {
+                                    console.log('inside if para');
+                                    $(elem).attr('maxlength',1000);
+                                    scope.textSizeWatcherWidget.sizeY=2;
+                                    --scope.textSizeLeft;
+                                    ++scope.textSizeFilled;
+                                    scope.$emit('broadCastUpdateCharts');
+
+                                }
+                                else{
+                                    $(elem).attr('maxlength',300);
+                                    $(elem).attr('rows', '3');
+                                    console.log('inside else para',$(elem).attr('maxlength'),$(elem).attr('rows'));
+                                }
+                                }
+                                else if(scope.textSizeWatcherWidget.widgetType=='reportHeadingWidget'){
+                                    console.log('inside if heading');
+                                    scope.textSizeWatcherWidget.sizeY=2;
+                                    scope.$emit('broadCastUpdateCharts');
+                                }
+                            }
+                            else{
+                                console.log("inside scroll false")
+                                if(scope.textSizeWatcherWidget.widgetType=='reportParaWidget' && scope.textSizeWatcherData.length<290){
+                                    if(scope.textSizeWatcherWidget.sizeY>1) {
+                                        scope.textSizeWatcherWidget.sizeY=1;
+                                        ++scope.textSizeLeft;
+                                        --scope.textSizeFilled;
+                                        $(elem).attr('maxlength',300);
+                                        $(elem).attr('rows', '3');
+                                        scope.$emit('broadCastUpdateCharts');
+                                    }
+                                }
+                                else if(scope.textSizeWatcherWidget.widgetType=='reportHeadingWidget' && scope.textSizeWatcherData.length<45){
+                                    if(scope.textSizeWatcherWidget.sizeY>1) {
+                                        scope.textSizeWatcherWidget.sizeY=1;
+                                    }
+                                }
+                            }
+                            console.log('has scroll bar',scroll,elem,$(elem))
+
+                    }
+                }
+                else scope.textSizeWatcherData= scope.textSizeWatcherWidget.textData;
+            }, true);
+
+
+        }
+    };
+}
 
 
 
@@ -643,3 +870,6 @@ angular
     .directive('expSizeWatcher',expSizeWatcher)
     .directive('hcChart',hcChart)
     .directive('fileModel',fileModel)
+    .directive('chosenLinker',chosenLinker)
+    .service('lineCount',lineCount)
+    .directive('textSizeWatcher',textSizeWatcher)

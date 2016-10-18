@@ -82,7 +82,7 @@ function WidgetSettingsController($scope, $uibModalInstance, widget, $http, $sta
         else {
             $http({
                 method: 'GET',
-                url: '/api/v1/dashboards/widgets/' + $state.params.id+'?buster='+new Date()
+                url: '/api/v1/dashboards/widgets/' + $state.params.id
             }).then(
                 function successCallback(response) {
                     var widgetsList;

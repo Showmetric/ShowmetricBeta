@@ -15,7 +15,7 @@ function GridviewController($scope,$http,$window,$rootScope) {
         $scope.docHeight = window.innerHeight;
         $scope.docHeight = $scope.docHeight-105;
         $http({
-            method: 'GET', url: '/api/v1/get/dashboardList'+'?buster='+new Date()
+            method: 'GET', url: '/api/v1/get/dashboardList'
         }).then(
             function successCallback(response){
                 $scope.gridloading=false;

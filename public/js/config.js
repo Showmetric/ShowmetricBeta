@@ -79,6 +79,7 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider, IdlePro
             },
             onEnter: function ($stateParams,$http,$state,$rootScope) {
                 var dashboardId = $stateParams.id? $stateParams.id : $state.params.id;
+                console.log($stateParams,$state.params)
                 if(typeof dashboardId != 'undefined') {
                     $http(
                         {
@@ -105,27 +106,24 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider, IdlePro
                 }
             }
         })
-        .state('app.reporting.listProfile', {
+        .state('app.reporting.dashboard.listProfile', {
             url: "",
             views: {
-                'main@app': {
+                'lightbox@app.reporting.dashboard': {
                     templateUrl: "profileList.ejs",
                     controller: 'LightBoxController'
                 }
-            },
-            onEnter: function ($http,$state,$rootScope){
-                $rootScope.$on('$stateChangeSuccess', function(ev, to, toParams, from, fromParams) {
-                    var previousState = from.name;
-                    if(previousState=='app.changePassword')
-                        $rootScope.previousProfileState=previousState;
-                    if(previousState=='app.reporting.dashboards')
-                        $rootScope.previousProfileState=previousState;
-                    if(previousState=='app.reporting.dashboard')
-                        $rootScope.previousProfileState=previousState;
-                });
             }
         })
-
+        .state('app.reporting.dashboard.insights', {
+            url: "",
+            views: {
+                'lightbox@app.reporting.dashboard': {
+                    templateUrl: "insights.ejs",
+                    controller: 'LightBoxController'
+                }
+            }
+        })
 
         .state('app.reporting.dashboard.fusionWidget', {
             url: "",
@@ -215,6 +213,16 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider, IdlePro
                 }
             }
         })
+        .state('app.reporting.buildReports', {
+            url: "/buildReports",
+            views: {
+                'main@app': {
+                    templateUrl: "buildReport.ejs",
+                    controller: 'buildReportController'
+                }
+            }
+        })
+
 
         .state('app.changePassword', {
             url: "/changePassword",
