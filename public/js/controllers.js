@@ -1089,7 +1089,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                             pastWeek += parseFloat(widget.charts[charts].chartData[i].y);
                                         count++;
                                     }
-                                    granularity = 'Week';
+                                    granularity = 'WK';
                                 }
                                 else {
                                     var lastIndex = _.last(widget.charts[charts].chartData);
@@ -1257,7 +1257,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                                 pastWeek += parseFloat(widget.charts[charts].chartData[items][i].y);
                                             count++;
                                         }
-                                        granularity = 'Week';
+                                        granularity = 'WK';
                                     }
                                     else {
                                         var lastIndex = _.last(widget.charts[charts].chartData[items]);
@@ -2731,7 +2731,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                             pastWeek += parseFloat(widget.charts[charts].chartData[i].y);
                                         count++;
                                     }
-                                    granularity = 'Week';
+                                    granularity = 'WK';
                                 }
                                 else {
                                     var lastIndex = _.last(widget.charts[charts].chartData);
@@ -2854,7 +2854,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                                 pastWeek += parseFloat(widget.charts[charts].chartData[items][i].y);
                                             count++;
                                         }
-                                        granularity = 'Week';
+                                        granularity = 'WK';
                                     }
                                     else {
                                         var lastIndex = _.last(widget.charts[charts].chartData[items]);
