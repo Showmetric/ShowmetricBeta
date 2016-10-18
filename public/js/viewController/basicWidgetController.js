@@ -1104,6 +1104,7 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
         document.getElementById('basicWidgetFinishButton').disabled = true;
         $scope.checkExpiresIn[index] = null;
         storeChosenObject[index] = [];
+        $scope.tokenExpired[index] = false;
         if (!profile) {
             if (channelName == 'Facebook')
                 $scope.facebookObjectList = null;

@@ -105,13 +105,24 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider, IdlePro
                 }
             }
         })
-        .state('app.reporting.dashboard.listProfile', {
+        .state('app.reporting.listProfile', {
             url: "",
             views: {
-                'lightbox@app.reporting.dashboard': {
+                'main@app': {
                     templateUrl: "profileList.ejs",
                     controller: 'LightBoxController'
                 }
+            },
+            onEnter: function ($http,$state,$rootScope){
+                $rootScope.$on('$stateChangeSuccess', function(ev, to, toParams, from, fromParams) {
+                    var previousState = from.name;
+                    if(previousState=='app.changePassword')
+                        $rootScope.previousProfileState=previousState;
+                    if(previousState=='app.reporting.dashboards')
+                        $rootScope.previousProfileState=previousState;
+                    if(previousState=='app.reporting.dashboard')
+                        $rootScope.previousProfileState=previousState;
+                });
             }
         })
 

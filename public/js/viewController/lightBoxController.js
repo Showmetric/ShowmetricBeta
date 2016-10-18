@@ -27,15 +27,28 @@ function LightBoxController($scope, $uibModal, $log, $state,$rootScope) {
             size: size,
             windowClass : 'modal-background'
         });
+    };
+    $scope.openProfileListModal=function(size){
+        var modalInstance = $uibModal.open({
+            animation: $scope.animationsEnabled,
+            templateUrl: 'modal.ejs',
+            controller: 'ModalInstanceController',
+            size: size,
+            windowClass : 'modal-background'
+        });
         modalInstance.result.then(function (selectedItem) {
             $scope.selected = selectedItem;
-            $state.go('app.reporting.dashboard',{id:$rootScope.stateDashboard._id});
+            if($rootScope.previousProfileState=='app.reporting.dashboard')
+                $state.go('app.reporting.dashboard',{id:$rootScope.stateDashboard._id});
+            else
+                $state.go($rootScope.previousProfileState)
         }, function () {
-            $state.go('app.reporting.dashboard',{id:$rootScope.stateDashboard._id});$log.info('Modal dismissed at: ' + new Date());
+            if($rootScope.previousProfileState=='app.reporting.dashboard')
+                $state.go('app.reporting.dashboard',{id:$rootScope.stateDashboard._id});
+            else
+                $state.go($rootScope.previousProfileState);
         });
-
-    };
-
+    }
     $scope.openPDFModal = function (size) {
         var modalInstance = $uibModal.open({
             animation: $scope.animationsEnabled,
