@@ -7,7 +7,7 @@
   "main": "server.js",
   "scripts": {
     "test": "mocha /tests/server/googleAuth.js -w",
-    "start":"forever start server.js",
+    "start":"forever server.js",
     "batch":"forever start batchJobs.js"
   },
   "dependencies": {
