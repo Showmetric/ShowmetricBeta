@@ -18,8 +18,8 @@ RUN bower install --allow-root
 COPY . /usr/src/app
 
 EXPOSE 8080
-
-CMD npm start && npm batch
+RUN forever start batchJobs.js
+CMD npm start
 
 #CMD ["node","server.js"]
 
