@@ -254,7 +254,8 @@ module.exports = {
 
     widgetType:{
         customFusion:'customFusion',
-        insights:'insights'
+        insights:'insights',
+        fbPosts:'fbPosts'
     },
 
     dataFormat:{
@@ -368,7 +369,16 @@ module.exports = {
             total_sentCampaigns:'total_sent/campaigns',
         }
     },
-    
+
+    mongoCharacterRestriction:{
+        doller:'002D',
+        colon:'002C',
+        slash:'002S',
+        dot:'002E',
+        quot:'002Q',
+        question:'002T'
+    },
+
     mozStatic:{
         rank:'moz_rank_url',
         links:'links',
