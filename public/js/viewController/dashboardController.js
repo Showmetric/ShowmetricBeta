@@ -122,7 +122,7 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
                         return function(){
                             var ind = $scope.dashboard.widgets.indexOf(widget);
                             for (var i = 0; i < $scope.dashboard.widgetData[ind].chart.length; i++) {
-                                if ($scope.dashboard.widgetData[ind].chart[i].options.chart.type === 'lineChart' || $scope.dashboard.widgetData[ind].chart[i].options.chart.type === 'pieChart' || $scope.dashboard.widgetData[ind].chart[i].options.chart.type === 'multiBarChart' || $scope.dashboard.widgetData[ind].chart[i].options.chart.type === 'multiChart') {
+                                if ($scope.dashboard.widgetData[ind].chart[i].options.chart.type === 'visitorAcquisitionEfficiency' || $scope.dashboard.widgetData[ind].chart[i].options.chart.type === 'lineChart' || $scope.dashboard.widgetData[ind].chart[i].options.chart.type === 'pieChart' || $scope.dashboard.widgetData[ind].chart[i].options.chart.type === 'multiBarChart' || $scope.dashboard.widgetData[ind].chart[i].options.chart.type === 'multiChart') {
                                     for (var j = 0; j < $scope.dashboard.widgetData[ind].chart[i].data.length; j++) {
                                             var elemHeight = document.getElementById('li-' + widget.id + '-' + String(j)).offsetHeight;
                                             $scope.dashboard.widgetData[ind].chart[i].data[j].myheight = elemHeight;

@@ -17,7 +17,7 @@ var graph = require('fbgraph');
 var profile = require('../models/profiles');
 var User = require('../models/user');
 
-var callFbPostsType = require('../helpers/getFbPostsData');
+//var callFbPostsType = require('../helpers/getFbPostsData');
 
 //To load the metrics model
 var Metric = require('../models/metrics');
@@ -743,10 +743,10 @@ exports.getChannelData = function (req, res, next) {
                             var dimensionList = [];
                             var dimension;
                             var dimensionArray = [];
-                            if (metric[j].name === configAuth.googleAnalytics.topPages)
+                            var checkMetric=metric[j].objectTypes[0].meta.gaMetricName.split(',').length;
+                            if (checkMetric > 1)
                                 var dimensionList = dataFromRemote[j].Dimension;
-                            else
-                                var dimensionList = metric[j].objectTypes[0].meta.dimension;
+                            var dimensionList = metric[j].objectTypes[0].meta.dimension;
                             if (dimensionList[0].name === "ga:date" || dimensionList[0].name === "mcf:conversionDate" || dimensionList[0].name === 'day') {
                                 if (dataFromRemote[j].metric.objectTypes[0].meta.endpoint.length)
                                     finalData = findDaysDifference(dataFromRemote[j].startDate, dataFromRemote[j].endDate, dataFromRemote[j].metric.objectTypes[0].meta.endpoint);

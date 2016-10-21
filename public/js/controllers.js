@@ -836,7 +836,6 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                     var exits = 0;
                                     var bounces = 0;
                                     var page;
-
                                     for (var i = 0; i < sortdata[key].length; i++) {
                                         sessions += parseFloat(sortdata[key][i].sessions);
                                         pageviews += parseFloat(sortdata[key][i].pageviews);
@@ -845,11 +844,9 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                         timeOnPage += parseFloat(sortdata[key][i].timeOnPage);
                                     }
                                     var bouncedivide = difference(pageviews, exits)
-
                                     function difference(pageviews, exits) {
                                         return (exits > pageviews) ? exits - pageviews : pageviews - exits
                                     }
-
                                     if (sessions === 0)
                                         var bouncesRate = bounces;
                                     else
@@ -884,29 +881,363 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                             }
                         }
                     }
-                    // else if (chartType == "fbReachByGender") {
-                    //
-                    //     var genderReach = {Male: 0, Female: 0, Unspecified: 0};
-                    //     if (typeof widget.charts[charts].chartData[0] != 'undefined') {
-                    //         if (typeof(widget.charts[charts].chartData[0].total) === 'object') {
-                    //             for (var datas in widget.charts[charts].chartData) {
-                    //                 for (var keys in widget.charts[charts].chartData[datas].total) {
-                    //                     var genderAge = keys.split('/');
-                    //                     var gender = String(genderAge[0]);
-                    //                     if (gender == 'F')
-                    //                         gender = 'Female';
-                    //                     if (gender == 'M')
-                    //                         gender = 'Male';
-                    //                     if (gender == 'U')
-                    //                         gender = 'Unspecified';
-                    //                     genderReach[gender] = genderReach[gender] || 0;
-                    //                     genderReach[gender] += parseInt(widget.charts[charts].chartData[datas].total[keys]);
-                    //                 }
-                    //             }
-                    //         }
-                    //     }
-                    //     widget.charts[charts].chartData = genderReach;
-                    // }
+                    else if (chartType == "gaPageContentEfficiencyTable") {
+                        var topPages = {};
+                        if (typeof widget.charts[charts].chartData[0] != 'undefined') {
+                            if (typeof(widget.charts[charts].chartData[0].total) === 'object') {
+                                var groupedArray = []
+                                for (var k = 0; k < widget.charts[charts].chartData.length; k++) {
+                                    var sampleArray = $.map(widget.charts[charts].chartData[k].total, function (value, index) {
+                                        return [value];
+                                    });
+                                    groupedArray = groupedArray.concat(sampleArray)
+                                }
+                                var pageTitle = 'pageTitle';
+
+                                var formattedChartDataArray = []
+                                var sortdata = _.groupBy(groupedArray, 'pagePath')
+                                for (var key in sortdata) {
+                                    var path = key;
+                                    var uniquePageviews = 0;
+                                    var pageviews = 0;
+                                    var pageValue = 0;
+                                    var bounceRate = 0;
+                                    var timeOnPage = 0;
+                                    var exits = 0;
+                                    var bounces = 0;
+                                    var sessions=0;
+                                    var entranceRate=0;
+                                    var calculateBouncerate=0;
+                                    for (var i = 0; i < sortdata[key].length; i++) {
+                                        uniquePageviews += parseFloat(sortdata[key][i]['uniquePageviews']);
+                                        sessions += parseFloat(sortdata[key][i]['sessions']);
+                                        pageviews += parseFloat(sortdata[key][i]['pageviews']);
+                                        // avgTimeOnPage += parseFloat(sortdata[key][i]['avgTimeOnPage']);
+                                        bounces += parseFloat(sortdata[key][i]['bounces']);
+                                        exits += parseFloat(sortdata[key][i]['exits']);
+                                        timeOnPage += parseFloat(sortdata[key][i]['timeOnPage']);
+                                        calculateBouncerate+=(sortdata[key][i]['pageviews']*sortdata[key][i]['entranceRate'])
+                                        pageValue += parseFloat(sortdata[key][i]['pageValue']);
+                                      var pageTitle=sortdata[key][i]['pageTitle']
+
+                                    }
+                                    var bouncedivide = difference(pageviews, exits)
+                                    function difference(pageviews, exits) {
+                                        return (exits > pageviews) ? exits - pageviews : pageviews - exits
+                                    }
+                                    if (sessions === 0)
+                                        var bouncesRate = bounces;
+                                    else
+                                        var bouncesRate = ((bounces / sessions) * 100).toFixed(2);
+
+                                    if (bouncedivide === 0)
+                                        var avgTimeOnpage = timeOnPage;
+                                    else
+                                        var avgTimeOnpage = (timeOnPage / bouncedivide);
+                                    entranceRate=calculateBouncerate/pageviews;
+                                    // avgTimeOnpage=calculateavgTimeOnPage/pageviews;
+                                    // if(bounceratepageview==0){
+                                    //     bounceRate=0;
+                                    // }else
+                                    // bounceRate=calculatebounceRate/bounceratepageview;
+                                    var path = {
+                                        uniquePageviews: uniquePageviews,
+                                        pageviews: pageviews,
+                                        pagePath: path,
+                                        avgTimeOnPage: avgTimeOnpage,
+                                        pageTitle: pageTitle,
+                                        entranceRate: entranceRate.toFixed(2),
+                                        pageviews: pageviews,
+                                        pageValue:pageValue,
+                                        bounceRate:bouncesRate
+                                    }
+                                    var date = new Date(null);
+                                    date.setSeconds(path.avgTimeOnPage)// specify value for SECONDS here
+                                    path.avgTimeOnPage = date.toISOString().substr(11, 8);
+                                    formattedChartDataArray.push(path)
+                                }
+                                formattedChartDataArray.sort(function (a, b) {
+                                    return parseFloat(a.pageviews) - parseFloat(b.pageviews);
+                                });
+                                formattedChartDataArray.reverse();
+                                widget.charts[charts].chartData = formattedChartDataArray;
+                            }
+                        }
+                    }
+                    else if (chartType == "gaPageTechnicalEfficiencyTable") {
+                        var topPages = {};
+                        if (typeof widget.charts[charts].chartData[0] != 'undefined') {
+                            if (typeof(widget.charts[charts].chartData[0].total) === 'object') {
+                                var groupedArray = []
+                                for (var k = 0; k < widget.charts[charts].chartData.length; k++) {
+                                    var sampleArray = $.map(widget.charts[charts].chartData[k].total, function (value, index) {
+                                        return [value];
+                                    });
+                                    groupedArray = groupedArray.concat(sampleArray)
+                                }
+                                var pageTitle = 'pageTitle';
+
+                                var formattedChartDataArray = []
+                                var sortdata = _.groupBy(groupedArray, 'pagePath')
+                                for (var key in sortdata) {
+                                    var path = key;
+                                    var pageviews = 0;
+                                    var avgPageLoadTime = 0;
+                                    var pageLoadSample = 0;
+                                    var bounceRate = 0;
+                                    var sessions=0;
+                                    var bounces=0;
+                                    var pageLoadTime=0;
+                                    for (var i = 0; i < sortdata[key].length; i++) {
+                                        pageLoadTime += parseFloat(sortdata[key][i]['pageLoadTime']);
+                                        sessions += parseFloat(sortdata[key][i]['sessions']);
+                                        bounces += parseFloat(sortdata[key][i]['bounces']);
+                                        pageviews += parseFloat(sortdata[key][i]['pageviews']);
+                                        pageLoadSample += parseFloat(sortdata[key][i]['pageLoadSample']);
+                                        bounceRate += parseFloat(sortdata[key][i]['bounceRate']);;
+                                        var pageTitle=sortdata[key][i]['pageTitle']
+                                    }
+                                    var avgPageLoadTime=(pageLoadTime/pageLoadSample/1000).toFixed(2);
+                                    if(isNaN(avgPageLoadTime)){
+                                        avgPageLoadTime=0;
+                                    }
+                                    if (sessions === 0)
+                                        var bouncesRate = bounces;
+                                    else
+                                        var bouncesRate = ((bounces / sessions) * 100);
+                                    avgPageLoadTime=Math.ceil(avgPageLoadTime)
+                                    var path = {
+                                        pageviews: pageviews,
+                                        pagePath: path,
+                                        pageTitle: pageTitle,
+                                        avgPageLoadTime:avgPageLoadTime.toFixed(2),
+                                        pageLoadSample: pageLoadSample,
+                                        pageviews:pageviews,
+                                        bounceRate:bouncesRate.toFixed(2)
+                                    }
+                                    formattedChartDataArray.push(path)
+                                }
+                                formattedChartDataArray.sort(function (a, b) {
+                                    return parseFloat(a.pageviews) - parseFloat(b.pageviews);
+                                });
+                                formattedChartDataArray.reverse();
+                                widget.charts[charts].chartData = formattedChartDataArray;
+                            }
+                        }
+                    }
+                    else if (chartType == "gaVisitorAcquisitionEfficiencyAnalysisTable") {
+                        var topPages = {};
+                        if (typeof widget.charts[charts].chartData[0] != 'undefined') {
+                            if (typeof(widget.charts[charts].chartData[0].total) === 'object') {
+                                var groupedArray = []
+                                for (var k = 0; k < widget.charts[charts].chartData.length; k++) {
+                                    var sampleArray = $.map(widget.charts[charts].chartData[k].total, function (value, index) {
+                                        return [value];
+                                    });
+                                    groupedArray = groupedArray.concat(sampleArray)
+                                }
+                                var formattedChartDataArray = []
+                                var sortdata = _.groupBy(groupedArray, 'sourceMedium')
+                                for (var key in sortdata) {
+                                    var sourceMedium = key;
+                                    var sessions = 0;
+                                    var users=0;
+                                    var newUsers = 0;
+                                    var goalConversionRateAll = 0;
+                                    var pageLoadSample = 0;
+                                    var goalValuePerSession=0;
+
+                                    for (var i = 0; i < sortdata[key].length; i++) {
+                                        sessions += parseFloat(sortdata[key][i]['sessions']);
+                                        users += parseFloat(sortdata[key][i]['users']);
+                                        newUsers += parseFloat(sortdata[key][i]['newUsers']);
+                                        goalConversionRateAll += parseFloat(sortdata[key][i]['goalConversionRateAll']);
+                                        pageLoadSample += parseFloat(sortdata[key][i]['pageLoadSample']);
+                                        goalValuePerSession += parseFloat(sortdata[key][i]['goalValuePerSession']);
+                                        bounceRate += parseFloat(sortdata[key][i]['bounceRate']);
+                                    }
+                                    var path = {
+                                        sourceMedium:sourceMedium,
+                                        sessions: sessions,
+                                        users:users,
+                                        newUsers: newUsers,
+                                        goalValuePerSession:goalValuePerSession,
+                                        goalConversionRateAll: goalConversionRateAll.toFixed(2),
+                                    }
+                                    formattedChartDataArray.push(path)
+                                }
+                                formattedChartDataArray.sort(function (a, b) {
+                                    return parseFloat(a.sessions) - parseFloat(b.sessions);
+                                });
+                                formattedChartDataArray.reverse();
+                                widget.charts[charts].chartData = formattedChartDataArray;
+                            }
+                        }
+                    }
+                    else if(chartType=='pageContentEfficiency'){
+                        var topPages = {};
+                        if (typeof widget.charts[charts].chartData[0] != 'undefined') {
+                            if (typeof(widget.charts[charts].chartData[0].total) === 'object') {
+                                var groupedArray = []
+                                for (var k = 0; k < widget.charts[charts].chartData.length; k++) {
+                                    var sampleArray = $.map(widget.charts[charts].chartData[k].total, function (value, index) {
+                                        return [value];
+                                    });
+                                    groupedArray = groupedArray.concat(sampleArray)
+                                }
+                                var pageTitle = 'pageTitle';
+
+                                var formattedChartDataArray = []
+                                var sortdata = _.groupBy(groupedArray, 'pagePath')
+                                for (var key in sortdata) {
+                                    var uniquePageviews = 0;
+                                    var pageviews = 0;
+                                    var bounces = 0;
+                                    var sessions=0;
+                                    var entranceRate=0;
+                                    var calculateBouncerate=0;
+                                    var bouncesRate;
+                                    for (var i = 0; i < sortdata[key].length; i++) {
+                                        uniquePageviews += parseFloat(sortdata[key][i]['uniquePageviews']);
+                                        sessions += parseFloat(sortdata[key][i]['sessions']);
+                                        pageviews += parseFloat(sortdata[key][i]['pageviews']);
+                                        // avgTimeOnPage += parseFloat(sortdata[key][i]['avgTimeOnPage']);
+                                        bounces += parseFloat(sortdata[key][i]['bounces']);
+                                        calculateBouncerate+=(sortdata[key][i]['pageviews']*sortdata[key][i]['entranceRate'])
+                                        pageTitle=sortdata[key][i]['pageTitle']
+                                    }
+                                    if (sessions === 0)
+                                        bouncesRate = bounces;
+                                    else
+                                        bouncesRate = ((bounces / sessions) * 100).toFixed(2);
+                                    entranceRate=calculateBouncerate/pageviews;
+                                    var path = {
+                                        bounceRate: bouncesRate,
+                                        pageTitle: pageTitle,
+                                        uniquePageviews: uniquePageviews.toFixed(2),
+                                        pageviews: pageviews,
+                                        entranceRate:entranceRate.toFixed(2)
+                                    }
+                                    formattedChartDataArray.push(path)
+                                }
+                                formattedChartDataArray.sort(function (a, b) {
+                                    return parseFloat(a.uniquePageviews) - parseFloat(b.uniquePageviews);
+                                });
+                                formattedChartDataArray.reverse();
+                                var finalChartArray=[];
+                                for(var i=0;i<10;i++)
+                                    finalChartArray.push(formattedChartDataArray[i]);
+                                widget.charts[charts].chartData = finalChartArray;
+                            }
+                        }
+                    }
+                    else if(chartType=='pageTechnicalEfficiency'){
+                        if (typeof widget.charts[charts].chartData[0] != 'undefined') {
+                            if (typeof(widget.charts[charts].chartData[0].total) === 'object') {
+                                var groupedArray = []
+                                for (var k = 0; k < widget.charts[charts].chartData.length; k++) {
+                                    var sampleArray = $.map(widget.charts[charts].chartData[k].total, function (value, index) {
+                                        return [value];
+                                    });
+                                    groupedArray = groupedArray.concat(sampleArray)
+                                }
+                                var pageTitle = 'pageTitle';
+
+                                var formattedChartDataArray = []
+                                var sortdata = _.groupBy(groupedArray, 'pagePath')
+                                for (var key in sortdata) {
+                                    var pageviews = 0;
+                                    var avgPageLoadTime = 0;
+                                    var pageLoadSample = 0;
+                                    var bounceRate = 0;
+                                    var sessions=0;
+                                    var bounces=0;
+                                    var pageLoadTime=0;
+                                    for (var i = 0; i < sortdata[key].length; i++) {
+                                        pageLoadTime += parseFloat(sortdata[key][i]['pageLoadTime']);
+                                        sessions += parseFloat(sortdata[key][i]['sessions']);
+                                        bounces += parseFloat(sortdata[key][i]['bounces']);
+                                        pageviews += parseFloat(sortdata[key][i]['pageviews']);
+                                        pageLoadSample += parseFloat(sortdata[key][i]['pageLoadSample']);
+                                        var pageTitle=sortdata[key][i]['pageTitle']
+                                    }
+                                    var avgPageLoadTime=(pageLoadTime/pageLoadSample/1000).toFixed(2);
+                                    if(isNaN(avgPageLoadTime)){
+                                        avgPageLoadTime=0;
+                                    }
+                                    if (sessions === 0)
+                                        var bouncesRate = bounces;
+                                    else
+                                        var bouncesRate = ((bounces / sessions) * 100);
+                                    avgPageLoadTime=Math.ceil(avgPageLoadTime)
+                                    var path = {
+                                        bounceRate: bouncesRate.toFixed(2),
+                                        pageTitle: pageTitle,
+                                        PageLoadTime: avgPageLoadTime.toFixed(2),
+                                        pageviews: pageviews
+                                    }
+                                    formattedChartDataArray.push(path)
+                                }
+                                formattedChartDataArray.sort(function (a, b) {
+                                    return parseFloat(a.pageviews) - parseFloat(b.pageviews);
+                                });
+                                formattedChartDataArray.reverse();
+                                var finalChartArray=[];
+                                for(var i=0;i<10;i++)
+                                    finalChartArray.push(formattedChartDataArray[i]);
+                                widget.charts[charts].chartData = finalChartArray;
+                            }
+                        }
+                    }
+                    else if(chartType=='visitorAcquisitionEfficiency'){
+                        var topPages = {};
+                        if (typeof widget.charts[charts].chartData[0] != 'undefined') {
+                            if (typeof(widget.charts[charts].chartData[0].total) === 'object') {
+                                var groupedArray = []
+                                for (var k = 0; k < widget.charts[charts].chartData.length; k++) {
+                                    var sampleArray = $.map(widget.charts[charts].chartData[k].total, function (value, index) {
+                                        return [value];
+                                    });
+                                    groupedArray = groupedArray.concat(sampleArray)
+                                }
+                                var formattedChartDataArray = []
+                                var sortdata = _.groupBy(groupedArray, 'sourceMedium')
+                                for (var key in sortdata) {
+                                    var sourceMedium = key;
+                                    var sessions = 0;
+                                    var users=0;
+                                    var newUsers = 0;
+                                    var goalConversionRateAll = 0;
+                                    var pageLoadSample = 0;
+                                    var goalValuePerSession=0;
+
+                                    for (var i = 0; i < sortdata[key].length; i++) {
+                                        sessions += parseFloat(sortdata[key][i]['sessions']);
+                                        newUsers += parseFloat(sortdata[key][i]['newUsers']);
+                                        goalConversionRateAll += parseFloat(sortdata[key][i]['goalConversionRateAll']);
+                                        pageLoadSample += parseFloat(sortdata[key][i]['pageLoadSample']);
+                                        goalValuePerSession += parseFloat(sortdata[key][i]['goalValuePerSession']);
+                                    }
+                                    var path = {
+                                        newUsers: newUsers.toFixed(2),
+                                        sourceMedium: sourceMedium,
+                                        goalValuePerSession: goalValuePerSession.toFixed(2),
+                                        goalConversionRateAll:goalConversionRateAll.toFixed(2),
+                                        sessions: sessions
+                                    }
+                                    formattedChartDataArray.push(path)
+                                }
+                                formattedChartDataArray.sort(function (a, b) {
+                                    return parseFloat(a.sessions) - parseFloat(b.sessions);
+                                });
+                                formattedChartDataArray.reverse();
+                                var finalChartArray=[];
+                                for(var i=0;i<10;i++)
+                                    finalChartArray.push(formattedChartDataArray[i]);
+                                widget.charts[charts].chartData = finalChartArray;
+                            }
+                        }
+                    }
                     else if (chartType == "fbReachByAge") {
                         var ageReach = {
                             '13-17': {
@@ -1418,6 +1749,41 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                             }
                         }
                     }
+                    else if(chartType == "gaTopCountriesToSocialVisits" || chartType==='gaTopCitiesToSocialVisits'){
+                        if (typeof widget.charts[charts].chartData[0] != 'undefined') {
+                            if (typeof(widget.charts[charts].chartData[0].total) === 'object') {
+                                var groupedArray = [];
+                                var formattedChartDataArray=[];
+                                var topFiveValues={};
+                                var others = 0;
+                                widget.charts[charts].chartData.forEach(function(value){
+                                    for(var index in value.total){
+                                        if(index.indexOf(widget.charts[charts].metricDetails.objectTypes[0].meta.endpoint[0]+'/')!=-1)
+                                            groupedArray.push({country:index.split(widget.charts[charts].metricDetails.objectTypes[0].meta.endpoint[0]+'/').join(''),value:value.total[index]})
+                                    }
+                                })
+                                var sortdata = _.groupBy(groupedArray, 'country');
+                                for (var key in sortdata) {
+                                    var country = key;
+                                    var sessions = 0;
+                                    for (var i = 0; i < sortdata[key].length; i++)
+                                        sessions += parseFloat(sortdata[key][i].value);
+                                    var path = {
+                                        country: country,
+                                        sessions: sessions,
+                                    }
+                                    formattedChartDataArray.push(path)
+                                }
+                               var sortCountry = _.sortBy(formattedChartDataArray,'sessions').reverse();
+                                for(var k =0;k<5;k++)
+                                    topFiveValues[sortCountry[k].country] = sortCountry[k].sessions;
+                                for(var j = 5;j<sortCountry.length;j++)
+                                    others =others+sortCountry[j].sessions;
+                                topFiveValues['Others'] = others;
+                            }
+                        }
+                        widget.charts[charts].chartData = topFiveValues;
+                    }
                 }
                 for (var charts in widget.charts) {
                     if (typeof widget.charts[charts].chartData[0] != 'undefined') {
@@ -1853,6 +2219,78 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                             'values': widget.charts[charts].chartData
                         });
                     }
+                    else if (chartType == 'gaPageContentEfficiencyTable') {
+                        widgetCharts.push({
+                            'type': widget.charts[charts].chartType,
+                            'values': widget.charts[charts].chartData
+                        });
+                    }
+                    else if (chartType == 'gaPageTechnicalEfficiencyTable') {
+                        widgetCharts.push({
+                            'type': widget.charts[charts].chartType,
+                            'values': widget.charts[charts].chartData
+                        });
+                    }
+                    else if (chartType == 'gaVisitorAcquisitionEfficiencyAnalysisTable') {
+                        widgetCharts.push({
+                            'type': widget.charts[charts].chartType,
+                            'values': widget.charts[charts].chartData
+                        });
+                    }
+                    else if(chartType=='pageTechnicalEfficiency'){
+                        var bounce=0;
+                        var pageLoad=0;
+                        for(var i=0;i<widget.charts[charts].chartData.length;i++){
+                            bounce+=Number(widget.charts[charts].chartData[i].bounceRate);
+                            pageLoad+=Number(widget.charts[charts].chartData[i].PageLoadTime);
+                        }
+                        var summmary=[{key:'Bounce Rate',value:bounce},{key:'Page LoadTime',value:pageLoad}]
+                        widgetCharts.push({
+                            'type': widget.charts[charts].chartType,
+                            'values': widget.charts[charts].chartData,
+                            'summary':summmary,
+                            'key': widget.charts[charts].chartName,
+                            'color': widget.charts[charts].chartColour
+                        });
+                    }
+                    else if(chartType=='pageContentEfficiency'){
+                        var bounce=0;
+                        var entranceRate=0;
+                        var uniquePageviews=0;
+                        var pageviews=0;
+                        for(var i=0;i<widget.charts[charts].chartData.length;i++){
+                            bounce+=Number(widget.charts[charts].chartData[i].bounceRate);
+                            entranceRate+=Number(widget.charts[charts].chartData[i].entranceRate);
+                            uniquePageviews+=Number(widget.charts[charts].chartData[i].uniquePageviews);
+                            pageviews+=Number(widget.charts[charts].chartData[i].pageviews);
+                        }
+                        var summmary=[{key:'Unique Page views',value:uniquePageviews},{key:'Page views',value:pageviews},{key:'Bounce Rate',value:bounce},{key:'Entrance rate',value:entranceRate}]
+                        widgetCharts.push({
+                            'type': widget.charts[charts].chartType,
+                            'values': widget.charts[charts].chartData,
+                            'summary':summmary,
+                            'key': widget.charts[charts].chartName,
+                            'color': widget.charts[charts].chartColour
+                        });
+                    }
+                    else if(chartType=='visitorAcquisitionEfficiency'){
+                        var newUsers=0;
+                        var goalValuePerSession=0;
+                        var goalConversionRateAll=0;
+                        for(var i=0;i<widget.charts[charts].chartData.length;i++){
+                            goalConversionRateAll+=Number(widget.charts[charts].chartData[i].goalConversionRateAll);
+                            goalValuePerSession+=Number(widget.charts[charts].chartData[i].goalValuePerSession);
+                            newUsers+=Number(widget.charts[charts].chartData[i].newUsers);
+                        }
+                        var summmary=[{key:'New users',value:newUsers},{key:'Per session goal value',value:goalValuePerSession},{key:'Goal conversion rate',value:goalConversionRateAll}]
+                        widgetCharts.push({
+                            'type': widget.charts[charts].chartType,
+                            'values': widget.charts[charts].chartData,
+                            'summary':summmary,
+                            'key': widget.charts[charts].chartName,
+                            'color': widget.charts[charts].chartColour
+                        });
+                    }
                     else if (chartType == "fbReachByAge") {
                         widgetCharts.push({
                             'type': 'fbReachByAge',
@@ -1888,6 +2326,19 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                 //         }
                 //     }
                     else if (chartType == "fbReachByCountry") {
+                        var colorIndex = 0;
+                        for (var index in widget.charts[charts].chartData) {
+                            widgetCharts.push({
+                                'type': 'pie',
+                                'y': parseFloat(widget.charts[charts].chartData[index]),      //values - represents the array of {x,y} data points
+                                'key': index,
+                                'color': typeof widget.charts[charts].chartColour != 'undefined' ? (typeof widget.charts[charts].chartColour[colorIndex] != 'undefined' ? widget.charts[charts].chartColour[colorIndex] : '') : '',  //color - optional: choose your own line color.
+                                'summaryDisplay': (parseFloat(widget.charts[charts].chartData[index]).toFixed(2) % Math.floor(widget.charts[charts].chartData[index])) > 0 ? parseFloat(widget.charts[charts].chartData[index]).toFixed(2) : parseInt(widget.charts[charts].chartData[index])
+                            });
+                            ++colorIndex;
+                        }
+                    }
+                    else if (chartType == "gaTopCountriesToSocialVisits" || chartType==='gaTopCitiesToSocialVisits'){
                         var colorIndex = 0;
                         for (var index in widget.charts[charts].chartData) {
                             widgetCharts.push({
@@ -1936,7 +2387,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
             var deferred = $q.defer();
             var finalCharts = [];
             finalCharts.lineCharts = [], finalCharts.barCharts = [], finalCharts.pieCharts = [], finalCharts.instagramPosts = [], finalCharts.highEngagementTweets = [], finalCharts.highestEngagementLinkedIn = [], finalCharts.pinterestEngagementRate = [], finalCharts.pinterestLeaderboard = [];
-            finalCharts.gaTopPagesByVisit = [], finalCharts.fbReachByAge = [], finalCharts.mozoverview = [], finalCharts.fbReachByCity = [], finalCharts.vimeoTopVideos = [], finalCharts.costPerActionType = [], finalCharts.instagramHashtagLeaderBoard = [];
+            finalCharts.gaTopPagesByVisit = [], finalCharts.fbReachByAge = [], finalCharts.mozoverview = [], finalCharts.fbReachByCity = [], finalCharts.vimeoTopVideos = [], finalCharts.costPerActionType = [], finalCharts.instagramHashtagLeaderBoard = [],finalCharts.gaPageContentEfficiencyTable=[],finalCharts.gaPageTechnicalEfficiencyTable=[],finalCharts.gaVisitorAcquisitionEfficiencyAnalysisTable=[],finalCharts.pageTechnicalEfficiency = [],finalCharts.pageContentEfficiency = [],finalCharts.visitorAcquisitionEfficiency = [];
             var graphOptions = {
                 lineDataOptions: {
                     chart: {
@@ -2070,6 +2521,28 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                 gaTopPagesByVisit: {
                     chart: {
                         type: 'gaTopPagesByVisit'
+                    }
+                },
+                gaPageContentEfficiencyTable: {
+                    chart: {
+                        type: 'gaPageContentEfficiencyTable'
+                    }
+                },
+                gaPageTechnicalEfficiencyTable: {
+                    chart: {
+                        type: 'gaPageTechnicalEfficiencyTable'
+                    }
+                },
+                gaVisitorAcquisitionEfficiencyAnalysisTable: {
+                    chart: {
+                        type: 'gaVisitorAcquisitionEfficiencyAnalysisTable'
+                    }
+                },
+                visitorAcquisitionEfficiency: {
+                    chart: {
+                        type: 'visitorAcquisitionEfficiency',
+                        noData: 'No data for chosen date range',
+                        margin: {top: 20, right: 30, bottom: 30, left: 35},
                     }
                 },
                 pinterestEngagementRate: {
@@ -2370,6 +2843,9 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                     else if (widgetCharts[charts].type == 'highEngagementTweets') finalCharts.highEngagementTweets.push(widgetCharts[charts]);
                     else if (widgetCharts[charts].type == 'highestEngagementLinkedIn') finalCharts.highestEngagementLinkedIn.push(widgetCharts[charts]);
                     else if (widgetCharts[charts].type == 'gaTopPagesByVisit') finalCharts.gaTopPagesByVisit.push(widgetCharts[charts]);
+                    else if (widgetCharts[charts].type == 'gaPageContentEfficiencyTable') finalCharts.gaPageContentEfficiencyTable.push(widgetCharts[charts]);
+                    else if (widgetCharts[charts].type == 'gaPageTechnicalEfficiencyTable') finalCharts.gaPageTechnicalEfficiencyTable.push(widgetCharts[charts]);
+                    else if (widgetCharts[charts].type == 'gaVisitorAcquisitionEfficiencyAnalysisTable') finalCharts.gaVisitorAcquisitionEfficiencyAnalysisTable.push(widgetCharts[charts]);
                     else if (widgetCharts[charts].type == 'fbReachByCity') finalCharts.fbReachByCity.push(widgetCharts[charts]);
                     else if (widgetCharts[charts].type == 'fbReachByAge') finalCharts.fbReachByAge.push(widgetCharts[charts]);
                     else if (widgetCharts[charts].type == 'pinterestEngagementRate') finalCharts.pinterestEngagementRate.push(widgetCharts[charts]);
@@ -2417,31 +2893,6 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                     });
                 }
                 chartOptions = {
-                    /*plotOptions: {
-                        area: { animation: false, enableMouseTracking: false, stickyTracking: true, shadow: false, dataLabels: { style: { textShadow: false } } },
-                        arearange: { animation: false, enableMouseTracking: false, stickyTracking: true, shadow: false, dataLabels: { style: { textShadow: false } } },
-                        areaspline: { animation: false, enableMouseTracking: false, stickyTracking: true, shadow: false, dataLabels: { style: { textShadow: false } } },
-                        areasplinerange: { animation: false, enableMouseTracking: false, stickyTracking: true, shadow: false, dataLabels: { style: { textShadow: false } } },
-                        bar: { animation: false, enableMouseTracking: false, stickyTracking: true, shadow: false, dataLabels: { style: { textShadow: false } } },
-                        boxplot: { animation: false, enableMouseTracking: false, stickyTracking: true, shadow: false, dataLabels: { style: { textShadow: false } } },
-                        bubble: { animation: false, enableMouseTracking: false, stickyTracking: true, shadow: false, dataLabels: { style: { textShadow: false } } },
-                        column: { animation: false, enableMouseTracking: false, stickyTracking: true, shadow: false, dataLabels: { style: { textShadow: false } } },
-                        columnrange: { animation: false, enableMouseTracking: false, stickyTracking: true, shadow: false, dataLabels: { style: { textShadow: false } } },
-                        errorbar: { animation: false, enableMouseTracking: false, stickyTracking: true, shadow: false, dataLabels: { style: { textShadow: false } } },
-                        funnel: { animation: false, enableMouseTracking: false, stickyTracking: true, shadow: false, dataLabels: { style: { textShadow: false } } },
-                        gauge: { animation: false, enableMouseTracking: false, stickyTracking: true, shadow: false, dataLabels: { style: { textShadow: false } } },
-                        heatmap: { animation: false, enableMouseTracking: false, stickyTracking: true, shadow: false, dataLabels: { style: { textShadow: false } } },
-                        line: { animation: false, enableMouseTracking: false, stickyTracking: true, shadow: false, dataLabels: { style: { textShadow: false } } },
-                        pie: { animation: false, enableMouseTracking: false, stickyTracking: true, shadow: false, dataLabels: { style: { textShadow: false } } },
-                        polygon: { animation: false, enableMouseTracking: false, stickyTracking: true, shadow: false, dataLabels: { style: { textShadow: false } } },
-                        pyramid: { animation: false, enableMouseTracking: false, stickyTracking: true, shadow: false, dataLabels: { style: { textShadow: false } } },
-                        scatter: { animation: false, enableMouseTracking: false, stickyTracking: true, shadow: false, dataLabels: { style: { textShadow: false } } },
-                        series: { animation: false, enableMouseTracking: false, stickyTracking: true, shadow: false, dataLabels: { style: { textShadow: false } } },
-                        solidgauge: { animation: false, enableMouseTracking: false, stickyTracking: true, shadow: false, dataLabels: { style: { textShadow: false } } },
-                        spline: { animation: false, enableMouseTracking: false, stickyTracking: true, shadow: false, dataLabels: { style: { textShadow: false } } },
-                        treemap: { animation: false, enableMouseTracking: false, stickyTracking: true, shadow: false, dataLabels: { style: { textShadow: false } } },
-                        waterfall: { animation: false, enableMouseTracking: false, stickyTracking: true, shadow: false, dataLabels: { style: { textShadow: false } } },
-                    },*/
                     chart: {
                         type: finalCharts.lineCharts[0].type,
                         reflow: true,
@@ -3061,16 +3512,6 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                     "#dcdf41"
                 ];
                 var display=[];
-                // for(var i=0;i< finalCharts.fbReachByAge[0].values[2].length;i++){
-                //     var summaryDisplay=   finalCharts.fbReachByAge[0].values[2][i].data.reduce(getSum)
-                //     var sample={
-                //         summaryDisplay:summaryDisplay,
-                //     key:finalCharts.fbReachByAge[0].values[2][i].name,
-                //         showComparision:'false',
-                //         variance:0
-                //     }
-                //     display.push(sample)
-                // }
                 var summaryDisplay=0
                 for(var i=0;i< finalCharts.fbReachByAge[0].values[1].length;i++){
                     for(var j=0;j< finalCharts.fbReachByAge[0].values[2].length;j++)
@@ -3152,6 +3593,39 @@ showMetricApp.service('createWidgets', function ($http, $q) {
 
                 }
 
+            }
+            if (finalCharts.gaPageContentEfficiencyTable.length > 0) {
+                if (finalCharts.gaPageContentEfficiencyTable[0].values.length > 0) {
+
+                    chartsCount++;
+                    finalChartData.push({
+                        'options': graphOptions.gaPageContentEfficiencyTable,
+                        'data': finalCharts.gaPageContentEfficiencyTable[0].values
+                    });
+
+                }
+            }
+            if (finalCharts.gaPageTechnicalEfficiencyTable.length > 0) {
+                if (finalCharts.gaPageTechnicalEfficiencyTable[0].values.length > 0) {
+
+                    chartsCount++;
+                    finalChartData.push({
+                        'options': graphOptions.gaPageTechnicalEfficiencyTable,
+                        'data': finalCharts.gaPageTechnicalEfficiencyTable[0].values
+                    });
+
+                }
+            }
+            if (finalCharts.gaVisitorAcquisitionEfficiencyAnalysisTable.length > 0) {
+                if (finalCharts.gaVisitorAcquisitionEfficiencyAnalysisTable[0].values.length > 0) {
+
+                    chartsCount++;
+                    finalChartData.push({
+                        'options': graphOptions.gaVisitorAcquisitionEfficiencyAnalysisTable,
+                        'data': finalCharts.gaVisitorAcquisitionEfficiencyAnalysisTable[0].values
+                    });
+
+                }
             }
             if (finalCharts.pinterestEngagementRate.length > 0) {
                 if (finalCharts.pinterestEngagementRate[0].values.length > 0) {

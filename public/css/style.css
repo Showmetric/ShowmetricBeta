@@ -82,7 +82,7 @@
 #refreshButton{
     width:16px;
     heigth:16px;
-    margin:-77px 0 0 0px;
+    margin: 0px 0px 0px -12px;
 }
 .nav .dropdown-menu li a:hover{
     background: #E6E3E3;
