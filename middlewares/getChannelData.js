@@ -143,19 +143,19 @@ exports.getChannelData = function (req, res, next) {
                     return res.status(500).json({error: 'Internal Server Error', id: req.params.widgetId});
                 else if (!user)
                     return res.status(401).json({error: 'User not found', id: req.params.widgetId});
-                else{
+                else {
                     if (response.widgetType === configAuth.widgetType.fbPosts) {
-                    req.widgetId = req.params.widgetId;
-                    req.startDate = req.body.startDate;
-                    req.endDate = req.body.endDate;
-                    callFbPostsType.fbPostsData(req, res, function (err, postData) {
-                        req.app.result = postData;
-                        next();
-                    });
-                }
+                        req.widgetId = req.params.widgetId;
+                        req.startDate = req.body.startDate;
+                        req.endDate = req.body.endDate;
+                        callFbPostsType.fbPostsData(req, res, function (err, postData) {
+                            req.app.result = postData;
+                            next();
+                        });
+                    }
                     else
-                      callEntireDataFunction();
-                   }
+                        callEntireDataFunction();
+                }
             })
         }
         else if (req.body.params) {
@@ -918,70 +918,77 @@ exports.getChannelData = function (req, res, next) {
                         var finalData = [];
                         var finalData1 = [];
                         var dbFinalData = [];
-
+                        var finalDataWithMetric = {};
+                        var findDataIndex;
                         //Array to hold the final result
                         for (var key in dataFromRemote) {
                             if (String(dataFromRemote[key].channelId) === String(metric[0].channelId)) {
                                 if (dataFromRemote[key].res === 'DataFromDb') {
-
                                 }
                                 else {
-                                    var d = new Date(dataFromRemote[key].endDate);
-                                    d.setDate(d.getDate() - 1);
-                                    d = moment(d).format('YYYY-MM-DD');
-                                    if (dataFromRemote[key].res.data.length) {
-                                        var dataLength = dataFromRemote[key].res.data[0].values.length;
-                                        var fbDataLength = dataFromRemote[key].res.data[0].values.length;
-                                        for (var index in dataFromRemote[key].res.data[0].values) {
-                                            var value = {};
-                                             if(dataFromRemote[key].res.data[0].values[index].value) var totalValue= dataFromRemote[key].res.data[0].values[index].value;
-                                             else {
-                                                 if(dataFromRemote[key].metric.objectTypes[0].meta.responseType === 'object')
-                                                 var totalValue ={};
-                                                 else
-                                                     var totalValue =0;
+                                    if (String(metric[j]._id) === String(dataFromRemote[key].metricId)) {
+                                        var d = new Date(dataFromRemote[key].endDate);
+                                        d.setDate(d.getDate() - 1);
+                                        d = moment(d).format('YYYY-MM-DD');
+                                        if (dataFromRemote[key].res.data.length) {
+                                            var dataLength = dataFromRemote[key].res.data[0].values.length;
+                                            var fbDataLength = dataFromRemote[key].res.data[0].values.length;
+                                            for (var index in dataFromRemote[key].res.data[0].values) {
+                                                var value = {};
+                                                if (dataFromRemote[key].res.data[0].values[index].value) var totalValue = dataFromRemote[key].res.data[0].values[index].value;
+                                                else {
+                                                    if (dataFromRemote[key].metric.objectTypes[0].meta.responseType === 'object')
+                                                        var totalValue = {};
+                                                    else
+                                                        var totalValue = 0;
 
-                                             }
-                                            value = {
-                                                total: totalValue,
-                                                date: dataFromRemote[key].res.data[0].values[index].end_time.substr(0, 10)
-                                            };
+                                                }
+                                                value = {
+                                                    total: totalValue,
+                                                    date: dataFromRemote[key].res.data[0].values[index].end_time.substr(0, 10)
+                                                };
+                                                if (String(metric[j]._id) === String(dataFromRemote[key].metricId)) {
+                                                    beforeReplaceEmptyData.push(value);
+                                                    var metricId = dataFromRemote[key].metricId;
+                                                }
+                                            }
                                             if (String(metric[j]._id) === String(dataFromRemote[key].metricId)) {
-                                                beforeReplaceEmptyData.push(value);
-                                                var metricId = dataFromRemote[key].metricId;
+                                                if (dataFromRemote[key].metric.objectTypes[0].meta.endpoint.length)
+                                                    finalData1 = findDaysDifference(dataFromRemote[key].startDate, d, dataFromRemote[key].metric.objectTypes[0].meta.endpoint);
+                                                else {
+                                                    if (dataFromRemote[key].metric.objectTypes[0].meta.responseType === 'object')
+                                                        finalData1 = findDaysDifference(dataFromRemote[key].startDate, d, undefined, 'noEndPoint');
+                                                    else
+                                                        finalData1 = findDaysDifference(dataFromRemote[key].startDate, d, undefined);
+                                                }
+                                                var finalReplacedData = replaceEmptyData(finalData1, beforeReplaceEmptyData);
+                                                finalReplacedData.forEach(function (value) {
+                                                    finalData.push(value)
+                                                })
                                             }
                                         }
-                                        if (String(metric[j]._id) === String(dataFromRemote[key].metricId)) {
-                                            if (dataFromRemote[key].metric.objectTypes[0].meta.endpoint.length)
-                                                finalData1 = findDaysDifference(dataFromRemote[key].startDate, d, dataFromRemote[key].metric.objectTypes[0].meta.endpoint);
-                                            else {
-                                                if (dataFromRemote[key].metric.objectTypes[0].meta.responseType === 'object')
-                                                    finalData1 = findDaysDifference(dataFromRemote[key].startDate, d, undefined, 'noEndPoint');
-                                                else
-                                                    finalData1 = findDaysDifference(dataFromRemote[key].startDate, d, undefined);
-                                            }
-                                            var finalReplacedData = replaceEmptyData(finalData1, beforeReplaceEmptyData);
-                                            finalReplacedData.forEach(function (value) {
-                                                finalData.push(value)
-                                            })
-                                        }
-                                    }
-                                    else {
-                                        if (String(metric[j]._id) === String(dataFromRemote[key].metricId)) {
-                                            if (dataFromRemote[key].metric.objectTypes[0].meta.endpoint.length)
-                                                finalData = findDaysDifference(dataFromRemote[key].startDate, d, dataFromRemote[key].metric.objectTypes[0].meta.endpoint);
-                                            else {
-                                                if (dataFromRemote[key].metric.objectTypes[0].meta.responseType === 'object')
-                                                    finalData = findDaysDifference(dataFromRemote[key].startDate, d, undefined, 'noEndPoint');
-                                                else
-                                                    finalData = findDaysDifference(dataFromRemote[key].startDate, d, undefined);
+                                        else {
+                                            if (String(metric[j]._id) === String(dataFromRemote[key].metricId)) {
+                                                if (dataFromRemote[key].metric.objectTypes[0].meta.endpoint.length)
+                                                    finalData = findDaysDifference(dataFromRemote[key].startDate, d, dataFromRemote[key].metric.objectTypes[0].meta.endpoint);
+                                                else {
+                                                    if (dataFromRemote[key].metric.objectTypes[0].meta.responseType === 'object')
+                                                        finalData = findDaysDifference(dataFromRemote[key].startDate, d, undefined, 'noEndPoint');
+                                                    else
+                                                        finalData = findDaysDifference(dataFromRemote[key].startDate, d, undefined);
+                                                }
                                             }
                                         }
+                                        finalDataWithMetric = {metricId: dataFromRemote[key].metricId, finalData: finalData}
+                                        findDataIndex = _.findIndex(dataFromRemote, function (o) {
+                                            return o.metricId == finalDataWithMetric.metricId
+                                        });
                                     }
                                 }
+
                             }
                         }
-                        if (dataFromRemote[j].res != 'DataFromDb') {
+                        if (finalDataWithMetric.metricId != undefined && findDataIndex != -1 ) {
                             if (dataFromDb[j].data != null) {
 
                                 //merge the old data with new one and update it in db
@@ -1001,31 +1008,31 @@ exports.getChannelData = function (req, res, next) {
                                 for (var k = 0; k < dbFinalData.length; k++) {
                                     finalData.push(dbFinalData[k]);
                                 }
-                                var metricId = dataFromRemote[j].metricId;
+                                var metricId = finalDataWithMetric.metricId;
                             }
                             for (var data in finalData) {
-                                    var jsonObj = {}, tempKey;
-                                    var replaceIngItem;
-                                    if (typeof finalData[data].total == 'object') {
-                                        for (var items in finalData[data].total) {
-                                            replaceIngItem=items;
-                                            if(/[$]/g.test(replaceIngItem)){
-                                                var string=finalData[data].total[items];
-                                                replaceIngItem=replaceIngItem.replace(/[$]/g, configAuth.mongoCharacterRestriction.doller)
-                                            }
-                                            if(/:/g.test(replaceIngItem)){
-                                                replaceIngItem=replaceIngItem.replace(/:/g, configAuth.mongoCharacterRestriction.colon)
-                                            }
-                                            if(/[?]/g.test(replaceIngItem)){
-                                                replaceIngItem=replaceIngItem.replace(/[?]/g, configAuth.mongoCharacterRestriction.question)
-                                            }
-                                            if(/[.]/g.test(replaceIngItem)){
-                                                replaceIngItem=replaceIngItem.replace(/[.]/g, configAuth.mongoCharacterRestriction.dot);
-                                            }
-                                            jsonObj[replaceIngItem] = finalData[data].total[items]
+                                var jsonObj = {}, tempKey;
+                                var replaceIngItem;
+                                if (typeof finalData[data].total == 'object') {
+                                    for (var items in finalData[data].total) {
+                                        replaceIngItem = items;
+                                        if (/[$]/g.test(replaceIngItem)) {
+                                            var string = finalData[data].total[items];
+                                            replaceIngItem = replaceIngItem.replace(/[$]/g, configAuth.mongoCharacterRestriction.doller)
                                         }
-                                        finalData[data].total = jsonObj;
+                                        if (/:/g.test(replaceIngItem)) {
+                                            replaceIngItem = replaceIngItem.replace(/:/g, configAuth.mongoCharacterRestriction.colon)
+                                        }
+                                        if (/[?]/g.test(replaceIngItem)) {
+                                            replaceIngItem = replaceIngItem.replace(/[?]/g, configAuth.mongoCharacterRestriction.question)
+                                        }
+                                        if (/[.]/g.test(replaceIngItem)) {
+                                            replaceIngItem = replaceIngItem.replace(/[.]/g, configAuth.mongoCharacterRestriction.dot);
+                                        }
+                                        jsonObj[replaceIngItem] = finalData[data].total[items]
                                     }
+                                    finalData[data].total = jsonObj;
+                                }
                             }
                             var now = new Date();
                             //Updating the old data with new one
@@ -1987,9 +1994,9 @@ exports.getChannelData = function (req, res, next) {
                                             for (var key in dataValue.total) {
                                                 var replacedValue = key
                                                 replacedValue = replacedValue.split('002E').join('.');
-                                                replacedValue=replacedValue.split('002D').join('$');
-                                                replacedValue=replacedValue.split('002T').join('.');
-                                                replacedValue=replacedValue.split('002C').join(':');
+                                                replacedValue = replacedValue.split('002D').join('$');
+                                                replacedValue = replacedValue.split('002T').join('.');
+                                                replacedValue = replacedValue.split('002C').join(':');
                                                 newObjForTotal[replacedValue] = dataValue.total[key];
                                             }
                                             storeTotal.push({total: newObjForTotal, date: dataValue.date})
