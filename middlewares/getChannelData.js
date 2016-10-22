@@ -746,7 +746,8 @@ exports.getChannelData = function (req, res, next) {
                             var checkMetric=metric[j].objectTypes[0].meta.gaMetricName.split(',').length;
                             if (checkMetric > 1)
                                 var dimensionList = dataFromRemote[j].Dimension;
-                            var dimensionList = metric[j].objectTypes[0].meta.dimension;
+                            else
+                                var dimensionList = metric[j].objectTypes[0].meta.dimension;
                             if (dimensionList[0].name === "ga:date" || dimensionList[0].name === "mcf:conversionDate" || dimensionList[0].name === 'day') {
                                 if (dataFromRemote[j].metric.objectTypes[0].meta.endpoint.length)
                                     finalData = findDaysDifference(dataFromRemote[j].startDate, dataFromRemote[j].endDate, dataFromRemote[j].metric.objectTypes[0].meta.endpoint);
