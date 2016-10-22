@@ -743,11 +743,11 @@ exports.getChannelData = function (req, res, next) {
                             var dimensionList = [];
                             var dimension;
                             var dimensionArray = [];
-                            var checkMetric=metric[j].objectTypes[0].meta.gaMetricName.split(',').length;
-                            if (checkMetric > 1)
-                                var dimensionList = dataFromRemote[j].Dimension;
-                            else
+
+                            if ((dataFromRemote[j].Dimension.length - metric[j].objectTypes[0].meta.dimension.length)==1 )
                                 var dimensionList = metric[j].objectTypes[0].meta.dimension;
+                            else
+                                var dimensionList = dataFromRemote[j].Dimension;
                             if (dimensionList[0].name === "ga:date" || dimensionList[0].name === "mcf:conversionDate" || dimensionList[0].name === 'day') {
                                 if (dataFromRemote[j].metric.objectTypes[0].meta.endpoint.length)
                                     finalData = findDaysDifference(dataFromRemote[j].startDate, dataFromRemote[j].endDate, dataFromRemote[j].metric.objectTypes[0].meta.endpoint);
@@ -2164,7 +2164,8 @@ exports.getChannelData = function (req, res, next) {
                                         results: results,
                                         metricId: data[i].metricId,
                                         api: metric[i].objectTypes[0].meta.api,
-                                        metric: metric[i]
+                                        metric: metric[i],
+                                        filters:metric[i].objectTypes[0].meta.filters!=undefined?metric[i].objectTypes[0].meta.filters:false
                                     };
                                     next(null, allObjects);
                                 }
@@ -2191,7 +2192,8 @@ exports.getChannelData = function (req, res, next) {
                                     results: results,
                                     metricId: data[i].metricId,
                                     api: metric[i].objectTypes[0].meta.api,
-                                    metric: metric[i]
+                                    metric: metric[i],
+                                    filters:metric[i].objectTypes[0].meta.filters!=undefined?metric[i].objectTypes[0].meta.filters:false
                                 };
                                 next(null, allObjects);
                             }
@@ -2261,6 +2263,7 @@ exports.getChannelData = function (req, res, next) {
                     callGoogleApi(apiQuery);
                 }
                 else {
+
                     apiQuery = {
                         'auth': allObjects.oauth2Client,
                         'ids': 'ga:' + allObjects.object.channelObjectId,
@@ -2270,6 +2273,7 @@ exports.getChannelData = function (req, res, next) {
                         'metrics': allObjects.metricName,
                         prettyPrint: true
                     }
+                    if(allObjects.filters) apiQuery.filters =allObjects.filters[0];
                     var analytics = googleapis.analytics({version: 'v3', auth: allObjects.oauth2Client}).data.ga.get;
                     callGoogleApi(apiQuery);
                 }
@@ -2338,6 +2342,7 @@ exports.getChannelData = function (req, res, next) {
                                     }
                                 }
                                 else {
+
                                     apiQuery = {
                                         'auth': allObjects.oauth2Client,
                                         'ids': 'ga:' + allObjects.object.channelObjectId,
@@ -2348,6 +2353,7 @@ exports.getChannelData = function (req, res, next) {
                                         'metrics': allObjects.metricName,
                                         prettyPrint: true
                                     }
+                                    if(allObjects.filters) apiQuery.filters =allObjects.filters[0];
                                 }
                                 callGoogleApi(apiQuery);
                             }

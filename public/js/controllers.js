@@ -210,7 +210,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
 
             for (var charts in widget.charts) {
                 var valuesArr = [], formattedChartData = [];
-                if (widget.charts[charts].chartType == 'line' || widget.charts[charts].chartType == 'bar' ||widget.charts[charts].chartType == 'column' || widget.charts[charts].chartType == 'area') {
+                if (widget.charts[charts].chartType == 'line' || widget.charts[charts].chartType == 'bar' || widget.charts[charts].chartType == 'column' || widget.charts[charts].chartType == 'area') {
                     for (var dataObjects in widget.charts[charts].chartData) {
                         var IsAlreadyExist = 0;
                         for (var getData in widgetCharts) {
@@ -339,6 +339,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                 updatedCharts.push({
                                     channelId: widget.charts[chartObjects].channelId,
                                     chartType: typeof widget.charts[chartObjects].metrics[0].chartType != 'undefined' ? widget.charts[chartObjects].metrics[0].chartType : '',
+                                    chartSubType: typeof widget.charts[chartObjects].metrics[0].subChartType != 'undefined' ? widget.charts[chartObjects].metrics[0].subChartType : '',
                                     chartName: widget.charts[chartObjects].name,
                                     chartColour: widget.charts[chartObjects].metrics[0].color,
                                     chartOptions: widget.charts[chartObjects].metrics[0].chartOptions,
@@ -348,6 +349,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                     chartObjectName: widget.charts[chartObjects].objectName,
                                     chartData: response.data[datas].data
                                 });
+
                             }
                         }
                     }
@@ -404,17 +406,17 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                     var chartType = widget.charts[charts].chartType;
                     if (chartType == "line" || chartType == "area" || chartType == "bar" || chartType == "column" || chartType == "stackcolumn" || chartType == "mozoverview" || chartType == 'negativeBar') {
                         if (typeof widget.charts[charts].chartData[0].total == 'object') {
-                            var chartCode=widget.charts[charts].chartCode;
+                            var chartCode = widget.charts[charts].chartCode;
                             var endpoint;
                             for (objectTypes in widget.charts[charts].metricDetails.objectTypes) {
                                 if (widget.charts[charts].metricDetails.objectTypes[objectTypes].objectTypeId == widget.charts[charts].chartObjectTypeId) {
                                     endpoint = widget.charts[charts].metricDetails.objectTypes[objectTypes].meta.endpoint;
-                                    widget.charts[charts].metricDetails.objectTypes[objectTypes].meta.endpoint =  widget.charts[charts].metricDetails.objectTypes[objectTypes].meta.endpointDisplay!=undefined?widget.charts[charts].metricDetails.objectTypes[objectTypes].meta.endpointDisplay:widget.charts[charts].metricDetails.objectTypes[objectTypes].meta.endpoint
+                                    widget.charts[charts].metricDetails.objectTypes[objectTypes].meta.endpoint = widget.charts[charts].metricDetails.objectTypes[objectTypes].meta.endpointDisplay != undefined ? widget.charts[charts].metricDetails.objectTypes[objectTypes].meta.endpointDisplay : widget.charts[charts].metricDetails.objectTypes[objectTypes].meta.endpoint
                                 }
                             }
 
                             var formattedChartDataArray = [];
-                            if(endpoint.length!=0) {
+                            if (endpoint.length != 0) {
                                 for (items in endpoint) {
                                     var currentItem = endpoint[items];
                                     var formattedChartData = [];
@@ -441,45 +443,44 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                     formattedChartDataArray.push(formattedChartData);
                                 }
                             }
-                            else{
+                            else {
                                 var formattedChartData = [];
                                 for (datas in widget.charts[charts].chartData) {
-                                    var yValue = 0,xValue, endpointArray;
-                                    var total=widget.charts[charts].chartData[datas].total
+                                    var yValue = 0, xValue, endpointArray;
+                                    var total = widget.charts[charts].chartData[datas].total
                                     if (widget.charts[charts].chartData[datas].total != null && Object.keys(widget.charts[charts].chartData[datas].total).length != 0) {
                                         for (var keyValuePairs in widget.charts[charts].chartData[datas].total) {
                                             if (keyValuePairs.search('/') > -1) {
                                                 endpointArray = keyValuePairs.split('/');
                                                 for (var splittedValues in endpointArray) {
                                                     yValue += parseFloat(widget.charts[charts].chartData[datas].total[keyValuePairs]);
-                                                    xValue =keyValuePairs;
+                                                    xValue = keyValuePairs;
                                                 }
                                             }
                                             else
                                                 yValue = widget.charts[charts].chartData[datas].total[currentItem];
-                                                xValue =keyValuePairs;
+                                            xValue = keyValuePairs;
                                         }
                                         formattedChartData.push({
                                             x: xValue,
                                             y: yValue
                                         });
                                     }
-
                                 }
                                 formattedChartDataArray.push(formattedChartData);
                             }
-                            var temp=[];
-                            if(chartCode=='userinteractions_clicks' && widget.channelName=='Facebook'){
-                                for(var i=0;i<formattedChartDataArray.length;i++){
-                                   for(var j=0;j<formattedChartDataArray[i].length;j++){
-                                       if(!temp[j]){
-                                           temp[j]={x:0,y:0}
-                                       }
-                                      temp[j].x=formattedChartDataArray[0][j].x
-                                       temp[j].y+=formattedChartDataArray[i][j].y
-                                   }
+                            var temp = [];
+                            if (chartCode == 'userinteractions_clicks' && widget.channelName == 'Facebook') {
+                                for (var i = 0; i < formattedChartDataArray.length; i++) {
+                                    for (var j = 0; j < formattedChartDataArray[i].length; j++) {
+                                        if (!temp[j]) {
+                                            temp[j] = {x: 0, y: 0}
+                                        }
+                                        temp[j].x = formattedChartDataArray[0][j].x
+                                        temp[j].y += formattedChartDataArray[i][j].y
+                                    }
                                 }
-                                formattedChartDataArray=temp;
+                                formattedChartDataArray = temp;
                             }
                             widget.charts[charts].chartData = formattedChartDataArray;
                         }
@@ -493,28 +494,37 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                             }
                             widget.charts[charts].chartData = formattedChartData;
                         }
+                        if (widget.charts[charts].chartSubType === 'fbTopReferringDomain') {
+                            var sortDomains = _.sortBy(formattedChartData, 'y').reverse();
+                            var sortedArray = [];
+                            for (var k = 0; k < 9; k++) {
+                                sortedArray.push({x: sortDomains[k].x, y: sortDomains[k].y})
+                            }
+                            widget.charts[charts].chartData = sortedArray;
+
+                        }
                     }
-                    else if(chartType == "reachVsImpressions" || chartType == "engagedUsersReach" ){
-                        if(widget.charts[charts].chartName=='Total Impressions' || widget.charts[charts].chartName=='Engaged Users'){
-                            var imp=[]
-                            var reach=[]
-                            for(var i=0;i<widget.charts.length;i++){
-                                if(widget.charts[i].chartName=='Total Impressions' || widget.charts[i].chartName=='Engaged Users'){
-                                    imp=widget.charts[i].chartData;
+                    else if (chartType == "reachVsImpressions" || chartType == "engagedUsersReach") {
+                        if (widget.charts[charts].chartName == 'Total Impressions' || widget.charts[charts].chartName == 'Engaged Users') {
+                            var imp = []
+                            var reach = []
+                            for (var i = 0; i < widget.charts.length; i++) {
+                                if (widget.charts[i].chartName == 'Total Impressions' || widget.charts[i].chartName == 'Engaged Users') {
+                                    imp = widget.charts[i].chartData;
                                 }
-                                if(widget.charts[i].chartName=='Total Reach')
-                                    reach=widget.charts[i].chartData;
+                                if (widget.charts[i].chartName == 'Total Reach')
+                                    reach = widget.charts[i].chartData;
                             }
                             var percentage = [];
-                            for(var data in imp){
-                                var value=(imp[data].total/reach[data].total)*100;
-                                if(isNaN(value))
-                                    value=0;
+                            for (var data in imp) {
+                                var value = (imp[data].total / reach[data].total) * 100;
+                                if (isNaN(value))
+                                    value = 0;
                                 percentage.push({
-                                    x:moment(imp[data].date),
-                                    y:parseFloat(value).toFixed(2)
+                                    x: moment(imp[data].date),
+                                    y: parseFloat(value).toFixed(2)
                                 })
-                        }
+                            }
                             widget.charts[charts].chartData = percentage;
                         }
                         else {
@@ -844,9 +854,11 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                         timeOnPage += parseFloat(sortdata[key][i].timeOnPage);
                                     }
                                     var bouncedivide = difference(pageviews, exits)
+
                                     function difference(pageviews, exits) {
                                         return (exits > pageviews) ? exits - pageviews : pageviews - exits
                                     }
+
                                     if (sessions === 0)
                                         var bouncesRate = bounces;
                                     else
@@ -857,11 +869,6 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                     else
                                         var avgTimeOnpage = (timeOnPage / bouncedivide);
 
-                                    avgTimeOnpage = Math.ceil(avgTimeOnpage);
-                                    var date = new Date(null);
-                                    date.setSeconds(avgTimeOnpage); // specify value for SECONDS here
-                                    avgTimeOnpage = date.toISOString().substr(11, 8);
-
                                     var path = {
                                         bouncesRate: bounces,
                                         pagePath: path,
@@ -871,6 +878,9 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                         avgTimeOnpage: avgTimeOnpage,
                                         pageviews: pageviews
                                     }
+                                    // var date = new Date(null);
+                                    // date.setSeconds(path.avgTimeOnPage)// specify value for SECONDS here
+                                    // path.avgTimeOnPage = date.toISOString().substr(11, 8);
                                     formattedChartDataArray.push(path)
                                 }
                                 formattedChartDataArray.sort(function (a, b) {
@@ -905,9 +915,9 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                     var timeOnPage = 0;
                                     var exits = 0;
                                     var bounces = 0;
-                                    var sessions=0;
-                                    var entranceRate=0;
-                                    var calculateBouncerate=0;
+                                    var sessions = 0;
+                                    var entranceRate = 0;
+                                    var calculateBouncerate = 0;
                                     for (var i = 0; i < sortdata[key].length; i++) {
                                         uniquePageviews += parseFloat(sortdata[key][i]['uniquePageviews']);
                                         sessions += parseFloat(sortdata[key][i]['sessions']);
@@ -916,15 +926,17 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                         bounces += parseFloat(sortdata[key][i]['bounces']);
                                         exits += parseFloat(sortdata[key][i]['exits']);
                                         timeOnPage += parseFloat(sortdata[key][i]['timeOnPage']);
-                                        calculateBouncerate+=(sortdata[key][i]['pageviews']*sortdata[key][i]['entranceRate'])
+                                        calculateBouncerate += (sortdata[key][i]['pageviews'] * sortdata[key][i]['entranceRate'])
                                         pageValue += parseFloat(sortdata[key][i]['pageValue']);
-                                      var pageTitle=sortdata[key][i]['pageTitle']
+                                        var pageTitle = sortdata[key][i]['pageTitle']
 
                                     }
                                     var bouncedivide = difference(pageviews, exits)
+
                                     function difference(pageviews, exits) {
                                         return (exits > pageviews) ? exits - pageviews : pageviews - exits
                                     }
+
                                     if (sessions === 0)
                                         var bouncesRate = bounces;
                                     else
@@ -934,7 +946,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                         var avgTimeOnpage = timeOnPage;
                                     else
                                         var avgTimeOnpage = (timeOnPage / bouncedivide);
-                                    entranceRate=calculateBouncerate/pageviews;
+                                    entranceRate = calculateBouncerate / pageviews;
                                     var path = {
                                         uniquePageviews: uniquePageviews,
                                         pageviews: pageviews,
@@ -943,8 +955,8 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                         pageTitle: pageTitle,
                                         entranceRate: entranceRate.toFixed(2),
                                         pageviews: pageviews,
-                                        pageValue:pageValue,
-                                        bounceRate:bouncesRate
+                                        pageValue: pageValue,
+                                        bounceRate: bouncesRate
                                     }
                                     var date = new Date(null);
                                     date.setSeconds(path.avgTimeOnPage)// specify value for SECONDS here
@@ -980,35 +992,36 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                     var avgPageLoadTime = 0;
                                     var pageLoadSample = 0;
                                     var bounceRate = 0;
-                                    var sessions=0;
-                                    var bounces=0;
-                                    var pageLoadTime=0;
+                                    var sessions = 0;
+                                    var bounces = 0;
+                                    var pageLoadTime = 0;
                                     for (var i = 0; i < sortdata[key].length; i++) {
                                         pageLoadTime += parseFloat(sortdata[key][i]['pageLoadTime']);
                                         sessions += parseFloat(sortdata[key][i]['sessions']);
                                         bounces += parseFloat(sortdata[key][i]['bounces']);
                                         pageviews += parseFloat(sortdata[key][i]['pageviews']);
                                         pageLoadSample += parseFloat(sortdata[key][i]['pageLoadSample']);
-                                        bounceRate += parseFloat(sortdata[key][i]['bounceRate']);;
-                                        var pageTitle=sortdata[key][i]['pageTitle']
+                                        bounceRate += parseFloat(sortdata[key][i]['bounceRate']);
+                                        ;
+                                        var pageTitle = sortdata[key][i]['pageTitle']
                                     }
-                                    var avgPageLoadTime=(pageLoadTime/pageLoadSample/1000).toFixed(2);
-                                    if(isNaN(avgPageLoadTime)){
-                                        avgPageLoadTime=0;
+                                    var avgPageLoadTime = (pageLoadTime / pageLoadSample / 1000).toFixed(2);
+                                    if (isNaN(avgPageLoadTime)) {
+                                        avgPageLoadTime = 0;
                                     }
                                     if (sessions === 0)
                                         var bouncesRate = bounces;
                                     else
                                         var bouncesRate = ((bounces / sessions) * 100);
-                                    avgPageLoadTime=Math.ceil(avgPageLoadTime)
+                                    avgPageLoadTime = Math.ceil(avgPageLoadTime)
                                     var path = {
                                         pageviews: pageviews,
                                         pagePath: path,
                                         pageTitle: pageTitle,
-                                        avgPageLoadTime:avgPageLoadTime.toFixed(2),
+                                        avgPageLoadTime: avgPageLoadTime.toFixed(2),
                                         pageLoadSample: pageLoadSample,
-                                        pageviews:pageviews,
-                                        bounceRate:bouncesRate.toFixed(2)
+                                        pageviews: pageviews,
+                                        bounceRate: bouncesRate.toFixed(2)
                                     }
                                     formattedChartDataArray.push(path)
                                 }
@@ -1036,11 +1049,11 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                 for (var key in sortdata) {
                                     var sourceMedium = key;
                                     var sessions = 0;
-                                    var users=0;
+                                    var users = 0;
                                     var newUsers = 0;
                                     var goalConversionRateAll = 0;
                                     var pageLoadSample = 0;
-                                    var goalValuePerSession=0;
+                                    var goalValuePerSession = 0;
 
                                     for (var i = 0; i < sortdata[key].length; i++) {
                                         sessions += parseFloat(sortdata[key][i]['sessions']);
@@ -1052,11 +1065,11 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                         bounceRate += parseFloat(sortdata[key][i]['bounceRate']);
                                     }
                                     var path = {
-                                        sourceMedium:sourceMedium,
+                                        sourceMedium: sourceMedium,
                                         sessions: sessions,
-                                        users:users,
+                                        users: users,
                                         newUsers: newUsers,
-                                        goalValuePerSession:goalValuePerSession,
+                                        goalValuePerSession: goalValuePerSession,
                                         goalConversionRateAll: goalConversionRateAll.toFixed(2),
                                     }
                                     formattedChartDataArray.push(path)
@@ -1069,7 +1082,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                             }
                         }
                     }
-                    else if(chartType=='pageContentEfficiency'){
+                    else if (chartType == 'pageContentEfficiency') {
                         var topPages = {};
                         if (typeof widget.charts[charts].chartData[0] != 'undefined') {
                             if (typeof(widget.charts[charts].chartData[0].total) === 'object') {
@@ -1088,29 +1101,29 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                     var uniquePageviews = 0;
                                     var pageviews = 0;
                                     var bounces = 0;
-                                    var sessions=0;
-                                    var entranceRate=0;
-                                    var calculateBouncerate=0;
+                                    var sessions = 0;
+                                    var entranceRate = 0;
+                                    var calculateBouncerate = 0;
                                     var bouncesRate;
                                     for (var i = 0; i < sortdata[key].length; i++) {
                                         uniquePageviews += parseFloat(sortdata[key][i]['uniquePageviews']);
                                         sessions += parseFloat(sortdata[key][i]['sessions']);
                                         pageviews += parseFloat(sortdata[key][i]['pageviews']);
                                         bounces += parseFloat(sortdata[key][i]['bounces']);
-                                        calculateBouncerate+=(sortdata[key][i]['pageviews']*sortdata[key][i]['entranceRate'])
-                                        pageTitle=sortdata[key][i]['pageTitle']
+                                        calculateBouncerate += (sortdata[key][i]['pageviews'] * sortdata[key][i]['entranceRate'])
+                                        pageTitle = sortdata[key][i]['pageTitle']
                                     }
                                     if (sessions === 0)
                                         bouncesRate = bounces;
                                     else
                                         bouncesRate = ((bounces / sessions) * 100).toFixed(2);
-                                    entranceRate=calculateBouncerate/pageviews;
+                                    entranceRate = calculateBouncerate / pageviews;
                                     var path = {
                                         bounceRate: bouncesRate,
                                         pageTitle: pageTitle,
                                         uniquePageviews: uniquePageviews.toFixed(2),
                                         pageviews: pageviews,
-                                        entranceRate:entranceRate.toFixed(2)
+                                        entranceRate: entranceRate.toFixed(2)
                                     }
                                     formattedChartDataArray.push(path)
                                 }
@@ -1118,14 +1131,14 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                     return parseFloat(a.uniquePageviews) - parseFloat(b.uniquePageviews);
                                 });
                                 formattedChartDataArray.reverse();
-                                var finalChartArray=[];
-                                for(var i=0;i<10;i++)
+                                var finalChartArray = [];
+                                for (var i = 0; i < 10; i++)
                                     finalChartArray.push(formattedChartDataArray[i]);
                                 widget.charts[charts].chartData = finalChartArray;
                             }
                         }
                     }
-                    else if(chartType=='pageTechnicalEfficiency'){
+                    else if (chartType == 'pageTechnicalEfficiency') {
                         if (typeof widget.charts[charts].chartData[0] != 'undefined') {
                             if (typeof(widget.charts[charts].chartData[0].total) === 'object') {
                                 var groupedArray = []
@@ -1144,26 +1157,26 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                     var avgPageLoadTime = 0;
                                     var pageLoadSample = 0;
                                     var bounceRate = 0;
-                                    var sessions=0;
-                                    var bounces=0;
-                                    var pageLoadTime=0;
+                                    var sessions = 0;
+                                    var bounces = 0;
+                                    var pageLoadTime = 0;
                                     for (var i = 0; i < sortdata[key].length; i++) {
                                         pageLoadTime += parseFloat(sortdata[key][i]['pageLoadTime']);
                                         sessions += parseFloat(sortdata[key][i]['sessions']);
                                         bounces += parseFloat(sortdata[key][i]['bounces']);
                                         pageviews += parseFloat(sortdata[key][i]['pageviews']);
                                         pageLoadSample += parseFloat(sortdata[key][i]['pageLoadSample']);
-                                        var pageTitle=sortdata[key][i]['pageTitle']
+                                        var pageTitle = sortdata[key][i]['pageTitle']
                                     }
-                                    var avgPageLoadTime=(pageLoadTime/pageLoadSample/1000).toFixed(2);
-                                    if(isNaN(avgPageLoadTime)){
-                                        avgPageLoadTime=0;
+                                    var avgPageLoadTime = (pageLoadTime / pageLoadSample / 1000).toFixed(2);
+                                    if (isNaN(avgPageLoadTime)) {
+                                        avgPageLoadTime = 0;
                                     }
                                     if (sessions === 0)
                                         var bouncesRate = bounces;
                                     else
                                         var bouncesRate = ((bounces / sessions) * 100);
-                                    avgPageLoadTime=Math.ceil(avgPageLoadTime)
+                                    avgPageLoadTime = Math.ceil(avgPageLoadTime)
                                     var path = {
                                         bounceRate: bouncesRate.toFixed(2),
                                         pageTitle: pageTitle,
@@ -1176,14 +1189,14 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                     return parseFloat(a.pageviews) - parseFloat(b.pageviews);
                                 });
                                 formattedChartDataArray.reverse();
-                                var finalChartArray=[];
-                                for(var i=0;i<10;i++)
+                                var finalChartArray = [];
+                                for (var i = 0; i < 10; i++)
                                     finalChartArray.push(formattedChartDataArray[i]);
                                 widget.charts[charts].chartData = finalChartArray;
                             }
                         }
                     }
-                    else if(chartType=='visitorAcquisitionEfficiency'){
+                    else if (chartType == 'visitorAcquisitionEfficiency') {
                         var topPages = {};
                         if (typeof widget.charts[charts].chartData[0] != 'undefined') {
                             if (typeof(widget.charts[charts].chartData[0].total) === 'object') {
@@ -1199,11 +1212,11 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                 for (var key in sortdata) {
                                     var sourceMedium = key;
                                     var sessions = 0;
-                                    var users=0;
+                                    var users = 0;
                                     var newUsers = 0;
                                     var goalConversionRateAll = 0;
                                     var pageLoadSample = 0;
-                                    var goalValuePerSession=0;
+                                    var goalValuePerSession = 0;
 
                                     for (var i = 0; i < sortdata[key].length; i++) {
                                         sessions += parseFloat(sortdata[key][i]['sessions']);
@@ -1216,7 +1229,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                         newUsers: newUsers.toFixed(2),
                                         sourceMedium: sourceMedium,
                                         goalValuePerSession: goalValuePerSession.toFixed(2),
-                                        goalConversionRateAll:goalConversionRateAll.toFixed(2),
+                                        goalConversionRateAll: goalConversionRateAll.toFixed(2),
                                         sessions: sessions
                                     }
                                     formattedChartDataArray.push(path)
@@ -1225,8 +1238,8 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                     return parseFloat(a.sessions) - parseFloat(b.sessions);
                                 });
                                 formattedChartDataArray.reverse();
-                                var finalChartArray=[];
-                                for(var i=0;i<10;i++)
+                                var finalChartArray = [];
+                                for (var i = 0; i < 10; i++)
                                     finalChartArray.push(formattedChartDataArray[i]);
                                 widget.charts[charts].chartData = finalChartArray;
                             }
@@ -1235,39 +1248,39 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                     else if (chartType == "fbReachByAge") {
                         var ageReach = {
                             '13-17': {
-                               'Female':0,
-                                "Male":0,
-                                "Unspecified":0
+                                'Female': 0,
+                                "Male": 0,
+                                "Unspecified": 0
                             },
                             '18-24': {
-                                'Female':0,
-                                "Male":0,
-                                "Unspecified":0
+                                'Female': 0,
+                                "Male": 0,
+                                "Unspecified": 0
                             },
-                            '25-34':{
-                                'Female':0,
-                                "Male":0,
-                                "Unspecified":0
+                            '25-34': {
+                                'Female': 0,
+                                "Male": 0,
+                                "Unspecified": 0
                             },
-                            '35-44':{
-                                'Female':0,
-                                "Male":0,
-                                "Unspecified":0
+                            '35-44': {
+                                'Female': 0,
+                                "Male": 0,
+                                "Unspecified": 0
                             },
                             '45-54': {
-                                'Female':0,
-                                "Male":0,
-                                "Unspecified":0
+                                'Female': 0,
+                                "Male": 0,
+                                "Unspecified": 0
                             },
                             '55-64': {
-                                'Female':0,
-                                "Male":0,
-                                "Unspecified":0
+                                'Female': 0,
+                                "Male": 0,
+                                "Unspecified": 0
                             },
                             '65+': {
-                                'Female':0,
-                                "Male":0,
-                                "Unspecified":0
+                                'Female': 0,
+                                "Male": 0,
+                                "Unspecified": 0
                             },
                         };
                         if (typeof widget.charts[charts].chartData[0] != 'undefined') {
@@ -1283,7 +1296,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                             gender = 'Male';
                                         if (gender == 'U')
                                             gender = 'Unspecified';
-                                        if(ageReach[age]!= undefined ){
+                                        if (ageReach[age] != undefined) {
                                             ageReach[age] = ageReach[age] || 0;
                                             ageReach[age][gender] += parseInt(widget.charts[charts].chartData[datas].total[keys]);
                                         }
@@ -1291,98 +1304,98 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                     }
                                 }
                             }
-                            var categories=[];
-                           var series=[];
-                           for(var key in ageReach ){
-                               categories.push(key)
-                               var lengthbar=ageReach[key].length;
-                           }
-                           var name=categories[0];
-                           for(var names in ageReach[name] ){
-                               var sample={}
-                               sample.name=names;
-                               var position=0;
-                               sample.data=[];
-                               for(var value in ageReach){
-                                   sample.data[position]=ageReach[value][names];
-                                   position++;
-                               }
-                               series.push(sample)
-                           }
-                           var finaldata=[ageReach,categories,series]
+                            var categories = [];
+                            var series = [];
+                            for (var key in ageReach) {
+                                categories.push(key)
+                                var lengthbar = ageReach[key].length;
+                            }
+                            var name = categories[0];
+                            for (var names in ageReach[name]) {
+                                var sample = {}
+                                sample.name = names;
+                                var position = 0;
+                                sample.data = [];
+                                for (var value in ageReach) {
+                                    sample.data[position] = ageReach[value][names];
+                                    position++;
+                                }
+                                series.push(sample)
+                            }
+                            var finaldata = [ageReach, categories, series]
                         }
                         widget.charts[charts].chartData = finaldata;
                     }
                     else if (chartType == "fbStoreType" || chartType == 'engagementDay') {
-                        if(chartType == "fbStoreType"  ){
+                        if (chartType == "fbStoreType") {
                             if (typeof widget.charts[charts].chartData[0] != 'undefined') {
                                 if (typeof(widget.charts[charts].chartData[0].total) === 'object') {
-                                    var rearrangedata=[]
+                                    var rearrangedata = []
                                     for (var datas in widget.charts[charts].chartData) {
-                                        var total={
-                                            'page post':0,
-                                            'Other':0
+                                        var total = {
+                                            'page post': 0,
+                                            'Other': 0
                                         }
                                         var date;
                                         for (var keys in widget.charts[charts].chartData[datas].total) {
-                                            if(keys === 'page post'){
-                                                total[keys]=widget.charts[charts].chartData[datas].total[keys]
-                                            }else
-                                                total['Other']+=widget.charts[charts].chartData[datas].total[keys]
+                                            if (keys === 'page post') {
+                                                total[keys] = widget.charts[charts].chartData[datas].total[keys]
+                                            } else
+                                                total['Other'] += widget.charts[charts].chartData[datas].total[keys]
                                         }
                                         rearrangedata.push({
-                                            date:moment(widget.charts[charts].chartData[datas].date),
-                                            total:total
+                                            date: moment(widget.charts[charts].chartData[datas].date),
+                                            total: total
                                         })
                                     }
-                                    widget.charts[charts].chartData=rearrangedata;
+                                    widget.charts[charts].chartData = rearrangedata;
                                 }
                             }
                         }
-                        if(chartType=="engagementDay"){
-                            var days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-                            var sunValue={},monValue={},tueValue={},wedValue={},thuValue={},friValue={},satValue={};
-                            var valueArray=[sunValue,monValue,tueValue,wedValue,thuValue,friValue,satValue]
+                        if (chartType == "engagementDay") {
+                            var days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+                            var sunValue = {}, monValue = {}, tueValue = {}, wedValue = {}, thuValue = {}, friValue = {}, satValue = {};
+                            var valueArray = [sunValue, monValue, tueValue, wedValue, thuValue, friValue, satValue]
                             if (typeof widget.charts[charts].chartData[0] != 'undefined') {
-                                for(var i=0;i<widget.charts[charts].chartData.length;i++){
-                                    if (typeof(widget.charts[charts].chartData[i].date) != 'undefined' ) {
-                                        var d=new Date(widget.charts[charts].chartData[i].date)
-                                        var dayInNumber=d.getDay()
-                                        if(dayInNumber < 7){
-                                            for (var keys in widget.charts[charts].chartData[i].total){
-                                                if(keys === 'comment' || keys ===  'like'|| keys === 'link'){
-                                                    if(!valueArray[dayInNumber].hasOwnProperty(keys)){
-                                                        valueArray[dayInNumber][keys]=0;
-                                                        valueArray[dayInNumber][keys]+=widget.charts[charts].chartData[i].total[keys];
+                                for (var i = 0; i < widget.charts[charts].chartData.length; i++) {
+                                    if (typeof(widget.charts[charts].chartData[i].date) != 'undefined') {
+                                        var d = new Date(widget.charts[charts].chartData[i].date)
+                                        var dayInNumber = d.getDay()
+                                        if (dayInNumber < 7) {
+                                            for (var keys in widget.charts[charts].chartData[i].total) {
+                                                if (keys === 'comment' || keys === 'like' || keys === 'link') {
+                                                    if (!valueArray[dayInNumber].hasOwnProperty(keys)) {
+                                                        valueArray[dayInNumber][keys] = 0;
+                                                        valueArray[dayInNumber][keys] += widget.charts[charts].chartData[i].total[keys];
                                                     }
-                                                    else valueArray[dayInNumber][keys]+=widget.charts[charts].chartData[i].total[keys];
+                                                    else valueArray[dayInNumber][keys] += widget.charts[charts].chartData[i].total[keys];
                                                 }
                                             }
                                         }
                                     }
                                 }
-                                var rearrangeData=[]
-                                for(var k=0;k<days.length;k++){
+                                var rearrangeData = []
+                                for (var k = 0; k < days.length; k++) {
                                     rearrangeData.push({
-                                        date:days[k],
-                                        total:valueArray[k]
+                                        date: days[k],
+                                        total: valueArray[k]
                                     })
                                 }
 
-                           }
-                           widget.charts[charts].chartData=rearrangeData;
-                       }
+                            }
+                            widget.charts[charts].chartData = rearrangeData;
+                        }
                         if (typeof widget.charts[charts].chartData[0].total == 'object') {
                             var endpoint;
                             for (objectTypes in widget.charts[charts].metricDetails.objectTypes) {
                                 if (widget.charts[charts].metricDetails.objectTypes[objectTypes].objectTypeId == widget.charts[charts].chartObjectTypeId) {
-                                   if(chartType == 'fbStoreType')
-                                       endpoint=['page post','Other']
+                                    if (chartType == 'fbStoreType')
+                                        endpoint = ['page post', 'Other']
                                     else
-                                    endpoint =  widget.charts[charts].metricDetails.objectTypes[objectTypes].meta.endpoint;
+                                        endpoint = widget.charts[charts].metricDetails.objectTypes[objectTypes].meta.endpoint;
                                 }
                             }
-                            widget.charts[charts].metricDetails.objectTypes[objectTypes].meta.endpoint=widget.charts[charts].metricDetails.objectTypes[objectTypes].meta.endpointDisplay;
+                            widget.charts[charts].metricDetails.objectTypes[objectTypes].meta.endpoint = widget.charts[charts].metricDetails.objectTypes[objectTypes].meta.endpointDisplay;
                             var formattedChartDataArray = [];
                             for (items in endpoint) {
                                 var currentItem = endpoint[items];
@@ -1402,14 +1415,14 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                                 yValue = widget.charts[charts].chartData[datas].total[currentItem];
                                         }
                                     }
-                                    if(chartType="engagementDay"){
+                                    if (chartType = "engagementDay") {
                                         formattedChartData.push({
                                             x: widget.charts[charts].chartData[datas].date,
                                             y: yValue
                                         });
-                                    }else {
+                                    } else {
                                         formattedChartData.push({
-                                            x:moment( widget.charts[charts].chartData[datas].date),
+                                            x: moment(widget.charts[charts].chartData[datas].date),
                                             y: yValue
                                         });
                                     }
@@ -1419,92 +1432,92 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                             }
                             widget.charts[charts].chartData = formattedChartDataArray;
                         }
-                        widget.charts[charts].chartType='line'
+                        widget.charts[charts].chartType = 'line'
                     }
-                    else if(chartType == "fbReachByCountry"){
-                        if (typeof widget.charts[charts].chartData[0] != 'undefined') {
-                            if (typeof(widget.charts[charts].chartData[0].total) === 'object') {
-                                var groupedArray = []
-                                for (var k = 0; k < widget.charts[charts].chartData.length; k++) {
-                                   groupedArray.push(widget.charts[charts].chartData[k].total)
-                                }
-                                var country={};
-                                for(var i=0;i< groupedArray.length;i++){
-                                    for (var key in groupedArray[i] ){
-                                       if( !country.hasOwnProperty(key)){
-                                           country[key]=0;
-                                           country[key]+=groupedArray[i][key]
-                                       }
-                                        else
-                                           country[key]+=groupedArray[i][key]
-
-                                    }
-                                }
-                                var sortable=[];
-                                for (var countryname in country)
-                                    sortable.push([countryname, country[countryname]])
-                                sortable.sort(
-                                    function(a, b) {
-                                        return a[1] - b[1]
-                                    }
-                                ).reverse()
-                                country={'Others':0}
-                                for(var k=0;k<sortable.length;k++ ){
-                                    if(k < 5){
-                                        if( !country.hasOwnProperty(sortable[k][0])){
-                                            country[sortable[k][0]]=0;
-                                            country[sortable[k][0]]=sortable[k][1]
-                                        }
-                                        else
-                                            country[sortable[k][0]]=sortable[k][1]
-                                    }else
-                                        country.Others+=sortable[k][1]
-                                }
-                            }
-
-                        }
-                        widget.charts[charts].chartData = country;
-                    }
-                    else if(chartType == "fbReachByCity"){
+                    else if (chartType == "fbReachByCountry") {
                         if (typeof widget.charts[charts].chartData[0] != 'undefined') {
                             if (typeof(widget.charts[charts].chartData[0].total) === 'object') {
                                 var groupedArray = []
                                 for (var k = 0; k < widget.charts[charts].chartData.length; k++) {
                                     groupedArray.push(widget.charts[charts].chartData[k].total)
                                 }
-                                var country={};
-                                for(var i=0;i< groupedArray.length;i++){
-                                    for (var key in groupedArray[i] ){
-                                        var changekey=key.split(',')
-                                        var key1=changekey[0];
-                                        if( !country.hasOwnProperty(key)){
-                                            country[key1]=0;
-                                            country[key1]+=groupedArray[i][key]
+                                var country = {};
+                                for (var i = 0; i < groupedArray.length; i++) {
+                                    for (var key in groupedArray[i]) {
+                                        if (!country.hasOwnProperty(key)) {
+                                            country[key] = 0;
+                                            country[key] += groupedArray[i][key]
                                         }
                                         else
-                                            country[key1]+=groupedArray[i][key]
+                                            country[key] += groupedArray[i][key]
 
                                     }
                                 }
-                                var sortable=[];
+                                var sortable = [];
                                 for (var countryname in country)
                                     sortable.push([countryname, country[countryname]])
                                 sortable.sort(
-                                    function(a, b) {
+                                    function (a, b) {
                                         return a[1] - b[1]
                                     }
                                 ).reverse()
-                                country={'Others':0}
-                                for(var k=0;k<sortable.length;k++ ){
-                                    if(k < 5){
-                                        if( !country.hasOwnProperty(sortable[k][0])){
-                                            country[sortable[k][0]]=0;
-                                            country[sortable[k][0]]=sortable[k][1]
+                                country = {'Others': 0}
+                                for (var k = 0; k < sortable.length; k++) {
+                                    if (k < 5) {
+                                        if (!country.hasOwnProperty(sortable[k][0])) {
+                                            country[sortable[k][0]] = 0;
+                                            country[sortable[k][0]] = sortable[k][1]
                                         }
                                         else
-                                            country[sortable[k][0]]=sortable[k][1]
-                                    }else
-                                        country.Others+=sortable[k][1]
+                                            country[sortable[k][0]] = sortable[k][1]
+                                    } else
+                                        country.Others += sortable[k][1]
+                                }
+                            }
+
+                        }
+                        widget.charts[charts].chartData = country;
+                    }
+                    else if (chartType == "fbReachByCity") {
+                        if (typeof widget.charts[charts].chartData[0] != 'undefined') {
+                            if (typeof(widget.charts[charts].chartData[0].total) === 'object') {
+                                var groupedArray = []
+                                for (var k = 0; k < widget.charts[charts].chartData.length; k++) {
+                                    groupedArray.push(widget.charts[charts].chartData[k].total)
+                                }
+                                var country = {};
+                                for (var i = 0; i < groupedArray.length; i++) {
+                                    for (var key in groupedArray[i]) {
+                                        var changekey = key.split(',')
+                                        var key1 = changekey[0];
+                                        if (!country.hasOwnProperty(key)) {
+                                            country[key1] = 0;
+                                            country[key1] += groupedArray[i][key]
+                                        }
+                                        else
+                                            country[key1] += groupedArray[i][key]
+
+                                    }
+                                }
+                                var sortable = [];
+                                for (var countryname in country)
+                                    sortable.push([countryname, country[countryname]])
+                                sortable.sort(
+                                    function (a, b) {
+                                        return a[1] - b[1]
+                                    }
+                                ).reverse()
+                                country = {'Others': 0}
+                                for (var k = 0; k < sortable.length; k++) {
+                                    if (k < 5) {
+                                        if (!country.hasOwnProperty(sortable[k][0])) {
+                                            country[sortable[k][0]] = 0;
+                                            country[sortable[k][0]] = sortable[k][1]
+                                        }
+                                        else
+                                            country[sortable[k][0]] = sortable[k][1]
+                                    } else
+                                        country.Others += sortable[k][1]
                                 }
 
                             }
@@ -1512,41 +1525,42 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                         }
                         widget.charts[charts].chartData = country;
                     }
-                    else if(chartType == "fanSource"){
+                    else if (chartType == "fanSource") {
                         if (typeof widget.charts[charts].chartData[0] != 'undefined') {
                             if (typeof(widget.charts[charts].chartData[0].total) === 'object') {
-                                var fanSources={'Others':0,
-                                    'page_profile':0,
-                                    'like_story':0,
-                                    'mobile':0,
-                                    'mobile_ads':0,
-                                    'external_connect':0,
-                                    'recommended_pages':0
+                                var fanSources = {
+                                    'Others': 0,
+                                    'page_profile': 0,
+                                    'like_story': 0,
+                                    'mobile': 0,
+                                    'mobile_ads': 0,
+                                    'external_connect': 0,
+                                    'recommended_pages': 0
                                 }
                                 for (var datas in widget.charts[charts].chartData) {
                                     for (var keys in widget.charts[charts].chartData[datas].total) {
-                                        if(widget.charts[charts].chartData[datas].total[keys] != 'undefined'){
-                                            if(keys === 'page_profile' || keys ==='like_story' ||keys === 'mobile' ||keys === 'mobile_ads'||keys === 'external_connect' || keys ==='recommended_pages' ) {
+                                        if (widget.charts[charts].chartData[datas].total[keys] != 'undefined') {
+                                            if (keys === 'page_profile' || keys === 'like_story' || keys === 'mobile' || keys === 'mobile_ads' || keys === 'external_connect' || keys === 'recommended_pages') {
                                                 fanSources[keys] += widget.charts[charts].chartData[datas].total[keys];
                                             }
                                             else
-                                                fanSources['Others']+=widget.charts[charts].chartData[datas].total[keys];
+                                                fanSources['Others'] += widget.charts[charts].chartData[datas].total[keys];
                                         }
                                     }
                                 }
-                                var  fansourceChange={
-                                    "Page Profile":fanSources['page_profile'],
-                                    "Like story ads":fanSources['like_story'],
-                                    "Mobile":fanSources['mobile'],
-                                    "Mobile ads":fanSources['mobile_ads'],
-                                    "External":fanSources['external_connect'],
-                                    "Recommended pages":fanSources['recommended_pages'],
-                                    " Others":fanSources['Others']
+                                var fansourceChange = {
+                                    "Page Profile": fanSources['page_profile'],
+                                    "Like story ads": fanSources['like_story'],
+                                    "Mobile": fanSources['mobile'],
+                                    "Mobile ads": fanSources['mobile_ads'],
+                                    "External": fanSources['external_connect'],
+                                    "Recommended pages": fanSources['recommended_pages'],
+                                    " Others": fanSources['Others']
                                 }
-                                widget.charts[charts].chartData=fansourceChange;
+                                widget.charts[charts].chartData = fansourceChange;
                             }
                         }
-                        widget.charts[charts].chartType='fbReachByCity'
+                        widget.charts[charts].chartType = 'fbReachByCity'
                     }
                     else if (chartType == "pinterestEngagementRate") {
                         if (typeof widget.charts[charts].chartData[0] != 'undefined') {
@@ -1743,17 +1757,20 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                             }
                         }
                     }
-                    else if(chartType == "gaTopCountriesToSocialVisits" || chartType==='gaTopCitiesToSocialVisits'){
+                    else if (chartType == "gaTopCountriesToSocialVisits" || chartType === 'gaTopCitiesToSocialVisits') {
                         if (typeof widget.charts[charts].chartData[0] != 'undefined') {
                             if (typeof(widget.charts[charts].chartData[0].total) === 'object') {
                                 var groupedArray = [];
-                                var formattedChartDataArray=[];
-                                var topFiveValues={};
+                                var formattedChartDataArray = [];
+                                var topFiveValues = {};
                                 var others = 0;
-                                widget.charts[charts].chartData.forEach(function(value){
-                                    for(var index in value.total){
-                                        if(index.indexOf(widget.charts[charts].metricDetails.objectTypes[0].meta.endpoint[0]+'/')!=-1)
-                                            groupedArray.push({country:index.split(widget.charts[charts].metricDetails.objectTypes[0].meta.endpoint[0]+'/').join(''),value:value.total[index]})
+                                widget.charts[charts].chartData.forEach(function (value) {
+                                    for (var index in value.total) {
+                                        if (index.indexOf(widget.charts[charts].metricDetails.objectTypes[0].meta.endpoint[0] + '/') != -1)
+                                            groupedArray.push({
+                                                country: index.split(widget.charts[charts].metricDetails.objectTypes[0].meta.endpoint[0] + '/').join(''),
+                                                value: value.total[index]
+                                            })
                                     }
                                 })
                                 var sortdata = _.groupBy(groupedArray, 'country');
@@ -1768,15 +1785,270 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                     }
                                     formattedChartDataArray.push(path)
                                 }
-                               var sortCountry = _.sortBy(formattedChartDataArray,'sessions').reverse();
-                                for(var k =0;k<5;k++)
+                                var sortCountry = _.sortBy(formattedChartDataArray, 'sessions').reverse();
+                                for (var k = 0; k < 5; k++)
                                     topFiveValues[sortCountry[k].country] = sortCountry[k].sessions;
-                                for(var j = 5;j<sortCountry.length;j++)
-                                    others =others+sortCountry[j].sessions;
+                                for (var j = 5; j < sortCountry.length; j++)
+                                    others = others + sortCountry[j].sessions;
                                 topFiveValues['Others'] = others;
                             }
                         }
                         widget.charts[charts].chartData = topFiveValues;
+                    }
+                    else if (chartType == "audienceBehaviourbyDay") {
+                        var days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+                        widget.charts[charts].chartData[i]
+                        var sunValue = {}, monValue = {}, tueValue = {}, wedValue = {}, thuValue = {}, friValue = {}, satValue = {};
+                        var valueArray = [sunValue, monValue, tueValue, wedValue, thuValue, friValue, satValue]
+                        if (typeof widget.charts[charts].chartData[0] != 'undefined') {
+                            for (var i = 0; i < widget.charts[charts].chartData.length; i++) {
+                                if (typeof(widget.charts[charts].chartData[i].date) != 'undefined') {
+                                    var d = new Date(widget.charts[charts].chartData[i].date)
+                                    var dayInNumber = d.getDay()
+                                    if (dayInNumber < 7) {
+                                        for (var keys in widget.charts[charts].chartData[i].total[0]) {
+                                            if (keys != 'date' && keys != 'dayOfWeek' && keys != 'total') {
+                                                if (!valueArray[dayInNumber].hasOwnProperty(keys)) {
+                                                    valueArray[dayInNumber][keys] = 0;
+                                                    valueArray[dayInNumber][keys] += parseFloat(widget.charts[charts].chartData[i].total[0][keys]);
+                                                }
+                                                else valueArray[dayInNumber][keys] += parseFloat(widget.charts[charts].chartData[i].total[0][keys]);
+                                            }
+                                        }
+                                        valueArray[dayInNumber]['bounceRate'] = 0
+                                        if (valueArray[dayInNumber]['sessions'] === 0) {
+                                            valueArray[dayInNumber]['bounceRate'] = valueArray[dayInNumber]['bounces']
+                                        } else
+                                            valueArray[dayInNumber]['bounceRate'] = valueArray[dayInNumber]['sessions'] / valueArray[dayInNumber]['bounces']
+                                    }
+                                }
+                            }
+                        }
+                        var rearrangeData = []
+                        for (var k = 0; k < days.length; k++) {
+                            rearrangeData.push({
+                                date: days[k],
+                                total: valueArray[k]
+                            })
+                        }
+                        widget.charts[charts].chartData = rearrangeData;
+                    }
+                    else if (chartType === "audienceBehaviourByTimeofday") {
+                        if (typeof(widget.charts[charts].chartData[0].total) === 'object') {
+                            var groupedArray = []
+                            for (var k = 0; k < widget.charts[charts].chartData.length; k++) {
+                                var sampleArray = $.map(widget.charts[charts].chartData[k].total, function (value, index) {
+                                    return [value];
+                                });
+                                groupedArray = groupedArray.concat(sampleArray)
+                            }
+
+                            var date = [];
+                            var formattedChartDataArray = []
+                            var sortdata = _.groupBy(groupedArray, 'hour')
+                            for (var key in sortdata) {
+                                var hour = key;
+                                var pageviews = 0;
+                                var bounces = 0;
+                                var sessions = 0;
+                                var pageviewsPerSession = 0;
+                                var percentNewSessions = 0;
+                                for (var i = 0; i < sortdata[key].length; i++) {
+                                    sessions += parseFloat(sortdata[key][i]['sessions']);
+                                    pageviews += parseFloat(sortdata[key][i]['pageviews']);
+                                    bounces += parseFloat(sortdata[key][i]['bounces']);
+                                    pageviewsPerSession += parseFloat(sortdata[key][i]['pageviewsPerSession']);
+                                    percentNewSessions += parseFloat(sortdata[key][i]['percentNewSessions']);
+                                }
+                                if (sessions === 0)
+                                    var bouncesRate = bounces;
+                                else
+                                    var bouncesRate = ((bounces / sessions) * 100).toFixed(2);
+                                var hour = {
+                                    hour: hour,
+                                    sessions: sessions,
+                                    bouncesRate: bouncesRate,
+                                    pageviews: pageviews,
+                                    pageviewsPerSession: pageviewsPerSession,
+                                    percentNewSessions: percentNewSessions,
+                                }
+                                formattedChartDataArray.push(hour)
+                            }
+                            var sortArray = [];
+
+                            formattedChartDataArray.sort(function (a, b) {
+                                return parseFloat(a.sessions) - parseFloat(b.sessions);
+                            });
+                            formattedChartDataArray.reverse();
+                            for (var k = 0; k < formattedChartDataArray.length; k++) {
+                                sortArray.push({
+                                    date: formattedChartDataArray[k]['hour'],
+                                    total: formattedChartDataArray[k]
+                                })
+                            }
+                            widget.charts[charts].chartType = 'audienceBehaviourbyDay';
+                            widget.charts[charts].chartData = sortArray;
+                        }
+                    }
+                    else if (chartType === "socialContributionToSiteTraffic") {
+                        if (typeof widget.charts[charts].chartData[0].total == 'object') {
+                            var endpoint;
+                            for (objectTypes in widget.charts[charts].metricDetails.objectTypes) {
+                                if (widget.charts[charts].metricDetails.objectTypes[objectTypes].objectTypeId == widget.charts[charts].chartObjectTypeId) {
+                                    endpoint = widget.charts[charts].metricDetails.objectTypes[objectTypes].meta.endpoint;
+                                    widget.charts[charts].metricDetails.objectTypes[objectTypes].meta.endpoint = widget.charts[charts].metricDetails.objectTypes[objectTypes].meta.endpointDisplay != undefined ? widget.charts[charts].metricDetails.objectTypes[objectTypes].meta.endpointDisplay : widget.charts[charts].metricDetails.objectTypes[objectTypes].meta.endpoint
+                                }
+                            }
+                            var formattedChartDataArray = [];
+                            if (endpoint.length != 0) {
+                                for (items in endpoint) {
+                                    var currentItem = endpoint[items];
+                                    var formattedChartData = [];
+                                    for (datas in widget.charts[charts].chartData) {
+                                        var yValue = 0, endpointArray;
+                                        if (widget.charts[charts].chartData[datas].total != null && Object.keys(widget.charts[charts].chartData[datas].total.length != 0)) {
+                                            for (var keyValuePairs in widget.charts[charts].chartData[datas].total) {
+                                                if (keyValuePairs.search('/') > -1) {
+                                                    endpointArray = keyValuePairs.split('/');
+                                                    for (var splittedValues in endpointArray) {
+                                                        if (endpointArray[splittedValues] == currentItem)
+                                                            yValue += parseFloat(widget.charts[charts].chartData[datas].total[keyValuePairs]);
+                                                    }
+                                                }
+                                                else if (keyValuePairs == currentItem)
+                                                    yValue = widget.charts[charts].chartData[datas].total[currentItem];
+                                            }
+                                        }
+                                        formattedChartData.push({
+                                            x: moment(widget.charts[charts].chartData[datas].date),
+                                            y: yValue
+                                        });
+                                    }
+                                    formattedChartDataArray.push(formattedChartData);
+                                }
+                            }
+                            else {
+                                var formattedChartData = [];
+                                for (datas in widget.charts[charts].chartData) {
+                                    var yValue = 0, xValue, endpointArray;
+                                    var total = widget.charts[charts].chartData[datas].total
+                                    if (widget.charts[charts].chartData[datas].total != null && Object.keys(widget.charts[charts].chartData[datas].total).length != 0) {
+                                        for (var keyValuePairs in widget.charts[charts].chartData[datas].total) {
+                                            if (keyValuePairs.search('/') > -1) {
+                                                endpointArray = keyValuePairs.split('/');
+                                                for (var splittedValues in endpointArray) {
+                                                    yValue += parseFloat(widget.charts[charts].chartData[datas].total[keyValuePairs]);
+                                                    xValue = keyValuePairs;
+                                                }
+                                            }
+                                            else
+                                                yValue = widget.charts[charts].chartData[datas].total[currentItem];
+                                            xValue = keyValuePairs;
+                                        }
+                                        formattedChartData.push({
+                                            x: xValue,
+                                            y: yValue
+                                        });
+                                    }
+                                }
+                                formattedChartDataArray.push(formattedChartData);
+                            }
+                            widget.charts[charts].chartData = formattedChartData;
+                            widget.charts[charts].metricCode = widget.charts[charts].metricDetails.code
+                            widget.charts[charts].metricName = widget.charts[charts].metricDetails.name
+                        }
+                        else {
+                            var formattedChartData = [];
+                            for (var datas in widget.charts[charts].chartData) {
+                                formattedChartData.push({
+                                    x: moment(widget.charts[charts].chartData[datas].date),
+                                    y: widget.charts[charts].chartData[datas].total != null ? widget.charts[charts].chartData[datas].total : 0
+                                });
+                            }
+                            widget.charts[charts].chartData = formattedChartData;
+                            widget.charts[charts].metricCode = widget.charts[charts].metricDetails.code
+                            widget.charts[charts].metricName = widget.charts[charts].metricDetails.name
+                        }
+                    }
+                    else if (chartType === "percentageArea") {
+                        if (typeof widget.charts[charts].chartData[0].total == 'object') {
+                            var endpoint;
+                            for (objectTypes in widget.charts[charts].metricDetails.objectTypes) {
+                                if (widget.charts[charts].metricDetails.objectTypes[objectTypes].objectTypeId == widget.charts[charts].chartObjectTypeId) {
+                                    endpoint = widget.charts[charts].metricDetails.objectTypes[objectTypes].meta.endpoint;
+                                    widget.charts[charts].metricDetails.objectTypes[objectTypes].meta.endpoint = widget.charts[charts].metricDetails.objectTypes[objectTypes].meta.endpointDisplay != undefined ? widget.charts[charts].metricDetails.objectTypes[objectTypes].meta.endpointDisplay : widget.charts[charts].metricDetails.objectTypes[objectTypes].meta.endpoint
+                                }
+                            }
+                            var formattedChartDataArray = [];
+                            if (endpoint.length != 0) {
+                                for (items in endpoint) {
+                                    var currentItem = endpoint[items];
+                                    var formattedChartData = [];
+                                    for (datas in widget.charts[charts].chartData) {
+                                        var yValue = 0, endpointArray;
+                                        if (widget.charts[charts].chartData[datas].total != null && Object.keys(widget.charts[charts].chartData[datas].total.length != 0)) {
+                                            for (var keyValuePairs in widget.charts[charts].chartData[datas].total) {
+                                                if (keyValuePairs.search('/') > -1) {
+                                                    endpointArray = keyValuePairs.split('/');
+                                                    for (var splittedValues in endpointArray) {
+                                                        if (endpointArray[splittedValues] == currentItem)
+                                                            yValue += parseFloat(widget.charts[charts].chartData[datas].total[keyValuePairs]);
+                                                    }
+                                                }
+                                                else if (keyValuePairs == currentItem)
+                                                    yValue = widget.charts[charts].chartData[datas].total[currentItem];
+                                            }
+                                        }
+                                        formattedChartData.push({
+                                            x: moment(widget.charts[charts].chartData[datas].date),
+                                            y: yValue
+                                        });
+                                    }
+                                    formattedChartDataArray.push(formattedChartData);
+                                }
+                            }
+                            else {
+                                var formattedChartData = [];
+                                for (datas in widget.charts[charts].chartData) {
+                                    var yValue = 0, xValue, endpointArray;
+                                    var total = widget.charts[charts].chartData[datas].total
+                                    if (widget.charts[charts].chartData[datas].total != null && Object.keys(widget.charts[charts].chartData[datas].total).length != 0) {
+                                        for (var keyValuePairs in widget.charts[charts].chartData[datas].total) {
+                                            if (keyValuePairs.search('/') > -1) {
+                                                endpointArray = keyValuePairs.split('/');
+                                                for (var splittedValues in endpointArray) {
+                                                    yValue += parseFloat(widget.charts[charts].chartData[datas].total[keyValuePairs]);
+                                                    xValue = keyValuePairs;
+                                                }
+                                            }
+                                            else
+                                                yValue = widget.charts[charts].chartData[datas].total[currentItem];
+                                            xValue = keyValuePairs;
+                                        }
+                                        formattedChartData.push({
+                                            x: xValue,
+                                            y: yValue
+                                        });
+                                    }
+                                }
+                                formattedChartDataArray.push(formattedChartData);
+                            }
+                            widget.charts[charts].chartData = formattedChartData;
+                            widget.charts[charts].metricCode = widget.charts[charts].metricDetails.code
+                            widget.charts[charts].metricName = widget.charts[charts].metricDetails.name
+                        }
+                        else {
+                            var formattedChartData = [];
+                            for (var datas in widget.charts[charts].chartData) {
+                                formattedChartData.push({
+                                    x: moment(widget.charts[charts].chartData[datas].date),
+                                    y: widget.charts[charts].chartData[datas].total != null ? widget.charts[charts].chartData[datas].total : 0
+                                });
+                            }
+                            widget.charts[charts].chartData = formattedChartData;
+                            widget.charts[charts].metricCode = widget.charts[charts].metricDetails.code
+                            widget.charts[charts].metricName = widget.charts[charts].metricDetails.name
+                        }
                     }
                 }
                 for (var charts in widget.charts) {
@@ -1802,7 +2074,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
 
                 for (var charts in widget.charts) {
                     var chartType = widget.charts[charts].chartType;
-                    if (chartType == "line" || chartType == "bar" || chartType == "column" || chartType == "stackcolumn" || chartType == "area" || chartType == "pie" ||chartType=='reachVsImpressions' || chartType == "engagedUsersReach" || chartType == 'mozoverview' || chartType == "trafficSourcesBrkdwnLine" ||  chartType == 'negativeBar' || chartType == "trafficSourcesBrkdwnPie" || ((chartType == "costPerActionType") && (widget.meta != undefined))) {
+                    if (chartType == "line" || chartType == "bar" || chartType == "column" || chartType == "stackcolumn" || chartType == "area" || chartType == "pie" || chartType == 'reachVsImpressions' || chartType == "engagedUsersReach" || chartType == 'mozoverview' || chartType == "trafficSourcesBrkdwnLine" || chartType == 'negativeBar' || chartType == "trafficSourcesBrkdwnPie" || ((chartType == "costPerActionType") && (widget.meta != undefined))) {
                         if (typeof widget.charts[charts].chartData[0] != 'undefined') {
                             if (widget.charts[charts].chartData[0].x) {
                                 var summaryValue = 0;
@@ -1823,9 +2095,9 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                     granularity = 'WK';
                                 }
                                 else {
-                                    if(typeof widget.charts[charts].chartData[0].x !== 'object'){
-                                        var check=isValidDate(widget.charts[charts].chartData[0].x)
-                                        if(check){
+                                    if (typeof widget.charts[charts].chartData[0].x !== 'object') {
+                                        var check = isValidDate(widget.charts[charts].chartData[0].x)
+                                        if (check) {
                                             var lastIndex = _.last(widget.charts[charts].chartData);
                                             var subtractDate = moment(lastIndex.x).subtract(1, "days").format('YYYY-DD-MM');
                                             currentWeek = parseFloat(lastIndex.y);
@@ -1837,7 +2109,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                             granularity = 'Day';
                                         }
 
-                                    }else {
+                                    } else {
                                         var lastIndex = _.last(widget.charts[charts].chartData);
                                         var subtractDate = moment(lastIndex.x).subtract(1, "days").format('YYYY-DD-MM');
                                         currentWeek = parseFloat(lastIndex.y);
@@ -1890,17 +2162,17 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                         }
                                     }
                                 }
-                                if (chartType == 'line' || chartType == 'bar' || chartType == 'column' || chartType == 'mozoverview'  ) {
+                                if (chartType == 'line' || chartType == 'bar' || chartType == 'column' || chartType == 'mozoverview') {
                                     if ((widget.channelName == 'FacebookAds') && (widget.charts[charts].metricDetails.name == 'Cost Per Unique Action Type')) {
                                         widgetCharts.push({
                                             'type': widget.charts[charts].chartType,
                                             'values': widget.charts[charts].chartData,      //values - represents the array of {x,y} data points
                                             'key': widget.charts[charts].chartName, //key  - the name of the series.
                                             'color': widget.charts[charts].chartColour[0],  //color - optional: choose your own line color.
-                                            'summaryDisplay': (parseFloat(summaryValue).toFixed(2) % Math.floor(parseFloat(summaryValue).toFixed(2))) > 0 ? parseFloat(summaryValue).toFixed(2) : parseFloat(summaryValue).toFixed(2) > 1 ? parseInt(summaryValue) : parseFloat(summaryValue) > 0 ? parseFloat(summaryValue).toFixed(2) : parseInt(summaryValue),
+                                            'summaryDisplay': Math.round(summaryValue * 100) / 100,
                                         });
                                     }
-                                    else if ((chartType == 'bar'|| chartType == 'column') && totalNonZeroPoints < 0 && summaryValue == 0) {
+                                    else if ((chartType == 'bar' || chartType == 'column') && totalNonZeroPoints < 0 && summaryValue == 0) {
                                         widgetCharts.push({
                                             'type': 'line',
                                             'values': widget.charts[charts].chartData,      //values - represents the array of {x,y} data points
@@ -1909,40 +2181,44 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                             'arrow': comparingData,
                                             'variance': percentage,
                                             'period': granularity,
-                                            'summaryDisplay': (parseFloat(summaryValue).toFixed(2) % Math.floor(parseFloat(summaryValue).toFixed(2))) > 0 ? parseFloat(summaryValue).toFixed(2) : parseFloat(summaryValue).toFixed(2) > 1 ? parseInt(summaryValue) : parseFloat(summaryValue) > 0 ? parseFloat(summaryValue).toFixed(2) : parseInt(summaryValue),
+                                            'summaryDisplay': Math.round(summaryValue * 100) / 100,
                                         });
                                     }
                                     else {
                                         widgetCharts.push({
+                                            "subChartType": widget.charts[charts].subChartType,
                                             'type': widget.charts[charts].chartType,
                                             'values': widget.charts[charts].chartData,      //values - represents the array of {x,y} data points
-                                            'key': widget.charts[charts].metricDetails.name, //key  - the name of the series.
+                                            'key': widget.charts[charts].subChartType === 'fbTopReferringDomain' ? undefined : widget.charts[charts].metricDetails.name, //key  - the name of the series.
                                             'color': widget.charts[charts].chartColour[0],  //color - optional: choose your own line color.
                                             'arrow': comparingData,
                                             'variance': percentage,
                                             'period': granularity,
-                                            'summaryDisplay': (parseFloat(summaryValue).toFixed(2) % Math.floor(parseFloat(summaryValue).toFixed(2))) > 0 ? parseFloat(summaryValue).toFixed(2) : parseFloat(summaryValue).toFixed(2) > 1 ? parseInt(summaryValue) : parseFloat(summaryValue) > 0 ? parseFloat(summaryValue).toFixed(2) : parseInt(summaryValue),
+                                            'summaryDisplay': Math.round(summaryValue * 100) / 100,
                                         });
                                     }
                                 }
-                                else if (chartType == 'area' || chartType=='Reach Vs Impressions'|| chartType == "EngagedUsersReach" || chartType == 'negativeBar') {
-                                 if ((chartType == 'negativeBar')) {
-                                        var negativArray=[]
-                                        for(var values in widget.charts[charts].chartData ){
+                                else if (chartType == 'area' || chartType == 'Reach Vs Impressions' || chartType == "EngagedUsersReach" || chartType == 'negativeBar') {
+                                    if ((chartType == 'negativeBar')) {
+                                        var negativArray = []
+                                        for (var values in widget.charts[charts].chartData) {
                                             negativArray.push(
-                                                {'x':widget.charts[charts].chartData[values].x ,'y' :-Math.abs(widget.charts[charts].chartData[values].y) }
+                                                {
+                                                    'x': widget.charts[charts].chartData[values].x,
+                                                    'y': -Math.abs(widget.charts[charts].chartData[values].y)
+                                                }
                                             )
                                         }
-                                        widget.charts[charts].chartType='area';
+                                        widget.charts[charts].chartType = 'area';
                                         widgetCharts.push({
                                             'type': 'area',
-                                            'values':negativArray,      //values - represents the array of {x,y} data points
+                                            'values': negativArray,      //values - represents the array of {x,y} data points
                                             'key': widget.charts[charts].metricDetails.name, //key  - the name of the series.
                                             'color': widget.charts[charts].chartColour[0],  //color - optional: choose your own line color.
                                             'arrow': comparingData,
                                             'variance': percentage,
                                             'period': granularity,
-                                            'summaryDisplay': (parseFloat(summaryValue).toFixed(2) % Math.floor(parseFloat(summaryValue).toFixed(2))) > 0 ? parseFloat(summaryValue).toFixed(2) : parseFloat(summaryValue).toFixed(2) > 1 ? parseInt(summaryValue) : parseFloat(summaryValue) > 0 ? parseFloat(summaryValue).toFixed(2) : parseInt(summaryValue),
+                                            'summaryDisplay': Math.round(summaryValue * 100) / 100,
                                             'area': true
                                         });
 
@@ -1956,21 +2232,21 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                             'arrow': comparingData,
                                             'variance': percentage,
                                             'period': granularity,
-                                            'summaryDisplay': (parseFloat(summaryValue).toFixed(2) % Math.floor(parseFloat(summaryValue).toFixed(2))) > 0 ? parseFloat(summaryValue).toFixed(2) : parseFloat(summaryValue).toFixed(2) > 1 ? parseInt(summaryValue) : parseFloat(summaryValue) > 0 ? parseFloat(summaryValue).toFixed(2) : parseInt(summaryValue),
+                                            'summaryDisplay': Math.round(summaryValue * 100) / 100,
                                         });
                                     }
                                 }
-                                else if (chartType == 'area' || chartType=='reachVsImpressions'|| chartType == "engagedUsersReach") {
-                                     var summary=(parseFloat(summaryValue).toFixed(2) % Math.floor(parseFloat(summaryValue).toFixed(2))) > 0 ? parseFloat(summaryValue).toFixed(2) : parseFloat(summaryValue).toFixed(2) > 1 ? parseInt(summaryValue) : parseFloat(summaryValue) > 0 ? parseFloat(summaryValue).toFixed(2) : parseInt(summaryValue)
+                                else if (chartType == 'area' || chartType == 'reachVsImpressions' || chartType == "engagedUsersReach") {
+                                    var summary = Math.round(summaryValue * 100) / 100
                                     widgetCharts.push({
                                         'type': widget.charts[charts].chartType,
                                         'values': widget.charts[charts].chartData,      //values - represents the array of {x,y} data points
-                                        'key': widget.charts[charts].metricDetails.name=='Total Impressions'?'Impressions/Reach (%)':widget.charts[charts].metricDetails.name, //key  - the name of the series.
+                                        'key': widget.charts[charts].metricDetails.name == 'Total Impressions' ? 'Impressions/Reach (%)' : widget.charts[charts].metricDetails.name, //key  - the name of the series.
                                         'color': widget.charts[charts].chartColour[0],  //color - optional: choose your own line color.
                                         'arrow': comparingData,
                                         'variance': percentage,
                                         'period': granularity,
-                                        'summaryDisplay':widget.charts[charts].metricDetails.name=='Total Impressions'|| widget.charts[charts].metricDetails.name=='Engaged users/Reach (%)'?summary +'%':summary,
+                                        'summaryDisplay': widget.charts[charts].metricDetails.name == 'Total Impressions' || widget.charts[charts].metricDetails.name == 'Engaged users/Reach (%)' ? summary + '%' : summary,
                                         'area': true
                                     });
                                 }
@@ -1983,7 +2259,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                         'arrow': comparingData,
                                         'variance': percentage,
                                         'period': granularity,
-                                        'summaryDisplay': (parseFloat(summaryValue).toFixed(2) % Math.floor(parseFloat(summaryValue).toFixed(2))) > 0 ? parseFloat(summaryValue).toFixed(2) : parseFloat(summaryValue).toFixed(2) > 1 ? parseInt(summaryValue) : parseFloat(summaryValue) > 0 ? parseFloat(summaryValue).toFixed(2) : parseInt(summaryValue),
+                                        'summaryDisplay': Math.round(summaryValue * 100) / 100,
                                     });
                                 }
                                 else if (chartType == 'trafficSourcesBrkdwnLine') {
@@ -1995,7 +2271,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                         'arrow': comparingData,
                                         'variance': percentage,
                                         'period': granularity,
-                                        'summaryDisplay': (parseFloat(summaryValue).toFixed(2) % Math.floor(parseFloat(summaryValue).toFixed(2))) > 0 ? parseFloat(summaryValue).toFixed(2) : parseFloat(summaryValue).toFixed(2) > 1 ? parseInt(summaryValue) : parseFloat(summaryValue) > 0 ? parseFloat(summaryValue).toFixed(2) : parseInt(summaryValue),
+                                        'summaryDisplay': Math.round(summaryValue * 100) / 100,
                                     });
                                 }
                                 else if (chartType == 'trafficSourcesBrkdwnPie') {
@@ -2007,7 +2283,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                         'arrow': comparingData,
                                         'variance': percentage,
                                         'period': granularity,
-                                        'summaryDisplay': (parseFloat(summaryValue).toFixed(2) % Math.floor(parseFloat(summaryValue).toFixed(2))) > 0 ? parseFloat(summaryValue).toFixed(2) : parseFloat(summaryValue).toFixed(2) > 1 ? parseInt(summaryValue) : parseFloat(summaryValue) > 0 ? parseFloat(summaryValue).toFixed(2) : parseInt(summaryValue),
+                                        'summaryDisplay': Math.round(summaryValue * 100) / 100,
                                     });
                                 }
                                 else {
@@ -2019,7 +2295,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                         'arrow': comparingData,
                                         'period': granularity,
                                         'variance': percentage,
-                                        'summaryDisplay': (parseFloat(summaryValue).toFixed(2) % Math.floor(parseFloat(summaryValue).toFixed(2))) > 0 ? parseFloat(summaryValue).toFixed(2) : parseFloat(summaryValue).toFixed(2) > 1 ? parseInt(summaryValue) : parseFloat(summaryValue) > 0 ? parseFloat(summaryValue).toFixed(2) : parseInt(summaryValue),
+                                        'summaryDisplay': Math.round(summaryValue * 100) / 100,
                                     });
                                 }
                             }
@@ -2043,7 +2319,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                         granularity = 'WK';
                                     }
                                     else {
-                                        if(widget.charts[charts].chartData[items].length>0) {
+                                        if (widget.charts[charts].chartData[items].length > 0) {
                                             var lenthOfData = widget.charts[charts].chartData[items].length;
                                             var lastIndex = _.last(widget.charts[charts].chartData[items]);
                                             if (typeof lastIndex.x != 'string') {
@@ -2051,7 +2327,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                                 currentWeek = parseFloat(lastIndex.y);
                                             }
                                             else {
-                                                currentWeek = parseFloat(widget.charts[charts].chartData[items][lenthOfData-1].y);
+                                                currentWeek = parseFloat(widget.charts[charts].chartData[items][lenthOfData - 1].y);
                                             }
 
                                             for (var i = n - 1; i >= 0; i--) {
@@ -2061,7 +2337,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                                         pastWeek = parseFloat(widget.charts[charts].chartData[items][i].y);
                                                 }
                                                 else {
-                                                    pastWeek = parseFloat(widget.charts[charts].chartData[items][lenthOfData-2].y);
+                                                    pastWeek = parseFloat(widget.charts[charts].chartData[items][lenthOfData - 2].y);
                                                 }
                                             }
                                             granularity = 'Day';
@@ -2109,17 +2385,17 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                             }
                                         }
                                     }
-                                    if (chartType == 'line' || chartType == 'bar'|| chartType == 'column' || chartType == 'mozoverview' || chartType == 'stackcolumn') {
+                                    if (chartType == 'line' || chartType == 'bar' || chartType == 'column' || chartType == 'mozoverview' || chartType == 'stackcolumn') {
                                         if ((chartType == 'bar' || chartType == 'column') && totalNonZeroPoints < 0 && summaryValue == 0) {
                                             widgetCharts.push({
                                                 'type': 'line',
                                                 'values': widget.charts[charts].chartData[items],      //values - represents the array of {x,y} data points
-                                                'key':  widget.charts[charts].metricDetails.objectTypes[0].meta.endpoint,
+                                                'key': widget.charts[charts].metricDetails.objectTypes[0].meta.endpoint,
                                                 'color': widget.charts[charts].chartColour[0],  //color - optional: choose your own line color.
                                                 'arrow': comparingData,
                                                 'variance': percentage,
                                                 'period': granularity,
-                                                'summaryDisplay': (parseFloat(summaryValue).toFixed(2) % Math.floor(parseFloat(summaryValue).toFixed(2))) > 0 ? parseFloat(summaryValue).toFixed(2) : parseFloat(summaryValue).toFixed(2) > 1 ? parseInt(summaryValue) : parseFloat(summaryValue) > 0 ? parseFloat(summaryValue).toFixed(2) : parseInt(summaryValue),
+                                                'summaryDisplay': Math.round(summaryValue * 100) / 100,
                                             });
                                         }
                                         else
@@ -2131,7 +2407,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                                 'arrow': comparingData,
                                                 'variance': percentage,
                                                 'period': granularity,
-                                                'summaryDisplay': (parseFloat(summaryValue).toFixed(2) % Math.floor(parseFloat(summaryValue).toFixed(2))) > 0 ? parseFloat(summaryValue).toFixed(2) : parseFloat(summaryValue).toFixed(2) > 1 ? parseInt(summaryValue) : parseFloat(summaryValue) > 0 ? parseFloat(summaryValue).toFixed(2) : parseInt(summaryValue),
+                                                'summaryDisplay': Math.round(summaryValue * 100) / 100,
                                             });
                                     }
                                     else if (chartType == 'trafficSourcesBrkdwnLine') {
@@ -2143,7 +2419,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                             'arrow': comparingData,
                                             'variance': percentage,
                                             'period': granularity,
-                                            'summaryDisplay': (parseFloat(summaryValue).toFixed(2) % Math.floor(parseFloat(summaryValue).toFixed(2))) > 0 ? parseFloat(summaryValue).toFixed(2) : parseFloat(summaryValue).toFixed(2) > 1 ? parseInt(summaryValue) : parseFloat(summaryValue) > 0 ? parseFloat(summaryValue).toFixed(2) : parseInt(summaryValue),
+                                            'summaryDisplay': Math.round(summaryValue * 100) / 100,
                                         });
                                     }
                                     else if (chartType == 'trafficSourcesBrkdwnPie') {
@@ -2155,7 +2431,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                             'arrow': comparingData,
                                             'variance': percentage,
                                             'period': granularity,
-                                            'summaryDisplay': (parseFloat(summaryValue).toFixed(2) % Math.floor(parseFloat(summaryValue).toFixed(2))) > 0 ? parseFloat(summaryValue).toFixed(2) : parseFloat(summaryValue).toFixed(2) > 1 ? parseInt(summaryValue) : parseFloat(summaryValue) > 0 ? parseFloat(summaryValue).toFixed(2) : parseInt(summaryValue),
+                                            'summaryDisplay': Math.round(summaryValue * 100) / 100,
                                         });
                                     }
                                     else if (chartType == 'area' || chartType == 'negativebar') {
@@ -2167,7 +2443,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                             'arrow': comparingData,
                                             'variance': percentage,
                                             'period': granularity,
-                                            'summaryDisplay': (parseFloat(summaryValue).toFixed(2) % Math.floor(parseFloat(summaryValue).toFixed(2))) > 0 ? parseFloat(summaryValue).toFixed(2) : parseFloat(summaryValue).toFixed(2) > 1 ? parseInt(summaryValue) : parseFloat(summaryValue) > 0 ? parseFloat(summaryValue).toFixed(2) : parseInt(summaryValue),
+                                            'summaryDisplay': Math.round(summaryValue * 100) / 100,
                                             'area': true
                                         });
                                     }
@@ -2180,7 +2456,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                             'arrow': comparingData,
                                             'variance': percentage,
                                             'period': granularity,
-                                            'summaryDisplay': (parseFloat(summaryValue).toFixed(2) % Math.floor(parseFloat(summaryValue).toFixed(2))) > 0 ? parseFloat(summaryValue).toFixed(2) : parseFloat(summaryValue).toFixed(2) > 1 ? parseInt(summaryValue) : parseFloat(summaryValue) > 0 ? parseFloat(summaryValue).toFixed(2) : parseInt(summaryValue),
+                                            'summaryDisplay': Math.round(summaryValue * 100) / 100,
                                         });
                                     }
                                     else {
@@ -2192,7 +2468,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                             'arrow': comparingData,
                                             'variance': percentage,
                                             'period': granularity,
-                                            'summaryDisplay': (parseFloat(summaryValue).toFixed(2) % Math.floor(parseFloat(summaryValue).toFixed(2))) > 0 ? parseFloat(summaryValue).toFixed(2) : parseFloat(summaryValue).toFixed(2) > 1 ? parseInt(summaryValue) : parseFloat(summaryValue) > 0 ? parseFloat(summaryValue).toFixed(2) : parseInt(summaryValue),
+                                            'summaryDisplay': Math.round(summaryValue * 100) / 100,
                                         });
                                     }
                                 }
@@ -2247,56 +2523,87 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                             'values': widget.charts[charts].chartData
                         });
                     }
-                    else if(chartType=='pageTechnicalEfficiency'){
-                        var bounce=0;
-                        var pageLoad=0;
-                        for(var i=0;i<widget.charts[charts].chartData.length;i++){
-                            bounce+=Number(widget.charts[charts].chartData[i].bounceRate);
-                            pageLoad+=Number(widget.charts[charts].chartData[i].PageLoadTime);
-                        }
-                        var summmary=[{key:'Page LoadTime',value:pageLoad},{key:'Bounce Rate',value:bounce}]
+                    else if (chartType == "audienceBehaviourbyDay") {
                         widgetCharts.push({
                             'type': widget.charts[charts].chartType,
                             'values': widget.charts[charts].chartData,
-                            'summary':summmary,
+                            'color': widget.charts[charts].chartColour
+                        });
+                    }
+                    else if (chartType == "socialContributionToSiteTraffic") {
+                        widgetCharts.push({
+                            'type': widget.charts[charts].chartType,
+                            'metricCode': widget.charts[charts].metricCode,
+                            'metricName': widget.charts[charts].metricName,
+                            'values': widget.charts[charts].chartData,
+                            'color': widget.charts[charts].chartColour
+                        });
+                    }
+                    else if (chartType == "percentageArea") {
+                        widgetCharts.push({
+                            'type': widget.charts[charts].chartType,
+                            'metricCode': widget.charts[charts].metricCode,
+                            'metricName': widget.charts[charts].metricName,
+                            'values': widget.charts[charts].chartData,
+                            'color': widget.charts[charts].chartColour
+                        });
+                    }
+                    else if (chartType == 'pageTechnicalEfficiency') {
+                        var bounce = 0;
+                        var pageLoad = 0;
+                        for (var i = 0; i < widget.charts[charts].chartData.length; i++) {
+                            bounce += Number(widget.charts[charts].chartData[i].bounceRate);
+                            pageLoad += Number(widget.charts[charts].chartData[i].PageLoadTime);
+                        }
+                        var summmary = [{key: 'Page LoadTime', value: pageLoad}, {key: 'Bounce Rate', value: bounce}]
+                        widgetCharts.push({
+                            'type': widget.charts[charts].chartType,
+                            'values': widget.charts[charts].chartData,
+                            'summary': summmary,
                             'key': widget.charts[charts].chartName,
                             'color': widget.charts[charts].chartColour
                         });
                     }
-                    else if(chartType=='pageContentEfficiency'){
-                        var bounce=0;
-                        var entranceRate=0;
-                        var uniquePageviews=0;
-                        var pageviews=0;
-                        for(var i=0;i<widget.charts[charts].chartData.length;i++){
-                            bounce+=Number(widget.charts[charts].chartData[i].bounceRate);
-                            entranceRate+=Number(widget.charts[charts].chartData[i].entranceRate);
-                            uniquePageviews+=Number(widget.charts[charts].chartData[i].uniquePageviews);
-                            pageviews+=Number(widget.charts[charts].chartData[i].pageviews);
+                    else if (chartType == 'pageContentEfficiency') {
+                        var bounce = 0;
+                        var entranceRate = 0;
+                        var uniquePageviews = 0;
+                        var pageviews = 0;
+                        for (var i = 0; i < widget.charts[charts].chartData.length; i++) {
+                            bounce += Number(widget.charts[charts].chartData[i].bounceRate);
+                            entranceRate += Number(widget.charts[charts].chartData[i].entranceRate);
+                            uniquePageviews += Number(widget.charts[charts].chartData[i].uniquePageviews);
+                            pageviews += Number(widget.charts[charts].chartData[i].pageviews);
                         }
-                        var summmary=[{key:'Unique Page views',value:uniquePageviews},{key:'Page views',value:pageviews},{key:'Bounce Rate',value:bounce},{key:'Entrance rate',value:entranceRate}]
+                        var summmary = [{key: 'Unique Page views', value: uniquePageviews}, {
+                            key: 'Page views',
+                            value: pageviews
+                        }, {key: 'Bounce Rate', value: bounce}, {key: 'Entrance rate', value: entranceRate}]
                         widgetCharts.push({
                             'type': widget.charts[charts].chartType,
                             'values': widget.charts[charts].chartData,
-                            'summary':summmary,
+                            'summary': summmary,
                             'key': widget.charts[charts].chartName,
                             'color': widget.charts[charts].chartColour
                         });
                     }
-                    else if(chartType=='visitorAcquisitionEfficiency'){
-                        var newUsers=0;
-                        var goalValuePerSession=0;
-                        var goalConversionRateAll=0;
-                        for(var i=0;i<widget.charts[charts].chartData.length;i++){
-                            goalConversionRateAll+=Number(widget.charts[charts].chartData[i].goalConversionRateAll);
-                            goalValuePerSession+=Number(widget.charts[charts].chartData[i].goalValuePerSession);
-                            newUsers+=Number(widget.charts[charts].chartData[i].newUsers);
+                    else if (chartType == 'visitorAcquisitionEfficiency') {
+                        var newUsers = 0;
+                        var goalValuePerSession = 0;
+                        var goalConversionRateAll = 0;
+                        for (var i = 0; i < widget.charts[charts].chartData.length; i++) {
+                            goalConversionRateAll += Number(widget.charts[charts].chartData[i].goalConversionRateAll);
+                            goalValuePerSession += Number(widget.charts[charts].chartData[i].goalValuePerSession);
+                            newUsers += Number(widget.charts[charts].chartData[i].newUsers);
                         }
-                        var summmary=[{key:'New users',value:newUsers},{key:'Per session goal value',value:goalValuePerSession},{key:'Goal conversion rate',value:goalConversionRateAll}]
+                        var summmary = [{key: 'New users', value: newUsers}, {
+                            key: 'Per session goal value',
+                            value: goalValuePerSession
+                        }, {key: 'Goal conversion rate', value: goalConversionRateAll}]
                         widgetCharts.push({
                             'type': widget.charts[charts].chartType,
                             'values': widget.charts[charts].chartData,
-                            'summary':summmary,
+                            'summary': summmary,
                             'key': widget.charts[charts].chartName,
                             'color': widget.charts[charts].chartColour
                         });
@@ -2308,7 +2615,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                         });
 
                     }
-                else if (chartType == "fbReachByCity") {
+                    else if (chartType == "fbReachByCity") {
                         var colorIndex = 0;
                         for (var index in widget.charts[charts].chartData) {
                             widgetCharts.push({
@@ -2316,7 +2623,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                 'y': parseFloat(widget.charts[charts].chartData[index]),      //values - represents the array of {x,y} data points
                                 'key': index,
                                 'color': typeof widget.charts[charts].chartColour != 'undefined' ? (typeof widget.charts[charts].chartColour[colorIndex] != 'undefined' ? widget.charts[charts].chartColour[colorIndex] : '') : '',  //color - optional: choose your own line color.
-                                'summaryDisplay': (parseFloat(widget.charts[charts].chartData[index]).toFixed(2) % Math.floor(widget.charts[charts].chartData[index])) > 0 ? parseFloat(widget.charts[charts].chartData[index]).toFixed(2) : parseInt(widget.charts[charts].chartData[index])
+                                'summaryDisplay': Math.round(summaryValue * 100) / 100,
                             });
                             ++colorIndex;
                         }
@@ -2329,12 +2636,12 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                 'y': parseFloat(widget.charts[charts].chartData[index]),      //values - represents the array of {x,y} data points
                                 'key': index,
                                 'color': typeof widget.charts[charts].chartColour != 'undefined' ? (typeof widget.charts[charts].chartColour[colorIndex] != 'undefined' ? widget.charts[charts].chartColour[colorIndex] : '') : '',  //color - optional: choose your own line color.
-                                'summaryDisplay': (parseFloat(widget.charts[charts].chartData[index]).toFixed(2) % Math.floor(widget.charts[charts].chartData[index])) > 0 ? parseFloat(widget.charts[charts].chartData[index]).toFixed(2) : parseInt(widget.charts[charts].chartData[index])
+                                'summaryDisplay': Math.round(summaryValue * 100) / 100,
                             });
                             ++colorIndex;
                         }
                     }
-                    else if (chartType == "gaTopCountriesToSocialVisits" || chartType==='gaTopCitiesToSocialVisits'){
+                    else if (chartType == "gaTopCountriesToSocialVisits" || chartType === 'gaTopCitiesToSocialVisits') {
                         var colorIndex = 0;
                         for (var index in widget.charts[charts].chartData) {
                             widgetCharts.push({
@@ -2342,7 +2649,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                 'y': parseFloat(widget.charts[charts].chartData[index]),      //values - represents the array of {x,y} data points
                                 'key': index,
                                 'color': typeof widget.charts[charts].chartColour != 'undefined' ? (typeof widget.charts[charts].chartColour[colorIndex] != 'undefined' ? widget.charts[charts].chartColour[colorIndex] : '') : '',  //color - optional: choose your own line color.
-                                'summaryDisplay': (parseFloat(widget.charts[charts].chartData[index]).toFixed(2) % Math.floor(widget.charts[charts].chartData[index])) > 0 ? parseFloat(widget.charts[charts].chartData[index]).toFixed(2) : parseInt(widget.charts[charts].chartData[index])
+                                'summaryDisplay': Math.round(summaryValue * 100) / 100,
                             });
                             ++colorIndex;
                         }
@@ -2382,8 +2689,13 @@ showMetricApp.service('createWidgets', function ($http, $q) {
         function createWidgetData(widget, widgetCharts) {
             var deferred = $q.defer();
             var finalCharts = [];
-            finalCharts.lineCharts = [], finalCharts.barCharts = [], finalCharts.pieCharts = [], finalCharts.instagramPosts = [], finalCharts.highEngagementTweets = [], finalCharts.highestEngagementLinkedIn = [], finalCharts.pinterestEngagementRate = [], finalCharts.pinterestLeaderboard = [];
-            finalCharts.gaTopPagesByVisit = [], finalCharts.fbReachByAge = [], finalCharts.mozoverview = [], finalCharts.fbReachByCity = [], finalCharts.vimeoTopVideos = [], finalCharts.costPerActionType = [], finalCharts.instagramHashtagLeaderBoard = [],finalCharts.gaPageContentEfficiencyTable=[],finalCharts.gaPageTechnicalEfficiencyTable=[],finalCharts.gaVisitorAcquisitionEfficiencyAnalysisTable=[],finalCharts.pageTechnicalEfficiency = [],finalCharts.pageContentEfficiency = [],finalCharts.visitorAcquisitionEfficiency = [];
+            finalCharts.lineCharts = [],
+                finalCharts.barCharts = [],
+                finalCharts.pieCharts = [],
+                finalCharts.instagramPosts = [], finalCharts.highEngagementTweets = [], finalCharts.highestEngagementLinkedIn = [], finalCharts.pinterestEngagementRate = [], finalCharts.pinterestLeaderboard = [];
+            finalCharts.gaTopPagesByVisit = [],
+                finalCharts.multicharts = [],
+                finalCharts.fbReachByAge = [], finalCharts.mozoverview = [], finalCharts.fbReachByCity = [], finalCharts.vimeoTopVideos = [], finalCharts.costPerActionType = [], finalCharts.instagramHashtagLeaderBoard = [], finalCharts.gaPageContentEfficiencyTable = [], finalCharts.gaPageTechnicalEfficiencyTable = [], finalCharts.gaVisitorAcquisitionEfficiencyAnalysisTable = [], finalCharts.pageTechnicalEfficiency = [], finalCharts.pageContentEfficiency = [], finalCharts.visitorAcquisitionEfficiency = [],finalCharts.percentageArea=[];
             var graphOptions = {
                 lineDataOptions: {
                     chart: {
@@ -2832,8 +3144,8 @@ showMetricApp.service('createWidgets', function ($http, $q) {
             }
             else {
                 for (var charts in widgetCharts) {
-                    if (widgetCharts[charts].type == 'line' || widgetCharts[charts].type == 'area' || widgetCharts[charts].type=='reachVsImpressions' || widgetCharts[charts].type=='engagedUsersReach' || (widgetCharts[charts].type == 'costPerActionType' && (widget.meta != undefined))) finalCharts.lineCharts.push(widgetCharts[charts]);
-                    else if (widgetCharts[charts].type == 'bar' ||widgetCharts[charts].type == 'column' || widgetCharts[charts].type == "stackcolumn") finalCharts.barCharts.push(widgetCharts[charts]);
+                    if (widgetCharts[charts].type == 'line' || widgetCharts[charts].type == 'area' || widgetCharts[charts].type == 'reachVsImpressions' || widgetCharts[charts].type == 'engagedUsersReach' || (widgetCharts[charts].type == 'costPerActionType' && (widget.meta != undefined))) finalCharts.lineCharts.push(widgetCharts[charts]);
+                    else if (widgetCharts[charts].type == 'bar' || widgetCharts[charts].type == 'column' || widgetCharts[charts].type == "stackcolumn") finalCharts.barCharts.push(widgetCharts[charts]);
                     else if (widgetCharts[charts].type == 'pie') finalCharts.pieCharts.push(widgetCharts[charts]);
                     else if (widgetCharts[charts].type == 'instagramPosts') finalCharts.instagramPosts.push(widgetCharts[charts]);
                     else if (widgetCharts[charts].type == 'highEngagementTweets') finalCharts.highEngagementTweets.push(widgetCharts[charts]);
@@ -2849,7 +3161,9 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                     else if (widgetCharts[charts].type == 'fbReachByAge') finalCharts.fbReachByAge.push(widgetCharts[charts]);
                     else if (widgetCharts[charts].type == 'pinterestEngagementRate') finalCharts.pinterestEngagementRate.push(widgetCharts[charts]);
                     else if (widgetCharts[charts].type == 'pinterestLeaderboard')finalCharts.pinterestLeaderboard.push(widgetCharts[charts]);
+                    else if (widgetCharts[charts].type == 'audienceBehaviourbyDay' || widgetCharts[charts].type === 'socialContributionToSiteTraffic')finalCharts.multicharts.push(widgetCharts[charts]);
                     else if (widgetCharts[charts].type == 'vimeoTopVideos') finalCharts.vimeoTopVideos.push(widgetCharts[charts]);
+                    else if (widgetCharts[charts].type == 'percentageArea') finalCharts.percentageArea.push(widgetCharts[charts]);
                     else if (widgetCharts[charts].type == 'costPerActionType' && !widget.meta) finalCharts.costPerActionType.push(widgetCharts[charts]);
                     else if (widgetCharts[charts].type == 'mozoverview') {
                         for (var i = 0; i < widgetCharts[charts].values.length; i++)
@@ -2862,6 +3176,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
             var chartColorChecker = [];
             var chartOptions = {};
             var colourChart = ['#EF5350', '#EC407A', '#9C27B0', '#42A5F5', '#26A69A', '#FFCA28', '#FF7043', '#8D6E63'];
+
             function fetchAColour(currentColour, colourArray) {
                 var checker;
                 for (var colors in colourChart) {
@@ -2874,6 +3189,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                         return colourChart[colors];
                 }
             }
+
             if (finalCharts.lineCharts.length == 1) {
                 var chartOptionsArray = [];
                 var chartSeriesArray = [];
@@ -2888,7 +3204,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                     chartSeriesArray.push({
                         name: finalCharts.lineCharts[i].key,
                         data: chartValues,
-                        color:finalCharts.lineCharts[charts].color
+                        color: finalCharts.lineCharts[charts].color
                     });
                 }
                 chartOptions = {
@@ -2897,7 +3213,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                         reflow: true,
                         zoomType: 'x'
                     },
-                    exporting: { enabled: false },
+                    exporting: {enabled: false},
                     tooltip: {
                         shared: true
                     },
@@ -2954,7 +3270,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                 for (var charts in finalCharts.lineCharts) {
                     var dateArray = [];
                     var chartValues = [];
-                    chartType=finalCharts.lineCharts[charts].type;
+                    chartType = finalCharts.lineCharts[charts].type;
                     for (var items in chartColorChecker) {
                         if (finalCharts.lineCharts[charts].color == chartColorChecker[items]) {
                             var neededColour = fetchAColour(finalCharts.lineCharts[charts].color, chartColorChecker);
@@ -2962,49 +3278,49 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                         }
                     }
                     for (var k = 0; k < finalCharts.lineCharts[charts].values.length; k++) {
-                        if(typeof finalCharts.lineCharts[charts].values[k].x !== 'object'){
-                          var check = isValidDate(finalCharts.lineCharts[charts].values[k].x)
-                            if(check){
+                        if (typeof finalCharts.lineCharts[charts].values[k].x !== 'object') {
+                            var check = isValidDate(finalCharts.lineCharts[charts].values[k].x)
+                            if (check) {
                                 dateArray.push(finalCharts.lineCharts[charts].values[k].x.format('YYYY-MM-DD'));
                                 var yValue = String(finalCharts.lineCharts[charts].values[k].y).indexOf('.') ? parseFloat(finalCharts.lineCharts[charts].values[k].y) : parseInt(finalCharts.lineCharts[charts].values[k].y);
                                 chartValues.push(yValue);
                             }
-                            else{
+                            else {
                                 dateArray.push(finalCharts.lineCharts[charts].values[k].x);
                                 var yValue = String(finalCharts.lineCharts[charts].values[k].y).indexOf('.') ? parseFloat(finalCharts.lineCharts[charts].values[k].y) : parseInt(finalCharts.lineCharts[charts].values[k].y);
                                 chartValues.push(yValue);
                             }
                         }
-                        else{
+                        else {
                             dateArray.push(finalCharts.lineCharts[charts].values[k].x.format('YYYY-MM-DD'));
                             var yValue = String(finalCharts.lineCharts[charts].values[k].y).indexOf('.') ? parseFloat(finalCharts.lineCharts[charts].values[k].y) : parseInt(finalCharts.lineCharts[charts].values[k].y);
                             chartValues.push(yValue);
                         }
 
                     }
-                    if(chartType=='reachVsImpressions'|| chartType == "engagedUsersReach" ){
+                    if (chartType == 'reachVsImpressions' || chartType == "engagedUsersReach") {
                         chartSeriesArray.push({
                             name: finalCharts.lineCharts[charts].key,
-                            yAxis: typeof charts==='string'?parseInt(charts):charts,
+                            yAxis: typeof charts === 'string' ? parseInt(charts) : charts,
                             tooltip: {
-                                valueSuffix:(finalCharts.lineCharts[charts].key ==='Impressions/Reach (%)'||finalCharts.lineCharts[charts].key ==='Engaged users/Reach (%)')?'%':''
+                                valueSuffix: (finalCharts.lineCharts[charts].key === 'Impressions/Reach (%)' || finalCharts.lineCharts[charts].key === 'Engaged users/Reach (%)') ? '%' : ''
                             },
                             data: chartValues, type: 'area',
-                            color:finalCharts.lineCharts[charts].color
+                            color: finalCharts.lineCharts[charts].color
                         });
                     }
-                    else{
+                    else {
                         chartSeriesArray.push({
                             name: finalCharts.lineCharts[charts].key,
                             data: chartValues, type: finalCharts.lineCharts[charts].type,
-                            color:finalCharts.lineCharts[charts].color
+                            color: finalCharts.lineCharts[charts].color
                         });
                     }
                     chartColorChecker.push(finalCharts.lineCharts[charts].color);
                 }
-                if(typeof finalCharts.lineCharts[charts].values[0].x !== 'object'){
+                if (typeof finalCharts.lineCharts[charts].values[0].x !== 'object') {
                     var check = isValidDate(finalCharts.lineCharts[charts].values[0].x)
-                    if(check){
+                    if (check) {
                         chartOptions = {
                             chart: {
                                 reflow: true,
@@ -3013,9 +3329,9 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                             credits: {
                                 enabled: false
                             },
-                            exporting: { enabled: false },
+                            exporting: {enabled: false},
                             tooltip: {
-                                enabled:true,
+                                enabled: true,
                                 shared: true
                             },
                             xAxis: {
@@ -3039,34 +3355,34 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                             },
                             series: chartSeriesArray,
                         }
-                    }else  {
+                    } else {
                         chartOptions = {
-                        chart: {
-                            reflow: true,
-                            zoomType: 'x'
-                        },
-                        credits: {
-                            enabled: false
-                        },
-                        exporting: { enabled: false },
-                        tooltip: {
-                            enabled:true,
-                            shared: true
-                        },
-                        xAxis: {
-                            categories: dateArray,
-                        },
-                        title: {
-                            text: '',
-                            style: {
-                                display: 'none'
-                            }
-                        },
-                        series: chartSeriesArray,
-                    }
+                            chart: {
+                                reflow: true,
+                                zoomType: 'x'
+                            },
+                            credits: {
+                                enabled: false
+                            },
+                            exporting: {enabled: false},
+                            tooltip: {
+                                enabled: true,
+                                shared: true
+                            },
+                            xAxis: {
+                                categories: dateArray,
+                            },
+                            title: {
+                                text: '',
+                                style: {
+                                    display: 'none'
+                                }
+                            },
+                            series: chartSeriesArray,
+                        }
                     }
                 }
-                else if(chartType=='reachVsImpressions'|| chartType == "engagedUsersReach"){
+                else if (chartType == 'reachVsImpressions' || chartType == "engagedUsersReach") {
                     chartOptions = {
                         chart: {
                             reflow: true,
@@ -3075,9 +3391,9 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                         credits: {
                             enabled: false
                         },
-                        exporting: { enabled: false },
+                        exporting: {enabled: false},
                         tooltip: {
-                            enabled:true,
+                            enabled: true,
                             shared: true
                         },
                         xAxis: {
@@ -3095,7 +3411,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                         },
                         yAxis: [{
                             title: {
-                                text: chartType=='reachVsImpressions'?'Impressions/Reach (%)':'Engaged users/Reach (%)',
+                                text: chartType == 'reachVsImpressions' ? 'Impressions/Reach (%)' : 'Engaged users/Reach (%)',
                             }
                         }, {
                             title: {
@@ -3112,7 +3428,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                         series: chartSeriesArray,
                     }
                 }
-                else{
+                else {
                     chartOptions = {
                         chart: {
                             reflow: true,
@@ -3121,9 +3437,9 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                         credits: {
                             enabled: false
                         },
-                        exporting: { enabled: false },
+                        exporting: {enabled: false},
                         tooltip: {
-                            enabled:true,
+                            enabled: true,
                             shared: true
                         },
                         xAxis: {
@@ -3201,12 +3517,12 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                     }
                     for (var k = 0; k < finalCharts.barCharts[charts].values.length; k++) {
                         var typeOfXaxis;
-                        if(typeof finalCharts.barCharts[charts].values[k].x ==='string') {
-                            typeOfXaxis='string';
+                        if (typeof finalCharts.barCharts[charts].values[k].x === 'string') {
+                            typeOfXaxis = 'string';
                             dateArray.push(finalCharts.barCharts[charts].values[k].x);
                         }
                         else {
-                            typeOfXaxis='date';
+                            typeOfXaxis = 'date';
                             dateArray.push(finalCharts.barCharts[charts].values[k].x.format('YYYY-MM-DD'));
                         }
                         var yValue = String(finalCharts.barCharts[charts].values[k].y).indexOf('.') ? parseFloat(finalCharts.barCharts[charts].values[k].y) : parseInt(finalCharts.barCharts[charts].values[k].y);
@@ -3215,11 +3531,11 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                     chartSeriesArray.push({
                         name: finalCharts.barCharts[charts].key,
                         data: chartValues,
-                        color:finalCharts.barCharts[charts].color
+                        color: finalCharts.barCharts[charts].color
                     });
                     chartColorChecker.push(finalCharts.barCharts[charts].color);
                 }
-                if(typeOfXaxis ==='string') {
+                if (typeOfXaxis === 'string') {
                     chartOptions = {
                         chart: {
                             type: finalCharts.barCharts[charts].type,
@@ -3253,12 +3569,12 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                         series: chartSeriesArray,
                     }
                 }
-                else{
-                    if(finalCharts.barCharts[charts].type ==='stackcolumn'){
-                        finalCharts.barCharts[charts].type='column'
+                else {
+                    if (finalCharts.barCharts[charts].type === 'stackcolumn') {
+                        finalCharts.barCharts[charts].type = 'column'
                         chartOptions = {
                             chart: {
-                                type:'column',
+                                type: 'column',
                                 reflow: true,
                                 zoomType: 'x',
 
@@ -3266,9 +3582,9 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                             credits: {
                                 enabled: false
                             },
-                            exporting: { enabled: false },
+                            exporting: {enabled: false},
                             tooltip: {
-                                enabled:true,
+                                enabled: true,
                                 shared: true
                             },
                             xAxis: {
@@ -3303,48 +3619,49 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                             series: chartSeriesArray,
                         }
                     }
-                   else{
+                    else {
                         chartOptions = {
-                        chart: {
-                            type: finalCharts.barCharts[charts].type,
-                            reflow: true,
-                            zoomType: 'x',
+                            chart: {
+                                type: finalCharts.barCharts[charts].type,
+                                reflow: true,
+                                zoomType: 'x',
 
-                        },
-                        credits: {
-                            enabled: false
-                        },
-                        exporting: { enabled: false },
-                        tooltip: {
-                            enabled:true,
-                            shared: true
-                        },
-                        xAxis: {
-                            type: 'datetime',
-                            categories: dateArray,
-                            labels: {
-                                formatter: function () {
-                                    var date = new Date(this.value);
-                                    return months[date.getMonth()] + ' ' + date.getDate();
+                            },
+                            credits: {
+                                enabled: false
+                            },
+                            exporting: {enabled: false},
+                            tooltip: {
+                                enabled: true,
+                                shared: true
+                            },
+                            xAxis: {
+                                type: 'datetime',
+                                categories: dateArray,
+                                labels: {
+                                    formatter: function () {
+                                        var date = new Date(this.value);
+                                        return months[date.getMonth()] + ' ' + date.getDate();
+                                    }
+                                },
+                                tickInterval: 7,
+                                min: 0,
+                                max: dateArray.length,
+                            },
+                            title: {
+                                text: '',
+                                style: {
+                                    display: 'none'
                                 }
                             },
-                            tickInterval: 7,
-                            min: 0,
-                            max: dateArray.length,
-                        },
-                        title: {
-                            text: '',
-                            style: {
-                                display: 'none'
-                            }
-                        },
-                        yAxis: [{
-                            title: {
-                                text: null
-                            }
-                        }],
-                        series: chartSeriesArray,
-                    }}
+                            yAxis: [{
+                                title: {
+                                    text: null
+                                }
+                            }],
+                            series: chartSeriesArray,
+                        }
+                    }
 
                 }
                 chartColorChecker = [];
@@ -3368,6 +3685,264 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                 });
                 if (cumulativeTotal == 0) finalChartData[finalChartData.length - 1].options.chart.yDomain = [0, 10];
             }
+            if (finalCharts.multicharts.length > 0) {
+                var chartOptionsArray = [];
+                var dateArray = []
+                var chartSeriesArray = [];
+                var displaySummary = [];
+                function getSum(total, num) {
+                    return total + num;
+                }
+                if (finalCharts.multicharts[charts].type === "socialContributionToSiteTraffic") {
+                    for (var k = 0; k < finalCharts.multicharts[charts].values.length; k++) {
+                        dateArray.push(finalCharts.multicharts[charts].values[k].x);
+                    }
+                    for(var j in finalCharts.multicharts){
+                        var dataArray = [];
+                        for (var index = 0; index < finalCharts.multicharts[j].values.length; index++) {
+                            dataArray.push(String(finalCharts.multicharts[j].values[index].y).indexOf('.') ? parseFloat(finalCharts.multicharts[j].values[index].y) : parseInt(multicharts[j].values[index].y))
+                        }
+                        chartSeriesArray.push({
+                            type: finalCharts.multicharts[j].metricCode == 'sessions' ? 'column' : 'line',
+                            name: finalCharts.multicharts[j].metricName,
+                            data: dataArray,
+                            yAxis: finalCharts.multicharts[j].metricCode == 'sessions' ? 0 : 1,
+                            color: finalCharts.multicharts[j].color[j]
+                        });
+                        var summaryDisplay = dataArray.reduce(getSum)
+                        var sample = {
+                            summaryDisplay: Math.round(summaryDisplay * 100) / 100,
+                            key: finalCharts.multicharts[j].metricName,
+                            showComparision: false,
+                            variance: 0,
+                            color: finalCharts.multicharts[j].color[j]
+                        }
+                        displaySummary.push(sample)
+                    }
+                    var yAxisOption=[{ // left y axis
+                        title: {
+                            text: 'Total sessions'
+                        }
+                    }, { // left y axis
+                        title: {
+                            text: 'Sessions from social sources'
+                        },
+                        opposite: true,
+                    }
+                    ];
+                    var xAxisOption =  {
+                        type: 'datetime',
+                        categories: dateArray,
+                        labels: {
+                            formatter: function () {
+                                var date = new Date(this.value);
+                                return months[date.getMonth()] + ' ' + date.getDate();
+                            }
+                        },
+                        tickInterval: 7,
+                        min: 0,
+                        max: dateArray.length,
+                    }
+                }
+                else {
+                    var yAxisOption=[{ // left y axis
+                        title: {
+                            text: null
+                        }
+                    }, { // left y axis
+                        title: {
+                            text: null
+                        },
+                        opposite: true,
+                    }
+                    ];
+                    var xAxisOption = {
+                        type: 'datetime',
+                        categories: dateArray,
+                    }
+                    chartsCount++;
+                    for (var k = 0; k < finalCharts.multicharts[charts].values.length; k++) {
+                        dateArray.push(finalCharts.multicharts[charts].values[k].date);
+                    }
+                    var i = 0;
+                    for (var key in finalCharts.multicharts[charts].values[0].total) {
+                        var dataSample = [];
+                        for (var k = 0; k < finalCharts.multicharts[charts].values.length; k++) {
+                            var value = Math.round(finalCharts.multicharts[charts].values[k].total[key] * 100) / 100;
+                            dataSample.push(value)
+                        }
+                        if (key == 'pageviews') {
+                            chartSeriesArray.push({
+                                type: 'column',
+                                name: 'Page views',
+                                data: dataSample,
+                                yAxis: 0,
+                                color: finalCharts.multicharts[charts].color[i]
+                            });
+                            var summaryDisplay = dataSample.reduce(getSum)
+                            var sample = {
+                                summaryDisplay: Math.round(summaryDisplay * 100) / 100,
+                                key: 'Page views',
+                                showComparision: false,
+                                variance: 0,
+                                color: finalCharts.multicharts[charts].color[i]
+                            }
+                            displaySummary.push(sample)
+                        }
+                        else if (key != 'total' && key != 'sessions' && key != 'hour') {
+                            var name;
+                            if (key == 'pageviewsPerSession') {
+                                name = 'Pages / Session'
+                            }
+                            else if (key == 'bouncesRate') {
+                                name = 'Bounce rate'
+                            }
+                            else if (key == 'percentNewSessions') {
+                                name = '% New sessions'
+                            }
+                            chartSeriesArray.push({
+                                type: 'line',
+                                data: dataSample,
+                                name: name,
+                                yAxis: 1,
+                                color: finalCharts.multicharts[charts].color[i]
+                            })
+                            var summaryDisplay = dataSample.reduce(getSum)
+                            var sample = {
+                                summaryDisplay: Math.round(summaryDisplay * 100) / 100,
+                                key: name,
+                                showComparision: false,
+                                variance: 0,
+                                color: finalCharts.multicharts[charts].color[i]
+                            }
+                            displaySummary.push(sample)
+                        }
+                        i++;
+
+                    }
+                }
+                chartOptions = {
+                    chart: {
+                        zoomType: 'x',
+                    },
+                    credits: {
+                        enabled: false
+                    },
+                    exporting: {enabled: false},
+                    tooltip: {
+                        enabled: true,
+                        shared: true
+                    },
+                    xAxis:xAxisOption,
+                    title: {
+                        text: '',
+                        style: {
+                            display: 'none'
+                        }
+                    },
+                    yAxis: yAxisOption,
+                    series: chartSeriesArray,
+                }
+                finalChartData.push({
+                    'options': graphOptions.multiDataOptions,
+                    'data': displaySummary,
+                    'api': {},
+                    'chartOptions': chartOptions
+                });
+                if (cumulativeTotal == 0) finalChartData[finalChartData.length - 1].options.chart.yDomain = [0, 10];
+            }
+            if(finalCharts.percentageArea.length>0){
+                if (finalCharts.percentageArea.length > 0) {
+                    var chartOptionsArray = [];
+                    var dateArray = []
+                    var chartSeriesArray = [];
+                    var displaySummary = [];
+                    function getSum(total, num) {
+                        return total + num;
+                    }
+                        for (var k = 0; k < finalCharts.percentageArea[charts].values.length; k++) {
+                            dateArray.push(finalCharts.percentageArea[charts].values[k].x);
+                        }
+                        for(var j in finalCharts.percentageArea){
+                            var dataArray = [];
+                            for (var index = 0; index < finalCharts.percentageArea[j].values.length; index++) {
+                                dataArray.push(String(finalCharts.percentageArea[j].values[index].y).indexOf('.') ? parseFloat(finalCharts.percentageArea[j].values[index].y) : parseInt(finalCharts.percentageArea[j].values[index].y))
+                            }
+                            chartSeriesArray.push({
+                                type: 'area',
+                                name: finalCharts.percentageArea[j].metricName,
+                                data: dataArray,
+                                color: finalCharts.percentageArea[j].color[j]
+                            });
+                            var summaryDisplay = dataArray.reduce(getSum)
+                            var sample = {
+                                summaryDisplay: Math.round(summaryDisplay * 100) / 100,
+                                key: finalCharts.percentageArea[j].metricName,
+                                showComparision: false,
+                                variance: 0,
+                                color: finalCharts.percentageArea[j].color[j]
+                            }
+                            displaySummary.push(sample)
+                        }
+                        var xAxisOption =  {
+                            type: 'datetime',
+                            categories: dateArray,
+                            labels: {
+                                formatter: function () {
+                                    var date = new Date(this.value);
+                                    return months[date.getMonth()] + ' ' + date.getDate();
+                                }
+                            },
+                            tickInterval: 7,
+                            min: 0,
+                            max: dateArray.length,
+                        }
+                    chartOptions = {
+                        chart: {
+                            zoomType: 'x',
+                        },
+                        credits: {
+                            enabled: false
+                        },
+                        exporting: {enabled: false},
+                        tooltip: {
+                            enabled: true,
+                            shared: true
+                        },
+                        xAxis:xAxisOption,
+                        title: {
+                            text: '',
+                            style: {
+                                display: 'none'
+                            }
+                        },
+                        yAxis: { // left y axis
+                            title: {
+                                text: null
+                            }
+                        },
+                        plotOptions: {
+                            area: {
+                                stacking: 'percent',
+                                lineColor: '#ffffff',
+                                lineWidth: 1,
+                                marker: {
+                                    lineWidth: 1,
+                                    lineColor: '#ffffff'
+                                }
+                            }
+                        },
+                        series: chartSeriesArray,
+                    }
+                    finalChartData.push({
+                        'options': graphOptions.multiDataOptions,
+                        'data': displaySummary,
+                        'api': {},
+                        'chartOptions': chartOptions
+                    });
+                    if (cumulativeTotal == 0) finalChartData[finalChartData.length - 1].options.chart.yDomain = [0, 10];
+                }
+            }
             if (finalCharts.pieCharts.length > 0) {
                 var chartOptionsArray = [];
                 var chartSeriesArray = [];
@@ -3384,7 +3959,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                     chartColorChecker.push(finalCharts.pieCharts[charts].color);
                     var y = String(finalCharts.pieCharts[charts].y).indexOf('.') ? parseFloat(finalCharts.pieCharts[charts].y) : parseInt(finalCharts.pieCharts[charts].y);
                     var name = finalCharts.pieCharts[charts].key;
-                    chartValues.push({y: y, name: name,color:finalCharts.pieCharts[charts].color});
+                    chartValues.push({y: y, name: name, color: finalCharts.pieCharts[charts].color});
 
                 }
                 chartSeriesArray.push({
@@ -3394,19 +3969,19 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                     chart: {
                         type: finalCharts.pieCharts[0].type,
                         /*options3d: {
-                            enabled: true,
-                            alpha: 45,
-                            beta: 0
-                        },*/
+                         enabled: true,
+                         alpha: 45,
+                         beta: 0
+                         },*/
                         reflow: true,
                         zoomType: 'x'
                     },
                     credits: {
                         enabled: false
                     },
-                    exporting: { enabled: false },
+                    exporting: {enabled: false},
                     tooltip: {
-                        enabled:true,
+                        enabled: true,
                         shared: true
                     },
                     title: {
@@ -3452,7 +4027,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                     chartColorChecker.push(finalCharts.fbReachByCity[charts].color);
                     var y = String(finalCharts.fbReachByCity[charts].y).indexOf('.') ? parseFloat(finalCharts.fbReachByCity[charts].y) : parseInt(finalCharts.fbReachByCity[charts].y);
                     var name = finalCharts.fbReachByCity[charts].key;
-                    chartValues.push({y: y, name: name,color:finalCharts.fbReachByCity[charts].color});
+                    chartValues.push({y: y, name: name, color: finalCharts.fbReachByCity[charts].color});
 
                 }
                 chartSeriesArray.push({
@@ -3482,9 +4057,9 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                     credits: {
                         enabled: false
                     },
-                    exporting: { enabled: false },
+                    exporting: {enabled: false},
                     tooltip: {
-                        enabled:true,
+                        enabled: true,
                         shared: true
                     },
                     title: {
@@ -3516,9 +4091,9 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                     credits: {
                         enabled: false
                     },
-                    exporting: { enabled: false },
+                    exporting: {enabled: false},
                     tooltip: {
-                        enabled:true,
+                        enabled: true,
                         shared: true
                     },
                     xAxis: {
@@ -3528,7 +4103,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                         title: {
                             text: null
                         },
-                        min:0
+                        min: 0
                     }],
                     title: {
                         text: '',
@@ -3547,7 +4122,8 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                 function getSum(total, num) {
                     return total + num;
                 }
-                colorarry=[
+
+                colorarry = [
                     "#b2aee8",
                     "#aee8b2",
                     "#e8b2ae",
@@ -3559,17 +4135,17 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                     "#bb24d1",
                     "#dcdf41"
                 ];
-                var display=[];
-                var summaryDisplay=0
-                for(var i=0;i< finalCharts.fbReachByAge[0].values[1].length;i++){
-                    for(var j=0;j< finalCharts.fbReachByAge[0].values[2].length;j++)
-                     summaryDisplay += finalCharts.fbReachByAge[0].values[2][j].data[i]
-                    var sample={
-                        summaryDisplay:summaryDisplay,
-                        key:finalCharts.fbReachByAge[0].values[1][i],
-                        showComparision:'false',
-                        variance:0,
-                        color:colorarry[i]
+                var display = [];
+                var summaryDisplay = 0
+                for (var i = 0; i < finalCharts.fbReachByAge[0].values[1].length; i++) {
+                    for (var j = 0; j < finalCharts.fbReachByAge[0].values[2].length; j++)
+                        summaryDisplay += finalCharts.fbReachByAge[0].values[2][j].data[i]
+                    var sample = {
+                        summaryDisplay: summaryDisplay,
+                        key: finalCharts.fbReachByAge[0].values[1][i],
+                        showComparision: 'false',
+                        variance: 0,
+                        color: colorarry[i]
                     }
                     display.push(sample)
                 }
@@ -3577,7 +4153,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                 var individualGraphTotals = [];
                 for (var charts in display) {
                     var summaryTotal = 0;
-                        summaryTotal += parseFloat(display.summaryDisplay);
+                    summaryTotal += parseFloat(display.summaryDisplay);
                     individualGraphTotals[charts] = {
                         summaryTotal: summaryTotal
                     };
@@ -3675,7 +4251,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
 
                 }
             }
-            if(finalCharts.pageTechnicalEfficiency.length>0){
+            if (finalCharts.pageTechnicalEfficiency.length > 0) {
                 var chartOptionsArray = [];
                 var chartSeriesArray = [];
                 chartsCount++;
@@ -3688,21 +4264,21 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                     //         finalCharts.pageTechnicalEfficiency[charts].color = neededColour;
                     //     }
                     // }
-                    chartValues[0]=[];
-                    chartValues[1]=[];
+                    chartValues[0] = [];
+                    chartValues[1] = [];
                     for (var k = 0; k < finalCharts.pageTechnicalEfficiency[charts].values.length; k++) {
                         xArray.push(String(finalCharts.pageTechnicalEfficiency[charts].values[k].pageTitle));
                         chartValues[0].push(Number(finalCharts.pageTechnicalEfficiency[charts].values[k].PageLoadTime));
                         chartValues[1].push(Number(finalCharts.pageTechnicalEfficiency[charts].values[k].bounceRate));
                     }
-                    for(var i=0;i<finalCharts.pageTechnicalEfficiency[charts].summary.length;i++) {
+                    for (var i = 0; i < finalCharts.pageTechnicalEfficiency[charts].summary.length; i++) {
                         chartSeriesArray.push({
                             name: finalCharts.pageTechnicalEfficiency[charts].summary[i].key,
                             yAxis: i,
                             tooltip: {
-                                valueSuffix:''
+                                valueSuffix: ''
                             },
-                            data: chartValues[i], type:i==0?'column':'line',
+                            data: chartValues[i], type: i == 0 ? 'column' : 'line',
                             color: finalCharts.pageTechnicalEfficiency[charts].color[i]
                         });
                     }
@@ -3716,9 +4292,9 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                     credits: {
                         enabled: false
                     },
-                    exporting: { enabled: false },
+                    exporting: {enabled: false},
                     tooltip: {
-                        enabled:true,
+                        enabled: true,
                         shared: true
                     },
                     xAxis: {
@@ -3728,9 +4304,9 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                 return this.value;
                             }
                         },
-                        tickInterval:1,
+                        tickInterval: 1,
                         min: 0,
-                        max: xArray.length-1,
+                        max: xArray.length - 1,
                     },
                     yAxis: [{
                         title: {
@@ -3757,30 +4333,30 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                     'chartOptions': chartOptions
                 });
             }
-            if(finalCharts.visitorAcquisitionEfficiency.length>0){
+            if (finalCharts.visitorAcquisitionEfficiency.length > 0) {
                 var chartOptionsArray = [];
                 var chartSeriesArray = [];
                 chartsCount++;
                 for (var charts in finalCharts.visitorAcquisitionEfficiency) {
                     var xArray = [];
                     var chartValues = [];
-                    chartValues[0]=[];
-                    chartValues[1]=[];
-                    chartValues[2]=[];
+                    chartValues[0] = [];
+                    chartValues[1] = [];
+                    chartValues[2] = [];
                     for (var k = 0; k < finalCharts.visitorAcquisitionEfficiency[charts].values.length; k++) {
                         xArray.push(String(finalCharts.visitorAcquisitionEfficiency[charts].values[k].sourceMedium));
                         chartValues[0].push(Number(finalCharts.visitorAcquisitionEfficiency[charts].values[k].newUsers));
                         chartValues[1].push(Number(finalCharts.visitorAcquisitionEfficiency[charts].values[k].goalValuePerSession));
                         chartValues[2].push(Number(finalCharts.visitorAcquisitionEfficiency[charts].values[k].goalConversionRateAll));
                     }
-                    for(var i=0;i<finalCharts.visitorAcquisitionEfficiency[charts].summary.length;i++) {
+                    for (var i = 0; i < finalCharts.visitorAcquisitionEfficiency[charts].summary.length; i++) {
                         chartSeriesArray.push({
                             name: finalCharts.visitorAcquisitionEfficiency[charts].summary[i].key,
-                            yAxis: i<1?0:1,
+                            yAxis: i < 1 ? 0 : 1,
                             tooltip: {
-                                valueSuffix:''
+                                valueSuffix: ''
                             },
-                            data: chartValues[i], type:i<1?'column':'line',
+                            data: chartValues[i], type: i < 1 ? 'column' : 'line',
                             color: finalCharts.visitorAcquisitionEfficiency[charts].color[i]
                         });
                     }
@@ -3794,9 +4370,9 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                     credits: {
                         enabled: false
                     },
-                    exporting: { enabled: false },
+                    exporting: {enabled: false},
                     tooltip: {
-                        enabled:true,
+                        enabled: true,
                         shared: true
                     },
                     xAxis: {
@@ -3806,9 +4382,9 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                 return this.value;
                             }
                         },
-                        tickInterval:1,
+                        tickInterval: 1,
                         min: 0,
-                        max: xArray.length-1,
+                        max: xArray.length - 1,
                     },
                     yAxis: [{
                         title: {
@@ -3835,7 +4411,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                     'chartOptions': chartOptions
                 });
             }
-            if(finalCharts.pageContentEfficiency.length>0){
+            if (finalCharts.pageContentEfficiency.length > 0) {
                 var chartSeriesArray = [];
                 chartsCount++;
                 for (var charts in finalCharts.pageContentEfficiency) {
@@ -3847,10 +4423,10 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                     //         finalCharts.pageTechnicalEfficiency[charts].color = neededColour;
                     //     }
                     // }
-                    chartValues[0]=[];
-                    chartValues[1]=[];
-                    chartValues[2]=[];
-                    chartValues[3]=[]
+                    chartValues[0] = [];
+                    chartValues[1] = [];
+                    chartValues[2] = [];
+                    chartValues[3] = []
                     for (var k = 0; k < finalCharts.pageContentEfficiency[charts].values.length; k++) {
                         xArray.push(String(finalCharts.pageContentEfficiency[charts].values[k].pageTitle));
                         chartValues[0].push(Number(finalCharts.pageContentEfficiency[charts].values[k].uniquePageviews));
@@ -3858,14 +4434,14 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                         chartValues[2].push(Number(finalCharts.pageContentEfficiency[charts].values[k].bounceRate));
                         chartValues[3].push(Number(finalCharts.pageContentEfficiency[charts].values[k].entranceRate));
                     }
-                    for(var i=0;i<finalCharts.pageContentEfficiency[charts].summary.length;i++) {
+                    for (var i = 0; i < finalCharts.pageContentEfficiency[charts].summary.length; i++) {
                         chartSeriesArray.push({
                             name: finalCharts.pageContentEfficiency[charts].summary[i].key,
-                            yAxis: i<2?0:1,
+                            yAxis: i < 2 ? 0 : 1,
                             tooltip: {
-                                valueSuffix:''
+                                valueSuffix: ''
                             },
-                            data: chartValues[i], type:i<2?'column':'line',
+                            data: chartValues[i], type: i < 2 ? 'column' : 'line',
                             color: finalCharts.pageContentEfficiency[charts].color[i]
                         });
                         // chartColorChecker.push(finalCharts.pageContentEfficiency[charts].color);
@@ -3879,9 +4455,9 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                     credits: {
                         enabled: false
                     },
-                    exporting: { enabled: false },
+                    exporting: {enabled: false},
                     tooltip: {
-                        enabled:true,
+                        enabled: true,
                         shared: true
                     },
                     xAxis: {
@@ -3891,9 +4467,9 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                 return this.value;
                             }
                         },
-                        tickInterval:1,
+                        tickInterval: 1,
                         min: 0,
-                        max: xArray.length-1,
+                        max: xArray.length - 1,
                     },
                     yAxis: [{
                         title: {
@@ -4024,7 +4600,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
             setLayoutOptions();
             if (widget.widgetType == 'custom') chartName = "Custom Data";
             else chartName = (typeof widget.name != 'undefined' ? widget.name : '');
-            if(typeof finalChartData[0].data[0].key != 'undefined') {
+            if (typeof finalChartData[0].data[0].key != 'undefined') {
                 var modifiedWidget = {
                     'name': chartName,
                     'visibility': true,
@@ -4035,9 +4611,9 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                     'layoutOptionsY': individualGraphHeightDivider
                 };
             }
-            else{
+            else {
                 var modifiedWidget = {
-                    'showSummary':false,
+                    'showSummary': false,
                     'name': chartName,
                     'visibility': true,
                     'id': widget._id,
@@ -4050,6 +4626,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
             deferred.resolve(modifiedWidget);
             return deferred.promise;
         }
+
         function isValidDate(value) {
             var dateWrapper = new Date(value);
             return !isNaN(dateWrapper.getDate());
