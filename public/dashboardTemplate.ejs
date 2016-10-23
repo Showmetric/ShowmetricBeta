@@ -115,7 +115,7 @@
                                                             </div>
                                                             <div class="col col-lg-7 col-sm-7 col-md-7 col-xs-7" style="padding: 0px 0px 0px 0px!important;">
                                                                 <!--<p ng-style="{'color': '#979797', 'font-family' : 'Heebo-Medium','font-size':'12px', 'text-transform':'uppercase', 'background-color': 'whitesmoke'}" style="margin:0px 0px 3px!important;font-weight: bold;">{{data.key}} - <b ng-style="{'color':data.color, 'font-family' : 'Heebo-Medium'}"> {{data.summaryDisplay}} </b></p>-->
-                                                                <p ng-if="chart.options.chart.type != 'pieChart'&&data.period!=undefined" class="summaryKeyFont" ng-class="{'summaryKeyDoubleFont': dashboard.widgetData[widgetIndex].layoutOptionsX>1}" ng-show="data.showComparision==true" style="padding-top:3px;margin:1px 0px 1px!important;overflow: hidden;float: right;">{{data.period}}: <span ng-if="data.variance !=0">{{data.variance}}%  </span><i ng-if="data.arrow==='up' && data.variance !=0" style="font-size:0.8em;color:#2A8539" class="fa fa-arrow-up" aria-hidden="true"></i><i ng-if='data.arrow==="down" && data.variance !=0' style="font-size: 0.8em;color:#FF1B1B" class="fa fa-arrow-down" aria-hidden="true"></i></p>
+                                                                <p ng-if="chart.options.chart.type != 'pieChart'" class="summaryKeyFont" ng-class="{'summaryKeyDoubleFont': dashboard.widgetData[widgetIndex].layoutOptionsX>1}" ng-show="data.showComparision==true" style="padding-top:3px;margin:1px 0px 1px!important;overflow: hidden;float: right;">{{data.period}}: <span ng-if="data.variance !=0">{{data.variance}}%  </span><i ng-if="data.arrow==='up' && data.variance !=0" style="font-size:0.8em;color:#2A8539" class="fa fa-arrow-up" aria-hidden="true"></i><i ng-if='data.arrow==="down" && data.variance !=0' style="font-size: 0.8em;color:#FF1B1B" class="fa fa-arrow-down" aria-hidden="true"></i></p>
                                                             </div>
                                                         </div>
                                                            <!--<p ng-if="chart.options.chart.type != 'pieChart'" style="font-size: 14px;font-family: Heebo-Light;">{{data.period}}- <span ng-if="data.variance !=0">{{data.variance}}%</span><i ng-if="data.arrow==='up' && data.variance !=0" style="font-size: 0.8em;color:#2A8539" class="fa fa-arrow-up" aria-hidden="true"></i><i ng-if='data.arrow==="down" && data.variance !=0' style="font-size: 0.8em;color:#FF1B1B" class="fa fa-arrow-down" aria-hidden="true"></i></p>-->
@@ -138,15 +138,7 @@
                                         </div>
                                     </div>
                                     <div ng-repeat="(chartIndex,chart) in dashboard.widgetData[widgetIndex].chart" ng-if="chart.options.chart.type=== 'visitorAcquisitionEfficiency'" style="float: left;padding-left: 2px;padding-right: 2px;" ng-style="{'height': (100/dashboard.widgetData[widgetIndex].layoutOptionsY)+'%', 'width': (100/dashboard.widgetData[widgetIndex].layoutOptionsX)+'%'}">
-                                        <div class="col col-lg-4 col-sm-4 col-md-4 scrollbar scroller" style="margin:0px;height:100%;padding-left:5px;padding-right:5px;"><!--  ng-style="calculateSummaryHeight(widget.sizeY,chart.data.length)">-->
-                                            <ul style="padding-top: 25%;height:100%;font-size:12px;padding-left: 5px;">
-                                                <li  ng-repeat="data in chart.data[0].summary" style="text-align: center;padding-top: 1px;padding-left:0px;padding-right: 2px;font-size: 1.0em!important;" id="li-{{widget.id}}-{{$index}}" class="col col-lg-12" >
-                                                    <p ng-style="{ 'font-family' : 'Heebo-Medium','font-size':'14px', 'text-transform':'uppercase',  'border-bottom': '4px solid', 'border-color': chart.data[0].color[$index], 'padding-left': '3px'}" style="margin:0px 0px 3px!important;font-weight: bold;padding-top: 2px;padding-bottom: 2px;"> {{data.key}}</p>
-                                                    <p class="summaryFont" ng-class="{'summaryDoubleFont': dashboard.widgetData[widgetIndex].layoutOptionsX>1}"ng-style="{ 'font-family' : 'Heebo-Medium', 'text-transform':'uppercase', 'padding-left': '0px', 'border-right': '3px solid white'}" style="margin:0px 0px 3px!important;font-weight: bold;"> {{data.value}}</p>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <div id="{{'updateHeight'+widgetIndex}}" class="col col-lg-8 col-sm-8 col-md-8" style="height:100%;padding-left:5px;padding-right:5px;">
+                                        <div id="{{'updateHeight'+widgetIndex}}" class="col col-lg-12 col-sm-12 col-md-12 col-xs-12" style="height:100%;padding-left:5px;padding-right:5px;">
                                             <div id="{{'chartOptions'+widgetIndex}}"   style="width:100%;height:100%;">
                                                 <hc-chart options="chart.chartOptions"
                                                           id="{{'chartRepeat'+widgetIndex+'-'+chartIndex}}"
@@ -386,6 +378,41 @@
                                                                 <td style="padding:5px 5px;width:12%;text-align:center;">{{data.newUsers}}</td>
                                                                 <td style="padding:5px 5px;width:12%;text-align:center;">{{data.goalConversionRateAll}}</td>
                                                                 <td style="padding:5px 5px;width:12%;text-align:center;">{{data.goalValuePerSession}}</td>
+                                                            </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                    <div class="showmore" style="text-align:center" ng-show="chart.data.length>20">
+                                                        <a href ng-click="limitScroll=(limitScroll+10)" ng-show="limitScroll<chart.data.length">Show More</a>
+                                                        <span ng-show="limitScroll>20&&limitScroll<chart.data.length">|</span>
+                                                        <a href ng-click="limitScroll=(limitScroll-10)" ng-show="limitScroll>20">Show Less</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div ng-repeat="chart in dashboard.widgetData[widgetIndex].chart" ng-if="chart.options.chart.type=== 'topReferringSitesTable'" style="float: left;padding-left: 2px;padding-right: 2px;" ng-style="{'height': (100/dashboard.widgetData[widgetIndex].layoutOptionsY)+'%', 'width': (100/dashboard.widgetData[widgetIndex].layoutOptionsX)+'%'}">
+                                        <div class="row" style="margin: 0px;height: 100%" >
+                                            <div events="events" style="height: 99%" ng-if="dashboard.widgetData[widgetIndex].visibility == true" ng-init="limitScroll=20">
+                                                <div class="scrollbar scrollInWidget" id="scroller">
+                                                    <div class="col-lg-12 table-responsive" style="overflow-x: hidden;padding:0px;">
+                                                        <table class="table table-striped">
+                                                            <thead>
+                                                            <tr style="padding:2px 5px;width:100%">
+                                                                <th style="padding:5px 5px;width:40%;text-align:center;">Source</th>
+                                                                <th style="padding:5px 5px;width:12%;text-align:center;">Sessions </th>
+                                                                <th style="padding:5px 5px;width:12%;text-align:center;">Goal Completions</th>
+                                                                <th style="padding:5px 5px;width:12%;text-align:center;">Goal Conversion Rate</th>
+
+                                                            </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                            <tr style="padding:2px 5px;width:100%" ng-repeat="data in chart.data | limitTo: limitScroll" ng-if="data.source">
+                                                                {{data}}
+                                                                <td style="padding:5px 5px;width:40%;text-align:left;">{{data.source}}</td>
+                                                                <td style="padding:5px 5px;width:12%;text-align:center;">{{data.sessions}}</td>
+                                                                <td style="padding:5px 5px;width:12%;text-align:center;">{{data.goalCompletions}}</td>
+                                                                <td style="padding:5px 5px;width:12%;text-align:center;">{{data.goalConversionRate}}</td>
                                                             </tr>
                                                             </tbody>
                                                         </table>

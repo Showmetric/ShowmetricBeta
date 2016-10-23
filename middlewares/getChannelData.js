@@ -49,10 +49,6 @@ var PDK = require('node-pinterest');
 var configAuth = require('../config/auth');
 FB.options({version: configAuth.apiVersions.FBADs});
 graph.setVersion(configAuth.apiVersions.FBVersion);
-//set googleAdwords node module
-//var googleAds = require('../lib/googleAdwords');
-//var spec = {host: configAuth.googleAdwordsStatic.host};
-//googleAds.GoogleAdwords(spec);
 //aweber
 var NodeAweber = require('aweber-api-nodejs');
 var NA = new NodeAweber(configAuth.aweberAuth.clientID, configAuth.aweberAuth.clientSecret, configAuth.aweberAuth.callbackURL);
