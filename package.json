@@ -32,6 +32,7 @@
     "fb": "^1.1.1",
     "fbgraph": "^1.1.0",
     "file-stream-rotator": "0.0.6",
+    "forever-monitor": "^1.7.0",
     "file-system": "^2.2.1",
     "form-urlencoded": "^1.4.1",
     "fs": "0.0.2",
