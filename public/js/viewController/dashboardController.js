@@ -64,6 +64,7 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
         
         //Setting up grid configuration for widgets
         $scope.gridsterOptions = {
+            sparse: true,
             margins: [20, 20],
             maxRows: 500,
             columns: 6,
@@ -127,7 +128,7 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
                                             var elemHeight=0;
                                         else
                                             var elemHeight = document.getElementById('li-' + widget.id + '-' + String(j)).offsetHeight;
-                                            $scope.dashboard.widgetData[ind].chart[i].data[j].myheight = elemHeight;
+                                        $scope.dashboard.widgetData[ind].chart[i].data[j].myheight = elemHeight;
                                         }
                                     }
                                 else{

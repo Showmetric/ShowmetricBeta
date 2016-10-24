@@ -307,7 +307,6 @@ showMetricApp.service('createWidgets', function ($http, $q) {
         }
 
         function getRegularWidgetData(widget, dateRange, isPublic) {
-
             var deferred = $q.defer();
             var updatedCharts = [];
             if (isPublic) {
@@ -339,7 +338,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                 updatedCharts.push({
                                     channelId: widget.charts[chartObjects].channelId,
                                     chartType: typeof widget.charts[chartObjects].metrics[0].chartType != 'undefined' ? widget.charts[chartObjects].metrics[0].chartType : '',
-                                    chartSubType: typeof widget.charts[chartObjects].metrics[0].subChartType != 'undefined' ? widget.charts[chartObjects].metrics[0].subChartType : '',
+                                    chartSubType:  widget.charts[chartObjects].metrics[0].subChartType === 'fbTopReferringDomain' ? widget.charts[chartObjects].metrics[0].subChartType:'',
                                     chartName: widget.charts[chartObjects].name,
                                     chartColour: widget.charts[chartObjects].metrics[0].color,
                                     chartOptions: widget.charts[chartObjects].metrics[0].chartOptions,
@@ -497,11 +496,12 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                         if (widget.charts[charts].chartSubType === 'fbTopReferringDomain') {
                             var sortDomains = _.sortBy(formattedChartData, 'y').reverse();
                             var sortedArray = [];
-                            for (var k = 0; k < 9; k++) {
+                            if(formattedChartData.length<10) var sortingLength = formattedChartData.length-1;
+                            else var sortingLength = 9;
+                            for (var k = 0; k <= sortingLength; k++) {
                                 sortedArray.push({x: sortDomains[k].x, y: sortDomains[k].y})
                             }
                             widget.charts[charts].chartData = sortedArray;
-
                         }
                     }
                     else if (chartType == "reachVsImpressions" || chartType == "engagedUsersReach") {
@@ -1961,13 +1961,13 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                     percentNewSessions += parseFloat(sortdata[key][i]['percentNewSessions']);
                                 }
                                 if (sessions === 0)
-                                    var bouncesRate = bounces;
+                                    var bounceRate = bounces;
                                 else
-                                    var bouncesRate = ((bounces / sessions) * 100).toFixed(2);
+                                    var bounceRate = ((bounces / sessions) * 100).toFixed(2);
                                 var hour = {
                                     hour: hour,
                                     sessions: sessions,
-                                    bouncesRate: bouncesRate,
+                                    bounceRate: bounceRate,
                                     pageviews: pageviews,
                                     pageviewsPerSession: pageviewsPerSession,
                                     percentNewSessions: percentNewSessions,
@@ -2117,14 +2117,14 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                             if (keyValuePairs.search('/') > -1) {
                                                 endpointArray = keyValuePairs.split('/');
                                                 for (var splittedValues in endpointArray) {
-                                                    yValue = widget.charts[charts].chartData[datas].total[keyValuePairs];
+                                                    yValue =widget.charts[charts].chartData[datas].total[keyValuePairs] ;
                                                     xValue = keyValuePairs;
                                                 }
                                             }
                                             else {
                                                 yValue = widget.charts[charts].chartData[datas].total[keyValuePairs].total;
                                             }
-                                            xValue = moment(widget.charts[charts].chartData[datas].date);
+                                            xValue =  moment(widget.charts[charts].chartData[datas].date);
                                         }
                                         formattedChartData.push({
                                             x: xValue,
@@ -2346,10 +2346,10 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                     }
                                     else {
                                         widgetCharts.push({
-                                            "subChartType": widget.charts[charts].chartType,
+                                            "subChartType": widget.charts[charts].subChartType,
                                             'type': widget.charts[charts].chartType,
                                             'values': widget.charts[charts].chartData,      //values - represents the array of {x,y} data points
-                                            'key': widget.charts[charts].subChartType === 'fbTopReferringDomain' ? undefined : widget.charts[charts].metricDetails.name, //key  - the name of the series.
+                                            'key': widget.charts[charts].chartSubType === 'fbTopReferringDomain' ? undefined : widget.charts[charts].metricDetails.name, //key  - the name of the series.
                                             'color': widget.charts[charts].chartColour[0],  //color - optional: choose your own line color.
                                             'arrow': comparingData,
                                             'variance': percentage,
@@ -3932,7 +3932,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                 for (items in individualGraphTotals)
                     cumulativeTotal += parseInt(individualGraphTotals[items].summaryTotal);
                 finalChartData.push({
-                    'options': graphOptions.barDataOptions,
+                    'options': graphOptions.pieDataOptions,
                     'data': finalCharts.barCharts,
                     'api': {},
                     'chartOptions': chartOptions
@@ -4189,7 +4189,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                 }
                 finalChartData.push({
                     'options': graphOptions.multiDataOptions,
-                    'data': displaySummary,
+                    'data': finalCharts.multicharts,
                     'api': {},
                     'chartOptions': chartOptions
                 });
@@ -4510,7 +4510,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                 for (items in individualGraphTotals)
                     cumulativeTotal += parseInt(individualGraphTotals[items].summaryTotal);
                 finalChartData.push({
-                    'options': graphOptions.barDataOptions,
+                    'options': graphOptions.pieDataOptions,
                     'data': display,
                     'api': {},
                     'chartOptions': chartOptions
