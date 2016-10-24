@@ -19,6 +19,7 @@ var bodyParser = require('body-parser');
 var session = require('express-session');
 var mongoStore = require('connect-mongo')(session);
 var moment = require('moment');
+var forever = require('forever-monitor');
 var configDB = require('./config/database.js');
 //Load the auth file
 var configAuth = require('./config/auth');
