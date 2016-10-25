@@ -3587,8 +3587,8 @@ agenda.define(configAuth.batchJobs.alertName, function (job, done) {
     }
 })
 agenda.on('ready', function () {
-    agenda.processEvery('2 hours', configAuth.batchJobs.alertJobName);
-    //agenda.now(configAuth.batchJobs.alertJobName)
+    //agenda.processEvery('2 hours', configAuth.batchJobs.alertJobName);
+    agenda.now(configAuth.batchJobs.alertJobName)
     agenda.start();
     agenda.on(configAuth.batchJobs.successBatchJobMessage, function (job) {
         if (job) {
