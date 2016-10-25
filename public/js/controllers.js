@@ -3140,7 +3140,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                         });
                     }
                     else if (chartType == 'twitterEngagements') {
-                        if(widget.charts[charts].chartSubType==='engagementByUsersTalkedAbout'){
+                        if(widget.charts[charts].chartSubType==='engagementByUsersTalkedAbout'||widget.charts[charts].chartSubType ==='topLinks' || widget.charts[charts].chartSubType ==='hashTag'){
                             widgetCharts.push({
                                 'type': widget.charts[charts].chartType,
                                 'chartSubType':widget.charts[charts].chartSubType,
@@ -5489,7 +5489,9 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                             yAxis: {
                                 title: {
                                     text: 'Time',
-                                }
+                                },
+                                min:0,
+                                max:24,
                             },
                             title: {
                                 text: '',
@@ -5506,8 +5508,14 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                             },
                             series: [{data: chartSeriesArray}],
                         }
+                        finalChartData.push({
+                            'options': graphOptions.visitorAcquisitionEfficiency,
+                            'data': finalCharts.twitterEngagements,
+                            'api': {},
+                            'chartOptions': chartOptions
+                        });
                     }
-                    else if (finalCharts.twitterEngagements[charts].chartSubType ==='topLinks' || finalCharts.twitterEngagements[charts].chartSubType ==='hashTag' ){
+                    else if (finalCharts.twitterEngagements[charts].chartSubType==='engagementByUsersTalkedAbout'||finalCharts.twitterEngagements[charts].chartSubType ==='topLinks' || finalCharts.twitterEngagements[charts].chartSubType ==='hashTag' ){
                         var   chart= {
                             chart: {
                                 type: finalCharts.twitterEngagements[charts].chartSubType
@@ -5519,12 +5527,6 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                             'data': finalCharts.twitterEngagements[0].values
                         });
                     }
-                    finalChartData.push({
-                        'options': graphOptions.visitorAcquisitionEfficiency,
-                        'data': finalCharts.twitterEngagements,
-                        'api': {},
-                        'chartOptions': chartOptions
-                    });
                 }
             }
             if (finalChartData.length == 0) {

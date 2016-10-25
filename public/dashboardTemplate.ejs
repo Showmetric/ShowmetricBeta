@@ -611,7 +611,7 @@
                                                             <tbody>
                                                             <tr style="padding:2px 5px;width:100%" ng-repeat="data in chart.data | limitTo: limitScroll" ng-if="data.tweet">
                                                                 {{data}}
-                                                                <td style="padding:5px 5px;width:40%;text-align:left;">{{data.tweet}}<href>{{data.url}}</href></td>
+                                                                <td style="padding:5px 5px;width:40%;text-align:left;" {{data.tweet}}</td>
                                                                 <td style="padding:5px 5px;width:12%;text-align:center;">{{data.userMentionedScreenName}}</td>
                                                                 <td style="padding:5px 5px;width:12%;text-align:center;">{{data.engagement}}</td>
                                                             </tr>
