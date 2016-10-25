@@ -75,7 +75,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
             var dataLoadedWidget = getRegularWidgetElements(tempWidget, dateRange, isPublic);
             dataLoadedWidget.then(
                 function successCallback(dataLoadedWidget) {
-                    var widgetCharts = formulateRegularWidgetGraphs(dataLoadedWidget);
+                    var widgetCharts = formulateRegularWidgetGraphs(dataLoadedWidget,dateRange);
                     widgetCharts.then(
                         function successCallback(widgetCharts) {
                             var widgetData = createWidgetData(widget, widgetCharts);
@@ -105,7 +105,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                     var widgetCharts = formulateCustomWidgetGraphs(dataLoadedWidget);
                     widgetCharts.then(
                         function successCallback(widgetCharts) {
-                            var widgetData = createWidgetData(widget, widgetCharts);
+                            var widgetData = createWidgetData(widget, widgetCharts,dateRange);
                             widgetData.then(
                                 function successCallback(widgetData) {
                                     deferredWidget.resolve(widgetData);
@@ -395,7 +395,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
             return deferred.promise;
         }
 
-        function formulateRegularWidgetGraphs(widget) {
+        function formulateRegularWidgetGraphs(widget,dateRange) {
             var deferred = $q.defer();
             var widgetCharts = [];
             var totalNonZeroPoints = -1;
@@ -768,6 +768,58 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                 }
                                 widget.charts[charts].chartData = formattedChartDataArray;
                             }
+                        }
+                    }
+                    else if (chartType == "instagramEngagements") {
+                        var subType=widget.charts[charts]. chartSubType;
+                        if(subType ==="instagramPostFrequency" ||subType ==="instagramPostTypes" || subType ==="instagramPostEngagement" ){
+                            var postFrequency=0;
+                            var likes = 'likes';
+                            var comments = 'comments'
+                            var postType=[];
+                            if (typeof widget.charts[charts].chartData[0] != 'undefined'){
+                                for(var i=0;i<widget.charts[charts].chartData.length;i++){
+                                        postFrequency++;
+                                        var like=widget.charts[charts].chartData[i].total[likes].count;
+                                        var comment=widget.charts[charts].chartData[i].total[comments].count
+                                        var engagement=(like+comment)
+                                          var key=widget.charts[charts].chartData[i].total.type
+                                        postType.push({
+                                              "type":key,
+                                              "engagement":engagement
+                                        })
+                                }
+                            }
+                            var postTypeCount={
+                            };
+                            var PostTypeEngagement={
+
+                            }
+                            for (var k=0;k<postType.length;k++){
+                                if(postTypeCount.hasOwnProperty(postType[k].type)){
+                                    var key=postType[k].type
+                                    postTypeCount[key]+=1;
+                                }else{
+                                    var key=postType[k].type
+                                    postTypeCount[key]=1;
+                                }
+                                if(PostTypeEngagement.hasOwnProperty(postType[k].type)){
+                                    var keys=postType[k].type
+                                    PostTypeEngagement[keys]+=postType[k].engagement;
+                                }else{
+                                    var keys=postType[k].type
+                                    PostTypeEngagement[keys]=postType[k].engagement;
+                                }
+                            }
+                        }
+                        if(subType ==="instagramPostFrequency"){
+                            widget.charts[charts].chartData=postFrequency;
+                        }
+                       else if(subType ==="instagramPostEngagement"){
+                            widget.charts[charts].chartData = PostTypeEngagement
+                        }
+                       else if(subType ==="instagramPostTypes"){
+                            widget.charts[charts].chartData = postTypeCount
                         }
                     }
                     else if (chartType == "highEngagementTweets") {
@@ -1851,34 +1903,37 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                         }
                     }
                     else if (chartType == "instagramHashtagLeaderBoard") {
-                        if (typeof widget.charts[charts].chartData[0] != 'undefined') {
-                            if (typeof(widget.charts[charts].chartData[0].total) === 'object') {
-                                var tag = 'tag';
-                                var comments = 'comments';
-                                var likes = 'likes';
-                                var comments = 'comments'
-                                var likes = 'likes';
-                                var formattedChartDataArray = [];
-                                for (datas in widget.charts[charts].chartData) {
-                                    var formattedChartData = {
-                                        tagLink: (widget.charts[charts].chartData[datas].total != null && Object.keys(widget.charts[charts].chartData[datas].total.length != 0) ?
-                                            (typeof widget.charts[charts].chartData[datas].total[tag] != 'undefined' ? 'https://www.instagram.com/explore/tags/' + widget.charts[charts].chartData[datas].total[tag] : '') : ''),
-                                        tag: (widget.charts[charts].chartData[datas].total != null ?
-                                            (widget.charts[charts].chartData[datas].total[tag] != null ?
-                                                (typeof widget.charts[charts].chartData[datas].total[tag] != 'undefined' ? widget.charts[charts].chartData[datas].total[tag] : 0) : 0) : 0),
-                                        likes: (widget.charts[charts].chartData[datas].total != null ?
-                                            (widget.charts[charts].chartData[datas].total[likes] != null ?
-                                                (typeof widget.charts[charts].chartData[datas].total[likes] != 'undefined' ? widget.charts[charts].chartData[datas].total[likes] : 0) : 0) : 0),
+                        if(widget.charts[charts].chartData[0]!=null){
+                            if (typeof widget.charts[charts].chartData[0] != 'undefined') {
+                                if (typeof(widget.charts[charts].chartData[0].total) === 'object') {
+                                    var tag = 'tag';
+                                    var comments = 'comments';
+                                    var likes = 'likes';
+                                    var comments = 'comments'
+                                    var likes = 'likes';
+                                    var formattedChartDataArray = [];
+                                    for (datas in widget.charts[charts].chartData) {
+                                        var formattedChartData = {
+                                            tagLink: (widget.charts[charts].chartData[datas].total != null && Object.keys(widget.charts[charts].chartData[datas].total.length != 0) ?
+                                                (typeof widget.charts[charts].chartData[datas].total[tag] != 'undefined' ? 'https://www.instagram.com/explore/tags/' + widget.charts[charts].chartData[datas].total[tag] : '') : ''),
+                                            tag: (widget.charts[charts].chartData[datas].total != null ?
+                                                (widget.charts[charts].chartData[datas].total[tag] != null ?
+                                                    (typeof widget.charts[charts].chartData[datas].total[tag] != 'undefined' ? widget.charts[charts].chartData[datas].total[tag] : 0) : 0) : 0),
+                                            likes: (widget.charts[charts].chartData[datas].total != null ?
+                                                (widget.charts[charts].chartData[datas].total[likes] != null ?
+                                                    (typeof widget.charts[charts].chartData[datas].total[likes] != 'undefined' ? widget.charts[charts].chartData[datas].total[likes] : 0) : 0) : 0),
 
-                                        comments: (widget.charts[charts].chartData[datas].total != null ?
-                                            (widget.charts[charts].chartData[datas].total[comments] != null ?
-                                                (typeof widget.charts[charts].chartData[datas].total[comments] != 'undefined' ? widget.charts[charts].chartData[datas].total[comments] : 0) : 0) : 0),
-                                    };
-                                    formattedChartDataArray.push(formattedChartData);
+                                            comments: (widget.charts[charts].chartData[datas].total != null ?
+                                                (widget.charts[charts].chartData[datas].total[comments] != null ?
+                                                    (typeof widget.charts[charts].chartData[datas].total[comments] != 'undefined' ? widget.charts[charts].chartData[datas].total[comments] : 0) : 0) : 0),
+                                        };
+                                        formattedChartDataArray.push(formattedChartData);
+                                    }
+                                    widget.charts[charts].chartData = formattedChartDataArray;
                                 }
-                                widget.charts[charts].chartData = formattedChartDataArray;
                             }
                         }
+                        else widget.charts[charts].chartData=[];
                     }
                     else if (chartType == "gaTopCountriesToSocialVisits" || chartType === 'gaTopCitiesToSocialVisits') {
                         if (typeof widget.charts[charts].chartData[0] != 'undefined') {
@@ -1998,11 +2053,12 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                 formattedChartDataArray.push(hour)
                             }
                             var sortArray = [];
-
                             formattedChartDataArray.sort(function (a, b) {
-                                return parseFloat(a.sessions) - parseFloat(b.sessions);
+                                return parseFloat(a.hour) - parseFloat(b.hour);
                             });
-                            formattedChartDataArray.reverse();
+
+
+
                             for (var k = 0; k < formattedChartDataArray.length; k++) {
                                 sortArray.push({
                                     date: formattedChartDataArray[k]['hour'],
@@ -2119,7 +2175,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                                     }
                                                 }
                                                 else if (keyValuePairs == currentItem)
-                                                    yValue = widget.charts[charts].chartData[datas].total[currentItem];
+                                                    yValue = widget.charts[charts].chartData[datas].total[keyValuePairs];
                                             }
                                         }
                                         formattedChartData.push({
@@ -2145,7 +2201,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                                 }
                                             }
                                             else {
-                                                yValue = widget.charts[charts].chartData[datas].total[keyValuePairs].total;
+                                                yValue = widget.charts[charts].chartData[datas].total[keyValuePairs];
                                             }
                                             xValue = moment(widget.charts[charts].chartData[datas].date);
                                         }
@@ -2358,6 +2414,90 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                 widget.charts[charts].chartData=groupedArray;
                             }
                         }
+                        else if(String(widget.charts[charts].chartSubType)==="instagramActivityByDayOfTheWeek"){
+                            if (typeof widget.charts[charts].chartData[0] != 'undefined') {
+                                var splitArray=[];
+                                for (var k = 0; k < widget.charts[charts].chartData.length; k++){
+                                    if(typeof widget.charts[charts].chartData[k].total ==='object') {
+                                        widget.charts[charts].chartData[k].total.created_time =moment.unix(widget.charts[charts].chartData[k].total.created_time).format('dddd');
+                                        splitArray.push(widget.charts[charts].chartData[k].total);
+                                    }
+                                }
+                                var sortdata = _.groupBy( splitArray, 'created_time');
+                                var formattedChartDataArray = []
+                                for (var key in sortdata) {
+                                    var likes = 0;
+                                    var comments = 0;
+                                    var engagement = 0;
+                                    var day=key;
+                                    for (var i = 0; i < sortdata[key].length; i++) {
+                                        likes += parseFloat(sortdata[key][i]['likes']['count']);
+                                        comments += parseFloat(sortdata[key][i]['comments']['count']);
+                                    }
+                                    engagement=likes+comments;
+                                    var posts=i;
+                                    var path = {
+                                        day: day,
+                                        tweets: posts,
+                                        engagement: engagement,
+                                    }
+                                    formattedChartDataArray.push(path)
+                                }
+                                widget.charts[charts].chartData=formattedChartDataArray
+                            }
+                        }
+                        else if(String(widget.charts[charts].chartSubType)==="instagramActivityByTimeOfTheDay"){
+                            if (typeof widget.charts[charts].chartData[0] != 'undefined') {
+                                var splitArray=[];
+                                for (var k = 0; k < widget.charts[charts].chartData.length; k++){
+                                    if(typeof widget.charts[charts].chartData[k].total === 'object') {
+                                        var date = widget.charts[charts].chartData[k].total.created_time;
+                                        widget.charts[charts].chartData[k].total.day = moment.unix(date).format('dddd');
+                                        splitArray.push(widget.charts[charts].chartData[k].total);
+                                    }
+                                }
+                                var sortdata = _.groupBy( splitArray, 'day');
+                                var formattedChartDataArray = []
+                                for (var key in sortdata) {
+                                    var day=key;
+                                    var tempArray=[];
+                                    for (var i = 0; i < sortdata[key].length; i++) {
+                                        var temp=moment.unix(sortdata[key][i]['created_time']);
+                                        tempArray.push({time:new Date(temp).getHours(),likes:sortdata[key][i]['likes']['count'],comments:sortdata[key][i]['comments']['count']})
+                                    }
+                                    var sortTime= _.groupBy( tempArray, 'time');
+                                    for(var data in sortTime){
+                                        var likes = 0;
+                                        var comments = 0;
+                                        var engagement = 0;
+                                        var time=data;
+                                        for(var j=0;j<sortTime[data].length;j++){
+                                            likes+=parseFloat(sortTime[data][j]['likes']);
+                                            comments+= parseFloat(sortTime[data][j]['comments']);
+                                        }
+                                        engagement=likes+comments;
+                                        var path = {
+                                            day: day,
+                                            time: time,
+                                            engagement: engagement,
+                                        }
+                                        formattedChartDataArray.push(path)
+                                    }
+                                }
+                                widget.charts[charts].chartData=formattedChartDataArray;
+                            }
+                        }
+                        else if(String(widget.charts[charts].chartSubType)==="commentsAndLikes"){
+                            if (typeof widget.charts[charts].chartData[0] != 'undefined') {
+                                var formattedChartDataArray = []
+                                for (var k = 0; k < widget.charts[charts].chartData.length; k++){
+                                    if(typeof widget.charts[charts].chartData[k].total === 'object') {
+                                        formattedChartDataArray.push({x:widget.charts[charts].chartData[k].date,y:parseFloat(widget.charts[charts].chartData[k].total['likes']['count'])+parseFloat(widget.charts[charts].chartData[k].total['comments']['count']),link:widget.charts[charts].chartData[k].total['link']})
+                                    }
+                                }
+                                widget.charts[charts].chartData=formattedChartDataArray;
+                            }
+                        }
                         else if(widget.charts[charts]. chartSubType == "hashTag"){
                             if (typeof widget.charts[charts].chartData[0] != 'undefined') {
                                 var likes = 'favorite_count';
@@ -2425,7 +2565,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
 
                 for (var charts in widget.charts) {
                     var chartType = widget.charts[charts].chartType;
-                    if (chartType == "line" || chartType == "bar" || chartType == "percentageArea" || chartType == "column" || chartType == "stackcolumn" || chartType == "area" || chartType == "pie" || chartType == 'reachVsImpressions' || chartType == "engagedUsersReach" || chartType == 'mozoverview' || chartType == "trafficSourcesBrkdwnLine" ||chartType=='bounceRateArea' || chartType == 'negativeBar' || chartType == "trafficSourcesBrkdwnPie" || ((chartType == "costPerActionType") && (widget.meta != undefined))) {
+                    if (chartType == "line" || chartType == "bar" || chartType == "column" || chartType == "stackcolumn" || chartType == "area" || chartType == "pie" || chartType == 'reachVsImpressions' || chartType == "engagedUsersReach" || chartType == 'mozoverview' || chartType == "trafficSourcesBrkdwnLine" ||chartType=='bounceRateArea' || chartType == 'negativeBar' || chartType == "trafficSourcesBrkdwnPie" || ((chartType == "costPerActionType") && (widget.meta != undefined))) {
                         if (typeof widget.charts[charts].chartData[0] != 'undefined') {
                             if (widget.charts[charts].chartData[0].x) {
                                 var summaryValue = 0;
@@ -3073,6 +3213,47 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                             'type': 'fbReachByAge',
                             'values': widget.charts[charts].chartData,
                         });
+                    }
+                    else if(chartType=="instagramEngagements" ){
+                        if(widget.charts[charts].chartSubType ==="instagramPostTypes" ){
+                            var colorIndex = 0;
+                            for (var index in widget.charts[charts].chartData) {
+                                widgetCharts.push({
+                                    'type': 'pie',
+                                    'keys':index,
+                                    'displaySummary':false,
+                                    'y': parseFloat(widget.charts[charts].chartData[index]),      //values - represents the array of {x,y} data points
+                                    'color': typeof widget.charts[charts].chartColour != 'undefined' ? (typeof widget.charts[charts].chartColour[colorIndex] != 'undefined' ? widget.charts[charts].chartColour[colorIndex] : '') : '',  //color - optional: choose your own line color.
+                                });
+                                ++colorIndex;
+                            }
+                        }
+                        else if(widget.charts[charts].chartSubType ==="instagramPostEngagement" ){
+                            var colorIndex = 0;
+                            for (var index in widget.charts[charts].chartData) {
+                                widgetCharts.push({
+                                    'type': 'fbReachByCity',
+                                    'y': parseFloat(widget.charts[charts].chartData[index]),      //values - represents the array of {x,y} data points
+                                    'keys': index,
+                                    'displaySummary':false,
+                                    'color': typeof widget.charts[charts].chartColour != 'undefined' ? (typeof widget.charts[charts].chartColour[colorIndex] != 'undefined' ? widget.charts[charts].chartColour[colorIndex] : '') : '',  //color - optional: choose your own line color.
+                                    'summaryDisplay': Math.round(widget.charts[charts].chartData[index] * 100) / 100
+                                });
+                                ++colorIndex;
+                            }
+                        } else if(widget.charts[charts].chartSubType ==="instagramPostFrequency" ){
+                            var date1 = new Date(dateRange.startDate);
+                            var date2 = new Date(dateRange.endDate);
+                            var timeDiff = Math.abs(date2.getTime() - date1.getTime());
+                            var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+                            widgetCharts.push({
+                                'type': 'angularGauge',
+                                'y':  Math.round((widget.charts[charts].chartData/diffDays)*100)/100,   //values - represents the array of {x,y} data points
+                                'displaySummary':false,
+                                'color': typeof widget.charts[charts].chartColour != 'undefined' ? (typeof widget.charts[charts].chartColour[colorIndex] != 'undefined' ? widget.charts[charts].chartColour[colorIndex] : '') : '',  //color - optional: choose your own line color.
+                                'summaryDisplay': Math.round(widget.charts[charts].chartData[index] * 100) / 100
+                            });
+                        }
 
                     }
                     else if (chartType == "fbReachByCity") {
@@ -3101,7 +3282,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                             ++colorIndex;
                         }
                     }
-                    else if (chartType == "gaTopCountriesToSocialVisits" || chartType === 'gaTopCitiesToSocialVisits') {
+                    else if (chartType == "gaTopCountriesToSocialVisits" || chartType === 'gaTopCitiesToSocialVisits'||chartType ==='gaUsers') {
                         var colorIndex = 0;
                         for (var index in widget.charts[charts].chartData) {
                             widgetCharts.push({
@@ -3139,6 +3320,111 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                             'values': widget.charts[charts].chartData
                         });
                     }
+                    else if (chartType == "percentageArea") {
+                        var groupData = _.groupBy(widget.charts[charts].chartData, 'y.socialNetwork')
+                        var summaryColor=0;
+                        for(var key in groupData){
+                            var summaryValue = 0;
+                            var nonZeroPoints = 0;
+                            var n = groupData[key].length;
+                            var currentWeek = 0;
+                            var pastWeek = 0;
+                            var granularity;
+                            if (widget.charts[charts].chartData.length >= 14) {
+                                var count = 0;
+                                for (var i = n - 1; i >= 0; i--) {
+                                    if (count === 0 || count < 7)
+                                        currentWeek += parseFloat(groupData[key][i].y.total);
+                                    else if (count >= 7 && count < 14)
+                                        pastWeek += parseFloat(groupData[key][i].y.total);
+                                    count++;
+                                }
+                                granularity = 'WK';
+                            }
+
+                            else {
+                                if (widget.charts[charts].chartData.length > 0) {
+                                    var lenthOfData = groupData[key].length;
+                                    var lastIndex = _.last(groupData[key]);
+                                    if (typeof lastIndex.x != 'string') {
+                                        var subtractDate = moment(lastIndex.x).subtract(1, "days").format('YYYY-DD-MM');
+                                        currentWeek = parseFloat(lastIndex.y);
+                                    }
+                                    else {
+                                        currentWeek = parseFloat(groupData[key][lenthOfData - 1].y.total);
+                                    }
+
+                                    for (var i = n - 1; i >= 0; i--) {
+                                        if (typeof lastIndex.x != 'string') {
+                                            var dateFormatChange = moment(groupData[key][i].x).format('YYYY-DD-MM');
+                                            if (subtractDate === dateFormatChange)
+                                                pastWeek = parseFloat(groupData[key][i].y);
+                                        }
+                                        else {
+                                            pastWeek = parseFloat(groupData[key][lenthOfData - 2].y.total);
+                                        }
+                                    }
+                                    granularity = 'Day';
+                                }
+                            }
+                            var comparingData, minus, percentage;
+                            if (currentWeek > pastWeek) {
+                                comparingData = 'up';
+                                minus = currentWeek - pastWeek;
+                                if (pastWeek > 0)
+                                    percentage = parseFloat(minus / pastWeek * 100).toFixed(2);
+                                else
+                                    percentage = currentWeek;
+                            }
+                            else if (currentWeek < pastWeek) {
+                                comparingData = 'down';
+                                minus = pastWeek - currentWeek;
+                                if (pastWeek > 0)
+                                    percentage = parseFloat(minus / pastWeek * 100).toFixed(2);
+                                else
+                                    percentage = 0;
+                            }
+                            else {
+                                var minus = pastWeek - currentWeek;
+                                var percentage = 0;
+                            }
+                            for (var datas in groupData[key]) {
+                                summaryValue += parseFloat(groupData[key][datas].y.total);
+                                if (parseFloat(groupData[key][datas].y.total != 0))
+                                    nonZeroPoints++;
+                                if (typeof widget.charts[charts].metricDetails.objectTypes[0].meta.summaryType != 'undefined') {
+                                    if (widget.charts[charts].metricDetails.objectTypes[0].meta.summaryType == 'avg') {
+                                        if (nonZeroPoints == 0 && summaryValue == 0) summaryValue = 0;
+                                        else summaryValue = parseFloat(summaryValue / nonZeroPoints).toFixed(2);
+                                    }
+                                    else if (widget.charts[charts].metricDetails.objectTypes[0].meta.summaryType == 'snapshot') {
+                                        var latestDate = '';
+                                        for (var data in groupData[items]) {
+                                            if (latestDate < moment(groupData[key][data].x)) {
+                                                latestDate = moment(groupData[key][data].x);
+                                                summaryValue = groupData[key][data].y.total;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            widgetCharts.push({
+                                'type': widget.charts[charts].chartType,
+                                'metricCode': widget.charts[charts].metricCode,
+                                'metricName': widget.charts[charts].metricName,
+                                'key': key,
+                                'values': groupData[key],
+                                'color': typeof widget.charts[charts].chartColour != 'undefined' ? (typeof widget.charts[charts].chartColour[summaryColor] != 'undefined' ? widget.charts[charts].chartColour[summaryColor] : '') : '',  //color - optional: choose your own line color.
+                                'arrow': comparingData,
+                                'totalChartLength':widget.charts[charts].chartData,
+                                'variance': percentage,
+                                'period': granularity,
+                                'summaryDisplay': Math.round(summaryValue * 100) / 100,
+                            });
+                            summaryColor++;
+
+                        }
+                                            }
                     else if (chartType == 'twitterEngagements') {
                         if(widget.charts[charts].chartSubType==='engagementByUsersTalkedAbout'||widget.charts[charts].chartSubType ==='topLinks' || widget.charts[charts].chartSubType ==='hashTag'){
                             widgetCharts.push({
@@ -3164,7 +3450,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
             return deferred.promise;
         }
 
-        function createWidgetData(widget, widgetCharts) {
+        function createWidgetData(widget, widgetCharts,dateRange) {
             var deferred = $q.defer();
             var finalCharts = [];
             finalCharts.twitterEngagements=[],
@@ -3173,7 +3459,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                 finalCharts.pieCharts = [],
                 finalCharts.percentageAreaOptions = [],
                 finalCharts.instagramPosts = [], finalCharts.highEngagementTweets = [], finalCharts.highestEngagementLinkedIn = [], finalCharts.pinterestEngagementRate = [], finalCharts.pinterestLeaderboard = [];
-            finalCharts.gaTopPagesByVisit = [],
+            finalCharts.gaTopPagesByVisit = [],finalCharts.angularGauge=[],
                 finalCharts.multicharts = [],
                 finalCharts.fbReachByAge = [], finalCharts.mozoverview = [], finalCharts.fbReachByCity = [], finalCharts.vimeoTopVideos = [], finalCharts.costPerActionType = [], finalCharts.topReferringSites = [], finalCharts.instagramHashtagLeaderBoard = [], finalCharts.gaPageContentEfficiencyTable = [], finalCharts.gaPageTechnicalEfficiencyTable = [], finalCharts.gaVisitorAcquisitionEfficiencyAnalysisTable = [], finalCharts.pageTechnicalEfficiency = [], finalCharts.pageContentEfficiency = [], finalCharts.visitorAcquisitionEfficiency = [], finalCharts.percentageArea = [], finalCharts.topReferringSites = [], finalCharts.topReferringSitesTable = [], finalCharts.gaSocialMediaOverview = [], finalCharts.stackbar = [];
             var graphOptions = {
@@ -3370,7 +3656,6 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                 visitorAcquisitionEfficiency: {
                     chart: {
                         type: 'visitorAcquisitionEfficiency',
-                        noData: 'No data for chosen date range',
                         margin: {top: 20, right: 30, bottom: 30, left: 35},
                     }
                 },
@@ -3661,6 +3946,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                     else if (widgetCharts[charts].type == 'pinterestLeaderboard')finalCharts.pinterestLeaderboard.push(widgetCharts[charts]);
                     else if (widgetCharts[charts].type == 'vimeoTopVideos') finalCharts.vimeoTopVideos.push(widgetCharts[charts]);
                     else if (widgetCharts[charts].type == 'twitterEngagements') finalCharts.twitterEngagements.push(widgetCharts[charts]);
+                    else if (widgetCharts[charts].type == 'angularGauge') finalCharts.angularGauge.push(widgetCharts[charts]);
                     else if (widgetCharts[charts].type == 'mozoverview') {
                         for (var i = 0; i < widgetCharts[charts].values.length; i++)
                             widgetCharts[charts].values[i].x = moment(widgetCharts[charts].values[i].x).format("YYYY-DD-MM");
@@ -3700,6 +3986,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                             widgetCharts[charts].values[i].x = moment(widgetCharts[charts].values[i].x).format("YYYY-DD-MM");
                         finalCharts.mozoverview.push(widgetCharts[charts]);
                     }
+                    else if (widgetCharts[charts].type == 'angularGauge') finalCharts.angularGauge.push(widgetCharts[charts]);
                     else if (widgetCharts[charts].type == 'stackbar')finalCharts.stackbar.push(widgetCharts[charts]);
                     else if (widgetCharts[charts].type == 'instagramHashtagLeaderBoard') finalCharts.instagramHashtagLeaderBoard.push(widgetCharts[charts]);
                     else if (widgetCharts[charts].type == 'twitterEngagements')finalCharts.twitterEngagements.push(widgetCharts[charts]);
@@ -4328,7 +4615,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                             type: finalCharts.multicharts[j].metricCode == 'sessions' ? 'column' : 'line',
                             name: finalCharts.multicharts[j].metricName,
                             data: dataArray,
-                            yAxis: finalCharts.multicharts[j].metricCode == 'sessions' ? 0 : 1,
+                            yAxis: finalCharts.multicharts[j].metricCode == 'sessions' ? 0 : 0,
                             color: finalCharts.multicharts[j].color[j]
                         });
                         var summaryDisplay = dataArray.reduce(getSum)
@@ -4473,55 +4760,71 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                 });
                 if (cumulativeTotal == 0) finalChartData[finalChartData.length - 1].options.chart.yDomain = [0, 10];
             }
-            if (finalCharts.percentageArea.length > 0) {
+            if(finalCharts.percentageArea.length>0){
                 if (finalCharts.percentageArea.length > 0) {
                     var chartOptionsArray = [];
                     var dateArray = []
                     var chartSeriesArray = [];
                     var displaySummary = [];
-                    var seriesdataArray = [];
-
+                    var seriesdataArray=[];
                     function getSum(total, num) {
                         return total + num;
                     }
+                        for (var k = 0; k < finalCharts.percentageArea[charts].totalChartLength.length; k++) {
+                            dateArray.push(finalCharts.percentageArea[charts].totalChartLength[k].x);
+                        }
+                        var color=0;
+                        for(var j in finalCharts.percentageArea){
+                            var uniqueDate = _.groupBy(finalCharts.percentageArea[j].values, 'y.socialNetwork')
+                            for(var key in uniqueDate){
+                                var indexing=0;
+                                var toolTipName=[];
+                                var toolTip=[];
+                                for (var k = 0; k < finalCharts.percentageArea[charts].totalChartLength.length; k++) {
+                                    toolTip.push({
+                                        y:0
+                                    })
+                                }
+                                for (var n = 0; n < uniqueDate[key].length; n++) {
+                                        for(var i=0;i<finalCharts.percentageArea[charts].totalChartLength.length;i++){
+                                            var boolean=(moment(uniqueDate[key][n].x).format('YYYY-DD-MM')==moment(finalCharts.percentageArea[charts].totalChartLength[i].x).format('YYYY-DD-MM'));
+                                            if(boolean===true){
+                                                toolTip[i].y= parseInt(uniqueDate[key][n].y.total)
+                                            }
+                                        }
+                                }
 
-                    for (var k = 0; k < finalCharts.percentageArea[charts].values.length; k++) {
-                        dateArray.push(finalCharts.percentageArea[charts].values[k].x);
-                    }
-                    for (var j in finalCharts.percentageArea) {
-                        var dataArray = [];
-                        for (var index = 0; index < finalCharts.percentageArea[j].values.length; index++) {
-                            seriesdataArray.push(parseInt(finalCharts.percentageArea[j].values[index].y));
-                        }
-                        chartSeriesArray.push({
-                            type: 'area',
-                            color: finalCharts.percentageArea[j].color[j],
-                            name: finalCharts.percentageArea[j].metricName,
-                            data: seriesdataArray,
-                        });
-                        var summaryDisplay = seriesdataArray.reduce(getSum)
-                        var sample = {
-                            summaryDisplay: Math.round(summaryDisplay * 100) / 100,
-                            key: finalCharts.percentageArea[j].metricName,
-                            showComparision: false,
-                            variance: 0,
-                            color: finalCharts.percentageArea[j].color[j]
-                        }
-                        displaySummary.push(sample)
-                    }
-                    var xAxisOption = {
-                        type: 'datetime',
-                        categories: dateArray,
-                        labels: {
-                            formatter: function () {
-                                var date = new Date(this.value);
-                                return months[date.getMonth()] + ' ' + date.getDate();
+                                chartSeriesArray.push({
+                                    type: 'area',
+                                    color: finalCharts.percentageArea[j].color,
+                                    name: key,
+                                    data: toolTip,
+                                })
+                                color++;
                             }
-                        },
-                        tickInterval: 7,
-                        min: 0,
-                        max: dateArray.length,
-                    }
+
+                            var sample = {
+                                summaryDisplay: Math.round(summaryDisplay * 100) / 100,
+                                key: finalCharts.percentageArea[j].metricName,
+                                showComparision: false,
+                                variance: 0,
+                                color: finalCharts.percentageArea[j].color[j]
+                            }
+                            displaySummary.push(sample)
+                        }
+                    var xAxisOption =  {
+                            type: 'datetime',
+                            categories: dateArray,
+                            labels: {
+                                formatter: function () {
+                                    var date = new Date(this.value);
+                                    return months[date.getMonth()] + ' ' + date.getDate();
+                                }
+                            },
+                            tickInterval: 7,
+                            min: 0,
+                            max: dateArray.length,
+                        }
                     chartOptions = {
                         chart: {
                             zoomType: 'x',
@@ -4531,7 +4834,6 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                         },
                         exporting: {enabled: false},
                         tooltip: {
-                            pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.percentage:.1f}%</b> ({point.y:,.0f} millions)<br/>',
                             split: true,
                             enabled: true,
                             shared: true
@@ -4545,12 +4847,12 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                         },
                         yAxis: { // left y axis
                             title: {
-                                text: 'Percent'
+                                text: 'value'
                             }
                         },
                         plotOptions: {
                             area: {
-                                stacking: 'percent',
+                                stacking: 'normal',
                                 lineColor: '#ffffff',
                                 lineWidth: 1,
                                 marker: {
@@ -4585,7 +4887,10 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                     }
                     chartColorChecker.push(finalCharts.pieCharts[charts].color);
                     var y = String(finalCharts.pieCharts[charts].y).indexOf('.') ? parseFloat(finalCharts.pieCharts[charts].y) : parseInt(finalCharts.pieCharts[charts].y);
-                    var name = finalCharts.pieCharts[charts].key;
+               if(finalCharts.pieCharts[charts].displaySummary != 'Undefined')
+                    var name = finalCharts.pieCharts[charts].keys;
+                    else
+                   var name = finalCharts.pieCharts[charts].key;
                     chartValues.push({y: y, name: name==='(none)'?'Direct':name, color: finalCharts.pieCharts[charts].color});
 
                 }
@@ -4653,12 +4958,16 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                     }
                     chartColorChecker.push(finalCharts.fbReachByCity[charts].color);
                     var y = String(finalCharts.fbReachByCity[charts].y).indexOf('.') ? parseFloat(finalCharts.fbReachByCity[charts].y) : parseInt(finalCharts.fbReachByCity[charts].y);
-                    var name = finalCharts.fbReachByCity[charts].key;
+                    if(finalCharts.pieCharts[charts].displaySummary != 'Undefined')
+                        var name = finalCharts.pieCharts[charts].keys;
+                    else
+                        var name = finalCharts.pieCharts[charts].key;
                     chartValues.push({y: y, name: name, color: finalCharts.fbReachByCity[charts].color});
 
                 }
                 chartSeriesArray.push({
-                    data: chartValues
+                    data: chartValues,
+                    name:name
                 });
                 chartOptions = {
                     chart: {
@@ -5348,6 +5657,106 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                     'displayData': displayData
                 });
             }
+            if (finalCharts.angularGauge.length > 0) {
+                if(finalCharts.angularGauge[0].y != 0){
+                    chartsCount++;
+                    chartOptions = {
+                        chart: {
+                            type: 'gauge',
+                            plotBackgroundColor: null,
+                            plotBackgroundImage: null,
+                            plotBorderWidth: 0,
+                            plotShadow: false
+                        },
+                        credits: {
+                            enabled: false
+                        },
+                        exporting: {enabled: false},
+                        // pane: {
+                        //     startAngle: 0,
+                        //     endAngle: 360,
+                        //     background: [{
+                        //         backgroundColor: {
+                        //             linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+                        //             stops: [
+                        //                 [0, '#FFF'],
+                        //                 [1, '#333']
+                        //             ]
+                        //         },
+                        //         borderWidth: 0,
+                        //         outerRadius: '109%'
+                        //     }, {
+                        //         backgroundColor: {
+                        //             linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+                        //             stops: [
+                        //                 [0, '#333'],
+                        //                 [1, '#FFF']
+                        //             ]
+                        //         },
+                        //         borderWidth: 1,
+                        //         outerRadius: '107%'
+                        //     }, {
+                        //         // default background
+                        //     }, {
+                        //         backgroundColor: '#DDD',
+                        //         borderWidth: 0,
+                        //         outerRadius: '105%',
+                        //         innerRadius: '103%'
+                        //     }]
+                        // },
+                        yAxis: {
+                            min: 0,
+                            max: 100,
+                            minorTickInterval: 'auto',
+                            minorTickWidth: 1,
+                            minorTickLength: 10,
+                            minorTickPosition: 'inside',
+                            minorTickColor: '#666',
+                            tickPixelInterval: 30,
+                            tickWidth: 2,
+                            tickPosition: 'inside',
+                            tickLength: 10,
+                            tickColor: '#666',
+                            title: {
+                                text: 'Post/day'
+                            },
+                            plotBands: [{
+                                from: 0,
+                                to: 20,
+                                color: '#55BF3B' // green
+                            }, {
+                                from: 20,
+                                to: 60,
+                                color: '#DDDF0D' // yellow
+                            }, {
+                                from: 60,
+                                to: 100,
+                                color: '#DF5353' // red
+                            }]
+                        },
+
+                        title: {
+                            text: '',
+                            style: {
+                                display: 'none'
+                            }
+                        },
+                        series: [{
+                            name: 'Post Per Day',
+                            data: [finalCharts.angularGauge[0].y] ,
+                            tooltip: {
+                                valueSuffix: ' post/day'
+                            }
+                        }]
+                    }
+                }
+
+                finalChartData.push({
+                    'options': graphOptions.pieDataOptions,
+                    'data': finalCharts.angularGauge,
+                    'chartOptions': chartOptions
+                });
+            }
             if (finalCharts.instagramHashtagLeaderBoard.length > 0) {
                 if (finalCharts.instagramHashtagLeaderBoard[0].values.length > 0) {
                     chartsCount++;
@@ -5371,9 +5780,18 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                             chartValues[0].push(Number(finalCharts.twitterEngagements[charts].values[k].tweets));
                             chartValues[1].push(Number(finalCharts.twitterEngagements[charts].values[k].engagement));
                         }
+                        if(finalCharts.twitterEngagements[charts].chartSubType == 'activityByDayOfTheWeek'){
+                            var xLabel='Tweets';
+                            var yLabel='Tweets count'
+                        }
+                         else{
+                            var xLabel='Posts';
+                            var yLabel='Posts count'
+                        }
+
                         for (var i = 0; i < chartValues.length; i++) {
                             chartSeriesArray.push({
-                                name:i < 1 ? 'Tweets':'Engagements',
+                                name:i < 1 ?xLabel:'Engagements',
                                 yAxis: i < 1 ? 0 : 1,
                                 tooltip: {
                                     valueSuffix: ''
@@ -5409,7 +5827,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                             },
                             yAxis: [{
                                 title: {
-                                    text: 'Tweets count',
+                                    text: yLabel,
                                 }
                             }, {
                                 title: {
@@ -5432,7 +5850,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                             'chartOptions': chartOptions
                         });
                     }
-                    else if(finalCharts.twitterEngagements[charts].chartSubType == 'activityByTimeOfTheDay'){
+                    else if(finalCharts.twitterEngagements[charts].chartSubType == 'activityByTimeOfTheDay'||finalCharts.twitterEngagements[charts].chartSubType == 'instagramActivityByTimeOfTheDay' ){
                         var chartSeriesArray = [];
                         for (var charts in finalCharts.twitterEngagements) {
                             for (var k = 0; k < finalCharts.twitterEngagements[charts].values.length; k++) {
@@ -5464,6 +5882,9 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                 type: 'bubble',
                                 zoomType: 'xy'
                             },
+                            legend: {
+                                enabled: false
+                            },
                             credits: {
                                 enabled: false
                             },
@@ -5491,7 +5912,8 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                     text: 'Time',
                                 },
                                 min:0,
-                                max:24,
+                                max:28,
+                                tickInterval: 7
                             },
                             title: {
                                 text: '',
@@ -5515,16 +5937,86 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                             'chartOptions': chartOptions
                         });
                     }
-                    else if (finalCharts.twitterEngagements[charts].chartSubType==='engagementByUsersTalkedAbout'||finalCharts.twitterEngagements[charts].chartSubType ==='topLinks' || finalCharts.twitterEngagements[charts].chartSubType ==='hashTag' ){
-                        var   chart= {
-                            chart: {
-                                type: finalCharts.twitterEngagements[charts].chartSubType
+                    else if(finalCharts.twitterEngagements[charts].chartSubType == 'commentsAndLikes'){
+                        var chartSeriesArray = [];
+                        var categoriesArray = [];
+                        for (var charts in finalCharts.twitterEngagements) {
+                            var tempArray=[];
+                            for (var k = 0; k < finalCharts.twitterEngagements[charts].values.length; k++) {
+                                tempArray.push(finalCharts.twitterEngagements[charts].values[k].x)
+                            }
+                            categoriesArray= _.uniqBy(tempArray);
+                        }
+                        for (var charts in finalCharts.twitterEngagements) {
+                            for (var k = 0; k < finalCharts.twitterEngagements[charts].values.length; k++) {
+                                var x=_.indexOf(categoriesArray,finalCharts.twitterEngagements[charts].values[k].x);
+                                chartSeriesArray.push({
+                                    x: x,
+                                    y: Number(finalCharts.twitterEngagements[charts].values[k].y),
+                                    z: Number(finalCharts.twitterEngagements[charts].values[k].y),
+                                    color: finalCharts.twitterEngagements[charts].color[x],
+                                    link:finalCharts.twitterEngagements[charts].values[k].link,
+                                    date:categoriesArray[x],
+                                })
                             }
                         }
-
+                        chartOptions = {
+                            chart: {
+                                reflow: true,
+                                type: 'bubble',
+                                zoomType: 'xy'
+                            },
+                            legend: {
+                                enabled: false
+                            },
+                            credits: {
+                                enabled: false
+                            },
+                            exporting: {enabled: false},
+                            tooltip: {
+                                useHTML: true,
+                                headerFormat: '<table>',
+                                pointFormat:
+                                     '<tr><th>Date:</th><td>{point.date}</td></tr>'+
+                                     '<tr><th>Engagement:</th><td>{point.y}</td></tr>' +
+                                     '<tr><th>Link:</th><td>{point.link}</td></tr>',
+                                footerFormat: '</table>',
+                                enabled: true,
+                                shared: true
+                            },
+                            xAxis: {
+                                labels: {
+                                },
+                                categories:categoriesArray ,
+                                title: {
+                                    text: 'Date'
+                                }
+                            },
+                            yAxis: {
+                                title: {
+                                    text: 'Engagements',
+                                },
+                            },
+                            title: {
+                                text: '',
+                                style: {
+                                    display: 'none'
+                                }
+                            },
+                            plotOptions: {
+                                series: {
+                                    dataLabels: {
+                                        enabled: false,
+                                    }
+                                }
+                            },
+                            series: [{data: chartSeriesArray}],
+                        }
                         finalChartData.push({
-                            'options': chart,
-                            'data': finalCharts.twitterEngagements[0].values
+                            'options': graphOptions.visitorAcquisitionEfficiency,
+                            'data': finalCharts.twitterEngagements,
+                            'api': {},
+                            'chartOptions': chartOptions
                         });
                     }
                 }

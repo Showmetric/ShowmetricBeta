@@ -1293,8 +1293,46 @@ exports.getChannelData = function (req, res, next) {
                             callback(null, dataFromRemote[j]);
                         }
                         else if (metric[j].code === configAuth.instagramStaticVariables.hashTagLeaderBoard) callback(null, dataFromRemote[j]);
-                        else {
+                        else if(metric[j].code === configAuth.instagramStaticVariables.instagramEngagements){
+                            for (var key in dataFromRemote) {
+                                if (dataFromRemote[key].apiResponse === 'DataFromDb') {
+                                }
+                                else {
+                                    if (String(metric[j]._id) == String(dataFromRemote[key].metricId))
+                                        finalData = dataFromRemote[key].apiResponse;
+                                }
+                            }
+                                if (dataFromRemote[j].apiResponse != 'DataFromDb') {
+                                            //merge the old data with new one and update it in db
+                                    var now = new Date();
+                                    //Updating the old data with new one
+                                    Data.update({
+                                        'objectId': widget[j].metrics[0].objectId,
+                                        'metricId': metric[j]._id
+                                    }, {
+                                        $setOnInsert: {created: now},
+                                        $set: {
+                                            data: finalData,
+                                            updated: now,
+                                            bgFetch: metric[j].bgFetch,
+                                            fetchPeriod: metric[j].fetchPeriod
+                                        }
+                                    }, {upsert: true}, function (err, data) {
+                                        if (err)
+                                            return res.status(500).json({
+                                                error: 'Internal server error',
+                                                id: req.params.widgetId
+                                            })
+                                        else if (data == 0){
+                                            return res.status(501).json({error: 'Not implemented', id: req.params.widgetId})
+                                        }
 
+                                        else next(null, 'success');
+                                    });
+                                } else next(null, 'success')
+                            }
+
+                        else {
                             //Array to hold the final result
                             for (var key in dataFromRemote) {
                                 if (dataFromRemote[key].apiResponse === 'DataFromDb') {
@@ -1549,7 +1587,6 @@ exports.getChannelData = function (req, res, next) {
                                 }
                                 storeTweetDetails = daysDifference;
                             }
-
                             if (dataFromRemote[j].data != 'DataFromDb') {
                                 if (metric[j].objectTypes[0].meta.endpoint.length > 0 && metric[j].code === configAuth.twitterMetric.twitterEngagements)
                                     storeTweetDetails = storeTweetDetailsNew;
@@ -1591,7 +1628,7 @@ exports.getChannelData = function (req, res, next) {
                                         })
                                     else if (data == 0)
                                         return res.status(501).json({error: 'Not implemented', id: req.params.widgetId})
-                                    else next(null, 'success')
+                                    else return next(null, 'success')
                                 });
                             }
                             else
@@ -1640,8 +1677,8 @@ exports.getChannelData = function (req, res, next) {
                                 else
                                     next(null, 'success')
                             }
+                            else return next(null, 'success');
                         }
-
                     }, done)
                 }
             }
@@ -3938,6 +3975,7 @@ exports.getChannelData = function (req, res, next) {
                                                 tags.push(tagValue);
                                             })
                                         })
+                                        console.log('userMediaRecent',mediaDetails)
                                         var uniqueTag = _.uniqBy(tags);
                                         uniqueTag.forEach(function (eachTag) {
                                             var sumOfLikeComment = 0;
@@ -3964,6 +4002,7 @@ exports.getChannelData = function (req, res, next) {
 
                                         })
                                         sortedHashTags = _.sortBy(tagsWithLikesComments, ['count']);
+                                        console.log('tagsWithLikesComments',tagsWithLikesComments)
                                         for (var index = 1; index <= 20; index++) {
                                             hashTagDetails.push(sortedHashTags[sortedHashTags.length - index]);
                                         }
@@ -3973,6 +4012,7 @@ exports.getChannelData = function (req, res, next) {
                                             queryResults: initialResults,
                                             channelId: initialResults.metric[0].channelId
                                         };
+                                        console.log('actualFinalApiData',actualFinalApiData)
                                     }
                                     else {
                                         for (var i = 0; i < userMediaRecent.length; i++) {

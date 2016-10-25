@@ -340,7 +340,8 @@ module.exports = {
         likes:'likes',
         comments:'comments',
         count:'count',
-        recentPost:'Recent Posts'
+        recentPost:'Recent Posts',
+        hashTagLeaderBoard:'hashTagLeaderBoard'
     },
     
     mailChimpQueryVariables:{
