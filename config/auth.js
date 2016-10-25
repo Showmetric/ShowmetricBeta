@@ -177,7 +177,8 @@ module.exports = {
         followers:'followers',
         favourites:'favourites',
         listed:'listed',
-        retweets_of_your_tweets:'retweetsOfYourTweets'
+        retweets_of_your_tweets:'retweetsOfYourTweets',
+        twitterEngagements:'twitterEngagements'
     },
 
     'googleAdwordsMetric' :{
@@ -414,7 +415,9 @@ module.exports = {
     },
     
     googleAnalytics:{
-        topPages:'Top Pages by Visit'
+        topPages:'Top Pages by Visit',
+        usersByAgeGroup:'usersByAgeGroup',
+        usersByGender:'usersByGender'
     },
     
     dataValidityInHours:4

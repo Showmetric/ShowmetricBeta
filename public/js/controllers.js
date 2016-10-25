@@ -338,7 +338,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                 updatedCharts.push({
                                     channelId: widget.charts[chartObjects].channelId,
                                     chartType: typeof widget.charts[chartObjects].metrics[0].chartType != 'undefined' ? widget.charts[chartObjects].metrics[0].chartType : '',
-                                    chartSubType:  widget.charts[chartObjects].metrics[0].subChartType === 'fbTopReferringDomain' ? widget.charts[chartObjects].metrics[0].subChartType:'',
+                                    chartSubType: widget.charts[chartObjects].metrics[0].subChartType != undefined ? widget.charts[chartObjects].metrics[0].subChartType : '',
                                     chartName: widget.charts[chartObjects].name,
                                     chartColour: widget.charts[chartObjects].metrics[0].color,
                                     chartOptions: widget.charts[chartObjects].metrics[0].chartOptions,
@@ -403,7 +403,28 @@ showMetricApp.service('createWidgets', function ($http, $q) {
             if (widget.charts.length > 0) {
                 for (var charts in widget.charts) {
                     var chartType = widget.charts[charts].chartType;
-                    if (chartType == "line" || chartType == "area" || chartType == "bar" || chartType == "column" || chartType == "stackcolumn" || chartType == "mozoverview" || chartType == 'negativeBar') {
+                    if(chartType == "bounceRateArea"){
+                        var changeArray=[]
+                        if (typeof widget.charts[charts].chartData[0].total == 'object') {
+                            for(var i=0;i<widget.charts[charts].chartData.length;i++){
+                                var bounces=parseFloat(widget.charts[charts].chartData[i].total[0].bounces)
+                                var sessions=parseFloat(widget.charts[charts].chartData[i].total[0].sessions)
+                                if (sessions === 0)
+                                    var bouncesRate = bounces;
+                                else
+                                    var bouncesRate = ((bounces / sessions) * 100).toFixed(2);
+                                changeArray.push({
+                                    x:moment(widget.charts[charts].chartData[i].date),
+                                    y:bouncesRate,
+                                    bounces:bounces,
+                                    sessions:sessions
+                                })
+
+                            }
+                        }
+                        widget.charts[charts].chartData=changeArray;
+                    }
+                    else if (chartType == "line" || chartType == "area" || chartType == "bar" || chartType == "column" || chartType == "stackcolumn" || chartType == "mozoverview" || chartType == 'negativeBar') {
                         if (typeof widget.charts[charts].chartData[0].total == 'object') {
                             var chartCode = widget.charts[charts].chartCode;
                             var endpoint;
@@ -496,7 +517,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                         if (widget.charts[charts].chartSubType === 'fbTopReferringDomain') {
                             var sortDomains = _.sortBy(formattedChartData, 'y').reverse();
                             var sortedArray = [];
-                            if(formattedChartData.length<10) var sortingLength = formattedChartData.length-1;
+                            if (formattedChartData.length < 10) var sortingLength = formattedChartData.length - 1;
                             else var sortingLength = 9;
                             for (var k = 0; k <= sortingLength; k++) {
                                 sortedArray.push({x: sortDomains[k].x, y: sortDomains[k].y})
@@ -956,6 +977,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                     entranceRate = calculateBouncerate / pageviews;
                                     var path = {
                                         uniquePageviews: uniquePageviews,
+                                        sessions:sessions,
                                         pageviews: pageviews,
                                         pagePath: path,
                                         avgTimeOnPage: avgTimeOnpage,
@@ -1023,6 +1045,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                     avgPageLoadTime = Math.ceil(avgPageLoadTime)
                                     var path = {
                                         pageviews: pageviews,
+                                        sessions:sessions,
                                         pagePath: path,
                                         pageTitle: pageTitle,
                                         avgPageLoadTime: avgPageLoadTime.toFixed(2),
@@ -2117,14 +2140,14 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                             if (keyValuePairs.search('/') > -1) {
                                                 endpointArray = keyValuePairs.split('/');
                                                 for (var splittedValues in endpointArray) {
-                                                    yValue =widget.charts[charts].chartData[datas].total[keyValuePairs] ;
+                                                    yValue = widget.charts[charts].chartData[datas].total[keyValuePairs];
                                                     xValue = keyValuePairs;
                                                 }
                                             }
                                             else {
                                                 yValue = widget.charts[charts].chartData[datas].total[keyValuePairs].total;
                                             }
-                                            xValue =  moment(widget.charts[charts].chartData[datas].date);
+                                            xValue = moment(widget.charts[charts].chartData[datas].date);
                                         }
                                         formattedChartData.push({
                                             x: xValue,
@@ -2172,6 +2195,212 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                         widget.charts[charts].chartData = series;
 
                     }
+                    else if(chartType === "gaUsers"){
+                        if(widget.charts[charts].chartData[0]!= 'undefined'){
+                            var finalData={};
+                            for(var i=0;i< widget.charts[charts].chartData.length;i++){
+                                var key=widget.charts[charts].chartData[i][0]
+                                finalData[key]=widget.charts[charts].chartData[i][1]
+                            }
+                            widget.charts[charts].chartData=finalData;
+                        }
+
+                    }
+                    else if (chartType === "twitterEngagements") {
+                        if(String(widget.charts[charts].chartSubType)==="activityByDayOfTheWeek"){
+                            if (typeof widget.charts[charts].chartData[0] != 'undefined') {
+                                var splitArray=[];
+                                for (var k = 0; k < widget.charts[charts].chartData.length; k++){
+                                    if(typeof widget.charts[charts].chartData[k].total ==='object') {
+                                        widget.charts[charts].chartData[k].total.created_at = moment(widget.charts[charts].chartData[k].total.created_at).format('dddd');
+                                        splitArray.push(widget.charts[charts].chartData[k].total);
+                                    }
+                                }
+                                var sortdata = _.groupBy( splitArray, 'created_at');
+                                var formattedChartDataArray = []
+                                for (var key in sortdata) {
+                                    var likes = 0;
+                                    var reTweets = 0;
+                                    var engagement = 0;
+                                    var day=key;
+                                    for (var i = 0; i < sortdata[key].length; i++) {
+                                        likes += parseFloat(sortdata[key][i]['favorite_count']);
+                                        reTweets += parseFloat(sortdata[key][i]['retweet_count']);
+                                    }
+                                    engagement=likes+reTweets;
+                                    var tweets=i;
+                                    var path = {
+                                        day: day,
+                                        tweets: tweets,
+                                        engagement: engagement,
+                                    }
+                                    formattedChartDataArray.push(path)
+                                }
+                                widget.charts[charts].chartData=formattedChartDataArray
+                            }
+                        }
+                        else if(String(widget.charts[charts].chartSubType)==="activityByTimeOfTheDay"){
+                            if (typeof widget.charts[charts].chartData[0] != 'undefined') {
+                                var splitArray=[];
+                                for (var k = 0; k < widget.charts[charts].chartData.length; k++){
+                                    if(typeof widget.charts[charts].chartData[k].total === 'object') {
+                                        var date = widget.charts[charts].chartData[k].total.created_at;
+                                        widget.charts[charts].chartData[k].total.day = moment(date).format('dddd');
+                                        splitArray.push(widget.charts[charts].chartData[k].total);
+                                    }
+                                }
+                                var sortdata = _.groupBy( splitArray, 'day');
+                                var formattedChartDataArray = []
+                                for (var key in sortdata) {
+                                    var day=key;
+                                    var tempArray=[];
+                                    for (var i = 0; i < sortdata[key].length; i++) {
+                                        tempArray.push({time:new Date(sortdata[key][i]['created_at']).getHours(),likes:sortdata[key][i]['favorite_count'],reTweets:sortdata[key][i]['retweet_count']})
+                                    }
+                                    var sortTime= _.groupBy( tempArray, 'time');
+                                    for(var data in sortTime){
+                                        var likes = 0;
+                                        var reTweets = 0;
+                                        var engagement = 0;
+                                        var time=data;
+                                        for(var j=0;j<sortTime[data].length;j++){
+                                            likes+=parseFloat(sortTime[data][j]['likes']);
+                                            reTweets+= parseFloat(sortTime[data][j]['reTweets']);
+                                        }
+                                        engagement=likes+reTweets;
+                                        var path = {
+                                            day: day,
+                                            time: time,
+                                            engagement: engagement,
+                                        }
+                                        formattedChartDataArray.push(path)
+                                    }
+                                }
+                                widget.charts[charts].chartData=formattedChartDataArray;
+                            }
+                        }
+                        else if (String(widget.charts[charts].chartSubType) === 'engagementByUsersTalkedAbout') {
+                            var formattedChartDataArray = [];
+                            var wholeTweetsArray = [];
+                            for (var key = 0; key < widget.charts[charts].chartData.length; key++) {
+                                if (typeof widget.charts[charts].chartData[key] != 'undefined') {
+                                    if (typeof(widget.charts[charts].chartData[key].total) === 'object') {
+                                        var likes = 0;
+                                        var reTweets = 0;
+                                        var engagement = 0;
+                                        var tweetsArray = [];
+                                        var day = key;
+                                        //for (var i = 0; i < widget.charts[charts].chartData[key].length; i++) {
+                                        likes = parseFloat(widget.charts[charts].chartData[key].total['favorite_count']);
+                                        reTweets = parseFloat(widget.charts[charts].chartData[key].total['retweet_count']);
+                                        engagement = likes + reTweets;
+                                        var userMentionedLength = widget.charts[charts].chartData[key].total.entities!=undefined?widget.charts[charts].chartData[key].total.entities!=undefined?widget.charts[charts].chartData[key].total.entities.user_mentions.length:0:0;
+                                        var userMentionDetail =  widget.charts[charts].chartData[key].total.entities!=undefined?widget.charts[charts].chartData[key].total.entities!=undefined?widget.charts[charts].chartData[key].total.entities.user_mentions:0:0;
+                                        for (var user = 0; user < userMentionedLength; user++) {
+                                            var tweetObject = {
+                                                tweet: widget.charts[charts].chartData[key].total.text,
+                                                engagement: engagement,
+                                                userMentionedScreenName: userMentionDetail[user].screen_name,
+                                                userMentionedName: userMentionDetail[user].name,
+                                                url:widget.charts[charts].chartData[key].total.media!=undefined?widget.charts[charts].chartData[key].total.media[0].expanded_url:'https://twitter.com/'+userMentionDetail[user].screen_name
+                                                //url:widget.charts[charts].chartData[key].total.media[0].expanded_url
+                                            }
+                                            tweetsArray.push(tweetObject);
+                                        }
+                                        for (var k = 0; k < tweetsArray.length; k++) {
+                                            wholeTweetsArray.push(tweetsArray[k])
+                                        }
+                                    }
+
+                                }
+                            }
+                            widget.charts[charts].chartData = wholeTweetsArray;
+                        }
+                        else if(widget.charts[charts]. chartSubType == "topLinks"){
+                            if (typeof widget.charts[charts].chartData[0] != 'undefined') {
+                                var likes = 'favorite_count';
+                                var reTweet = 'retweet_count'
+                                var entities = 'entities';
+                                var urlsArray=[];
+                                if (typeof(widget.charts[charts].chartData[0].total) === 'object') {
+                                    for(var i=0;i<widget.charts[charts].chartData.length;i++){
+                                        if(typeof widget.charts[charts].chartData[i].total.entities != 'undefined' ){
+                                            for(var k=0;k< widget.charts[charts].chartData[i].total.entities.urls.length;k++){
+                                                var  like=widget.charts[charts].chartData[i].total[likes]
+                                                var reTweets=widget.charts[charts].chartData[i].total[reTweet]
+                                                var engagement=like+reTweets;
+                                                var url={
+                                                    url:widget.charts[charts].chartData[i].total.entities.urls[k].url,
+                                                    displayurl:widget.charts[charts].chartData[i].total.entities.urls[k].expanded_url,
+                                                    engagement:engagement
+                                                }
+                                                urlsArray.push(url)
+                                            }
+                                        }
+                                    }
+                                }
+                                var sortdata = _.groupBy(urlsArray, 'displayurl')
+                                var groupedArray=[];
+                                for(var keys in sortdata){
+                                    var engagement=0;
+                                    for(var m=0;m<sortdata[keys].length;m++){
+                                        engagement+=sortdata[keys][m].engagement;
+                                    }
+                                    groupedArray.push({
+                                        url:keys,
+                                        engagement:engagement,
+                                    })
+                                }
+                                groupedArray.sort(function (a, b) {
+                                    return parseFloat(a.engagement) - parseFloat(b.engagement);
+                                });
+                                groupedArray.reverse();
+                                widget.charts[charts].chartData=groupedArray;
+                            }
+                        }
+                        else if(widget.charts[charts]. chartSubType == "hashTag"){
+                            if (typeof widget.charts[charts].chartData[0] != 'undefined') {
+                                var likes = 'favorite_count';
+                                var reTweet = 'retweet_count'
+                                var entities = 'entities';
+                                var urlsArray=[];
+                                if (typeof(widget.charts[charts].chartData[0].total) === 'object') {
+                                    for(var i=0;i<widget.charts[charts].chartData.length;i++){
+                                        if(typeof widget.charts[charts].chartData[i].total.entities != 'undefined' ){
+                                            for(var k=0;k< widget.charts[charts].chartData[i].total.entities.hashtags.length;k++){
+                                                var  like=widget.charts[charts].chartData[i].total[likes]
+                                                var reTweets=widget.charts[charts].chartData[i].total[reTweet]
+                                                var engagement=like+reTweets;
+                                                var url={
+                                                    hashTag:widget.charts[charts].chartData[i].total.entities.hashtags[k].text,
+                                                    engagement:engagement
+                                                }
+                                                urlsArray.push(url)
+                                            }
+                                        }
+                                    }
+                                }
+                                var sortdata = _.groupBy(urlsArray, 'hashTag')
+                                var groupedArray=[];
+                                for(var keys in sortdata){
+                                    var engagement=0;
+                                    for(var m=0;m<sortdata[keys].length;m++){
+                                        engagement+=sortdata[keys][m].engagement;
+                                    }
+                                    groupedArray.push({
+                                        text:keys,
+                                        engagement:engagement,
+                                    })
+                                }
+                                groupedArray.sort(function (a, b) {
+                                    return parseFloat(a.engagement) - parseFloat(b.engagement);
+                                });
+                                groupedArray.reverse();
+                                widget.charts[charts].chartData=groupedArray;
+                            }
+                        }
+                        else console.log('error')
+                    }
                 }
                 for (var charts in widget.charts) {
                     if (typeof widget.charts[charts].chartData[0] != 'undefined') {
@@ -2196,7 +2425,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
 
                 for (var charts in widget.charts) {
                     var chartType = widget.charts[charts].chartType;
-                    if (chartType == "line" || chartType == "bar" || chartType == "percentageArea" || chartType == "column" || chartType == "stackcolumn" || chartType == "area" || chartType == "pie" || chartType == 'reachVsImpressions' || chartType == "engagedUsersReach" || chartType == 'mozoverview' || chartType == "trafficSourcesBrkdwnLine" || chartType == 'negativeBar' || chartType == "trafficSourcesBrkdwnPie" || ((chartType == "costPerActionType") && (widget.meta != undefined))) {
+                    if (chartType == "line" || chartType == "bar" || chartType == "percentageArea" || chartType == "column" || chartType == "stackcolumn" || chartType == "area" || chartType == "pie" || chartType == 'reachVsImpressions' || chartType == "engagedUsersReach" || chartType == 'mozoverview' || chartType == "trafficSourcesBrkdwnLine" ||chartType=='bounceRateArea' || chartType == 'negativeBar' || chartType == "trafficSourcesBrkdwnPie" || ((chartType == "costPerActionType") && (widget.meta != undefined))) {
                         if (typeof widget.charts[charts].chartData[0] != 'undefined') {
                             if (widget.charts[charts].chartData[0].x) {
                                 var summaryValue = 0;
@@ -2322,6 +2551,16 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                         }
                                     }
                                 }
+                                if(chartType=='bounceRateArea'){
+
+                                    var bounce=0;
+                                    var sessions=0;
+                                    for (var datas in widget.charts[charts].chartData){
+                                        bounce+=parseFloat(widget.charts[charts].chartData[datas].bounces)
+                                        sessions+=parseFloat(widget.charts[charts].chartData[datas].sessions)
+                                    }
+                                    summaryValue=(bounce/sessions)*100;
+                                }
                                 if (chartType == 'line' || chartType == 'bar' || chartType == 'column' || chartType == 'mozoverview') {
                                     if ((widget.channelName == 'FacebookAds') && (widget.charts[charts].metricDetails.name == 'Cost Per Unique Action Type')) {
                                         widgetCharts.push({
@@ -2410,6 +2649,19 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                         'area': true
                                     });
                                 }
+                                else if(chartType =='bounceRateArea'){
+                                    widget.charts[charts].chartType='area';
+                                    widgetCharts.push({
+                                        'type':widget.charts[charts].chartType,
+                                        'values': widget.charts[charts].chartData,      //values - represents the array of {x,y} data points
+                                        'key': widget.charts[charts].metricDetails.name, //key  - the name of the series.
+                                        'color': widget.charts[charts].chartColour[0],  //color - optional: choose your own line color.
+                                        'arrow': comparingData,
+                                        'variance': percentage,
+                                        'period': granularity,
+                                        'summaryDisplay': Math.round(summaryValue * 100) / 100,
+                                    });
+                                }
                                 else if (chartType == 'costPerActionType') {
                                     widgetCharts.push({
                                         'type': 'line',
@@ -2446,12 +2698,12 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                         'summaryDisplay': Math.round(summaryValue * 100) / 100,
                                     });
                                 }
-                                else if(chartType == "percentageArea"){
+                                else if (chartType == "percentageArea") {
                                     widgetCharts.push({
                                         'type': widget.charts[charts].chartType,
                                         'metricCode': widget.charts[charts].metricCode,
                                         'metricName': widget.charts[charts].metricName,
-                                        'key':widget.charts[charts].metricName,
+                                        'key': widget.charts[charts].metricName,
                                         'values': widget.charts[charts].chartData,
                                         'color': widget.charts[charts].chartColour,
                                         'arrow': comparingData,
@@ -2887,6 +3139,24 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                             'values': widget.charts[charts].chartData
                         });
                     }
+                    else if (chartType == 'twitterEngagements') {
+                        if(widget.charts[charts].chartSubType==='engagementByUsersTalkedAbout'){
+                            widgetCharts.push({
+                                'type': widget.charts[charts].chartType,
+                                'chartSubType':widget.charts[charts].chartSubType,
+                                'values': widget.charts[charts].chartData,
+                            });
+                        }
+                        else{
+                            widgetCharts.push({
+                                'type': widget.charts[charts].chartType,
+                                'chartSubType':widget.charts[charts].chartSubType,
+                                'values': widget.charts[charts].chartData,
+                                'key': widget.charts[charts].chartName,
+                                'color': widget.charts[charts].chartColour
+                            });
+                        }
+                    }
                 }
 
             }
@@ -2897,6 +3167,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
         function createWidgetData(widget, widgetCharts) {
             var deferred = $q.defer();
             var finalCharts = [];
+            finalCharts.twitterEngagements=[],
             finalCharts.lineCharts = [],
                 finalCharts.barCharts = [],
                 finalCharts.pieCharts = [],
@@ -3101,6 +3372,11 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                         type: 'visitorAcquisitionEfficiency',
                         noData: 'No data for chosen date range',
                         margin: {top: 20, right: 30, bottom: 30, left: 35},
+                    }
+                },
+                engagementByUsersTalkedAbout:{
+                    chart: {
+                        type: 'engagementByUsersTalkedAbout'
                     }
                 },
                 pinterestEngagementRate: {
@@ -3384,6 +3660,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                     else if (widgetCharts[charts].type == 'pinterestEngagementRate') finalCharts.pinterestEngagementRate.push(widgetCharts[charts]);
                     else if (widgetCharts[charts].type == 'pinterestLeaderboard')finalCharts.pinterestLeaderboard.push(widgetCharts[charts]);
                     else if (widgetCharts[charts].type == 'vimeoTopVideos') finalCharts.vimeoTopVideos.push(widgetCharts[charts]);
+                    else if (widgetCharts[charts].type == 'twitterEngagements') finalCharts.twitterEngagements.push(widgetCharts[charts]);
                     else if (widgetCharts[charts].type == 'mozoverview') {
                         for (var i = 0; i < widgetCharts[charts].values.length; i++)
                             widgetCharts[charts].values[i].x = moment(widgetCharts[charts].values[i].x).format("YYYY-DD-MM");
@@ -3425,6 +3702,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                     }
                     else if (widgetCharts[charts].type == 'stackbar')finalCharts.stackbar.push(widgetCharts[charts]);
                     else if (widgetCharts[charts].type == 'instagramHashtagLeaderBoard') finalCharts.instagramHashtagLeaderBoard.push(widgetCharts[charts]);
+                    else if (widgetCharts[charts].type == 'twitterEngagements')finalCharts.twitterEngagements.push(widgetCharts[charts]);
                 }
             }
             var chartColorChecker = [];
@@ -3456,7 +3734,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                         chartValues.push(yValue);
                     }
                     chartSeriesArray.push({
-                        name: finalCharts.lineCharts[i].key,
+                        name: finalCharts.lineCharts[i].key ==='(none)'?'Direct':finalCharts.lineCharts[i].key,
                         data: chartValues,
                         color: finalCharts.lineCharts[charts].color
                     });
@@ -3565,7 +3843,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                     }
                     else {
                         chartSeriesArray.push({
-                            name: finalCharts.lineCharts[charts].key,
+                            name: finalCharts.lineCharts[charts].key ==='(none)'?'Direct':finalCharts.lineCharts[charts].key,
                             data: chartValues, type: finalCharts.lineCharts[charts].type,
                             color: finalCharts.lineCharts[charts].color
                         });
@@ -3783,7 +4061,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                         chartValues.push(yValue);
                     }
                     chartSeriesArray.push({
-                        name: finalCharts.barCharts[charts].key,
+                        name: finalCharts.barCharts[charts].key==='(none)'?'Direct':finalCharts.barCharts[charts].key,
                         data: chartValues,
                         color: finalCharts.barCharts[charts].color
                     });
@@ -3958,7 +4236,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
 
                     }
                     chartSeriesArray.push({
-                        name: keys,
+                        name: keys ==='(none)'?'Direct':keys,
                         data: chartValues,
                     });
                 }
@@ -4195,53 +4473,55 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                 });
                 if (cumulativeTotal == 0) finalChartData[finalChartData.length - 1].options.chart.yDomain = [0, 10];
             }
-            if(finalCharts.percentageArea.length>0){
+            if (finalCharts.percentageArea.length > 0) {
                 if (finalCharts.percentageArea.length > 0) {
                     var chartOptionsArray = [];
                     var dateArray = []
                     var chartSeriesArray = [];
                     var displaySummary = [];
-                    var seriesdataArray=[];
+                    var seriesdataArray = [];
+
                     function getSum(total, num) {
                         return total + num;
                     }
-                        for (var k = 0; k < finalCharts.percentageArea[charts].values.length; k++) {
-                            dateArray.push(finalCharts.percentageArea[charts].values[k].x);
+
+                    for (var k = 0; k < finalCharts.percentageArea[charts].values.length; k++) {
+                        dateArray.push(finalCharts.percentageArea[charts].values[k].x);
+                    }
+                    for (var j in finalCharts.percentageArea) {
+                        var dataArray = [];
+                        for (var index = 0; index < finalCharts.percentageArea[j].values.length; index++) {
+                            seriesdataArray.push(parseInt(finalCharts.percentageArea[j].values[index].y));
                         }
-                        for(var j in finalCharts.percentageArea){
-                            var dataArray = [];
-                            for (var index = 0; index < finalCharts.percentageArea[j].values.length; index++) {
-                                seriesdataArray.push(parseInt(finalCharts.percentageArea[j].values[index].y));
+                        chartSeriesArray.push({
+                            type: 'area',
+                            color: finalCharts.percentageArea[j].color[j],
+                            name: finalCharts.percentageArea[j].metricName,
+                            data: seriesdataArray,
+                        });
+                        var summaryDisplay = seriesdataArray.reduce(getSum)
+                        var sample = {
+                            summaryDisplay: Math.round(summaryDisplay * 100) / 100,
+                            key: finalCharts.percentageArea[j].metricName,
+                            showComparision: false,
+                            variance: 0,
+                            color: finalCharts.percentageArea[j].color[j]
+                        }
+                        displaySummary.push(sample)
+                    }
+                    var xAxisOption = {
+                        type: 'datetime',
+                        categories: dateArray,
+                        labels: {
+                            formatter: function () {
+                                var date = new Date(this.value);
+                                return months[date.getMonth()] + ' ' + date.getDate();
                             }
-                            chartSeriesArray.push({
-                                type: 'area',
-                                color: finalCharts.percentageArea[j].color[j],
-                                name: finalCharts.percentageArea[j].metricName,
-                                data: seriesdataArray,
-                            });
-                            var summaryDisplay = seriesdataArray.reduce(getSum)
-                            var sample = {
-                                summaryDisplay: Math.round(summaryDisplay * 100) / 100,
-                                key: finalCharts.percentageArea[j].metricName,
-                                showComparision: false,
-                                variance: 0,
-                                color: finalCharts.percentageArea[j].color[j]
-                            }
-                            displaySummary.push(sample)
-                        }
-                        var xAxisOption =  {
-                            type: 'datetime',
-                            categories: dateArray,
-                            labels: {
-                                formatter: function () {
-                                    var date = new Date(this.value);
-                                    return months[date.getMonth()] + ' ' + date.getDate();
-                                }
-                            },
-                            tickInterval: 7,
-                            min: 0,
-                            max: dateArray.length,
-                        }
+                        },
+                        tickInterval: 7,
+                        min: 0,
+                        max: dateArray.length,
+                    }
                     chartOptions = {
                         chart: {
                             zoomType: 'x',
@@ -4306,7 +4586,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                     chartColorChecker.push(finalCharts.pieCharts[charts].color);
                     var y = String(finalCharts.pieCharts[charts].y).indexOf('.') ? parseFloat(finalCharts.pieCharts[charts].y) : parseInt(finalCharts.pieCharts[charts].y);
                     var name = finalCharts.pieCharts[charts].key;
-                    chartValues.push({y: y, name: name, color: finalCharts.pieCharts[charts].color});
+                    chartValues.push({y: y, name: name==='(none)'?'Direct':name, color: finalCharts.pieCharts[charts].color});
 
                 }
                 chartSeriesArray.push({
@@ -4778,7 +5058,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                             x: Number(finalCharts.gaSocialMediaOverview[charts].values[k].pageviewsPersession),
                             y: Number(finalCharts.gaSocialMediaOverview[charts].values[k].sessions),
                             z: Number(finalCharts.gaSocialMediaOverview[charts].values[k].avgtimeOnPage),
-                            name: String(finalCharts.gaSocialMediaOverview[charts].values[k].socialNetwork)
+                            name: String(finalCharts.gaSocialMediaOverview[charts].values[k].socialNetwork)==='(none)'?'Direct':String(finalCharts.gaSocialMediaOverview[charts].values[k].socialNetwork)
                         })
                     }
                 }
@@ -5074,6 +5354,176 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                     finalChartData.push({
                         'options': graphOptions.instagramHashtagLeaderBoard,
                         'data': finalCharts.instagramHashtagLeaderBoard[0].values
+                    });
+                }
+            }
+            if(finalCharts.twitterEngagements.length > 0) {
+                chartsCount++;
+                for (var charts in finalCharts.twitterEngagements) {
+                    if (finalCharts.twitterEngagements[charts].chartSubType == 'activityByDayOfTheWeek') {
+                        var chartSeriesArray = [];
+                        var xArray = [];
+                        var chartValues = [];
+                        chartValues[0] = [];
+                        chartValues[1] = [];
+                        for (var k = 0; k < finalCharts.twitterEngagements[charts].values.length; k++) {
+                            xArray.push(String(finalCharts.twitterEngagements[charts].values[k].day));
+                            chartValues[0].push(Number(finalCharts.twitterEngagements[charts].values[k].tweets));
+                            chartValues[1].push(Number(finalCharts.twitterEngagements[charts].values[k].engagement));
+                        }
+                        for (var i = 0; i < chartValues.length; i++) {
+                            chartSeriesArray.push({
+                                name:i < 1 ? 'Tweets':'Engagements',
+                                yAxis: i < 1 ? 0 : 1,
+                                tooltip: {
+                                    valueSuffix: ''
+                                },
+                                data: chartValues[i], type: i < 1 ? 'column' : 'line',
+                                color: finalCharts.twitterEngagements[charts].color[i]
+                            });
+                            //    chartColorChecker.push(finalCharts.visitorAcquisitionEfficiency[charts].color);
+                        }
+                        chartOptions = {
+                            chart: {
+                                reflow: true,
+                                zoomType: 'x'
+                            },
+                            credits: {
+                                enabled: false
+                            },
+                            exporting: {enabled: false},
+                            tooltip: {
+                                enabled: true,
+                                shared: true
+                            },
+                            xAxis: {
+                                categories: xArray,
+                                labels: {
+                                    formatter: function () {
+                                        return this.value;
+                                    }
+                                },
+                                tickInterval: 1,
+                                min: 0,
+                                max: xArray.length - 1,
+                            },
+                            yAxis: [{
+                                title: {
+                                    text: 'Tweets count',
+                                }
+                            }, {
+                                title: {
+                                    text: 'Engagement count',
+                                },
+                                opposite: true
+                            }],
+                            title: {
+                                text: '',
+                                style: {
+                                    display: 'none'
+                                }
+                            },
+                            series: chartSeriesArray,
+                        }
+                        finalChartData.push({
+                            'options': graphOptions.visitorAcquisitionEfficiency,
+                            'data': finalCharts.twitterEngagements,
+                            'api': {},
+                            'chartOptions': chartOptions
+                        });
+                    }
+                    else if(finalCharts.twitterEngagements[charts].chartSubType == 'activityByTimeOfTheDay'){
+                        var chartSeriesArray = [];
+                        for (var charts in finalCharts.twitterEngagements) {
+                            for (var k = 0; k < finalCharts.twitterEngagements[charts].values.length; k++) {
+                                if(String(finalCharts.twitterEngagements[charts].values[k].day)=='Sunday')
+                                    var x=0
+                                else if(String(finalCharts.twitterEngagements[charts].values[k].day)=='Monday')
+                                    var x=1
+                                else if(String(finalCharts.twitterEngagements[charts].values[k].day)=='Tuesday')
+                                    var x=2
+                                else if(String(finalCharts.twitterEngagements[charts].values[k].day)=='Wednesday')
+                                    var x=3
+                                else if(String(finalCharts.twitterEngagements[charts].values[k].day)=='Thursday')
+                                    var x=4
+                                else if(String(finalCharts.twitterEngagements[charts].values[k].day)=='Friday')
+                                    var x=5
+                                else if(String(finalCharts.twitterEngagements[charts].values[k].day)=='Saturday')
+                                    var x=6
+                                chartSeriesArray.push({
+                                    x: x,
+                                    y: Number(finalCharts.twitterEngagements[charts].values[k].time),
+                                    z: Number(finalCharts.twitterEngagements[charts].values[k].engagement),
+                                    color:finalCharts.twitterEngagements[charts].color[x]
+                                })
+                            }
+                        }
+                        chartOptions = {
+                            chart: {
+                                reflow: true,
+                                type: 'bubble',
+                                zoomType: 'xy'
+                            },
+                            credits: {
+                                enabled: false
+                            },
+                            exporting: {enabled: false},
+                            tooltip: {
+                                useHTML: true,
+                                headerFormat: '<table>',
+                                pointFormat:
+                                '<tr><th>Time:</th><td>{point.y}</td></tr>' +
+                                '<tr><th>Engagement:</th><td>{point.z}</td></tr>',
+                                footerFormat: '</table>',
+                                enabled: true,
+                                shared: true
+                            },
+                            xAxis: {
+                                labels: {
+                                },
+                                categories: ['Sunday', 'Monday', 'Tuesday','Wednesday','Thursday','Friday','Saturday'],
+                                title: {
+                                    text: 'Day'
+                                }
+                            },
+                            yAxis: {
+                                title: {
+                                    text: 'Time',
+                                }
+                            },
+                            title: {
+                                text: '',
+                                style: {
+                                    display: 'none'
+                                }
+                            },
+                            plotOptions: {
+                                series: {
+                                    dataLabels: {
+                                        enabled: false,
+                                    }
+                                }
+                            },
+                            series: [{data: chartSeriesArray}],
+                        }
+                    }
+                    else if (finalCharts.twitterEngagements[charts].chartSubType ==='topLinks' || finalCharts.twitterEngagements[charts].chartSubType ==='hashTag' ){
+                        var   chart= {
+                            chart: {
+                                type: finalCharts.twitterEngagements[charts].chartSubType
+                            }
+                        }
+
+                        finalChartData.push({
+                            'options': chart,
+                            'data': finalCharts.twitterEngagements[0].values
+                        });
+                    }
+                    finalChartData.push({
+                        'options': graphOptions.visitorAcquisitionEfficiency,
+                        'data': finalCharts.twitterEngagements,
+                        'api': {},
+                        'chartOptions': chartOptions
                     });
                 }
             }

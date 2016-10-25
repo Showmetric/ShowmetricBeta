@@ -332,7 +332,6 @@ exports.getChannelData = function (req, res, next) {
         }
 
         function dataForEachChannel(results, callback) {
-
             //To check the channel
             switch (results.code) {
                 case configAuth.channels.googleAnalytics:
@@ -732,6 +731,9 @@ exports.getChannelData = function (req, res, next) {
                         var finalData;
                         if (dataFromRemote[j].data === 'DataFromDb')
                             next(null, 'DataFromDb');
+                        else if (metric[j].code === configAuth.googleAnalytics.usersByGender || metric[j].code === configAuth.googleAnalytics.usersByAgeGroup) {
+                            next(null, dataFromRemote[j])
+                        }
                         else {
                             var storeGoogleData = [];
                             var replacedGoogleData = [];
@@ -740,7 +742,7 @@ exports.getChannelData = function (req, res, next) {
                             var dimension;
                             var dimensionArray = [];
 
-                            if ((dataFromRemote[j].Dimension.length - metric[j].objectTypes[0].meta.dimension.length)==1 )
+                            if ((dataFromRemote[j].Dimension.length - metric[j].objectTypes[0].meta.dimension.length) == 1)
                                 var dimensionList = metric[j].objectTypes[0].meta.dimension;
                             else
                                 var dimensionList = dataFromRemote[j].Dimension;
@@ -976,7 +978,10 @@ exports.getChannelData = function (req, res, next) {
                                                 }
                                             }
                                         }
-                                        finalDataWithMetric = {metricId: dataFromRemote[key].metricId, finalData: finalData}
+                                        finalDataWithMetric = {
+                                            metricId: dataFromRemote[key].metricId,
+                                            finalData: finalData
+                                        }
                                         findDataIndex = _.findIndex(dataFromRemote, function (o) {
                                             return o.metricId == finalDataWithMetric.metricId
                                         });
@@ -985,7 +990,7 @@ exports.getChannelData = function (req, res, next) {
 
                             }
                         }
-                        if (finalDataWithMetric.metricId != undefined && findDataIndex != -1 ) {
+                        if (finalDataWithMetric.metricId != undefined && findDataIndex != -1) {
                             if (dataFromDb[j].data != null) {
 
                                 //merge the old data with new one and update it in db
@@ -1359,101 +1364,161 @@ exports.getChannelData = function (req, res, next) {
                         var param = [];
                         var finalTweetResult;
                         var storeTweetDetails = [];
+                        var storeTweetDetailsNew = [];
                         var dbFinalData = [];
                         var wholeTweetResponseFromDb = [];
                         var wholeTweetResponse = [];
-                        if (metric[j].code === configAuth.twitterMetric.tweets || metric[j].code === configAuth.twitterMetric.followers || metric[j].code == configAuth.twitterMetric.following || metric[j].code === configAuth.twitterMetric.favourites || metric[j].code === configAuth.twitterMetric.listed || metric[j].code === configAuth.twitterMetric.retweets_of_your_tweets) {
-                            for (var key in dataFromRemote) {
-                                if (dataFromRemote[key].data === 'DataFromDb') {
-
-                                }
-                                else {
-                                    if (String(metric[j]._id) == String(dataFromRemote[key].metricId)) {
-                                        wholeTweetResponse.push({
-                                            date: currentDate,
-                                            total: dataFromRemote[key].data[0]
-                                        });
+                        if (metric[j].code === configAuth.twitterMetric.tweets || metric[j].code === configAuth.twitterMetric.followers || metric[j].code == configAuth.twitterMetric.following || metric[j].code === configAuth.twitterMetric.favourites || metric[j].code === configAuth.twitterMetric.listed || metric[j].code === configAuth.twitterMetric.retweets_of_your_tweets || metric[j].code === configAuth.twitterMetric.twitterEngagements) {
+                            if (metric[j].objectTypes[0].meta.endpoint.length > 0 && metric[j].code === configAuth.twitterMetric.twitterEngagements) {
+                                var storeTweet = [];
+                                if (dataFromRemote[j].data != 'DataFromDb') {
+                                    for (var i = 0; i < dataFromRemote[j].data.length; i++) {
+                                        var date = moment(new Date(Date.parse(dataFromRemote[j].data[i].total['created_at']))).format('YYYY-MM-DD');
+                                        storeTweetDetailsNew.push({
+                                            date: date,
+                                            total: dataFromRemote[j].data[i].total
+                                        })
                                     }
                                 }
-                            }
-                            if (metric[j].code == configAuth.twitterMetric.tweets)
-                                param.push('statuses_count');
-                            else if (metric[j].code == configAuth.twitterMetric.following)
-                                param.push('friends_count');
-                            else if (metric[j].code == configAuth.twitterMetric.listed)
-                                param.push('listed_count');
-                            else if (metric[j].code == configAuth.twitterMetric.followers)
-                                param.push('followers_count');
-                            else if (metric[j].code == configAuth.twitterMetric.favourites)
-                                param.push('favourites_count');
-                            else if (metric[j].code == configAuth.twitterMetric.retweets_of_your_tweets)
-                                param.push('retweet_count');
-                            else if (metric[j].keywordMentions == configAuth.twitterMetric.retweets_of_your_tweets || metric[0].code == configAuth.twitterMetric.mentions)
-                                param.push('retweet_count', 'favorite_count');
-                            else
-                                param.push('retweet_count', 'favorite_count');
-                            var dataFromRemoteLength = dataFromRemote[j].data.length;
-                            if (dataFromRemoteLength != 0) {
-                                if (dataFromRemote[j].data === 'DataFromDb') {
-                                }
                                 else {
-                                    var totalArray = [];
-                                    for (var index = 0; index < param.length; index++) {
-                                        if (param.length > 1) {
-                                            var total = dataFromRemote[j].data[0][param[index]];
-                                            var text = dataFromRemote[j].data[0].text;
-                                            totalArray.push(total);
-                                            if (totalArray.length > 1) {
-                                                var title = param[index];
-                                                storeTweetDetails.push({
-                                                    date: currentDate,
-                                                    text: text,
-                                                    retweet_count: totalArray[0],
-                                                    favourite_count: totalArray[1]
-                                                });
-                                            }
-                                        }
-                                        else {
-                                            var duplicateData = [];
-                                            var tempDate = [];
-                                            var duplicateRetweetCount = 0;
-                                            if (metric[j].code == configAuth.twitterMetric.retweets_of_your_tweets) {
-                                                var tweetCount = dataFromRemote[j].data;
-                                                for (var i = 0; i < tweetCount.length; i++) {
-                                                    tempDate.push({date: formatDate(new Date(Date.parse(tweetCount[i].created_at.replace(/( +)/, ' UTC$1'))))});
-                                                }
-                                                var tempDateCount = _.uniqBy(tempDate, 'date')
-                                                for (var m = 0; m < tempDateCount.length; m++) {
-                                                    storeTweetDetails.push({date: tempDateCount[m].date, total: 0});
-                                                }
-                                                for (var m = 0; m < storeTweetDetails.length; m++) {
-                                                    for (var k = 0; k < tweetCount.length; k++) {
-                                                        var responseDate = formatDate(new Date(Date.parse(tweetCount[k].created_at.replace(/( +)/, ' UTC$1'))))
-                                                        if (storeTweetDetails[m].date === responseDate)
-                                                            duplicateRetweetCount += tweetCount[k].retweet_count;
-                                                    }
-                                                    //Get the required data based on date range
-                                                    storeTweetDetails[m].total = (duplicateRetweetCount);
-                                                    var duplicateRetweetCount = 0;
-                                                }
-                                            }
-                                            else {
-                                                var total = dataFromRemote[j].data[0].user[param[index]];
-                                                totalArray.push({total: total, date: currentDate});
 
-                                                //Get the required data based on date range
-                                                storeTweetDetails.push({
-                                                        total: total,
-                                                        date: currentDate
-                                                    }
-                                                );
-                                            }
-                                        }
-                                    }
                                 }
                             }
                             else {
-                                return res.status(500).json({error: 'Internal server error', id: req.params.widgetId});
+                                for (var key in dataFromRemote) {
+                                    if (dataFromRemote[key].data === 'DataFromDb') {
+
+                                    }
+                                    else {
+                                        if (String(metric[j]._id) == String(dataFromRemote[key].metricId)) {
+                                            wholeTweetResponse.push({
+                                                date: currentDate,
+                                                total: dataFromRemote[key].data[0]
+                                            });
+                                        }
+                                    }
+                                }
+                                if (metric[j].code == configAuth.twitterMetric.tweets)
+                                    param.push('statuses_count');
+                                else if (metric[j].code == configAuth.twitterMetric.following)
+                                    param.push('friends_count');
+                                else if (metric[j].code == configAuth.twitterMetric.listed)
+                                    param.push('listed_count');
+                                else if (metric[j].code == configAuth.twitterMetric.followers)
+                                    param.push('followers_count');
+                                else if (metric[j].code == configAuth.twitterMetric.favourites)
+                                    param.push('favourites_count');
+                                else if (metric[j].code == configAuth.twitterMetric.retweets_of_your_tweets)
+                                    param.push('retweet_count');
+                                else if (metric[j].keywordMentions == configAuth.twitterMetric.retweets_of_your_tweets || metric[0].code == configAuth.twitterMetric.mentions)
+                                    param.push('retweet_count', 'favorite_count');
+                                else
+                                    param.push('retweet_count', 'favorite_count');
+                                var dataFromRemoteLength = dataFromRemote[j].data.length;
+                                if (dataFromRemoteLength != 0) {
+                                    if (dataFromRemote[j].data === 'DataFromDb') {
+                                    }
+                                    else {
+                                        var totalArray = [];
+                                        for (var index = 0; index < param.length; index++) {
+                                            if (param.length > 1) {
+                                                var total = dataFromRemote[j].data[0][param[index]];
+                                                var text = dataFromRemote[j].data[0].text;
+                                                totalArray.push(total);
+                                                if (totalArray.length > 1) {
+                                                    var title = param[index];
+                                                    storeTweetDetails.push({
+                                                        date: currentDate,
+                                                        text: text,
+                                                        retweet_count: totalArray[0],
+                                                        favourite_count: totalArray[1]
+                                                    });
+                                                }
+                                            }
+                                            else {
+                                                var duplicateData = [];
+                                                var tempDate = [];
+                                                var duplicateRetweetCount = 0;
+                                                if (metric[j].code == configAuth.twitterMetric.retweets_of_your_tweets) {
+                                                    var tweetCount = dataFromRemote[j].data;
+                                                    for (var i = 0; i < tweetCount.length; i++) {
+                                                        tempDate.push({date: formatDate(new Date(Date.parse(tweetCount[i].created_at.replace(/( +)/, ' UTC$1'))))});
+                                                    }
+                                                    var tempDateCount = _.uniqBy(tempDate, 'date')
+                                                    for (var m = 0; m < tempDateCount.length; m++) {
+                                                        storeTweetDetails.push({date: tempDateCount[m].date, total: 0});
+                                                    }
+                                                    for (var m = 0; m < storeTweetDetails.length; m++) {
+                                                        for (var k = 0; k < tweetCount.length; k++) {
+                                                            var responseDate = formatDate(new Date(Date.parse(tweetCount[k].created_at.replace(/( +)/, ' UTC$1'))))
+                                                            if (storeTweetDetails[m].date === responseDate)
+                                                                duplicateRetweetCount += tweetCount[k].retweet_count;
+                                                        }
+                                                        //Get the required data based on date range
+                                                        storeTweetDetails[m].total = (duplicateRetweetCount);
+                                                        var duplicateRetweetCount = 0;
+                                                    }
+                                                }
+                                                else {
+                                                    var total = dataFromRemote[j].data[0].user[param[index]];
+                                                    totalArray.push({total: total, date: currentDate});
+
+                                                    //Get the required data based on date range
+                                                    storeTweetDetails.push({
+                                                            total: total,
+                                                            date: currentDate
+                                                        }
+                                                    );
+                                                }
+                                            }
+                                        }
+                                        if (metric[j].objectTypes[0].meta.endpoint.length > 0) {
+                                            if (dataFromRemote[j].data != 'DataFromDb') {
+                                                var storeTweet = [];
+                                                for (var i = 0; i < dataFromRemote[j]['data'].length; i++) {
+                                                    var date = moment(dataFromRemote[j]['data'][i]['date']).format('YYYY-MM-DD');
+                                                    storeTweet.push({
+                                                        date: date,
+                                                        total: dataFromRemote[j]['data'][i]['total']
+                                                    })
+                                                }
+                                                var now = new Date();
+                                                Data.update({
+                                                    'objectId': widget[j].metrics[0].objectId,
+                                                    'metricId': dataFromRemote[j].metricId
+                                                }, {
+                                                    $setOnInsert: {created: now},
+                                                    $set: {
+                                                        data: storeTweet,
+                                                        updated: now,
+                                                        bgFetch: metric[j].bgFetch,
+                                                        fetchPeriod: metric[j].fetchPeriod
+                                                    }
+                                                }, {upsert: true}, function (err, data) {
+                                                    if (err)
+                                                        return res.status(500).json({
+                                                            error: 'Internal server error',
+                                                            id: req.params.widgetId
+                                                        })
+                                                    else if (data == 0)
+                                                        return res.status(501).json({
+                                                            error: 'Not implemented',
+                                                            id: req.params.widgetId
+                                                        })
+                                                    else next(null, 'success')
+                                                });
+                                            }
+                                            else
+                                                next(null, 'success')
+                                        }
+                                    }
+                                }
+                                else {
+                                    return res.status(500).json({
+                                        error: 'Internal server error',
+                                        id: req.params.widgetId
+                                    });
+                                }
                             }
                             if (dataFromDb[j].data != null) {
                                 var updated = new Date(dataFromDb[j].data.updated);
@@ -1486,7 +1551,9 @@ exports.getChannelData = function (req, res, next) {
                             }
 
                             if (dataFromRemote[j].data != 'DataFromDb') {
-                                if (dataFromDb[j].data != null) {
+                                if (metric[j].objectTypes[0].meta.endpoint.length > 0 && metric[j].code === configAuth.twitterMetric.twitterEngagements)
+                                    storeTweetDetails = storeTweetDetailsNew;
+                                else if (dataFromDb[j].data != null) {
                                     dataFromDb[j].data.data.forEach(function (value, index) {
                                         if (String(metric[j]._id) == String(dataFromRemote[j].metricId))
                                             dbFinalData.push(value);
@@ -1533,7 +1600,48 @@ exports.getChannelData = function (req, res, next) {
                         else if (metric[j].code === configAuth.twitterMetric.highEngagementTweets) {
                             next(null, dataFromRemote[j]);
                         }
-                        else next('error')
+                        else {
+                            if (metric[j].objectTypes[0].meta.endpoint.length > 0) {
+                                if (dataFromRemote[j].data != 'DataFromDb') {
+                                    var storeTweet = [];
+                                    for (var i = 0; i < dataFromRemote[j]['data'].length; i++) {
+                                        var date = moment(Date.parse(dataFromRemote[j]['data'][i]['total'].created_at)).format('YYYY-MM-DD');
+                                        storeTweet.push({
+                                            date: date,
+                                            total: dataFromRemote[j]['data'][i]['total']
+                                        })
+                                    }
+                                    var now = new Date();
+                                    Data.update({
+                                        'objectId': widget[j].metrics[0].objectId,
+                                        'metricId': dataFromRemote[j].metricId
+                                    }, {
+                                        $setOnInsert: {created: now},
+                                        $set: {
+                                            data: storeTweet,
+                                            updated: now,
+                                            bgFetch: metric[j].bgFetch,
+                                            fetchPeriod: metric[j].fetchPeriod
+                                        }
+                                    }, {upsert: true}, function (err, data) {
+                                        if (err)
+                                            return res.status(500).json({
+                                                error: 'Internal server error',
+                                                id: req.params.widgetId
+                                            })
+                                        else if (data == 0)
+                                            return res.status(501).json({
+                                                error: 'Not implemented',
+                                                id: req.params.widgetId
+                                            })
+                                        else next(null, 'success')
+                                    });
+                                }
+                                else
+                                    next(null, 'success')
+                            }
+                        }
+
                     }, done)
                 }
             }
@@ -1894,7 +2002,15 @@ exports.getChannelData = function (req, res, next) {
         function getGraphDataFromDb(widget, metric, done) {
             async.times(widget.length, function (k, next) {
                 var wholeData = {};
-                if (metric[k].code === configAuth.twitterMetric.highEngagementTweets) {
+                if (metric[k].code === configAuth.googleAnalytics.usersByGender || metric[k].code === configAuth.googleAnalytics.usersByAgeGroup) {
+                    wholeData = {
+                        "data": results.store_final_data[0].data,
+                        "metricId": results.store_final_data[0].metricId,
+                        "objectId": results.store_final_data[0].queryResults.object[0]._id
+                    }
+                    next(null, wholeData)
+                }
+                else if (metric[k].code === configAuth.twitterMetric.highEngagementTweets && metric[k].objectTypes[0].meta.endpoint.length === 0) {
                     wholeData = {
                         "data": results.store_final_data[0].data,
                         "metricId": results.store_final_data[0].metricId,
@@ -2161,7 +2277,7 @@ exports.getChannelData = function (req, res, next) {
                                         metricId: data[i].metricId,
                                         api: metric[i].objectTypes[0].meta.api,
                                         metric: metric[i],
-                                        filters:metric[i].objectTypes[0].meta.filters!=undefined?metric[i].objectTypes[0].meta.filters:false
+                                        filters: metric[i].objectTypes[0].meta.filters != undefined ? metric[i].objectTypes[0].meta.filters : false
                                     };
                                     next(null, allObjects);
                                 }
@@ -2171,11 +2287,16 @@ exports.getChannelData = function (req, res, next) {
                                 }
                             }
                             else {
-
+                                if (metric[i].code === configAuth.googleAnalytics.usersByAgeGroup || metric[i].code === configAuth.googleAnalytics.usersByGender) {
+                                    var startDate = req.body.startDate;
+                                    var endDate = req.body.endDate;
+                                }
+                                else {
+                                    d.setDate(d.getDate() - 365);
+                                    var startDate = formatDate(d);
+                                    var endDate = formatDate(new Date());
+                                }
                                 //call google api
-                                d.setDate(d.getDate() - 365);
-                                var startDate = formatDate(d);
-                                var endDate = formatDate(new Date());
                                 allObjects = {
                                     oauth2Client: oauth2Client,
                                     object: object[i],
@@ -2189,7 +2310,7 @@ exports.getChannelData = function (req, res, next) {
                                     metricId: data[i].metricId,
                                     api: metric[i].objectTypes[0].meta.api,
                                     metric: metric[i],
-                                    filters:metric[i].objectTypes[0].meta.filters!=undefined?metric[i].objectTypes[0].meta.filters:false
+                                    filters: metric[i].objectTypes[0].meta.filters != undefined ? metric[i].objectTypes[0].meta.filters : false
                                 };
                                 next(null, allObjects);
                             }
@@ -2269,7 +2390,7 @@ exports.getChannelData = function (req, res, next) {
                         'metrics': allObjects.metricName,
                         prettyPrint: true
                     }
-                    if(allObjects.filters) apiQuery.filters =allObjects.filters[0];
+                    if (allObjects.filters) apiQuery.filters = allObjects.filters[0];
                     var analytics = googleapis.analytics({version: 'v3', auth: allObjects.oauth2Client}).data.ga.get;
                     callGoogleApi(apiQuery);
                 }
@@ -2349,7 +2470,7 @@ exports.getChannelData = function (req, res, next) {
                                         'metrics': allObjects.metricName,
                                         prettyPrint: true
                                     }
-                                    if(allObjects.filters) apiQuery.filters =allObjects.filters[0];
+                                    if (allObjects.filters) apiQuery.filters = allObjects.filters[0];
                                 }
                                 callGoogleApi(apiQuery);
                             }
@@ -3085,7 +3206,6 @@ exports.getChannelData = function (req, res, next) {
                 }
                 else {
                     if (queries.get_tweet_queries[j].metricCode === configAuth.twitterMetric.tweets || queries.get_tweet_queries[j].metricCode === configAuth.twitterMetric.followers || queries.get_tweet_queries[j].metricCode === configAuth.twitterMetric.following || queries.get_tweet_queries[j].metricCode === configAuth.twitterMetric.favourites || queries.get_tweet_queries[j].metricCode === configAuth.twitterMetric.listed || queries.get_tweet_queries[j].metricCode === configAuth.twitterMetric.retweets_of_your_tweets) {
-
                         finalTwitterResponse = {
                             data: tweets,
                             metricId: queries.get_tweet_queries[j].metricId,
@@ -3147,47 +3267,64 @@ exports.getChannelData = function (req, res, next) {
                             storingProcess(wholeTweetObjects)
 
                         function storingProcess(wholeTweetObjects) {
-                            for (var i = 0; i < wholeTweetObjects.length; i++) {
-                                var lastCreatedAt = formatDate(new Date(Date.parse(wholeTweetObjects[i].total.created_at)));
-                                var changeFormatCreateAt = moment.utc(lastCreatedAt).unix();
-                                var startDate = moment.utc(req.body.startDate).unix();
-                                var endDate = moment.utc(req.body.endDate).unix();
-
-                                if (changeFormatCreateAt >= startDate && changeFormatCreateAt <= endDate) {
-                                    var count = wholeTweetObjects[i].total.retweet_count + wholeTweetObjects[i].total.favorite_count;
-                                    highEngagedTweetsCount.push({
-                                        count: count,
-                                        total: wholeTweetObjects[i].total,
-                                        date: moment.utc(wholeTweetObjects[i].date).unix()
-                                    });
-                                }
+                            if (queries.get_tweet_queries[j].metricCode === configAuth.twitterMetric.twitterEngagements) {
+                                finalTwitterResponse = {
+                                    data: wholeTweetObjects,
+                                    metricId: queries.get_tweet_queries[j].metricId,
+                                    channelId: queries.get_tweet_queries[j].channelId,
+                                    queryResults: results
+                                };
+                                return callback(null, finalTwitterResponse)
                             }
-                            var sortedTweetsReverse = [];
-                            storeDefaultValues = _.sortBy(highEngagedTweetsCount, ['count', 'date']);
-                            sortedTweetsArray = _.orderBy(storeDefaultValues, ['count'], ['desc']);
-
-                            for (var i = 0; i < sortedTweetsArray.length; i++) {
-                                if (i == 0) {
-                                    removeDuplicate[i] = {
-                                        count: sortedTweetsArray[i].count,
-                                        date: moment.unix(sortedTweetsArray[i].date).format("YYYY/MM/DD"),
-                                        total: sortedTweetsArray[i].total
-                                    };
+                            else {
+                                for (var i = 0; i < wholeTweetObjects.length; i++) {
+                                    var lastCreatedAt = formatDate(new Date(Date.parse(wholeTweetObjects[i].total.created_at)));
+                                    var changeFormatCreateAt = moment.utc(lastCreatedAt).unix();
+                                    var startDate = moment.utc(req.body.startDate).unix();
+                                    var endDate = moment.utc(req.body.endDate).unix();
+                                    if (changeFormatCreateAt >= startDate && changeFormatCreateAt <= endDate) {
+                                        var count = wholeTweetObjects[i].total.retweet_count + wholeTweetObjects[i].total.favorite_count;
+                                        highEngagedTweetsCount.push({
+                                            count: count,
+                                            total: wholeTweetObjects[i].total,
+                                            date: moment.utc(wholeTweetObjects[i].date).unix()
+                                        });
+                                    }
                                 }
-                                else if (removeDuplicate[i - 1].count === sortedTweetsArray[i].count) {
-                                    var UnsortedDate = new Date(Date.parse(removeDuplicate[i - 1].total.created_at.replace(/( \+)/, ' UTC$1')));
-                                    var SortedDate = new Date(Date.parse(sortedTweetsArray[i].total.created_at.replace(/( \+)/, ' UTC$1')));
-                                    var removeDuplicateDate = moment.utc(UnsortedDate).unix();
-                                    var sortedTweetsArrayDate = moment.utc(SortedDate).unix();
+                                var sortedTweetsReverse = [];
+                                storeDefaultValues = _.sortBy(highEngagedTweetsCount, ['count', 'date']);
+                                sortedTweetsArray = _.orderBy(storeDefaultValues, ['count'], ['desc']);
 
-                                    if (removeDuplicateDate < sortedTweetsArrayDate) {
-                                        var beforValue = removeDuplicate[i - 1];
-                                        removeDuplicate[i - 1] = {
+                                for (var i = 0; i < sortedTweetsArray.length; i++) {
+                                    if (i == 0) {
+                                        removeDuplicate[i] = {
                                             count: sortedTweetsArray[i].count,
                                             date: moment.unix(sortedTweetsArray[i].date).format("YYYY/MM/DD"),
                                             total: sortedTweetsArray[i].total
                                         };
-                                        removeDuplicate[i] = beforValue;
+                                    }
+                                    else if (removeDuplicate[i - 1].count === sortedTweetsArray[i].count) {
+                                        var UnsortedDate = new Date(Date.parse(removeDuplicate[i - 1].total.created_at.replace(/( \+)/, ' UTC$1')));
+                                        var SortedDate = new Date(Date.parse(sortedTweetsArray[i].total.created_at.replace(/( \+)/, ' UTC$1')));
+                                        var removeDuplicateDate = moment.utc(UnsortedDate).unix();
+                                        var sortedTweetsArrayDate = moment.utc(SortedDate).unix();
+
+                                        if (removeDuplicateDate < sortedTweetsArrayDate) {
+                                            var beforValue = removeDuplicate[i - 1];
+                                            removeDuplicate[i - 1] = {
+                                                count: sortedTweetsArray[i].count,
+                                                date: moment.unix(sortedTweetsArray[i].date).format("YYYY/MM/DD"),
+                                                total: sortedTweetsArray[i].total
+                                            };
+                                            removeDuplicate[i] = beforValue;
+                                        }
+                                        else {
+                                            removeDuplicate[i] = {
+                                                count: sortedTweetsArray[i].count,
+                                                date: moment.unix(sortedTweetsArray[i].date).format("YYYY/MM/DD"),
+                                                total: sortedTweetsArray[i].total
+                                            };
+                                        }
                                     }
                                     else {
                                         removeDuplicate[i] = {
@@ -3196,35 +3333,29 @@ exports.getChannelData = function (req, res, next) {
                                             total: sortedTweetsArray[i].total
                                         };
                                     }
+
+                                }
+
+                                var showEngagementList = _.uniqBy(removeDuplicate, 'total.id');
+                                if (showEngagementList.length > 20) {
+                                    for (var index = 1; index < 20; index++) {
+                                        finalHighEngagedTweets.push(showEngagementList[index]);
+                                    }
                                 }
                                 else {
-                                    removeDuplicate[i] = {
-                                        count: sortedTweetsArray[i].count,
-                                        date: moment.unix(sortedTweetsArray[i].date).format("YYYY/MM/DD"),
-                                        total: sortedTweetsArray[i].total
-                                    };
+                                    for (var index = 0; index < showEngagementList.length; index++) {
+                                        finalHighEngagedTweets.push(showEngagementList[index]);
+                                    }
                                 }
-
+                                finalTwitterResponse = {
+                                    data: finalHighEngagedTweets,
+                                    metricId: queries.get_tweet_queries[j].metricId,
+                                    channelId: queries.get_tweet_queries[j].channelId,
+                                    queryResults: results
+                                };
+                                callback(null, finalTwitterResponse);
                             }
 
-                            var showEngagementList = _.uniqBy(removeDuplicate, 'total.id');
-                            if (showEngagementList.length > 20) {
-                                for (var index = 1; index < 20; index++) {
-                                    finalHighEngagedTweets.push(showEngagementList[index]);
-                                }
-                            }
-                            else {
-                                for (var index = 0; index < showEngagementList.length; index++) {
-                                    finalHighEngagedTweets.push(showEngagementList[index]);
-                                }
-                            }
-                            finalTwitterResponse = {
-                                data: finalHighEngagedTweets,
-                                metricId: queries.get_tweet_queries[j].metricId,
-                                channelId: queries.get_tweet_queries[j].channelId,
-                                queryResults: results
-                            };
-                            callback(null, finalTwitterResponse);
                         }
                     }
                 }

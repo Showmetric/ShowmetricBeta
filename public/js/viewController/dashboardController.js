@@ -170,7 +170,7 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
                             }
                         }
                     }
-                    $timeout(updateCharts(widget), 500);
+                    $timeout(updateCharts(widget), 100);
                 }
             }
         };
