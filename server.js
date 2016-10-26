@@ -207,6 +207,7 @@ child.on('exit', function () {
 child.start();*/
 
 app.listen(port);
+
 /*https.createServer({
     key: fs.readFileSync('./key.pem', 'utf8'),
     cert: fs.readFileSync('./server.crt', 'utf8')
