@@ -20,6 +20,7 @@ COPY . /usr/src/app
 EXPOSE 8080
 # RUN forever start batchJobs.js
 
+
 CMD forever start -l batch-forever.log -o batch-out.log -e batch-err.log batchJobs.js && forever server.js 
 
 #CMD ["node","server.js"]
