@@ -421,6 +421,9 @@ module.exports = {
         usersByGender:'usersByGender'
     },
     
-    dataValidityInHours:4
+    dataValidityInHours:4,
+    youTubeStaticVariables:{
+        videosoverview:'videosoverview'
+    }
 };
 

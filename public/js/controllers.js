@@ -2266,6 +2266,33 @@ showMetricApp.service('createWidgets', function ($http, $q) {
 
 
                     }
+                    else if(chartType === 'youtubeVideosOverview'){
+                        var videosArray = [];
+                        for (var key = 0; key < widget.charts[charts].chartData.length; key++) {
+                            if (typeof widget.charts[charts].chartData[key] != 'undefined') {
+                                if (typeof(widget.charts[charts].chartData[key]) === 'object') {
+                                    var name = 0;
+                                    var views = 0;
+                                    var comments = 0;
+                                    var likes = 0;
+                                    var disLikes = 0;
+                                    var shares = 0;
+                                        var tweetObject = {
+                                            name: widget.charts[charts].chartData[key].title,
+                                            views:widget.charts[charts].chartData[key].viewCount,
+                                            comments:widget.charts[charts].chartData[key].commentCount,
+                                            likes:widget.charts[charts].chartData[key].likeCount,
+                                            dislikes:widget.charts[charts].chartData[key].dislikeCount,
+                                            shares:widget.charts[charts].chartData[key].favoriteCount,
+                                            //url: widget.charts[charts].chartData[key].total.media != undefined ? widget.charts[charts].chartData[key].total.media[0].expanded_url : 'https://twitter.com/' + userMentionDetail[user].screen_name
+                                            //url:widget.charts[charts].chartData[key].total.media[0].expanded_url
+                                        }
+                                        videosArray.push(tweetObject);
+                                }
+                            }
+                        }
+                        widget.charts[charts].chartData = videosArray;
+                    }
                     else if (chartType === "twitterEngagements") {
                         if (String(widget.charts[charts].chartSubType) === "activityByDayOfTheWeek") {
                             if (typeof widget.charts[charts].chartData[0] != 'undefined') {
@@ -3084,7 +3111,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                         widgetCharts.push({
                                             'type': widget.charts[charts].chartType,
                                             'y': parseFloat(summaryValue),      //values - represents the array of {x,y} data points
-                                            'key': typeof widget.charts[charts].metricDetails.objectTypes[0].meta.endpointDisplayName != 'undefined' ? (typeof widget.charts[charts].metricDetails.objectTypes[0].meta.endpointDisplayName[endpointDisplayCode] != 'undefined' ? widget.charts[charts].metricDetails.objectTypes[0].meta.endpointDisplayName[endpointDisplayCode] : widget.charts[charts].metricDetails.objectTypes[0].meta.endpoint[items]) : widget.charts[charts].metricDetails.objectTypes[0].meta.endpoint[items],
+                                            'key': typeof widget.charts[charts].metricDetails.objectTypes[0].meta.endpointDisplayName != 'undefined' ? (typeof widget.charts[charts].metricDetails.objectTypes[0].meta.endpointDisplayName[endpointDisplayCode] != 'undefined' ? widget.charts[charts].metricDetails.objectTypes[0].meta.endpointDisplayName[endpointDisplayCode] : (widget.charts[charts].metricDetails.objectTypes[0].meta.endpoint[items]).replace(/\_/g," ")) : (widget.charts[charts].metricDetails.objectTypes[0].meta.endpoint[items]).replace(/\_/g," "),
                                             'color': typeof widget.charts[charts].chartColour != 'undefined' ? (typeof widget.charts[charts].chartColour[items] != 'undefined' ? widget.charts[charts].chartColour[items] : '') : '',  //color - optional: choose your own line color.
                                             'arrow': comparingData,
                                             'variance': percentage,
@@ -3480,6 +3507,12 @@ showMetricApp.service('createWidgets', function ($http, $q) {
 
                         }
                     }
+                    else if(chartType === 'youtubeVideosOverview'){
+                        widgetCharts.push({
+                            'type': widget.charts[charts].chartType,
+                            'values': widget.charts[charts].chartData,
+                        });
+                    }
                     else if (chartType == 'twitterEngagements') {
                         if (widget.charts[charts].chartSubType === 'engagementByUsersTalkedAbout' || widget.charts[charts].chartSubType === 'topLinks' || widget.charts[charts].chartSubType === 'hashTag') {
                             widgetCharts.push({
@@ -3508,7 +3541,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
         function createWidgetData(widget, widgetCharts, dateRange) {
             var deferred = $q.defer();
             var finalCharts = [];
-            finalCharts.twitterEngagements = [],
+            finalCharts.twitterEngagements = [],finalCharts.youtubeVideosOverview = [],
                 finalCharts.lineCharts = [],
                 finalCharts.barCharts = [],
                 finalCharts.pieCharts = [],
@@ -3717,6 +3750,11 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                 engagementByUsersTalkedAbout: {
                     chart: {
                         type: 'engagementByUsersTalkedAbout'
+                    }
+                },
+                youtubeVideosOverview: {
+                    chart: {
+                        type: 'youtubeVideosOverview'
                     }
                 },
                 pinterestEngagementRate: {
@@ -4001,6 +4039,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                     else if (widgetCharts[charts].type == 'pinterestLeaderboard')finalCharts.pinterestLeaderboard.push(widgetCharts[charts]);
                     else if (widgetCharts[charts].type == 'vimeoTopVideos') finalCharts.vimeoTopVideos.push(widgetCharts[charts]);
                     else if (widgetCharts[charts].type == 'twitterEngagements') finalCharts.twitterEngagements.push(widgetCharts[charts]);
+                    else if (widgetCharts[charts].type == 'youtubeVideosOverview') finalCharts.youtubeVideosOverview.push(widgetCharts[charts]);
                     else if (widgetCharts[charts].type == 'angularGauge') finalCharts.angularGauge.push(widgetCharts[charts]);
                     else if (widgetCharts[charts].type == 'mozoverview') {
                         for (var i = 0; i < widgetCharts[charts].values.length; i++)
@@ -4045,6 +4084,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                     else if (widgetCharts[charts].type == 'stackbar')finalCharts.stackbar.push(widgetCharts[charts]);
                     else if (widgetCharts[charts].type == 'instagramHashtagLeaderBoard') finalCharts.instagramHashtagLeaderBoard.push(widgetCharts[charts]);
                     else if (widgetCharts[charts].type == 'twitterEngagements')finalCharts.twitterEngagements.push(widgetCharts[charts]);
+                    else if (widgetCharts[charts].type == 'youtubeVideosOverview')finalCharts.youtubeVideosOverview.push(widgetCharts[charts]);
                 }
             }
             var chartColorChecker = [];
@@ -6100,9 +6140,22 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                             'options': chart,
                             'data': finalCharts.twitterEngagements[0].values
                         });
-
                     }
 
+                }
+            }
+            if (finalCharts.youtubeVideosOverview.length > 0) {
+                chartsCount++;
+                for (var charts in finalCharts.youtubeVideosOverview) {
+                        var chart = {
+                            chart: {
+                                type: finalCharts.youtubeVideosOverview[charts].type
+                            }
+                        }
+                        finalChartData.push({
+                            'options': chart,
+                            'data': finalCharts.youtubeVideosOverview[0].values
+                        });
                 }
             }
             if (finalChartData.length == 0) {
