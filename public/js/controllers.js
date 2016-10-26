@@ -75,7 +75,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
             var dataLoadedWidget = getRegularWidgetElements(tempWidget, dateRange, isPublic);
             dataLoadedWidget.then(
                 function successCallback(dataLoadedWidget) {
-                    var widgetCharts = formulateRegularWidgetGraphs(dataLoadedWidget,dateRange);
+                    var widgetCharts = formulateRegularWidgetGraphs(dataLoadedWidget, dateRange);
                     widgetCharts.then(
                         function successCallback(widgetCharts) {
                             var widgetData = createWidgetData(widget, widgetCharts);
@@ -105,7 +105,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                     var widgetCharts = formulateCustomWidgetGraphs(dataLoadedWidget);
                     widgetCharts.then(
                         function successCallback(widgetCharts) {
-                            var widgetData = createWidgetData(widget, widgetCharts,dateRange);
+                            var widgetData = createWidgetData(widget, widgetCharts, dateRange);
                             widgetData.then(
                                 function successCallback(widgetData) {
                                     deferredWidget.resolve(widgetData);
@@ -395,7 +395,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
             return deferred.promise;
         }
 
-        function formulateRegularWidgetGraphs(widget,dateRange) {
+        function formulateRegularWidgetGraphs(widget, dateRange) {
             var deferred = $q.defer();
             var widgetCharts = [];
             var totalNonZeroPoints = -1;
@@ -403,26 +403,26 @@ showMetricApp.service('createWidgets', function ($http, $q) {
             if (widget.charts.length > 0) {
                 for (var charts in widget.charts) {
                     var chartType = widget.charts[charts].chartType;
-                    if(chartType == "bounceRateArea"){
-                        var changeArray=[]
+                    if (chartType == "bounceRateArea") {
+                        var changeArray = []
                         if (typeof widget.charts[charts].chartData[0].total == 'object') {
-                            for(var i=0;i<widget.charts[charts].chartData.length;i++){
-                                var bounces=parseFloat(widget.charts[charts].chartData[i].total[0].bounces)
-                                var sessions=parseFloat(widget.charts[charts].chartData[i].total[0].sessions)
+                            for (var i = 0; i < widget.charts[charts].chartData.length; i++) {
+                                var bounces = parseFloat(widget.charts[charts].chartData[i].total[0].bounces)
+                                var sessions = parseFloat(widget.charts[charts].chartData[i].total[0].sessions)
                                 if (sessions === 0)
                                     var bouncesRate = bounces;
                                 else
                                     var bouncesRate = ((bounces / sessions) * 100).toFixed(2);
                                 changeArray.push({
-                                    x:moment(widget.charts[charts].chartData[i].date),
-                                    y:bouncesRate,
-                                    bounces:bounces,
-                                    sessions:sessions
+                                    x: moment(widget.charts[charts].chartData[i].date),
+                                    y: bouncesRate,
+                                    bounces: bounces,
+                                    sessions: sessions
                                 })
 
                             }
                         }
-                        widget.charts[charts].chartData=changeArray;
+                        widget.charts[charts].chartData = changeArray;
                     }
                     else if (chartType == "line" || chartType == "area" || chartType == "bar" || chartType == "column" || chartType == "stackcolumn" || chartType == "mozoverview" || chartType == 'negativeBar') {
                         if (typeof widget.charts[charts].chartData[0].total == 'object') {
@@ -771,54 +771,51 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                         }
                     }
                     else if (chartType == "instagramEngagements") {
-                        var subType=widget.charts[charts]. chartSubType;
-                        if(subType ==="instagramPostFrequency" ||subType ==="instagramPostTypes" || subType ==="instagramPostEngagement" ){
-                            var postFrequency=0;
+                        var subType = widget.charts[charts].chartSubType;
+                        if (subType === "instagramPostFrequency" || subType === "instagramPostTypes" || subType === "instagramPostEngagement") {
+                            var postFrequency = 0;
                             var likes = 'likes';
                             var comments = 'comments'
-                            var postType=[];
-                            if (typeof widget.charts[charts].chartData[0] != 'undefined'){
-                                for(var i=0;i<widget.charts[charts].chartData.length;i++){
-                                        postFrequency++;
-                                        var like=widget.charts[charts].chartData[i].total[likes].count;
-                                        var comment=widget.charts[charts].chartData[i].total[comments].count
-                                        var engagement=(like+comment)
-                                          var key=widget.charts[charts].chartData[i].total.type
-                                        postType.push({
-                                              "type":key,
-                                              "engagement":engagement
-                                        })
+                            var postType = [];
+                            if (typeof widget.charts[charts].chartData[0] != 'undefined') {
+                                for (var i = 0; i < widget.charts[charts].chartData.length; i++) {
+                                    postFrequency++;
+                                    var like = widget.charts[charts].chartData[i].total[likes].count;
+                                    var comment = widget.charts[charts].chartData[i].total[comments].count
+                                    var engagement = (like + comment)
+                                    var key = widget.charts[charts].chartData[i].total.type
+                                    postType.push({
+                                        "type": key,
+                                        "engagement": engagement
+                                    })
                                 }
                             }
-                            var postTypeCount={
-                            };
-                            var PostTypeEngagement={
-
-                            }
-                            for (var k=0;k<postType.length;k++){
-                                if(postTypeCount.hasOwnProperty(postType[k].type)){
-                                    var key=postType[k].type
-                                    postTypeCount[key]+=1;
-                                }else{
-                                    var key=postType[k].type
-                                    postTypeCount[key]=1;
+                            var postTypeCount = {};
+                            var PostTypeEngagement = {}
+                            for (var k = 0; k < postType.length; k++) {
+                                if (postTypeCount.hasOwnProperty(postType[k].type)) {
+                                    var key = postType[k].type
+                                    postTypeCount[key] += 1;
+                                } else {
+                                    var key = postType[k].type
+                                    postTypeCount[key] = 1;
                                 }
-                                if(PostTypeEngagement.hasOwnProperty(postType[k].type)){
-                                    var keys=postType[k].type
-                                    PostTypeEngagement[keys]+=postType[k].engagement;
-                                }else{
-                                    var keys=postType[k].type
-                                    PostTypeEngagement[keys]=postType[k].engagement;
+                                if (PostTypeEngagement.hasOwnProperty(postType[k].type)) {
+                                    var keys = postType[k].type
+                                    PostTypeEngagement[keys] += postType[k].engagement;
+                                } else {
+                                    var keys = postType[k].type
+                                    PostTypeEngagement[keys] = postType[k].engagement;
                                 }
                             }
                         }
-                        if(subType ==="instagramPostFrequency"){
-                            widget.charts[charts].chartData=postFrequency;
+                        if (subType === "instagramPostFrequency") {
+                            widget.charts[charts].chartData = postFrequency;
                         }
-                       else if(subType ==="instagramPostEngagement"){
+                        else if (subType === "instagramPostEngagement") {
                             widget.charts[charts].chartData = PostTypeEngagement
                         }
-                       else if(subType ==="instagramPostTypes"){
+                        else if (subType === "instagramPostTypes") {
                             widget.charts[charts].chartData = postTypeCount
                         }
                     }
@@ -1029,7 +1026,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                     entranceRate = calculateBouncerate / pageviews;
                                     var path = {
                                         uniquePageviews: uniquePageviews,
-                                        sessions:sessions,
+                                        sessions: sessions,
                                         pageviews: pageviews,
                                         pagePath: path,
                                         avgTimeOnPage: avgTimeOnpage,
@@ -1097,7 +1094,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                     avgPageLoadTime = Math.ceil(avgPageLoadTime)
                                     var path = {
                                         pageviews: pageviews,
-                                        sessions:sessions,
+                                        sessions: sessions,
                                         pagePath: path,
                                         pageTitle: pageTitle,
                                         avgPageLoadTime: avgPageLoadTime.toFixed(2),
@@ -1903,7 +1900,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                         }
                     }
                     else if (chartType == "instagramHashtagLeaderBoard") {
-                        if(widget.charts[charts].chartData[0]!=null){
+                        if (widget.charts[charts].chartData[0] != null) {
                             if (typeof widget.charts[charts].chartData[0] != 'undefined') {
                                 if (typeof(widget.charts[charts].chartData[0].total) === 'object') {
                                     var tag = 'tag';
@@ -1933,7 +1930,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                 }
                             }
                         }
-                        else widget.charts[charts].chartData=[];
+                        else widget.charts[charts].chartData = [];
                     }
                     else if (chartType == "gaTopCountriesToSocialVisits" || chartType === 'gaTopCitiesToSocialVisits') {
                         if (typeof widget.charts[charts].chartData[0] != 'undefined') {
@@ -2056,7 +2053,6 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                             formattedChartDataArray.sort(function (a, b) {
                                 return parseFloat(a.hour) - parseFloat(b.hour);
                             });
-
 
 
                             for (var k = 0; k < formattedChartDataArray.length; k++) {
@@ -2251,40 +2247,40 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                         widget.charts[charts].chartData = series;
 
                     }
-                    else if(chartType === "gaUsers"){
-                        if(widget.charts[charts].chartData[0]!= 'undefined'){
-                            var finalData={};
-                            for(var i=0;i< widget.charts[charts].chartData.length;i++){
-                                var key=widget.charts[charts].chartData[i][0]
-                                finalData[key]=widget.charts[charts].chartData[i][1]
+                    else if (chartType === "gaUsers") {
+                        if (widget.charts[charts].chartData[0] != 'undefined') {
+                            var finalData = {};
+                            for (var i = 0; i < widget.charts[charts].chartData.length; i++) {
+                                var key = widget.charts[charts].chartData[i][0]
+                                finalData[key] = widget.charts[charts].chartData[i][1]
                             }
-                            widget.charts[charts].chartData=finalData;
+                            widget.charts[charts].chartData = finalData;
                         }
 
                     }
                     else if (chartType === "twitterEngagements") {
-                        if(String(widget.charts[charts].chartSubType)==="activityByDayOfTheWeek"){
+                        if (String(widget.charts[charts].chartSubType) === "activityByDayOfTheWeek") {
                             if (typeof widget.charts[charts].chartData[0] != 'undefined') {
-                                var splitArray=[];
-                                for (var k = 0; k < widget.charts[charts].chartData.length; k++){
-                                    if(typeof widget.charts[charts].chartData[k].total ==='object') {
+                                var splitArray = [];
+                                for (var k = 0; k < widget.charts[charts].chartData.length; k++) {
+                                    if (typeof widget.charts[charts].chartData[k].total === 'object') {
                                         widget.charts[charts].chartData[k].total.created_at = moment(widget.charts[charts].chartData[k].total.created_at).format('dddd');
                                         splitArray.push(widget.charts[charts].chartData[k].total);
                                     }
                                 }
-                                var sortdata = _.groupBy( splitArray, 'created_at');
+                                var sortdata = _.groupBy(splitArray, 'created_at');
                                 var formattedChartDataArray = []
                                 for (var key in sortdata) {
                                     var likes = 0;
                                     var reTweets = 0;
                                     var engagement = 0;
-                                    var day=key;
+                                    var day = key;
                                     for (var i = 0; i < sortdata[key].length; i++) {
                                         likes += parseFloat(sortdata[key][i]['favorite_count']);
                                         reTweets += parseFloat(sortdata[key][i]['retweet_count']);
                                     }
-                                    engagement=likes+reTweets;
-                                    var tweets=i;
+                                    engagement = likes + reTweets;
+                                    var tweets = i;
                                     var path = {
                                         day: day,
                                         tweets: tweets,
@@ -2292,38 +2288,42 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                     }
                                     formattedChartDataArray.push(path)
                                 }
-                                widget.charts[charts].chartData=formattedChartDataArray
+                                widget.charts[charts].chartData = formattedChartDataArray
                             }
                         }
-                        else if(String(widget.charts[charts].chartSubType)==="activityByTimeOfTheDay"){
+                        else if (String(widget.charts[charts].chartSubType) === "activityByTimeOfTheDay") {
                             if (typeof widget.charts[charts].chartData[0] != 'undefined') {
-                                var splitArray=[];
-                                for (var k = 0; k < widget.charts[charts].chartData.length; k++){
-                                    if(typeof widget.charts[charts].chartData[k].total === 'object') {
+                                var splitArray = [];
+                                for (var k = 0; k < widget.charts[charts].chartData.length; k++) {
+                                    if (typeof widget.charts[charts].chartData[k].total === 'object') {
                                         var date = widget.charts[charts].chartData[k].total.created_at;
                                         widget.charts[charts].chartData[k].total.day = moment(date).format('dddd');
                                         splitArray.push(widget.charts[charts].chartData[k].total);
                                     }
                                 }
-                                var sortdata = _.groupBy( splitArray, 'day');
+                                var sortdata = _.groupBy(splitArray, 'day');
                                 var formattedChartDataArray = []
                                 for (var key in sortdata) {
-                                    var day=key;
-                                    var tempArray=[];
+                                    var day = key;
+                                    var tempArray = [];
                                     for (var i = 0; i < sortdata[key].length; i++) {
-                                        tempArray.push({time:new Date(sortdata[key][i]['created_at']).getHours(),likes:sortdata[key][i]['favorite_count'],reTweets:sortdata[key][i]['retweet_count']})
+                                        tempArray.push({
+                                            time: new Date(sortdata[key][i]['created_at']).getHours(),
+                                            likes: sortdata[key][i]['favorite_count'],
+                                            reTweets: sortdata[key][i]['retweet_count']
+                                        })
                                     }
-                                    var sortTime= _.groupBy( tempArray, 'time');
-                                    for(var data in sortTime){
+                                    var sortTime = _.groupBy(tempArray, 'time');
+                                    for (var data in sortTime) {
                                         var likes = 0;
                                         var reTweets = 0;
                                         var engagement = 0;
-                                        var time=data;
-                                        for(var j=0;j<sortTime[data].length;j++){
-                                            likes+=parseFloat(sortTime[data][j]['likes']);
-                                            reTweets+= parseFloat(sortTime[data][j]['reTweets']);
+                                        var time = data;
+                                        for (var j = 0; j < sortTime[data].length; j++) {
+                                            likes += parseFloat(sortTime[data][j]['likes']);
+                                            reTweets += parseFloat(sortTime[data][j]['reTweets']);
                                         }
-                                        engagement=likes+reTweets;
+                                        engagement = likes + reTweets;
                                         var path = {
                                             day: day,
                                             time: time,
@@ -2332,7 +2332,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                         formattedChartDataArray.push(path)
                                     }
                                 }
-                                widget.charts[charts].chartData=formattedChartDataArray;
+                                widget.charts[charts].chartData = formattedChartDataArray;
                             }
                         }
                         else if (String(widget.charts[charts].chartSubType) === 'engagementByUsersTalkedAbout') {
@@ -2350,15 +2350,15 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                         likes = parseFloat(widget.charts[charts].chartData[key].total['favorite_count']);
                                         reTweets = parseFloat(widget.charts[charts].chartData[key].total['retweet_count']);
                                         engagement = likes + reTweets;
-                                        var userMentionedLength = widget.charts[charts].chartData[key].total.entities!=undefined?widget.charts[charts].chartData[key].total.entities!=undefined?widget.charts[charts].chartData[key].total.entities.user_mentions.length:0:0;
-                                        var userMentionDetail =  widget.charts[charts].chartData[key].total.entities!=undefined?widget.charts[charts].chartData[key].total.entities!=undefined?widget.charts[charts].chartData[key].total.entities.user_mentions:0:0;
+                                        var userMentionedLength = widget.charts[charts].chartData[key].total.entities != undefined ? widget.charts[charts].chartData[key].total.entities != undefined ? widget.charts[charts].chartData[key].total.entities.user_mentions.length : 0 : 0;
+                                        var userMentionDetail = widget.charts[charts].chartData[key].total.entities != undefined ? widget.charts[charts].chartData[key].total.entities != undefined ? widget.charts[charts].chartData[key].total.entities.user_mentions : 0 : 0;
                                         for (var user = 0; user < userMentionedLength; user++) {
                                             var tweetObject = {
                                                 tweet: widget.charts[charts].chartData[key].total.text,
                                                 engagement: engagement,
                                                 userMentionedScreenName: userMentionDetail[user].screen_name,
                                                 userMentionedName: userMentionDetail[user].name,
-                                                url:widget.charts[charts].chartData[key].total.media!=undefined?widget.charts[charts].chartData[key].total.media[0].expanded_url:'https://twitter.com/'+userMentionDetail[user].screen_name
+                                                url: widget.charts[charts].chartData[key].total.media != undefined ? widget.charts[charts].chartData[key].total.media[0].expanded_url : 'https://twitter.com/' + userMentionDetail[user].screen_name
                                                 //url:widget.charts[charts].chartData[key].total.media[0].expanded_url
                                             }
                                             tweetsArray.push(tweetObject);
@@ -2372,23 +2372,23 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                             }
                             widget.charts[charts].chartData = wholeTweetsArray;
                         }
-                        else if(widget.charts[charts]. chartSubType == "topLinks"){
+                        else if (widget.charts[charts].chartSubType == "topLinks") {
                             if (typeof widget.charts[charts].chartData[0] != 'undefined') {
                                 var likes = 'favorite_count';
                                 var reTweet = 'retweet_count'
                                 var entities = 'entities';
-                                var urlsArray=[];
+                                var urlsArray = [];
                                 if (typeof(widget.charts[charts].chartData[0].total) === 'object') {
-                                    for(var i=0;i<widget.charts[charts].chartData.length;i++){
-                                        if(typeof widget.charts[charts].chartData[i].total.entities != 'undefined' ){
-                                            for(var k=0;k< widget.charts[charts].chartData[i].total.entities.urls.length;k++){
-                                                var  like=widget.charts[charts].chartData[i].total[likes]
-                                                var reTweets=widget.charts[charts].chartData[i].total[reTweet]
-                                                var engagement=like+reTweets;
-                                                var url={
-                                                    url:widget.charts[charts].chartData[i].total.entities.urls[k].url,
-                                                    displayurl:widget.charts[charts].chartData[i].total.entities.urls[k].expanded_url,
-                                                    engagement:engagement
+                                    for (var i = 0; i < widget.charts[charts].chartData.length; i++) {
+                                        if (typeof widget.charts[charts].chartData[i].total.entities != 'undefined') {
+                                            for (var k = 0; k < widget.charts[charts].chartData[i].total.entities.urls.length; k++) {
+                                                var like = widget.charts[charts].chartData[i].total[likes]
+                                                var reTweets = widget.charts[charts].chartData[i].total[reTweet]
+                                                var engagement = like + reTweets;
+                                                var url = {
+                                                    url: widget.charts[charts].chartData[i].total.entities.urls[k].url,
+                                                    displayurl: widget.charts[charts].chartData[i].total.entities.urls[k].expanded_url,
+                                                    engagement: engagement
                                                 }
                                                 urlsArray.push(url)
                                             }
@@ -2396,46 +2396,46 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                     }
                                 }
                                 var sortdata = _.groupBy(urlsArray, 'displayurl')
-                                var groupedArray=[];
-                                for(var keys in sortdata){
-                                    var engagement=0;
-                                    for(var m=0;m<sortdata[keys].length;m++){
-                                        engagement+=sortdata[keys][m].engagement;
+                                var groupedArray = [];
+                                for (var keys in sortdata) {
+                                    var engagement = 0;
+                                    for (var m = 0; m < sortdata[keys].length; m++) {
+                                        engagement += sortdata[keys][m].engagement;
                                     }
                                     groupedArray.push({
-                                        url:keys,
-                                        engagement:engagement,
+                                        url: keys,
+                                        engagement: engagement,
                                     })
                                 }
                                 groupedArray.sort(function (a, b) {
                                     return parseFloat(a.engagement) - parseFloat(b.engagement);
                                 });
                                 groupedArray.reverse();
-                                widget.charts[charts].chartData=groupedArray;
+                                widget.charts[charts].chartData = groupedArray;
                             }
                         }
-                        else if(String(widget.charts[charts].chartSubType)==="instagramActivityByDayOfTheWeek"){
+                        else if (String(widget.charts[charts].chartSubType) === "instagramActivityByDayOfTheWeek") {
                             if (typeof widget.charts[charts].chartData[0] != 'undefined') {
-                                var splitArray=[];
-                                for (var k = 0; k < widget.charts[charts].chartData.length; k++){
-                                    if(typeof widget.charts[charts].chartData[k].total ==='object') {
-                                        widget.charts[charts].chartData[k].total.created_time =moment.unix(widget.charts[charts].chartData[k].total.created_time).format('dddd');
+                                var splitArray = [];
+                                for (var k = 0; k < widget.charts[charts].chartData.length; k++) {
+                                    if (typeof widget.charts[charts].chartData[k].total === 'object') {
+                                        widget.charts[charts].chartData[k].total.created_time = moment.unix(widget.charts[charts].chartData[k].total.created_time).format('dddd');
                                         splitArray.push(widget.charts[charts].chartData[k].total);
                                     }
                                 }
-                                var sortdata = _.groupBy( splitArray, 'created_time');
+                                var sortdata = _.groupBy(splitArray, 'created_time');
                                 var formattedChartDataArray = []
                                 for (var key in sortdata) {
                                     var likes = 0;
                                     var comments = 0;
                                     var engagement = 0;
-                                    var day=key;
+                                    var day = key;
                                     for (var i = 0; i < sortdata[key].length; i++) {
                                         likes += parseFloat(sortdata[key][i]['likes']['count']);
                                         comments += parseFloat(sortdata[key][i]['comments']['count']);
                                     }
-                                    engagement=likes+comments;
-                                    var posts=i;
+                                    engagement = likes + comments;
+                                    var posts = i;
                                     var path = {
                                         day: day,
                                         tweets: posts,
@@ -2443,39 +2443,43 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                     }
                                     formattedChartDataArray.push(path)
                                 }
-                                widget.charts[charts].chartData=formattedChartDataArray
+                                widget.charts[charts].chartData = formattedChartDataArray
                             }
                         }
-                        else if(String(widget.charts[charts].chartSubType)==="instagramActivityByTimeOfTheDay"){
+                        else if (String(widget.charts[charts].chartSubType) === "instagramActivityByTimeOfTheDay") {
                             if (typeof widget.charts[charts].chartData[0] != 'undefined') {
-                                var splitArray=[];
-                                for (var k = 0; k < widget.charts[charts].chartData.length; k++){
-                                    if(typeof widget.charts[charts].chartData[k].total === 'object') {
+                                var splitArray = [];
+                                for (var k = 0; k < widget.charts[charts].chartData.length; k++) {
+                                    if (typeof widget.charts[charts].chartData[k].total === 'object') {
                                         var date = widget.charts[charts].chartData[k].total.created_time;
                                         widget.charts[charts].chartData[k].total.day = moment.unix(date).format('dddd');
                                         splitArray.push(widget.charts[charts].chartData[k].total);
                                     }
                                 }
-                                var sortdata = _.groupBy( splitArray, 'day');
+                                var sortdata = _.groupBy(splitArray, 'day');
                                 var formattedChartDataArray = []
                                 for (var key in sortdata) {
-                                    var day=key;
-                                    var tempArray=[];
+                                    var day = key;
+                                    var tempArray = [];
                                     for (var i = 0; i < sortdata[key].length; i++) {
-                                        var temp=moment.unix(sortdata[key][i]['created_time']);
-                                        tempArray.push({time:new Date(temp).getHours(),likes:sortdata[key][i]['likes']['count'],comments:sortdata[key][i]['comments']['count']})
+                                        var temp = moment.unix(sortdata[key][i]['created_time']);
+                                        tempArray.push({
+                                            time: new Date(temp).getHours(),
+                                            likes: sortdata[key][i]['likes']['count'],
+                                            comments: sortdata[key][i]['comments']['count']
+                                        })
                                     }
-                                    var sortTime= _.groupBy( tempArray, 'time');
-                                    for(var data in sortTime){
+                                    var sortTime = _.groupBy(tempArray, 'time');
+                                    for (var data in sortTime) {
                                         var likes = 0;
                                         var comments = 0;
                                         var engagement = 0;
-                                        var time=data;
-                                        for(var j=0;j<sortTime[data].length;j++){
-                                            likes+=parseFloat(sortTime[data][j]['likes']);
-                                            comments+= parseFloat(sortTime[data][j]['comments']);
+                                        var time = data;
+                                        for (var j = 0; j < sortTime[data].length; j++) {
+                                            likes += parseFloat(sortTime[data][j]['likes']);
+                                            comments += parseFloat(sortTime[data][j]['comments']);
                                         }
-                                        engagement=likes+comments;
+                                        engagement = likes + comments;
                                         var path = {
                                             day: day,
                                             time: time,
@@ -2484,36 +2488,40 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                         formattedChartDataArray.push(path)
                                     }
                                 }
-                                widget.charts[charts].chartData=formattedChartDataArray;
+                                widget.charts[charts].chartData = formattedChartDataArray;
                             }
                         }
-                        else if(String(widget.charts[charts].chartSubType)==="commentsAndLikes"){
+                        else if (String(widget.charts[charts].chartSubType) === "commentsAndLikes") {
                             if (typeof widget.charts[charts].chartData[0] != 'undefined') {
                                 var formattedChartDataArray = []
-                                for (var k = 0; k < widget.charts[charts].chartData.length; k++){
-                                    if(typeof widget.charts[charts].chartData[k].total === 'object') {
-                                        formattedChartDataArray.push({x:widget.charts[charts].chartData[k].date,y:parseFloat(widget.charts[charts].chartData[k].total['likes']['count'])+parseFloat(widget.charts[charts].chartData[k].total['comments']['count']),link:widget.charts[charts].chartData[k].total['link']})
+                                for (var k = 0; k < widget.charts[charts].chartData.length; k++) {
+                                    if (typeof widget.charts[charts].chartData[k].total === 'object') {
+                                        formattedChartDataArray.push({
+                                            x: widget.charts[charts].chartData[k].date,
+                                            y: parseFloat(widget.charts[charts].chartData[k].total['likes']['count']) + parseFloat(widget.charts[charts].chartData[k].total['comments']['count']),
+                                            link: widget.charts[charts].chartData[k].total['link']
+                                        })
                                     }
                                 }
-                                widget.charts[charts].chartData=formattedChartDataArray;
+                                widget.charts[charts].chartData = formattedChartDataArray;
                             }
                         }
-                        else if(widget.charts[charts]. chartSubType == "hashTag"){
+                        else if (widget.charts[charts].chartSubType == "hashTag") {
                             if (typeof widget.charts[charts].chartData[0] != 'undefined') {
                                 var likes = 'favorite_count';
                                 var reTweet = 'retweet_count'
                                 var entities = 'entities';
-                                var urlsArray=[];
+                                var urlsArray = [];
                                 if (typeof(widget.charts[charts].chartData[0].total) === 'object') {
-                                    for(var i=0;i<widget.charts[charts].chartData.length;i++){
-                                        if(typeof widget.charts[charts].chartData[i].total.entities != 'undefined' ){
-                                            for(var k=0;k< widget.charts[charts].chartData[i].total.entities.hashtags.length;k++){
-                                                var  like=widget.charts[charts].chartData[i].total[likes]
-                                                var reTweets=widget.charts[charts].chartData[i].total[reTweet]
-                                                var engagement=like+reTweets;
-                                                var url={
-                                                    hashTag:widget.charts[charts].chartData[i].total.entities.hashtags[k].text,
-                                                    engagement:engagement
+                                    for (var i = 0; i < widget.charts[charts].chartData.length; i++) {
+                                        if (typeof widget.charts[charts].chartData[i].total.entities != 'undefined') {
+                                            for (var k = 0; k < widget.charts[charts].chartData[i].total.entities.hashtags.length; k++) {
+                                                var like = widget.charts[charts].chartData[i].total[likes]
+                                                var reTweets = widget.charts[charts].chartData[i].total[reTweet]
+                                                var engagement = like + reTweets;
+                                                var url = {
+                                                    hashTag: widget.charts[charts].chartData[i].total.entities.hashtags[k].text,
+                                                    engagement: engagement
                                                 }
                                                 urlsArray.push(url)
                                             }
@@ -2521,22 +2529,22 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                     }
                                 }
                                 var sortdata = _.groupBy(urlsArray, 'hashTag')
-                                var groupedArray=[];
-                                for(var keys in sortdata){
-                                    var engagement=0;
-                                    for(var m=0;m<sortdata[keys].length;m++){
-                                        engagement+=sortdata[keys][m].engagement;
+                                var groupedArray = [];
+                                for (var keys in sortdata) {
+                                    var engagement = 0;
+                                    for (var m = 0; m < sortdata[keys].length; m++) {
+                                        engagement += sortdata[keys][m].engagement;
                                     }
                                     groupedArray.push({
-                                        text:keys,
-                                        engagement:engagement,
+                                        text: keys,
+                                        engagement: engagement,
                                     })
                                 }
                                 groupedArray.sort(function (a, b) {
                                     return parseFloat(a.engagement) - parseFloat(b.engagement);
                                 });
                                 groupedArray.reverse();
-                                widget.charts[charts].chartData=groupedArray;
+                                widget.charts[charts].chartData = groupedArray;
                             }
                         }
                         else console.log('error')
@@ -2565,7 +2573,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
 
                 for (var charts in widget.charts) {
                     var chartType = widget.charts[charts].chartType;
-                    if (chartType == "line" || chartType == "bar" || chartType == "column" || chartType == "stackcolumn" || chartType == "area" || chartType == "pie" || chartType == 'reachVsImpressions' || chartType == "engagedUsersReach" || chartType == 'mozoverview' || chartType == "trafficSourcesBrkdwnLine" ||chartType=='bounceRateArea' || chartType == 'negativeBar' || chartType == "trafficSourcesBrkdwnPie" || ((chartType == "costPerActionType") && (widget.meta != undefined))) {
+                    if (chartType == "line" || chartType == "bar" || chartType == "column" || chartType == "stackcolumn" || chartType == "area" || chartType == "pie" || chartType == 'reachVsImpressions' || chartType == "engagedUsersReach" || chartType == 'mozoverview' || chartType == "trafficSourcesBrkdwnLine" || chartType == 'bounceRateArea' || chartType == 'negativeBar' || chartType == "trafficSourcesBrkdwnPie" || ((chartType == "costPerActionType") && (widget.meta != undefined))) {
                         if (typeof widget.charts[charts].chartData[0] != 'undefined') {
                             if (widget.charts[charts].chartData[0].x) {
                                 var summaryValue = 0;
@@ -2691,15 +2699,15 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                         }
                                     }
                                 }
-                                if(chartType=='bounceRateArea'){
+                                if (chartType == 'bounceRateArea') {
 
-                                    var bounce=0;
-                                    var sessions=0;
-                                    for (var datas in widget.charts[charts].chartData){
-                                        bounce+=parseFloat(widget.charts[charts].chartData[datas].bounces)
-                                        sessions+=parseFloat(widget.charts[charts].chartData[datas].sessions)
+                                    var bounce = 0;
+                                    var sessions = 0;
+                                    for (var datas in widget.charts[charts].chartData) {
+                                        bounce += parseFloat(widget.charts[charts].chartData[datas].bounces)
+                                        sessions += parseFloat(widget.charts[charts].chartData[datas].sessions)
                                     }
-                                    summaryValue=(bounce/sessions)*100;
+                                    summaryValue = (bounce / sessions) * 100;
                                 }
                                 if (chartType == 'line' || chartType == 'bar' || chartType == 'column' || chartType == 'mozoverview') {
                                     if ((widget.channelName == 'FacebookAds') && (widget.charts[charts].metricDetails.name == 'Cost Per Unique Action Type')) {
@@ -2789,10 +2797,10 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                         'area': true
                                     });
                                 }
-                                else if(chartType =='bounceRateArea'){
-                                    widget.charts[charts].chartType='area';
+                                else if (chartType == 'bounceRateArea') {
+                                    widget.charts[charts].chartType = 'area';
                                     widgetCharts.push({
-                                        'type':widget.charts[charts].chartType,
+                                        'type': widget.charts[charts].chartType,
                                         'values': widget.charts[charts].chartData,      //values - represents the array of {x,y} data points
                                         'key': widget.charts[charts].metricDetails.name, //key  - the name of the series.
                                         'color': widget.charts[charts].chartColour[0],  //color - optional: choose your own line color.
@@ -3214,42 +3222,42 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                             'values': widget.charts[charts].chartData,
                         });
                     }
-                    else if(chartType=="instagramEngagements" ){
-                        if(widget.charts[charts].chartSubType ==="instagramPostTypes" ){
+                    else if (chartType == "instagramEngagements") {
+                        if (widget.charts[charts].chartSubType === "instagramPostTypes") {
                             var colorIndex = 0;
                             for (var index in widget.charts[charts].chartData) {
                                 widgetCharts.push({
                                     'type': 'pie',
-                                    'keys':index,
-                                    'displaySummary':false,
+                                    'keys': index,
+                                    'displaySummary': false,
                                     'y': parseFloat(widget.charts[charts].chartData[index]),      //values - represents the array of {x,y} data points
                                     'color': typeof widget.charts[charts].chartColour != 'undefined' ? (typeof widget.charts[charts].chartColour[colorIndex] != 'undefined' ? widget.charts[charts].chartColour[colorIndex] : '') : '',  //color - optional: choose your own line color.
                                 });
                                 ++colorIndex;
                             }
                         }
-                        else if(widget.charts[charts].chartSubType ==="instagramPostEngagement" ){
+                        else if (widget.charts[charts].chartSubType === "instagramPostEngagement") {
                             var colorIndex = 0;
                             for (var index in widget.charts[charts].chartData) {
                                 widgetCharts.push({
                                     'type': 'fbReachByCity',
                                     'y': parseFloat(widget.charts[charts].chartData[index]),      //values - represents the array of {x,y} data points
                                     'keys': index,
-                                    'displaySummary':false,
+                                    'displaySummary': false,
                                     'color': typeof widget.charts[charts].chartColour != 'undefined' ? (typeof widget.charts[charts].chartColour[colorIndex] != 'undefined' ? widget.charts[charts].chartColour[colorIndex] : '') : '',  //color - optional: choose your own line color.
                                     'summaryDisplay': Math.round(widget.charts[charts].chartData[index] * 100) / 100
                                 });
                                 ++colorIndex;
                             }
-                        } else if(widget.charts[charts].chartSubType ==="instagramPostFrequency" ){
+                        } else if (widget.charts[charts].chartSubType === "instagramPostFrequency") {
                             var date1 = new Date(dateRange.startDate);
                             var date2 = new Date(dateRange.endDate);
                             var timeDiff = Math.abs(date2.getTime() - date1.getTime());
                             var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
                             widgetCharts.push({
                                 'type': 'angularGauge',
-                                'y':  Math.round((widget.charts[charts].chartData/diffDays)*100)/100,   //values - represents the array of {x,y} data points
-                                'displaySummary':false,
+                                'y': Math.round((widget.charts[charts].chartData / diffDays) * 100) / 100,   //values - represents the array of {x,y} data points
+                                'displaySummary': false,
                                 'color': typeof widget.charts[charts].chartColour != 'undefined' ? (typeof widget.charts[charts].chartColour[colorIndex] != 'undefined' ? widget.charts[charts].chartColour[colorIndex] : '') : '',  //color - optional: choose your own line color.
                                 'summaryDisplay': Math.round(widget.charts[charts].chartData[index] * 100) / 100
                             });
@@ -3282,7 +3290,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                             ++colorIndex;
                         }
                     }
-                    else if (chartType == "gaTopCountriesToSocialVisits" || chartType === 'gaTopCitiesToSocialVisits'||chartType ==='gaUsers') {
+                    else if (chartType == "gaTopCountriesToSocialVisits" || chartType === 'gaTopCitiesToSocialVisits' || chartType === 'gaUsers') {
                         var colorIndex = 0;
                         for (var index in widget.charts[charts].chartData) {
                             widgetCharts.push({
@@ -3322,8 +3330,8 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                     }
                     else if (chartType == "percentageArea") {
                         var groupData = _.groupBy(widget.charts[charts].chartData, 'y.socialNetwork')
-                        var summaryColor=0;
-                        for(var key in groupData){
+                        var summaryColor = 0;
+                        for (var key in groupData) {
                             var summaryValue = 0;
                             var nonZeroPoints = 0;
                             var n = groupData[key].length;
@@ -3416,7 +3424,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                 'values': groupData[key],
                                 'color': typeof widget.charts[charts].chartColour != 'undefined' ? (typeof widget.charts[charts].chartColour[summaryColor] != 'undefined' ? widget.charts[charts].chartColour[summaryColor] : '') : '',  //color - optional: choose your own line color.
                                 'arrow': comparingData,
-                                'totalChartLength':widget.charts[charts].chartData,
+                                'totalChartLength': widget.charts[charts].chartData,
                                 'variance': percentage,
                                 'period': granularity,
                                 'summaryDisplay': Math.round(summaryValue * 100) / 100,
@@ -3424,19 +3432,19 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                             summaryColor++;
 
                         }
-                                            }
+                    }
                     else if (chartType == 'twitterEngagements') {
-                        if(widget.charts[charts].chartSubType==='engagementByUsersTalkedAbout'||widget.charts[charts].chartSubType ==='topLinks' || widget.charts[charts].chartSubType ==='hashTag'){
+                        if (widget.charts[charts].chartSubType === 'engagementByUsersTalkedAbout' || widget.charts[charts].chartSubType === 'topLinks' || widget.charts[charts].chartSubType === 'hashTag') {
                             widgetCharts.push({
                                 'type': widget.charts[charts].chartType,
-                                'chartSubType':widget.charts[charts].chartSubType,
+                                'chartSubType': widget.charts[charts].chartSubType,
                                 'values': widget.charts[charts].chartData,
                             });
                         }
-                        else{
+                        else {
                             widgetCharts.push({
                                 'type': widget.charts[charts].chartType,
-                                'chartSubType':widget.charts[charts].chartSubType,
+                                'chartSubType': widget.charts[charts].chartSubType,
                                 'values': widget.charts[charts].chartData,
                                 'key': widget.charts[charts].chartName,
                                 'color': widget.charts[charts].chartColour
@@ -3450,16 +3458,16 @@ showMetricApp.service('createWidgets', function ($http, $q) {
             return deferred.promise;
         }
 
-        function createWidgetData(widget, widgetCharts,dateRange) {
+        function createWidgetData(widget, widgetCharts, dateRange) {
             var deferred = $q.defer();
             var finalCharts = [];
-            finalCharts.twitterEngagements=[],
-            finalCharts.lineCharts = [],
+            finalCharts.twitterEngagements = [],
+                finalCharts.lineCharts = [],
                 finalCharts.barCharts = [],
                 finalCharts.pieCharts = [],
                 finalCharts.percentageAreaOptions = [],
                 finalCharts.instagramPosts = [], finalCharts.highEngagementTweets = [], finalCharts.highestEngagementLinkedIn = [], finalCharts.pinterestEngagementRate = [], finalCharts.pinterestLeaderboard = [];
-            finalCharts.gaTopPagesByVisit = [],finalCharts.angularGauge=[],
+            finalCharts.gaTopPagesByVisit = [], finalCharts.angularGauge = [],
                 finalCharts.multicharts = [],
                 finalCharts.fbReachByAge = [], finalCharts.mozoverview = [], finalCharts.fbReachByCity = [], finalCharts.vimeoTopVideos = [], finalCharts.costPerActionType = [], finalCharts.topReferringSites = [], finalCharts.instagramHashtagLeaderBoard = [], finalCharts.gaPageContentEfficiencyTable = [], finalCharts.gaPageTechnicalEfficiencyTable = [], finalCharts.gaVisitorAcquisitionEfficiencyAnalysisTable = [], finalCharts.pageTechnicalEfficiency = [], finalCharts.pageContentEfficiency = [], finalCharts.visitorAcquisitionEfficiency = [], finalCharts.percentageArea = [], finalCharts.topReferringSites = [], finalCharts.topReferringSitesTable = [], finalCharts.gaSocialMediaOverview = [], finalCharts.stackbar = [];
             var graphOptions = {
@@ -3659,7 +3667,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                         margin: {top: 20, right: 30, bottom: 30, left: 35},
                     }
                 },
-                engagementByUsersTalkedAbout:{
+                engagementByUsersTalkedAbout: {
                     chart: {
                         type: 'engagementByUsersTalkedAbout'
                     }
@@ -4021,9 +4029,9 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                         chartValues.push(yValue);
                     }
                     chartSeriesArray.push({
-                        name: finalCharts.lineCharts[i].key ==='(none)'?'Direct':finalCharts.lineCharts[i].key,
+                        name: finalCharts.lineCharts[i].key === '(none)' ? 'Direct' : finalCharts.lineCharts[i].key,
                         data: chartValues,
-                        color: finalCharts.lineCharts[charts].color
+                        color: finalCharts.lineCharts[i].color
                     });
                 }
                 chartOptions = {
@@ -4130,7 +4138,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                     }
                     else {
                         chartSeriesArray.push({
-                            name: finalCharts.lineCharts[charts].key ==='(none)'?'Direct':finalCharts.lineCharts[charts].key,
+                            name: finalCharts.lineCharts[charts].key === '(none)' ? 'Direct' : finalCharts.lineCharts[charts].key,
                             data: chartValues, type: finalCharts.lineCharts[charts].type,
                             color: finalCharts.lineCharts[charts].color
                         });
@@ -4348,7 +4356,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                         chartValues.push(yValue);
                     }
                     chartSeriesArray.push({
-                        name: finalCharts.barCharts[charts].key==='(none)'?'Direct':finalCharts.barCharts[charts].key,
+                        name: finalCharts.barCharts[charts].key === '(none)' ? 'Direct' : finalCharts.barCharts[charts].key,
                         data: chartValues,
                         color: finalCharts.barCharts[charts].color
                     });
@@ -4452,7 +4460,8 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                             exporting: {enabled: false},
                             tooltip: {
                                 enabled: true,
-                                shared: true
+                                shared: true,
+                                valueSuffix: finalCharts.barCharts[charts].key == "Session Duration" ? 'sec' : ''
                             },
                             xAxis: {
                                 type: 'datetime',
@@ -4523,7 +4532,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
 
                     }
                     chartSeriesArray.push({
-                        name: keys ==='(none)'?'Direct':keys,
+                        name: keys === '(none)' ? 'Direct' : keys,
                         data: chartValues,
                     });
                 }
@@ -4599,9 +4608,11 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                 var dateArray = []
                 var chartSeriesArray = [];
                 var displaySummary = [];
+
                 function getSum(total, num) {
                     return total + num;
                 }
+
                 if (finalCharts.multicharts[charts].type === "socialContributionToSiteTraffic") {
                     for (var k = 0; k < finalCharts.multicharts[charts].values.length; k++) {
                         dateArray.push(finalCharts.multicharts[charts].values[k].x);
@@ -4760,71 +4771,73 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                 });
                 if (cumulativeTotal == 0) finalChartData[finalChartData.length - 1].options.chart.yDomain = [0, 10];
             }
-            if(finalCharts.percentageArea.length>0){
+            if (finalCharts.percentageArea.length > 0) {
                 if (finalCharts.percentageArea.length > 0) {
                     var chartOptionsArray = [];
                     var dateArray = []
                     var chartSeriesArray = [];
                     var displaySummary = [];
-                    var seriesdataArray=[];
+                    var seriesdataArray = [];
+
                     function getSum(total, num) {
                         return total + num;
                     }
-                        for (var k = 0; k < finalCharts.percentageArea[charts].totalChartLength.length; k++) {
-                            dateArray.push(finalCharts.percentageArea[charts].totalChartLength[k].x);
-                        }
-                        var color=0;
-                        for(var j in finalCharts.percentageArea){
-                            var uniqueDate = _.groupBy(finalCharts.percentageArea[j].values, 'y.socialNetwork')
-                            for(var key in uniqueDate){
-                                var indexing=0;
-                                var toolTipName=[];
-                                var toolTip=[];
-                                for (var k = 0; k < finalCharts.percentageArea[charts].totalChartLength.length; k++) {
-                                    toolTip.push({
-                                        y:0
-                                    })
-                                }
-                                for (var n = 0; n < uniqueDate[key].length; n++) {
-                                        for(var i=0;i<finalCharts.percentageArea[charts].totalChartLength.length;i++){
-                                            var boolean=(moment(uniqueDate[key][n].x).format('YYYY-DD-MM')==moment(finalCharts.percentageArea[charts].totalChartLength[i].x).format('YYYY-DD-MM'));
-                                            if(boolean===true){
-                                                toolTip[i].y= parseInt(uniqueDate[key][n].y.total)
-                                            }
-                                        }
-                                }
 
-                                chartSeriesArray.push({
-                                    type: 'area',
-                                    color: finalCharts.percentageArea[j].color,
-                                    name: key,
-                                    data: toolTip,
+                    for (var k = 0; k < finalCharts.percentageArea[charts].totalChartLength.length; k++) {
+                        dateArray.push(finalCharts.percentageArea[charts].totalChartLength[k].x);
+                    }
+                    var color = 0;
+                    for (var j in finalCharts.percentageArea) {
+                        var uniqueDate = _.groupBy(finalCharts.percentageArea[j].values, 'y.socialNetwork')
+                        for (var key in uniqueDate) {
+                            var indexing = 0;
+                            var toolTipName = [];
+                            var toolTip = [];
+                            for (var k = 0; k < finalCharts.percentageArea[charts].totalChartLength.length; k++) {
+                                toolTip.push({
+                                    y: 0
                                 })
-                                color++;
+                            }
+                            for (var n = 0; n < uniqueDate[key].length; n++) {
+                                for (var i = 0; i < finalCharts.percentageArea[charts].totalChartLength.length; i++) {
+                                    var boolean = (moment(uniqueDate[key][n].x).format('YYYY-DD-MM') == moment(finalCharts.percentageArea[charts].totalChartLength[i].x).format('YYYY-DD-MM'));
+                                    if (boolean === true) {
+                                        toolTip[i].y = parseInt(uniqueDate[key][n].y.total)
+                                    }
+                                }
                             }
 
-                            var sample = {
-                                summaryDisplay: Math.round(summaryDisplay * 100) / 100,
-                                key: finalCharts.percentageArea[j].metricName,
-                                showComparision: false,
-                                variance: 0,
-                                color: finalCharts.percentageArea[j].color[j]
+                            chartSeriesArray.push({
+                                type: 'area',
+                                color: finalCharts.percentageArea[j].color,
+                                name: key,
+                                data: toolTip,
+                            })
+                            color++;
+                        }
+
+                        var sample = {
+                            summaryDisplay: Math.round(summaryDisplay * 100) / 100,
+                            key: finalCharts.percentageArea[j].metricName,
+                            showComparision: false,
+                            variance: 0,
+                            color: finalCharts.percentageArea[j].color[j]
+                        }
+                        displaySummary.push(sample)
+                    }
+                    var xAxisOption = {
+                        type: 'datetime',
+                        categories: dateArray,
+                        labels: {
+                            formatter: function () {
+                                var date = new Date(this.value);
+                                return months[date.getMonth()] + ' ' + date.getDate();
                             }
-                            displaySummary.push(sample)
-                        }
-                    var xAxisOption =  {
-                            type: 'datetime',
-                            categories: dateArray,
-                            labels: {
-                                formatter: function () {
-                                    var date = new Date(this.value);
-                                    return months[date.getMonth()] + ' ' + date.getDate();
-                                }
-                            },
-                            tickInterval: 7,
-                            min: 0,
-                            max: dateArray.length,
-                        }
+                        },
+                        tickInterval: 7,
+                        min: 0,
+                        max: dateArray.length,
+                    }
                     chartOptions = {
                         chart: {
                             zoomType: 'x',
@@ -4887,11 +4900,12 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                     }
                     chartColorChecker.push(finalCharts.pieCharts[charts].color);
                     var y = String(finalCharts.pieCharts[charts].y).indexOf('.') ? parseFloat(finalCharts.pieCharts[charts].y) : parseInt(finalCharts.pieCharts[charts].y);
-               if(finalCharts.pieCharts[charts].displaySummary != 'Undefined')
-                    var name = finalCharts.pieCharts[charts].keys;
-                    else
-                   var name = finalCharts.pieCharts[charts].key;
-                    chartValues.push({y: y, name: name==='(none)'?'Direct':name, color: finalCharts.pieCharts[charts].color});
+                    var name = finalCharts.pieCharts[charts].key;
+                    chartValues.push({
+                        y: y,
+                        name: name === '(none)' ? 'Direct' : name,
+                        color: finalCharts.pieCharts[charts].color
+                    });
 
                 }
                 chartSeriesArray.push({
@@ -4958,16 +4972,13 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                     }
                     chartColorChecker.push(finalCharts.fbReachByCity[charts].color);
                     var y = String(finalCharts.fbReachByCity[charts].y).indexOf('.') ? parseFloat(finalCharts.fbReachByCity[charts].y) : parseInt(finalCharts.fbReachByCity[charts].y);
-                    if(finalCharts.pieCharts[charts].displaySummary != 'Undefined')
-                        var name = finalCharts.pieCharts[charts].keys;
-                    else
-                        var name = finalCharts.pieCharts[charts].key;
+                    var name = finalCharts.fbReachByCity[charts].key;
                     chartValues.push({y: y, name: name, color: finalCharts.fbReachByCity[charts].color});
 
                 }
                 chartSeriesArray.push({
                     data: chartValues,
-                    name:name
+                    name: name
                 });
                 chartOptions = {
                     chart: {
@@ -5367,7 +5378,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                             x: Number(finalCharts.gaSocialMediaOverview[charts].values[k].pageviewsPersession),
                             y: Number(finalCharts.gaSocialMediaOverview[charts].values[k].sessions),
                             z: Number(finalCharts.gaSocialMediaOverview[charts].values[k].avgtimeOnPage),
-                            name: String(finalCharts.gaSocialMediaOverview[charts].values[k].socialNetwork)==='(none)'?'Direct':String(finalCharts.gaSocialMediaOverview[charts].values[k].socialNetwork)
+                            name: String(finalCharts.gaSocialMediaOverview[charts].values[k].socialNetwork) === '(none)' ? 'Direct' : String(finalCharts.gaSocialMediaOverview[charts].values[k].socialNetwork)
                         })
                     }
                 }
@@ -5376,6 +5387,9 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                         reflow: true,
                         type: 'bubble',
                         zoomType: 'xy'
+                    },
+                    legend: {
+                        enabled: false
                     },
                     credits: {
                         enabled: false
@@ -5658,7 +5672,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                 });
             }
             if (finalCharts.angularGauge.length > 0) {
-                if(finalCharts.angularGauge[0].y != 0){
+                if (finalCharts.angularGauge[0].y != 0) {
                     chartsCount++;
                     chartOptions = {
                         chart: {
@@ -5743,7 +5757,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                         },
                         series: [{
                             name: 'Post Per Day',
-                            data: [finalCharts.angularGauge[0].y] ,
+                            data: [finalCharts.angularGauge[0].y],
                             tooltip: {
                                 valueSuffix: ' post/day'
                             }
@@ -5766,10 +5780,10 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                     });
                 }
             }
-            if(finalCharts.twitterEngagements.length > 0) {
+            if (finalCharts.twitterEngagements.length > 0) {
                 chartsCount++;
                 for (var charts in finalCharts.twitterEngagements) {
-                    if (finalCharts.twitterEngagements[charts].chartSubType == 'activityByDayOfTheWeek') {
+                    if (finalCharts.twitterEngagements[charts].chartSubType == 'activityByDayOfTheWeek' || finalCharts.twitterEngagements[charts].chartSubType == 'instagramActivityByDayOfTheWeek') {
                         var chartSeriesArray = [];
                         var xArray = [];
                         var chartValues = [];
@@ -5780,18 +5794,18 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                             chartValues[0].push(Number(finalCharts.twitterEngagements[charts].values[k].tweets));
                             chartValues[1].push(Number(finalCharts.twitterEngagements[charts].values[k].engagement));
                         }
-                        if(finalCharts.twitterEngagements[charts].chartSubType == 'activityByDayOfTheWeek'){
-                            var xLabel='Tweets';
-                            var yLabel='Tweets count'
+                        if (finalCharts.twitterEngagements[charts].chartSubType == 'activityByDayOfTheWeek') {
+                            var xLabel = 'Tweets';
+                            var yLabel = 'Tweets count'
                         }
-                         else{
-                            var xLabel='Posts';
-                            var yLabel='Posts count'
+                        else {
+                            var xLabel = 'Posts';
+                            var yLabel = 'Posts count'
                         }
 
                         for (var i = 0; i < chartValues.length; i++) {
                             chartSeriesArray.push({
-                                name:i < 1 ?xLabel:'Engagements',
+                                name: i < 1 ? xLabel : 'Engagements',
                                 yAxis: i < 1 ? 0 : 1,
                                 tooltip: {
                                     valueSuffix: ''
@@ -5850,29 +5864,29 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                             'chartOptions': chartOptions
                         });
                     }
-                    else if(finalCharts.twitterEngagements[charts].chartSubType == 'activityByTimeOfTheDay'||finalCharts.twitterEngagements[charts].chartSubType == 'instagramActivityByTimeOfTheDay' ){
+                    else if (finalCharts.twitterEngagements[charts].chartSubType == 'activityByTimeOfTheDay' || finalCharts.twitterEngagements[charts].chartSubType == 'instagramActivityByTimeOfTheDay') {
                         var chartSeriesArray = [];
                         for (var charts in finalCharts.twitterEngagements) {
                             for (var k = 0; k < finalCharts.twitterEngagements[charts].values.length; k++) {
-                                if(String(finalCharts.twitterEngagements[charts].values[k].day)=='Sunday')
-                                    var x=0
-                                else if(String(finalCharts.twitterEngagements[charts].values[k].day)=='Monday')
-                                    var x=1
-                                else if(String(finalCharts.twitterEngagements[charts].values[k].day)=='Tuesday')
-                                    var x=2
-                                else if(String(finalCharts.twitterEngagements[charts].values[k].day)=='Wednesday')
-                                    var x=3
-                                else if(String(finalCharts.twitterEngagements[charts].values[k].day)=='Thursday')
-                                    var x=4
-                                else if(String(finalCharts.twitterEngagements[charts].values[k].day)=='Friday')
-                                    var x=5
-                                else if(String(finalCharts.twitterEngagements[charts].values[k].day)=='Saturday')
-                                    var x=6
+                                if (String(finalCharts.twitterEngagements[charts].values[k].day) == 'Sunday')
+                                    var x = 0
+                                else if (String(finalCharts.twitterEngagements[charts].values[k].day) == 'Monday')
+                                    var x = 1
+                                else if (String(finalCharts.twitterEngagements[charts].values[k].day) == 'Tuesday')
+                                    var x = 2
+                                else if (String(finalCharts.twitterEngagements[charts].values[k].day) == 'Wednesday')
+                                    var x = 3
+                                else if (String(finalCharts.twitterEngagements[charts].values[k].day) == 'Thursday')
+                                    var x = 4
+                                else if (String(finalCharts.twitterEngagements[charts].values[k].day) == 'Friday')
+                                    var x = 5
+                                else if (String(finalCharts.twitterEngagements[charts].values[k].day) == 'Saturday')
+                                    var x = 6
                                 chartSeriesArray.push({
                                     x: x,
                                     y: Number(finalCharts.twitterEngagements[charts].values[k].time),
                                     z: Number(finalCharts.twitterEngagements[charts].values[k].engagement),
-                                    color:finalCharts.twitterEngagements[charts].color[x]
+                                    color: finalCharts.twitterEngagements[charts].color[x]
                                 })
                             }
                         }
@@ -5892,17 +5906,15 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                             tooltip: {
                                 useHTML: true,
                                 headerFormat: '<table>',
-                                pointFormat:
-                                '<tr><th>Time:</th><td>{point.y}</td></tr>' +
+                                pointFormat: '<tr><th>Time:</th><td>{point.y}</td></tr>' +
                                 '<tr><th>Engagement:</th><td>{point.z}</td></tr>',
                                 footerFormat: '</table>',
                                 enabled: true,
                                 shared: true
                             },
                             xAxis: {
-                                labels: {
-                                },
-                                categories: ['Sunday', 'Monday', 'Tuesday','Wednesday','Thursday','Friday','Saturday'],
+                                labels: {},
+                                categories: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
                                 title: {
                                     text: 'Day'
                                 }
@@ -5911,8 +5923,8 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                 title: {
                                     text: 'Time',
                                 },
-                                min:0,
-                                max:28,
+                                min: 0,
+                                max: 28,
                                 tickInterval: 7
                             },
                             title: {
@@ -5937,26 +5949,26 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                             'chartOptions': chartOptions
                         });
                     }
-                    else if(finalCharts.twitterEngagements[charts].chartSubType == 'commentsAndLikes'){
+                    else if (finalCharts.twitterEngagements[charts].chartSubType == 'commentsAndLikes') {
                         var chartSeriesArray = [];
                         var categoriesArray = [];
                         for (var charts in finalCharts.twitterEngagements) {
-                            var tempArray=[];
+                            var tempArray = [];
                             for (var k = 0; k < finalCharts.twitterEngagements[charts].values.length; k++) {
                                 tempArray.push(finalCharts.twitterEngagements[charts].values[k].x)
                             }
-                            categoriesArray= _.uniqBy(tempArray);
+                            categoriesArray = _.uniqBy(tempArray);
                         }
                         for (var charts in finalCharts.twitterEngagements) {
                             for (var k = 0; k < finalCharts.twitterEngagements[charts].values.length; k++) {
-                                var x=_.indexOf(categoriesArray,finalCharts.twitterEngagements[charts].values[k].x);
+                                var x = _.indexOf(categoriesArray, finalCharts.twitterEngagements[charts].values[k].x);
                                 chartSeriesArray.push({
                                     x: x,
                                     y: Number(finalCharts.twitterEngagements[charts].values[k].y),
                                     z: Number(finalCharts.twitterEngagements[charts].values[k].y),
                                     color: finalCharts.twitterEngagements[charts].color[x],
-                                    link:finalCharts.twitterEngagements[charts].values[k].link,
-                                    date:categoriesArray[x],
+                                    link: finalCharts.twitterEngagements[charts].values[k].link,
+                                    date: categoriesArray[x],
                                 })
                             }
                         }
@@ -5976,18 +5988,16 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                             tooltip: {
                                 useHTML: true,
                                 headerFormat: '<table>',
-                                pointFormat:
-                                     '<tr><th>Date:</th><td>{point.date}</td></tr>'+
-                                     '<tr><th>Engagement:</th><td>{point.y}</td></tr>' +
-                                     '<tr><th>Link:</th><td>{point.link}</td></tr>',
+                                pointFormat: '<tr><th>Date:</th><td>{point.date}</td></tr>' +
+                                '<tr><th>Engagement:</th><td>{point.y}</td></tr>' +
+                                '<tr><th>Link:</th><td>{point.link}</td></tr>',
                                 footerFormat: '</table>',
                                 enabled: true,
                                 shared: true
                             },
                             xAxis: {
-                                labels: {
-                                },
-                                categories:categoriesArray ,
+                                labels: {},
+                                categories: categoriesArray,
                                 title: {
                                     text: 'Date'
                                 }
@@ -6019,6 +6029,21 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                             'chartOptions': chartOptions
                         });
                     }
+                    else if (finalCharts.twitterEngagements[charts].chartSubType === 'topLinks' || finalCharts.twitterEngagements[charts].chartSubType === 'hashTag') {
+                        var chart = {
+                            chart: {
+                                type: finalCharts.twitterEngagements[charts].chartSubType
+                            }
+                        }
+
+                        finalChartData.push({
+                            'options': chart,
+                            'data': finalCharts.twitterEngagements[0].values
+                        });
+
+                    }
+
+
                 }
             }
             if (finalChartData.length == 0) {

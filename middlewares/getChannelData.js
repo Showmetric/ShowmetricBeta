@@ -1418,9 +1418,7 @@ exports.getChannelData = function (req, res, next) {
                                         })
                                     }
                                 }
-                                else {
-
-                                }
+                                else return next(null,'success');
                             }
                             else {
                                 for (var key in dataFromRemote) {
@@ -3975,7 +3973,6 @@ exports.getChannelData = function (req, res, next) {
                                                 tags.push(tagValue);
                                             })
                                         })
-                                        console.log('userMediaRecent',mediaDetails)
                                         var uniqueTag = _.uniqBy(tags);
                                         uniqueTag.forEach(function (eachTag) {
                                             var sumOfLikeComment = 0;
@@ -4002,7 +3999,7 @@ exports.getChannelData = function (req, res, next) {
 
                                         })
                                         sortedHashTags = _.sortBy(tagsWithLikesComments, ['count']);
-                                        console.log('tagsWithLikesComments',tagsWithLikesComments)
+                                        sortedHashTags = _.sortBy(tagsWithLikesComments, ['count']);
                                         for (var index = 1; index <= 20; index++) {
                                             hashTagDetails.push(sortedHashTags[sortedHashTags.length - index]);
                                         }
@@ -4012,7 +4009,6 @@ exports.getChannelData = function (req, res, next) {
                                             queryResults: initialResults,
                                             channelId: initialResults.metric[0].channelId
                                         };
-                                        console.log('actualFinalApiData',actualFinalApiData)
                                     }
                                     else {
                                         for (var i = 0; i < userMediaRecent.length; i++) {
