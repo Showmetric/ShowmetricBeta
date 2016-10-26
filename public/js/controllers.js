@@ -1961,11 +1961,14 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                     formattedChartDataArray.push(path)
                                 }
                                 var sortCountry = _.sortBy(formattedChartDataArray, 'sessions').reverse();
-                                for (var k = 0; k < 5; k++)
-                                    topFiveValues[sortCountry[k].country] = sortCountry[k].sessions;
-                                for (var j = 5; j < sortCountry.length; j++)
-                                    others = others + sortCountry[j].sessions;
-                                topFiveValues['Others'] = others;
+                                if(sortCountry.length){
+                                    for (var k = 0; k < 5; k++)
+                                        topFiveValues[sortCountry[k].country] = sortCountry[k].sessions;
+                                    for (var j = 5; j < sortCountry.length; j++)
+                                        others = others + sortCountry[j].sessions;
+                                    topFiveValues['Others'] = others;
+                                }
+
                             }
                         }
                         widget.charts[charts].chartData = topFiveValues;
@@ -2248,14 +2251,19 @@ showMetricApp.service('createWidgets', function ($http, $q) {
 
                     }
                     else if (chartType === "gaUsers") {
-                        if (widget.charts[charts].chartData[0] != 'undefined') {
-                            var finalData = {};
-                            for (var i = 0; i < widget.charts[charts].chartData.length; i++) {
-                                var key = widget.charts[charts].chartData[i][0]
-                                finalData[key] = widget.charts[charts].chartData[i][1]
+
+                            if (typeof widget.charts[charts].chartData[0] != 'undefined') {
+                                var finalData = {};
+                                if (typeof widget.charts[charts].chartData!= 'string') {
+                                    for (var i = 0; i < widget.charts[charts].chartData.length; i++) {
+                                        var key = widget.charts[charts].chartData[i][0]
+                                        finalData[key] = widget.charts[charts].chartData[i][1]
+                                    }
+                                }
+                                widget.charts[charts].chartData = finalData;
                             }
-                            widget.charts[charts].chartData = finalData;
-                        }
+
+
 
                     }
                     else if (chartType === "twitterEngagements") {
@@ -2439,7 +2447,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                 for (var k = 0; k < widget.charts[charts].chartData.length; k++){
                                     if(typeof widget.charts[charts].chartData[k].total ==='object') {
                                         widget.charts[charts].chartData[k].total.created_time =moment.unix(widget.charts[charts].chartData[k].total.created_time).format('YYYY-MM-DD');
-                                        widget.charts[charts].chartData[k].total.created_time = new Date(widget.charts[charts].chartData[k].total.created_at).getDay();
+                                        widget.charts[charts].chartData[k].total.created_time = new Date(widget.charts[charts].chartData[k].total.created_time).getDay();
                                         splitArray.push(widget.charts[charts].chartData[k].total);
                                     }
                                 }
@@ -3303,7 +3311,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                         }
 
                     }
-                    else if (chartType == "fbReachByCity") {
+                    else if (chartType == "fbReachByCity" || chartType === 'gaUsers') {
                         var colorIndex = 0;
                         for (var index in widget.charts[charts].chartData) {
                             widgetCharts.push({
@@ -3329,7 +3337,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                             ++colorIndex;
                         }
                     }
-                    else if (chartType == "gaTopCountriesToSocialVisits" || chartType === 'gaTopCitiesToSocialVisits' || chartType === 'gaUsers') {
+                    else if (chartType == "gaTopCountriesToSocialVisits" || chartType === 'gaTopCitiesToSocialVisits' ) {
                         var colorIndex = 0;
                         for (var index in widget.charts[charts].chartData) {
                             widgetCharts.push({
@@ -6081,7 +6089,19 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                         });
 
                     }
+                    else if (finalCharts.twitterEngagements[charts].chartSubType === 'engagementByUsersTalkedAbout' || finalCharts.twitterEngagements[charts].chartSubType === 'hashTag') {
+                        var chart = {
+                            chart: {
+                                type: finalCharts.twitterEngagements[charts].chartSubType
+                            }
+                        }
 
+                        finalChartData.push({
+                            'options': chart,
+                            'data': finalCharts.twitterEngagements[0].values
+                        });
+
+                    }
 
                 }
             }
