@@ -2261,10 +2261,10 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                     else if (chartType === "twitterEngagements") {
                         if (String(widget.charts[charts].chartSubType) === "activityByDayOfTheWeek") {
                             if (typeof widget.charts[charts].chartData[0] != 'undefined') {
-                                var splitArray = [];
-                                for (var k = 0; k < widget.charts[charts].chartData.length; k++) {
-                                    if (typeof widget.charts[charts].chartData[k].total === 'object') {
-                                        widget.charts[charts].chartData[k].total.created_at = moment(widget.charts[charts].chartData[k].total.created_at).format('dddd');
+                                var splitArray=[];
+                                for (var k = 0; k < widget.charts[charts].chartData.length; k++){
+                                    if(typeof widget.charts[charts].chartData[k].total ==='object') {
+                                        widget.charts[charts].chartData[k].total.created_at = new Date(widget.charts[charts].chartData[k].total.created_at).getDay();
                                         splitArray.push(widget.charts[charts].chartData[k].total);
                                     }
                                 }
@@ -2288,7 +2288,26 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                     }
                                     formattedChartDataArray.push(path)
                                 }
-                                widget.charts[charts].chartData = formattedChartDataArray
+                                formattedChartDataArray.sort(function (a, b) {
+                                    return parseFloat(a.day) - parseFloat(b.day);
+                                });
+                                for( var key in formattedChartDataArray){
+                                    if(formattedChartDataArray[key].day === '0')
+                                        formattedChartDataArray[key].day='Sunday'
+                                    if(formattedChartDataArray[key].day === '1')
+                                        formattedChartDataArray[key].day='Monday'
+                                    if(formattedChartDataArray[key].day === '2')
+                                        formattedChartDataArray[key].day='Tuesday'
+                                    if(formattedChartDataArray[key].day === '3')
+                                        formattedChartDataArray[key].day='Wednesday'
+                                    if(formattedChartDataArray[key].day === '4')
+                                        formattedChartDataArray[key].day='Thursday'
+                                    if(formattedChartDataArray[key].day === '5')
+                                        formattedChartDataArray[key].day='Friday'
+                                    if(formattedChartDataArray[key].day === '6')
+                                        formattedChartDataArray[key].day='Saturday'
+                                }
+                                widget.charts[charts].chartData=formattedChartDataArray
                             }
                         }
                         else if (String(widget.charts[charts].chartSubType) === "activityByTimeOfTheDay") {
@@ -2416,10 +2435,11 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                         }
                         else if (String(widget.charts[charts].chartSubType) === "instagramActivityByDayOfTheWeek") {
                             if (typeof widget.charts[charts].chartData[0] != 'undefined') {
-                                var splitArray = [];
-                                for (var k = 0; k < widget.charts[charts].chartData.length; k++) {
-                                    if (typeof widget.charts[charts].chartData[k].total === 'object') {
-                                        widget.charts[charts].chartData[k].total.created_time = moment.unix(widget.charts[charts].chartData[k].total.created_time).format('dddd');
+                                var splitArray=[];
+                                for (var k = 0; k < widget.charts[charts].chartData.length; k++){
+                                    if(typeof widget.charts[charts].chartData[k].total ==='object') {
+                                        widget.charts[charts].chartData[k].total.created_time =moment.unix(widget.charts[charts].chartData[k].total.created_time).format('YYYY-MM-DD');
+                                        widget.charts[charts].chartData[k].total.created_time = new Date(widget.charts[charts].chartData[k].total.created_at).getDay();
                                         splitArray.push(widget.charts[charts].chartData[k].total);
                                     }
                                 }
@@ -2443,7 +2463,26 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                     }
                                     formattedChartDataArray.push(path)
                                 }
-                                widget.charts[charts].chartData = formattedChartDataArray
+                                formattedChartDataArray.sort(function (a, b) {
+                                    return parseFloat(a.day) - parseFloat(b.day);
+                                });
+                                for( var key in formattedChartDataArray){
+                                    if(formattedChartDataArray[key].day === '0')
+                                        formattedChartDataArray[key].day='Sunday'
+                                    if(formattedChartDataArray[key].day === '1')
+                                        formattedChartDataArray[key].day='Monday'
+                                    if(formattedChartDataArray[key].day === '2')
+                                        formattedChartDataArray[key].day='Tuesday'
+                                    if(formattedChartDataArray[key].day === '3')
+                                        formattedChartDataArray[key].day='Wednesday'
+                                    if(formattedChartDataArray[key].day === '4')
+                                        formattedChartDataArray[key].day='Thursday'
+                                    if(formattedChartDataArray[key].day === '5')
+                                        formattedChartDataArray[key].day='Friday'
+                                    if(formattedChartDataArray[key].day === '6')
+                                        formattedChartDataArray[key].day='Saturday'
+                                }
+                                widget.charts[charts].chartData=formattedChartDataArray
                             }
                         }
                         else if (String(widget.charts[charts].chartSubType) === "instagramActivityByTimeOfTheDay") {
