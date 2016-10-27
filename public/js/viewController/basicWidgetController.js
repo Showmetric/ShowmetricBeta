@@ -725,7 +725,72 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
     };
 
     $scope.googleSelectLevelChosen = function (level,index) {
+        $scope.messageEnable=false;
         if(level) {
+            var accountLimitation=0;
+            var campaignLimitation=0;
+            var adGroupLimitation=0;
+            var adSetLimitation=0;
+            var campaignPresent=false;
+            var adGroupPresent=false;
+            var accountPresent=false;
+            for (var getData in getReferenceWidgetsArr) {
+                console.log(getReferenceWidgetsArr[getData].name);
+                if(getReferenceWidgetsArr[getData].name == "Account's campaigns performance (Account level only)")
+                    accountPresent=true;
+                if(getReferenceWidgetsArr[getData].name == "Campaign's Adgroup performance (Campaign level only)")
+                    campaignPresent=true;
+                if(getReferenceWidgetsArr[getData].name == "Adgroup's Ad performance (Adgroup level only)")
+                    adGroupPresent=true;
+            }
+            if(campaignPresent==false && adGroupPresent==false && accountPresent==false){
+                accountLimitation=0;
+                campaignLimitation=0;
+                adGroupLimitation=0;
+                adSetLimitation=0;
+            }
+            if(campaignPresent==false && adGroupPresent==true && accountPresent==false){
+                accountLimitation=1;
+                campaignLimitation=1;
+                adGroupLimitation=0;
+                adSetLimitation=1;
+            }
+            if(campaignPresent==true && adGroupPresent==false && accountPresent==false){
+                accountLimitation=1;
+                campaignLimitation=0;
+                adGroupLimitation=1;
+                adSetLimitation=1;
+            }
+            if(campaignPresent==false && adGroupPresent==false && accountPresent==true){
+                accountLimitation=0;
+                campaignLimitation=1;
+                adGroupLimitation=1;
+                adSetLimitation=1;
+            }
+            if(campaignPresent==true && adGroupPresent==true && accountPresent==false){
+                accountLimitation=1;
+                campaignLimitation=1;
+                adGroupLimitation=1;
+                adSetLimitation=1;
+            }
+            if(campaignPresent==true && adGroupPresent==false && accountPresent==true){
+                accountLimitation=1;
+                campaignLimitation=1;
+                adGroupLimitation=1;
+                adSetLimitation=1;
+            }
+            if(campaignPresent==false && adGroupPresent==true && accountPresent==true){
+                accountLimitation=1;
+                campaignLimitation=1;
+                adGroupLimitation=1;
+                adSetLimitation=1;
+            }
+            if(campaignPresent==true && adGroupPresent==true && accountPresent==true){
+                accountLimitation=1;
+                campaignLimitation=1;
+                adGroupLimitation=1;
+                adSetLimitation=1;
+            }
             if(this.objectTypeOptionsModel[index]) {
                 document.getElementById('basicWidgetFinishButton').disabled = true;
                 $scope.selectedGoogleObjectType =null;
@@ -766,103 +831,127 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
             }
         }
         if($scope.selectedGoogleLevel=='adwordaccount'){
-            if(($scope.profileOptionsModel!=null)&&($scope.googleAccountId!=null))
-                googleAdsComplete=true;
-            else
+            if(accountLimitation){
+                $scope.messageEnable=true;
                 googleAdsComplete=false;
+            }
+            else{
+                if(($scope.profileOptionsModel!=null)&&($scope.googleAccountId!=null))
+                    googleAdsComplete=true;
+                else
+                    googleAdsComplete=false;
+            }
             $scope.checkComplete();
         }
         else if($scope.selectedGoogleLevel=='adwordCampaign'){
-            if($scope.googleCampaignChosen==false){
+            if(campaignLimitation){
+                $scope.messageEnable=true;
                 googleAdsComplete=false;
-                $scope.googleCampaignEnable=true;
-                $scope.getGoogleCampaigns();
             }
             else{
-                if(($scope.googleProfileId!=null)&&($scope.googleAccountId!=null)&&($scope.googleCampaign!=null))
-                    googleAdsComplete=true;
-                else{
+                if($scope.googleCampaignChosen==false){
                     googleAdsComplete=false;
+                    $scope.googleCampaignEnable=true;
+                    $scope.getGoogleCampaigns();
+                }
+                else{
+                    if(($scope.googleProfileId!=null)&&($scope.googleAccountId!=null)&&($scope.googleCampaign!=null))
+                        googleAdsComplete=true;
+                    else{
+                        googleAdsComplete=false;
+                    }
                 }
             }
             $scope.checkComplete();
         }
         else if($scope.selectedGoogleLevel=='adwordAdgroup'){
-            if(($scope.googleCampaignChosen==true)&&($scope.groupChosen==true)){
-                if(($scope.profileOptionsModel!=null)&&($scope.googleAccountId!=null)&&($scope.googleCampaign!=null)&&($scope.googleGroup!=null))
-                    googleAdsComplete=true;
-                else {
+            if(adGroupLimitation){
+                $scope.messageEnable=true;
+                googleAdsComplete=false;
+            }
+            else{
+                if(($scope.googleCampaignChosen==true)&&($scope.groupChosen==true)){
+                    if(($scope.profileOptionsModel!=null)&&($scope.googleAccountId!=null)&&($scope.googleCampaign!=null)&&($scope.googleGroup!=null))
+                        googleAdsComplete=true;
+                    else {
+                        googleAdsComplete=false;
+                    }
+                }
+                else if(($scope.googleCampaignChosen==false)&&($scope.groupChosen==false)){
+                    $scope.googleCampaignEnable=true;
+                    $scope.getGoogleCampaigns();
+                }
+                else if(($scope.googleCampaignChosen==true)&&($scope.groupChosen==false)){
+                    $scope.googleCampaignEnable=true;
+                    $scope.groupEnable=true;
+                    $scope.getGoogleGroup();
                     googleAdsComplete=false;
                 }
+                else
+                    googleAdsComplete=false;
             }
-            else if(($scope.googleCampaignChosen==false)&&($scope.groupChosen==false)){
-                $scope.googleCampaignEnable=true;
-                $scope.getGoogleCampaigns();
-            }
-            else if(($scope.googleCampaignChosen==true)&&($scope.groupChosen==false)){
-                $scope.googleCampaignEnable=true;
-                $scope.groupEnable=true;
-                $scope.getGoogleGroup();
-                googleAdsComplete=false;
-            }
-            else
-                googleAdsComplete=false;
             $scope.checkComplete();
         }
         else if($scope.selectedGoogleLevel=='adwordsAd'){
-            if(($scope.googleCampaignChosen==true)&&($scope.groupChosen==true)&&($scope.adChosen==true)){
-                if(($scope.profileOptionsModel!=null)&&($scope.googleAccountId!=null)&&($scope.googleCampaign!=null)&&($scope.googleGroup!=null)&&($scope.googleAd!=null))
-                    googleAdsComplete=true;
-                else {
-                    googleAdsComplete=false;
+            if(adSetLimitation){
+                $scope.messageEnable=true;
+                googleAdsComplete=false;
+            }
+            else{
+                if(($scope.googleCampaignChosen==true)&&($scope.groupChosen==true)&&($scope.adChosen==true)){
+                    if(($scope.profileOptionsModel!=null)&&($scope.googleAccountId!=null)&&($scope.googleCampaign!=null)&&($scope.googleGroup!=null)&&($scope.googleAd!=null))
+                        googleAdsComplete=true;
+                    else {
+                        googleAdsComplete=false;
+                    }
                 }
-            }
-            else if((($scope.googleCampaignChosen==false)&&($scope.groupChosen==false))&&($scope.adChosen==true)){
-                googleAdsComplete=false;
-                $scope.googleCampaignEnable=true;
-                $scope.getGoogleCampaigns();
-                $scope.adChosen=false;
-                $scope.googleAd=null;
-            }
-            else if(($scope.googleCampaignChosen==true)&&($scope.groupChosen==true)&&($scope.adChosen==false)){
-                googleAdsComplete=false;
-                $scope.adEnable=true;
-                $scope.getGoogleAd();
-            }
-            else if(($scope.googleCampaignChosen==false)&&($scope.groupChosen==false)&&($scope.adChosen==false)){
-                googleAdsComplete=false;
-                $scope.googleCampaignEnable=true;
-                $scope.getGoogleCampaigns();
-            }
-            else if(($scope.googleCampaignChosen==true)&&($scope.groupChosen==false)&&($scope.adChosen==false)){
-                googleAdsComplete=false;
-                $scope.groupEnable=true;
-                $scope.getGoogleGroup();
-            }
-            else if(($scope.googleCampaignChosen==true)&&($scope.groupChosen==false)&&($scope.adChosen==true)){
-                googleAdsComplete=false;
-                $scope.groupEnable=true;
-                $scope.getGoogleGroup();
-                $scope.adChosen=false;
-                $scope.googleAd=null;
-            }
-            else if(($scope.googleCampaignChosen==false)&&($scope.groupChosen==true)&&($scope.adChosen==true)){
-                googleAdsComplete=false;
-                $scope.googleCampaignEnable=true;
-                $scope.getGoogleCampaigns();
-                $scope.adChosen=false;
-                $scope.googleAd=null;
-                $scope.groupChosen=false;
-                $scope.googleGroup=null;
-            }
-            else if(($scope.googleCampaignChosen==false)&&($scope.groupChosen==true)&&($scope.adChosen==false)){
-                googleAdsComplete=false;
-                $scope.googleCampaignEnable=true;
-                $scope.getGoogleCampaigns();
-                $scope.adChosen=false;
-                $scope.googleAds=null;
-                $scope.groupChosen=false;
-                $scope.googleGroup=null;
+                else if((($scope.googleCampaignChosen==false)&&($scope.groupChosen==false))&&($scope.adChosen==true)){
+                    googleAdsComplete=false;
+                    $scope.googleCampaignEnable=true;
+                    $scope.getGoogleCampaigns();
+                    $scope.adChosen=false;
+                    $scope.googleAd=null;
+                }
+                else if(($scope.googleCampaignChosen==true)&&($scope.groupChosen==true)&&($scope.adChosen==false)){
+                    googleAdsComplete=false;
+                    $scope.adEnable=true;
+                    $scope.getGoogleAd();
+                }
+                else if(($scope.googleCampaignChosen==false)&&($scope.groupChosen==false)&&($scope.adChosen==false)){
+                    googleAdsComplete=false;
+                    $scope.googleCampaignEnable=true;
+                    $scope.getGoogleCampaigns();
+                }
+                else if(($scope.googleCampaignChosen==true)&&($scope.groupChosen==false)&&($scope.adChosen==false)){
+                    googleAdsComplete=false;
+                    $scope.groupEnable=true;
+                    $scope.getGoogleGroup();
+                }
+                else if(($scope.googleCampaignChosen==true)&&($scope.groupChosen==false)&&($scope.adChosen==true)){
+                    googleAdsComplete=false;
+                    $scope.groupEnable=true;
+                    $scope.getGoogleGroup();
+                    $scope.adChosen=false;
+                    $scope.googleAd=null;
+                }
+                else if(($scope.googleCampaignChosen==false)&&($scope.groupChosen==true)&&($scope.adChosen==true)){
+                    googleAdsComplete=false;
+                    $scope.googleCampaignEnable=true;
+                    $scope.getGoogleCampaigns();
+                    $scope.adChosen=false;
+                    $scope.googleAd=null;
+                    $scope.groupChosen=false;
+                    $scope.googleGroup=null;
+                }
+                else if(($scope.googleCampaignChosen==false)&&($scope.groupChosen==true)&&($scope.adChosen==false)){
+                    googleAdsComplete=false;
+                    $scope.googleCampaignEnable=true;
+                    $scope.getGoogleCampaigns();
+                    $scope.adChosen=false;
+                    $scope.googleAds=null;
+                    $scope.groupChosen=false;
+                    $scope.googleGroup=null;
+                }
             }
             $scope.checkComplete();
         }

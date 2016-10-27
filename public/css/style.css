@@ -166,12 +166,12 @@ svg:hover #Calendar-Icon { fill: #293846; }
     height: 20px;
     margin-top:15px;
     margin-bottom: 15px;
-    text-transform: capitalize;
+    /*text-transform: capitalize;*/
 }
 @media(max-width : 767px) and (min-width : 451px) {
     .dashboardSelect{
         width:250px;
-        text-transform: capitalize;
+        /*text-transform: capitalize;*/
     }
 }
 @media(max-width : 370px) and (min-width : 450px) {
@@ -359,7 +359,7 @@ svg:hover #Calendar-Icon { fill: #293846; }
     padding: 6.5px !important;
     border:none;
     float: left;
-    text-transform: capitalize;
+    /*text-transform: capitalize;*/
 }
 .dashboardName a:hover .hover-icon{
     display:block !important;
