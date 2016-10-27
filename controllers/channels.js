@@ -12,6 +12,8 @@ module.exports = function (app) {
     app.post('/api/v1/create/channel',channelMiddleWare.storeChannel, function (req, res) {
         res.json(req.app.result);
     });
+    
+    
 
     //To get list of channels
     app.get('/api/v1/get/channels', channelMiddleWare.getChannels, function (req, res) {
