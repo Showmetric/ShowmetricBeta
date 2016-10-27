@@ -174,7 +174,8 @@ module.exports = {
         followers:'followers',
         favourites:'favourites',
         listed:'listed',
-        retweets_of_your_tweets:'retweetsOfYourTweets'
+        retweets_of_your_tweets:'retweetsOfYourTweets',
+        twitterEngagements:'twitterEngagements'
     },
 
     'googleAdwordsMetric' :{
@@ -246,14 +247,16 @@ module.exports = {
     },
 
     apiVersions:{
-        FBInsights:'v2.6',
-        FBADs:'v2.6',
+        FBVersion:'2.7',
+        FBInsights:'v2.7',
+        FBADs:'v2.7',
         FBInsightsUpdated:'v2.7'
     },
 
     widgetType:{
         customFusion:'customFusion',
-        insights:'insights'
+        insights:'insights',
+        fbPosts:'fbPosts'
     },
 
     dataFormat:{
@@ -332,7 +335,8 @@ module.exports = {
         likes:'likes',
         comments:'comments',
         count:'count',
-        recentPost:'Recent Posts'
+        recentPost:'Recent Posts',
+        hashTagLeaderBoard:'hashTagLeaderBoard'
     },
     mailChimpQueryVariables:{
         lists:'lists',
@@ -359,6 +363,15 @@ module.exports = {
             total_clicksCampaigns:'total_clicks/campaigns',
             total_sentCampaigns:'total_sent/campaigns'
         }
+    },
+
+    mongoCharacterRestriction:{
+        doller:'002D',
+        colon:'002C',
+        slash:'002S',
+        dot:'002E',
+        quot:'002Q',
+        question:'002T'
     },
     
     mozStatic:{
@@ -396,9 +409,14 @@ module.exports = {
     },
     
     googleAnalytics:{
-        topPages:'Top Pages by Visit'
+        topPages:'Top Pages by Visit',
+        usersByAgeGroup:'usersByAgeGroup',
+        usersByGender:'usersByGender'
     },
     
-    dataValidityInHours:4
+    dataValidityInHours:4,
+    youTubeStaticVariables:{
+        videosoverview:'videosoverview'
+    }
 };
 

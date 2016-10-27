@@ -2,8 +2,6 @@ var async = require("async");
 var Channel = require('../models/channels');
 var exports = module.exports = {};
 var request = require('request');
-//Importing the fb module
-var FB = require('fb');
 
 //To use google api's
 var googleapis = require('googleapis');
@@ -24,6 +22,10 @@ var OAuth2 = googleapis.auth.OAuth2;
 
 //Load the auth file
 var configAuth = require('../config/auth');
+//Importing the fb module
+var FB = require('fb');
+
+FB.options({version: configAuth.apiVersions.FBADs});
 
 //set credentials in OAuth2
 var oauth2Client = new OAuth2(configAuth.googleAuth.clientID, configAuth.googleAuth.clientSecret, configAuth.googleAuth.callbackURL);

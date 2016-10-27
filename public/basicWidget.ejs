@@ -615,19 +615,12 @@
                                 <div ng-repeat="data in channelList | filter:{integrated: true}" name="{{data._id}}"
                                      class="col-lg-2 widget-icons"
                                      ng-click="storeChannel(data);"
-                                     id="channellist-{{data._id}}">
-                                    <div ng-if="data.isSelected==1">
-                                        <img ng-hide="data.name==='CustomData'" src="image/lightbox/{{data.name}}.png"
-                                             style="max-height:100%;padding: 15px 5px;box-shadow: 0px 4px 22px 1px;max-width: 93%;  margin-top: -4px; margin-left: -1px; "/>
-                                        <p ng-show="data.name==='CustomData'" class="model-title"
-                                           style="padding: 25px 5px;">Custom Data</p>
-                                    </div>
-                                    <div ng-if="data.isSelected==0">
-                                        <img ng-hide="data.name==='CustomData'" src="image/lightbox/{{data.name}}.png"
-                                             style="max-width: 100%;max-height:100%;padding: 15px 5px; "/>
-                                        <p ng-show="data.name==='CustomData'" class="model-title"
-                                           style="padding: 25px 5px;">Custom Data</p>
-                                    </div>
+                                     id="channellist-{{data._id}}"
+                                     ng-class="{'channelSelect': data.isSelected==1}">
+                                    <img ng-hide="data.name==='CustomData'" src="image/lightbox/{{data.name}}.png"
+                                         style="max-width: 100%;max-height:100%;padding: 15px 5px; "/>
+                                    <p ng-show="data.name==='CustomData'" class="model-title"
+                                       style="padding: 25px 5px;">Custom Data</p>
                                 </div>
                                 <div><!--style="float:left"--><!--<h4>Coming soon</h4>-->
                                     <div ng-repeat="data in channelList | filter:{integrated: false}"
@@ -642,7 +635,7 @@
                             <h5 class="model-title">{{selectCustomLinkHead}}</h5>
                             <div class="col-lg-12">
                                 <div class="col-lg-12" ng-repeat="referenceWidgetsList in referenceWidgetsList">
-                                    <div class="col-xs-12"><img src="image/lightbox/{{referenceWidgetsList.channelName}}.png" style="width:150px;"/></div>
+                                    <div class="col-xs-12"><img src="image/lightbox/{{referenceWidgetsList.channelName}}.png" style="width:150px;" ng-class="{'mozImage': referenceWidgetsList.channelName=='Moz'}"/></div>
                                     <div ng-repeat="referenceWidgets in referenceWidgetsList.widgets"
                                          name="{{referenceWidgets.name}}" ref="{{referenceWidgets.isSelectedMetric}}"
                                          id="referenceWidgets-{{referenceWidgets._id}}"
@@ -691,7 +684,7 @@
                             </div>
                         </div>
                         <div class="row" ng-if="currentView === 'step_three'" ng-cloak>
-                            <h5 class="model-title">Step 3 : Choose the Accounts</h5>
+                            <h5 class="model-title" ng-hide="headerHide==true">Step 3 : Choose the Accounts</h5>
                             <div ng-repeat="channel in selectedChannelList track by $index" >
                                 <div ng-hide="channel.name=='Moz'">
                                     <div class="col-lg-12" style="background-color: #f3f3f4">
@@ -717,7 +710,7 @@
                                                                             <option value="">Select a Profile</option>
                                                                         </select>
                                                                     </div>
-                                                                    <div class="infont col-md-1 col-sm-1 background-color"
+                                                                    <div class="infont col-sm-1 col-md-1 col-lg-1 col-xs-1 background-color"
                                                                          ng-show="profileOptionsModel[$index].hasNoAccess == true || tokenExpired[$index] == true">
                                                                         <a ng-click="addNewProfile(channel.profileList,channel.name,channel.id)" class="link-img">
                                                                             <svg width="7px" height="7px" viewBox="0 0 7 7"
@@ -736,8 +729,8 @@
                                                                         </a>
                                                                     </div>
                                                                 </div>
-                                                                <div class="col-lg-12" style="margin: 0px;padding: 0px">
-                                                                    <div class="col-lg-6 add-profile">
+                                                                <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12" style="margin: 0px;padding: 0px">
+                                                                    <div class="col-lg-6 col-sm-6 col-md-6 col-xs-5 add-profile">
                                                                         <a ng-click="addNewProfile(channel.profileList,channel.name,channel.id)" class="link-img">
                                                                             <svg width="10px" height="10px"
                                                                                  viewBox="0 0 10 11" version="1.1"
@@ -753,7 +746,7 @@
                                                                             </svg>
                                                                             <span class="link-span">Link account</span></a>
                                                                     </div>
-                                                                    <div class="col-lg-6 remove-profile" style="">
+                                                                    <div class="col-lg-6 col-sm-6 col-md-6 col-xs-5 remove-profile" style="">
                                                                         <a class="link-img"
                                                                            ng-click="removeExistingProfile(profileOptionsModel[$index],channel.id)">
                                                                             <svg width="10px" height="10px"
@@ -864,9 +857,9 @@
                                                                                               fill="#1074ae"
                                                                                               fill-rule="evenodd"></path>
                                                                                     </svg>
+                                                                                    <img  ng-if="refreshButtonLoading===channel.uniqueObjectCount[$index]" id="refreshButton" src="image/loading.gif">
                                                                                     <div class="link-span refresh">Refresh
                                                                                     </div>
-                                                                                    <img  ng-if="refreshButtonLoading===channel.uniqueObjectCount[$index]" id="refreshButton" src="image/loading.gif">
                                                                                 </a>
                                                                                 <a style="cursor: not-allowed;" ng-show="profileOptionsModel[$parent.$index].hasNoAccess"
                                                                                    class="link-img">
@@ -898,7 +891,7 @@
                                                                         <option value="">Choose the Granularity</option>
                                                                     </select>
                                                                 </div>
-                                                                <p ng-show="messageEnable==true" style="margin:0px 0px 3px!important ; color: #FF0000 ; font-family : Heebo-Medium  ; text-align:center ; padding-left : 3px ; border-right : 3px solid white ; ">One of the chosen metrics is available only at campaign level </p>
+                                                                <p ng-show="messageEnable==true" style="margin:0px 0px 3px!important ; color: #FF0000 ; font-family : Heebo-Medium  ; text-align:center ; padding-left : 3px ; border-right : 3px solid white ; ">One of the chosen metric is available only at campaign level </p>
                                                             </div>
                                                             <div class="form-group">
                                                                 <div class="col-lg-12">
@@ -929,8 +922,9 @@
                                                                                           fill="#1074ae"
                                                                                           fill-rule="evenodd"></path>
                                                                                 </svg>
-                                                                                <div class="link-span refresh">Refresh</div>
                                                                                 <img ng-if="refreshAdCampaignLoading===true" id="refreshButton" src="image/loading.gif">
+                                                                                <div class="link-span refresh">Refresh</div>
+
                                                                             </a>
                                                                         </div>
                                                                     </div>
@@ -964,8 +958,8 @@
                                                                                           fill="#1074ae"
                                                                                           fill-rule="evenodd"></path>
                                                                                 </svg>
-                                                                                <div class="link-span refresh">Refresh</div>
                                                                                 <img  ng-if="refreshAdSetLoading===true" id="refreshButton" src="image/loading.gif">
+                                                                                <div class="link-span refresh">Refresh</div>
                                                                             </a>
                                                                         </div>
                                                                     </div>
@@ -999,8 +993,8 @@
                                                                                           fill="#1074ae"
                                                                                           fill-rule="evenodd"></path>
                                                                                 </svg>
-                                                                                <div class="link-span refresh">Refresh</div>
                                                                                 <img ng-if="refreshAdSetAdsLoading===true" id="refreshButton" src="image/loading.gif">
+                                                                                <div class="link-span refresh">Refresh</div>
                                                                             </a>
                                                                         </div>
                                                                     </div>
@@ -1046,8 +1040,8 @@
                                                                                           fill="#1074ae"
                                                                                           fill-rule="evenodd"></path>
                                                                                 </svg>
-                                                                                <div class="link-span refresh">Refresh</div>
                                                                                 <img ng-if="refreshGoogleCampaignLoading===true" id="refreshButton" src="image/loading.gif">
+                                                                                <div class="link-span refresh">Refresh</div>
                                                                             </a>
                                                                         </div>
                                                                     </div>
@@ -1081,8 +1075,8 @@
                                                                                           fill="#1074ae"
                                                                                           fill-rule="evenodd"></path>
                                                                                 </svg>
-                                                                                <div class="link-span refresh">Refresh</div>
                                                                                 <img ng-if="refreshGroupLoading===true" id="refreshButton" src="image/loading.gif">
+                                                                                <div class="link-span refresh">Refresh</div>
                                                                             </a>
                                                                         </div>
                                                                     </div>
@@ -1116,8 +1110,8 @@
                                                                                           fill="#1074ae"
                                                                                           fill-rule="evenodd"></path>
                                                                                 </svg>
-                                                                                <div class="link-span refresh">Refresh</div>
                                                                                 <img ng-if="refreshAdLoading===true" id="refreshButton" src="image/loading.gif">
+                                                                                <div class="link-span refresh">Refresh</div>
                                                                             </a>
                                                                         </div>
                                                                     </div>
@@ -1131,7 +1125,6 @@
                                         </div>
                                     </div>
                                 </div>
-
                                 <div ng-show="channel.name=='Moz'">
                                     <h5 class="model-title">Step 3 : Enter an URL</h5>
                                     <div class="col-lg-12" style="background-color: #f3f3f4">
@@ -1141,7 +1134,7 @@
                                                 <div class="ibox float-e-margins">
                                                     <div class="ibox-title" style="vertical-align: middle">
                                                         <h5><img src="image/lightbox/{{channel.name}}.png" align="left"
-                                                                 style="max-height: 30px;max-width: 60px"/>  {{channel.name}}</h5>
+                                                                 style="max-height: 15px;max-width: 60px"/>&nbsp&nbsp&nbsp{{channel.name}}</h5>
                                                     </div>
                                                     <div class="ibox-content" style="display: block;">
                                                         <form name="form1" class="form-horizontal">
@@ -1186,7 +1179,7 @@
                                 disabled="disabled" ng-click="changeViewsInBasicWidget('step_three')">
                             Next
                         </button>
-                         <span  class="progress-demo2">
+                        <span  class="progress-demo2">
                             <button class="ladda-button  componentBtn btn-4 btn-4a " data-style="expand-right" id="basicWidgetFinishButtonCustom"
                                     ng-show="currentView === 'step_two'">
                                 <span class="ladda-label">Finish</span>
@@ -1194,7 +1187,7 @@
                                 <div class="ladda-progress" style="width: 72px;"></div>
                             </button>
                          </span>
-                         <span  class="progress-demo2">
+                        <span  class="progress-demo2">
                             <button class="ladda-button  componentBtn btn-4 btn-4a " data-style="expand-right" id="basicWidgetFinishButton"
                                     ng-show="currentView === 'step_three'"
                                     disabled="disabled">

@@ -83,18 +83,18 @@ exports.widgetDetails = function (req, res, next) {
                         }
                     });
                 }
-                else {
-                    widgetsList.find({_id: req.params.widgetId}, function (err, widget) {
-                        if (err)
-                            return res.status(500).json({error: 'Internal server error'});
-                        else if (!widget.length)
-                            return res.status(204).json({error: 'No records found'});
-                        else {
-                            req.app.result = widget;
-                            next();
-                        }
-                    })
-                }
+            else {
+                widgetsList.find({_id: req.params.widgetId}, function (err, widget) {
+                    if (err)
+                        return res.status(500).json({error: 'Internal server error'});
+                    else if (!widget.length)
+                        return res.status(204).json({error: 'No records found'});
+                    else {
+                        req.app.result = widget;
+                        next();
+                    }
+                })
+            }
             }
 
         })
@@ -178,10 +178,10 @@ exports.deleteWidgets = function (req, res, next) {
                                     objectlength = objects.length;
                                     if(objectlength==1){
                                         //deleting objects for moz
-                                        objectList.remove({_id:objectid},function(err){
-                                            if (err)
-                                                return res.status(500).json({error: 'Internal server error'});
-                                        })
+                                       objectList.remove({_id:objectid},function(err){
+                                           if (err)
+                                               return res.status(500).json({error: 'Internal server error'});
+                                       })
                                         removal();
                                     }
                                     else

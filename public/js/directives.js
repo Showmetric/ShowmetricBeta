@@ -67,6 +67,25 @@ function sideNavigation($timeout) {
 /**
  * responsibleVideo - Directive for responsive video
  */
+
+function hcChart($timeout){
+        return {
+            restrict: 'E',
+            template: '<div></div>',
+            scope: {
+                options: '='
+            },
+            link: function (scope, element) {
+                $timeout(drawCharts, 200);
+                function drawCharts(){
+                Highcharts.chart(element[0], scope.options);
+            }
+        }
+    }
+
+
+}
+
 function responsiveVideo() {
     return {
         restrict: 'A',
@@ -620,4 +639,5 @@ angular
     .directive('chartHeight',chartHeight)
     .directive('sizeWatcher',sizeWatcher)
     .directive('expSizeWatcher',expSizeWatcher)
-    .directive('fileModel',fileModel);
+    .directive('hcChart',hcChart)
+    .directive('fileModel',fileModel)

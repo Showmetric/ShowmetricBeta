@@ -6,6 +6,7 @@ module.exports = function (app) {
 // load the auth variables
     var configAuth = require('../config/auth');
     var FB = require('fb');
+    FB.options({version: configAuth.apiVersions.FBADs});
     var oauth2 = require('simple-oauth2')({
         clientID: configAuth.facebookAuth.clientID,
         clientSecret: configAuth.facebookAuth.clientSecret,
@@ -28,6 +29,7 @@ module.exports = function (app) {
     });
 
 // Callback service parsing the authorization token and asking for the access token
+
     app.get(configAuth.facebookAuth.localCallbackURL, function (req, res) {
         var code = req.query.code;
         oauth2.authCode.getToken({
