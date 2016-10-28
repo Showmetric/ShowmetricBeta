@@ -20,9 +20,9 @@
                                 </button>-->
                                 <!--<button  class="grey rightMargin export"  ng-click="exportModal('app.reporting.dashboard.exportModal')" ng-class="{'exportDisabled': loadedWidgetCount != dashboard.widgets.length}" ng-disabled="loadedWidgetCount != dashboard.widgets.length" title="Export"></button>
                                 <button  class="grey rightMargin delete"  ng-click="deleteDashboard()" title="Delete"></button>-->
-                                <img src="image/autoarrange.png" height="32" width="64"   ng-disabled="loadedWidgetCount != dashboard.widgets.length" ng-click="(loadedWidgetCount != dashboard.widgets.length) || setAutoArrange()" title="Auto-arrange">
-                                <img src="image/export.png" height="32" width="64"  ng-disabled="loadedWidgetCount != dashboard.widgets.length" ng-click="(loadedWidgetCount != dashboard.widgets.length) || exportModal('app.reporting.dashboard.exportModal')" title="Export">
-                                <img src="image/delete.png" height="32" width="64" ng-click="deleteDashboard()" title="Delete">
+                                <img src="image/autoarrange.png" height="32" width="50"   ng-disabled="loadedWidgetCount != dashboard.widgets.length" ng-click="(loadedWidgetCount != dashboard.widgets.length) || setAutoArrange()" title="Auto-arrange">
+                                <img src="image/export.png" height="32" width="50"  ng-disabled="loadedWidgetCount != dashboard.widgets.length" ng-click="(loadedWidgetCount != dashboard.widgets.length) || exportModal('app.reporting.dashboard.exportModal')" title="Export">
+                                <img src="image/delete.png" height="32" width="50" ng-click="deleteDashboard()" title="Delete">
                             </form>
                         </div>
                     </div>
@@ -455,6 +455,49 @@
                                                                     <td style="padding:5px 5px;width:5%;text-align:center;">{{data.ConversionRate}}</td>
                                                                     <td style="padding:5px 5px;width:5%;text-align:center;">{{data.Totalconvvalue}}</td>
                                                                     <td style="padding:5px 5px;width:5%;text-align:center;">{{data.Currency}} {{data.Spent}}</td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                    <div class="showmore" style="text-align:center" ng-show="chart.data.length>20">
+                                                        <a href ng-click="limitScroll=(limitScroll+10)" ng-show="limitScroll<chart.data.length">Show More</a>
+                                                        <span ng-show="limitScroll>20&&limitScroll<chart.data.length">|</span>
+                                                        <a href ng-click="limitScroll=(limitScroll-10)" ng-show="limitScroll>20">Show Less</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div ng-repeat="chart in dashboard.widgetData[widgetIndex].chart" ng-if="chart.options.chart.type=== 'campaignOverViewbyAge'" style="float: left;padding-left: 2px;padding-right: 2px;" ng-style="{'height': (100/dashboard.widgetData[widgetIndex].layoutOptionsY)+'%', 'width': (100/dashboard.widgetData[widgetIndex].layoutOptionsX)+'%'}">
+                                        <div class="row" style="margin: 0px;height: 100%" >
+                                            <div events="events" style="height: 99%" ng-if="dashboard.widgetData[widgetIndex].visibility == true" ng-init="limitScroll=20">
+                                                <div class="scrollbar scrollInWidget" id="scroller">
+                                                    <div class="col-lg-12 table-responsive" style="overflow-x: hidden;padding:0px;">
+                                                        <table  class="table table-striped">
+                                                            <thead>
+                                                                <tr style="padding:2px 5px;width:100%">
+                                                                    <th style="padding:5px 5px;width:12%;text-align:center;"></th>
+                                                                    <th style="padding:5px 5px;width:12%;text-align:center;">CPM</th>
+                                                                    <th style="padding:5px 5px;width:12%;text-align:center;">Clicks</th>
+                                                                    <th style="padding:5px 5px;width:12%;text-align:center;">CTR</th>
+                                                                    <th style="padding:5px 5px;width:12%;text-align:center;">CPC</th>
+                                                                    <th style="padding:5px 5px;width:12%;text-align:center;">Conversions</th>
+                                                                    <th style="padding:5px 5px;width:12%;text-align:center;">Conversion Rate</th>
+                                                                    <th style="padding:5px 5px;width:12%;text-align:center;">Conversion Value</th>
+                                                                    <th style="padding:5px 5px;width:12%;text-align:center;">Spent</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr style="padding:2px 5px;width:100%" ng-repeat="data in chart.data | limitTo: limitScroll" ng-if="data.age">
+                                                                    <td style="padding:5px 5px;width:12%;text-align:center;">{{data.age}}</td>
+                                                                    <td style="padding:5px 5px;width:12%;text-align:justify;">{{data.Currency}} {{data.CPM}}</td>
+                                                                    <td style="padding:5px 5px;width:12%;text-align:center;">{{data.Clicks}}</td>
+                                                                    <td style="padding:5px 5px;width:12%;text-align:center;">{{data.Currency}} {{data.CTR}}</td>
+                                                                    <td style="padding:5px 5px;width:12%;text-align:center;">{{data.CPC}} </td>
+                                                                    <td style="padding:5px 5px;width:12%;text-align:center;">{{data.Conversions}}</td>
+                                                                    <td style="padding:5px 5px;width:12%;text-align:center;">{{data.conversionRate}}</td>
+                                                                    <td style="padding:5px 5px;width:12%;text-align:center;">{{data.Totalconvvalue}}</td>
+                                                                    <td style="padding:5px 5px;width:12%;text-align:center;">{{data.Currency}} {{data.Spent}}</td>
                                                                 </tr>
                                                             </tbody>
                                                         </table>

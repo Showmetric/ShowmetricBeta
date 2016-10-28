@@ -735,12 +735,11 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
             var adGroupPresent=false;
             var accountPresent=false;
             for (var getData in getReferenceWidgetsArr) {
-                console.log(getReferenceWidgetsArr[getData].name);
                 if(getReferenceWidgetsArr[getData].name == "Account's campaigns performance (Account level only)")
                     accountPresent=true;
-                if(getReferenceWidgetsArr[getData].name == "Campaign's Adgroup performance (Campaign level only)")
+                if(getReferenceWidgetsArr[getData].name == "Campaign's Adgroup performance (Campaign level only)" || getReferenceWidgetsArr[getData].name == "Campaign Demographics - Age Analysis (Campaign Level only)" || getReferenceWidgetsArr[getData].name == "Campaign Demographics - Gender Analysis (Campaign Level only)"|| getReferenceWidgetsArr[getData].name == "Campaign Demographics - Device Analysis (Campaign Level only)")
                     campaignPresent=true;
-                if(getReferenceWidgetsArr[getData].name == "Adgroup's Ad performance (Adgroup level only)")
+                if(getReferenceWidgetsArr[getData].name == "Adgroup's Ad performance (Adgroup level only)"|| getReferenceWidgetsArr[getData].name == "Adgroup Demographics - Age Analysis (Adgroup Level only)"|| getReferenceWidgetsArr[getData].name == "Adgroup Demographics - Gender Analysis (Adgroup Level only)"|| getReferenceWidgetsArr[getData].name == "Adgroup Demographics - Device Analysis (Adgroup Level only)")
                     adGroupPresent=true;
             }
             if(campaignPresent==false && adGroupPresent==false && accountPresent==false){
