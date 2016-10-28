@@ -82,6 +82,7 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
             $scope.clearReferenceWidget();
             $scope.selectedChannelList=[];
             $scope.customMessageEnable=false;
+            $scope.metricMessage=false;
             storeChosenObject = [];
             $scope.fbObjectTypeList={};
             $scope.canManageClients = true;
@@ -115,6 +116,7 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
                 fbAdsPresent=false;
                 googleAdsPresent=false;
                 $scope.fbSelectEnable=false;
+                $scope.metricMessage=false;
                 $scope.googleSelectEnable=false;
                 $scope.headerHide=false;
                 document.getElementById('basicWidgetFinishButton').disabled = true;
@@ -139,6 +141,7 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
             $scope.campaignChosen = false;
             $scope.adSetChosen = false;
             $scope.adSetAdsChosen = false;
+            $scope.metricMessage=false;
             $scope.campaignEnable = false;
             $scope.adSetEnable = false;
             $scope.adSetAdsEnable = false;
@@ -2162,24 +2165,61 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
     $scope.storeReferenceWidget = function () {
         $scope.storedReferenceWidget = this.referenceWidgets;
         $scope.uniqueObjectCount=[];
+        $scope.metricMessage=false;
         var IsAlreadyExist = 0;
-        for (var getData in getReferenceWidgetsArr) {
-            if (getReferenceWidgetsArr[getData]._id == this.referenceWidgets._id) {
-                removeByAttr(getReferenceWidgetsArr, '_id', getReferenceWidgetsArr[getData]._id);
-                $("#referenceWidgets-" + this.referenceWidgets._id).css("border", "2px solid #e7eaec");
-                $("#triangle-topright-" + this.referenceWidgets._id).removeClass("triangle-topright");
-                $("#metricNames-" + this.referenceWidgets._id).removeClass("getMetricName");
-                $("#getCheck-" + this.referenceWidgets._id).hide();
-                IsAlreadyExist = 1;
+        var canProcess=0;
+        var accountLevel=false;
+        var campaignLevel=false;
+        var adgroupLevel=false;
+        if($scope.storedReferenceWidget.channelName=="GoogleAdwords"){
+            if(!getReferenceWidgetsArr.length)
+                canProcess=1;
+            else{
+                for (var getData in getReferenceWidgetsArr){
+                    if(getReferenceWidgetsArr[getData].name == "Account's campaigns performance (Account level only)")
+                        accountLevel=true;
+                    else if(getReferenceWidgetsArr[getData].name == "Campaign's Adgroup performance (Campaign level only)" || getReferenceWidgetsArr[getData].name == "Campaign Demographics - Age Analysis (Campaign Level only)" || getReferenceWidgetsArr[getData].name == "Campaign Demographics - Gender Analysis (Campaign Level only)"|| getReferenceWidgetsArr[getData].name == "Campaign Demographics - Device Analysis (Campaign Level only)")
+                        campaignLevel=true;
+                    else if(getReferenceWidgetsArr[getData].name == "Adgroup's Ad performance (Adgroup level only)"|| getReferenceWidgetsArr[getData].name == "Adgroup Demographics - Age Analysis (Adgroup Level only)"|| getReferenceWidgetsArr[getData].name == "Adgroup Demographics - Gender Analysis (Adgroup Level only)"|| getReferenceWidgetsArr[getData].name == "Adgroup Demographics - Device Analysis (Adgroup Level only)")
+                        adgroupLevel=true;
+                }
+                if(accountLevel==true && ($scope.storedReferenceWidget.name == "Campaign's Adgroup performance (Campaign level only)" || $scope.storedReferenceWidget.name == "Campaign Demographics - Age Analysis (Campaign Level only)" || $scope.storedReferenceWidget.name == "Campaign Demographics - Gender Analysis (Campaign Level only)"|| $scope.storedReferenceWidget.name == "Campaign Demographics - Device Analysis (Campaign Level only)" || $scope.storedReferenceWidget.name == "Adgroup's Ad performance (Adgroup level only)" || $scope.storedReferenceWidget.name == "Adgroup Demographics - Age Analysis (Adgroup Level only)" || $scope.storedReferenceWidget.name == "Adgroup Demographics - Gender Analysis (Adgroup Level only)"|| $scope.storedReferenceWidget.name == "Adgroup Demographics - Device Analysis (Adgroup Level only)")){
+                    canProcess=0;
+                    $scope.metricMessage=true;
+                }
+                else if(campaignLevel==true && ($scope.storedReferenceWidget.name == "Account's campaigns performance (Account level only)" || $scope.storedReferenceWidget.name == "Adgroup's Ad performance (Adgroup level only)" || $scope.storedReferenceWidget.name == "Adgroup Demographics - Age Analysis (Adgroup Level only)" || $scope.storedReferenceWidget.name == "Adgroup Demographics - Gender Analysis (Adgroup Level only)"|| $scope.storedReferenceWidget.name == "Adgroup Demographics - Device Analysis (Adgroup Level only)")){
+                    canProcess=0;
+                    $scope.metricMessage=true;
+                }
+                else if(adgroupLevel==true && ($scope.storedReferenceWidget.name == "Account's campaigns performance (Account level only)" || $scope.storedReferenceWidget.name == "Campaign's Adgroup performance (Campaign level only)" || $scope.storedReferenceWidget.name == "Campaign Demographics - Age Analysis (Campaign Level only)" || $scope.storedReferenceWidget.name == "Campaign Demographics - Gender Analysis (Campaign Level only)"|| $scope.storedReferenceWidget.name == "Campaign Demographics - Device Analysis (Campaign Level only)")){
+                    canProcess=0;
+                    $scope.metricMessage=true;
+                }
+                else
+                    canProcess=1;
             }
         }
-        if (IsAlreadyExist != 1) {
-            getReferenceWidgetsArr.push(this.referenceWidgets);
-            $("#referenceWidgets-" + this.referenceWidgets._id).css("border", "2px solid #04509B");
-            $("#triangle-topright-" + this.referenceWidgets._id).addClass("triangle-topright");
-            $("#metricNames-" + this.referenceWidgets._id).addClass("getMetricName");
-            $("#getCheck-" + this.referenceWidgets._id).show();
-            document.getElementById('basicWidgetNextButton2').disabled = false;
+        else
+            canProcess=1;
+        if(canProcess){
+            for (var getData in getReferenceWidgetsArr) {
+                if (getReferenceWidgetsArr[getData]._id == this.referenceWidgets._id) {
+                    removeByAttr(getReferenceWidgetsArr, '_id', getReferenceWidgetsArr[getData]._id);
+                    $("#referenceWidgets-" + this.referenceWidgets._id).css("border", "2px solid #e7eaec");
+                    $("#triangle-topright-" + this.referenceWidgets._id).removeClass("triangle-topright");
+                    $("#metricNames-" + this.referenceWidgets._id).removeClass("getMetricName");
+                    $("#getCheck-" + this.referenceWidgets._id).hide();
+                    IsAlreadyExist = 1;
+                }
+            }
+            if (IsAlreadyExist != 1) {
+                getReferenceWidgetsArr.push(this.referenceWidgets);
+                $("#referenceWidgets-" + this.referenceWidgets._id).css("border", "2px solid #04509B");
+                $("#triangle-topright-" + this.referenceWidgets._id).addClass("triangle-topright");
+                $("#metricNames-" + this.referenceWidgets._id).addClass("getMetricName");
+                $("#getCheck-" + this.referenceWidgets._id).show();
+                document.getElementById('basicWidgetNextButton2').disabled = false;
+            }
         }
         if (getReferenceWidgetsArr == "" || getReferenceWidgetsArr == "[]" || getReferenceWidgetsArr == null) {
             document.getElementById('basicWidgetNextButton2').disabled = true;
