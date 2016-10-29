@@ -424,7 +424,54 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                         }
                         widget.charts[charts].chartData = changeArray;
                     }
-                    else if (chartType == "line" || chartType == "area" || chartType == "bar" || chartType == "column" || chartType == "stackcolumn" || chartType == "mozoverview" || chartType == 'negativeBar') {
+                     else if(chartType == "costPerClick" || chartType == "costPerThosuandImpressions" || chartType == "clickThroughRate" || chartType == "ConversionRate" || chartType == "costPerConversion"){
+                        var changeArray=[];
+                        if(chartType == "costPerClick" ){
+                            var dividendKeyWord='Cost'
+                            var divisorKeyWord='Clicks'
+                        }else if(chartType == "costPerThosuandImpressions"){
+                            var dividendKeyWord='Cost'
+                            var divisorKeyWord='Impressions'
+                        }else if(chartType == "clickThroughRate"){
+                            var dividendKeyWord='Clicks'
+                            var divisorKeyWord='Impressions'
+                        }else if(chartType == "ConversionRate"){
+                            var dividendKeyWord='Conversions'
+                            var divisorKeyWord='Clicks'
+                        }else if(chartType == "costPerConversion"){
+                            var dividendKeyWord='Cost'
+                            var divisorKeyWord='Conversions'
+                        }
+                            for (var i = 0; i < widget.charts[charts].chartData.length; i++) {
+                                var dividend=0;
+                                var divisor=0;
+                                if (typeof widget.charts[charts].chartData[i].total[0] == 'object') {
+                                    if(dividendKeyWord ==='Cost')
+                                    dividend=parseFloat(widget.charts[charts].chartData[i].total[0][dividendKeyWord]/1000000).toFixed(2);
+                                    else
+                                    dividend=parseFloat(widget.charts[charts].chartData[i].total[0][dividendKeyWord])
+                                    divisor=parseFloat(widget.charts[charts].chartData[i].total[0][divisorKeyWord])
+                             }
+                                if (dividend  === 0 )
+                                    var yvalue  = dividend ;
+                                else{
+                                    if(chartType == "costPerThosuandImpressions")
+                                        var yvalue   = (dividend  / divisor  * 1000).toFixed(2);
+                                    else if(chartType == "clickThroughRate" ||chartType == "clickThroughRate" || chartType == "costPerConversion" )
+                                        var yvalue   = (dividend  / divisor * 100).toFixed(2)==='Infinity'?0:(dividend  / divisor * 100).toFixed(2)
+                                    else var yvalue   = (dividend  / divisor).toFixed(2);
+                                }
+
+                                changeArray.push({
+                                    x: moment(widget.charts[charts].chartData[i].date),
+                                    y: yvalue,
+                                    dividend: dividend,
+                                    divisor: divisor
+                                })
+                            }
+                        widget.charts[charts].chartData = changeArray;
+                        }
+                    else if (chartType == "line" || chartType == "area" || chartType == "bar" || chartType == "column" || chartType == "stackcolumn" || chartType == "mozoverview" || chartType == 'negativeBar' ) {
                         if (typeof widget.charts[charts].chartData[0].total == 'object') {
                             var chartCode = widget.charts[charts].chartCode;
                             var endpoint;
@@ -2813,8 +2860,8 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                     var CPC    = Cost ;
                                 else
                                     var CPC   = (Cost  / Clicks).toFixed(2);
-                                if (Cost  === 0 )
-                                    var ConversionRate  = ConversionRate ;
+                                if (Conversions  === 0 )
+                                    var ConversionRate  = Conversions ;
                                 else
                                     var ConversionRate   = ((Conversions  / Clicks)*100).toFixed(2);
                                 var sourec = {
@@ -2952,7 +2999,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                 for (var charts in widget.charts) {
                     var chartType = widget.charts[charts].chartType;
                     var subType=widget.charts[charts].chartSubType;
-                    if (chartType == "line" || chartType == "bar" || chartType == "column" || chartType == "stackcolumn" || chartType == "area" || chartType == "pie" || chartType == 'reachVsImpressions' || chartType == "engagedUsersReach" || chartType == 'mozoverview' || chartType == "trafficSourcesBrkdwnLine" || chartType == 'bounceRateArea' || chartType == 'negativeBar' || chartType == "trafficSourcesBrkdwnPie" || ((chartType == "costPerActionType") && (widget.meta != undefined))) {
+                    if (chartType == "line" || chartType == "bar" || chartType == "column" || chartType == "stackcolumn" || chartType == "area" || chartType == "pie" || chartType == 'reachVsImpressions' || chartType == "engagedUsersReach" || chartType == 'mozoverview' || chartType == "trafficSourcesBrkdwnLine" || chartType == 'bounceRateArea' || chartType == 'negativeBar' || chartType == "trafficSourcesBrkdwnPie" || chartType == "costPerThosuandImpressions" || chartType == "clickThroughRate" || chartType == "costPerConversion" || chartType == "ConversionRate" || chartType == "costPerClick"|| ((chartType == "costPerActionType") && (widget.meta != undefined))) {
                         if (typeof widget.charts[charts].chartData[0] != 'undefined') {
                             if (widget.charts[charts].chartData[0].x) {
                                 var summaryValue = 0;
@@ -3079,7 +3126,6 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                     }
                                 }
                                 if (chartType == 'bounceRateArea') {
-
                                     var bounce = 0;
                                     var sessions = 0;
                                     for (var datas in widget.charts[charts].chartData) {
@@ -3087,6 +3133,26 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                         sessions += parseFloat(widget.charts[charts].chartData[datas].sessions)
                                     }
                                     summaryValue = (bounce / sessions) * 100;
+                                }
+                                if (chartType == 'costPerClick' || chartType == 'costPerThosuandImpressions' || chartType == "clickThroughRate" || chartType == "ConversionRate" || chartType == "costPerConversion") {
+                                    var dividend = 0;
+                                    var divisor = 0;
+                                    for (var datas in widget.charts[charts].chartData) {
+                                        dividend += parseFloat(widget.charts[charts].chartData[datas].dividend)
+                                        divisor += parseFloat(widget.charts[charts].chartData[datas].divisor)
+                                    }
+                                    if(dividend ===0)
+                                        summaryValue=dividend
+                                    else
+                                    {
+                                        if(chartType == 'costPerThosuandImpressions')
+                                            summaryValue = dividend / divisor *1000
+                                            else if(chartType == "clickThroughRate" || chartType == "ConversionRate" || chartType == "costPerConversion" )
+                                            summaryValue = (dividend  / divisor * 100).toFixed(2)==='Infinity'?0:(dividend  / divisor * 100).toFixed(2)
+                                        else
+                                            summaryValue = dividend / divisor ;
+                                    }
+
                                 }
                                 if (chartType == 'line' || chartType == 'bar' || chartType == 'column' || chartType == 'mozoverview') {
                                     if ((widget.channelName == 'FacebookAds') && (widget.charts[charts].metricDetails.name == 'Cost Per Unique Action Type')) {
@@ -3177,6 +3243,19 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                     });
                                 }
                                 else if (chartType == 'bounceRateArea') {
+                                    widget.charts[charts].chartType = 'area';
+                                    widgetCharts.push({
+                                        'type': widget.charts[charts].chartType,
+                                        'values': widget.charts[charts].chartData,      //values - represents the array of {x,y} data points
+                                        'key': widget.charts[charts].metricDetails.name, //key  - the name of the series.
+                                        'color': widget.charts[charts].chartColour[0],  //color - optional: choose your own line color.
+                                        'arrow': comparingData,
+                                        'variance': percentage,
+                                        'period': granularity,
+                                        'summaryDisplay': Math.round(summaryValue * 100) / 100,
+                                    });
+                                }
+                                else if (chartType == 'costPerClick' ||chartType == 'costPerThosuandImpressions' || chartType == "clickThroughRate" || chartType == "ConversionRate" || chartType == "costPerConversion") {
                                     widget.charts[charts].chartType = 'area';
                                     widgetCharts.push({
                                         'type': widget.charts[charts].chartType,
@@ -5554,6 +5633,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                         summaryDisplay += finalCharts.fbReachByAge[0].values[2][j].data[i]
                     var sample = {
                         summaryDisplay: summaryDisplay,
+                        type:'pie',
                         key: finalCharts.fbReachByAge[0].values[1][i],
                         showComparision: 'false',
                         variance: 0,

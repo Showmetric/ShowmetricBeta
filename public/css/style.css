@@ -88,11 +88,14 @@
     background: #E6E3E3;
     color: #04509B !important
 }
+.dropdown-menu > li >a:hover{
+    background-color:#efefef !important
+}
 .dropdown-menu{
-    color:#fff !important;
+    color:#333 !important;
     font-family: Heebo-Light;
     font-weight: 500;
-    background-color: #04509B !important;
+    background-color: #f9f9f9 !important;
 }
 .dropdown{
     background-color: transparent !important;
@@ -134,7 +137,7 @@ border-radius:0px !important}
 .listed-image{float: left;}
 .responsiveDate{float: left;!important;font-size: 11px;}
 .scrollInWidget{height: 100% !important;}
-.apiLink{color: #000;}
+.apiLink{color: #232c3b !important;}
 .apiLink:hover{text-decoration: underline; }
 .comment{float: left;margin-left: 5px;font-size: 11px;}
 .date{float: right;font-size: 11px;}
@@ -160,10 +163,10 @@ svg:hover #Calendar-Icon { fill: #293846; }
 }
 .dashboardSelect{
     width: 200px;
-    font-family: Heebo-Medium;
+    font-family: Montserrat-Regular;
     border: none;
     background-color: #FFFFFF;
-    height: 20px;
+    height: 20px !important;
     margin-top:15px;
     margin-bottom: 15px;
     /*text-transform: capitalize;*/
@@ -242,7 +245,7 @@ svg:hover #Calendar-Icon { fill: #293846; }
 .wizard > .steps .current a, .wizard > .steps{
     background-color:#fff !important;
 }
-.dashboardTitleIcons{right: -75px;}
+/*.dashboardTitleIcons{right: -75px;}*/
 .editable-buttons {
     vertical-align: middle !important;}
 .editable-click, a.editable-click { background-color:#fff !important}
@@ -254,7 +257,7 @@ svg:hover #Calendar-Icon { fill: #293846; }
 .model-title {
     text-align:center !important;
     font-size: 20px;
-    font-family: Heebo-Medium;
+    font-family: Montserrat-Black;
     color:#1074ae;
 }
 .dashboardContentmodel-title {
@@ -271,11 +274,11 @@ svg:hover #Calendar-Icon { fill: #293846; }
     border-radius: 5px!important;
     color: #000 !important;}
 .modal-header .close{margin-top: -17px !important; margin-right: -12px !important;}
-.metricNames{font-family:Heebo-Medium; font-size:18px;word-wrap: break-word;line-height:1;margin-top: 15px;}
-.FusionMetricNames{font-family:Heebo-Medium; font-size:14px;word-wrap: break-word;line-height:1;margin-top: 5px;}
+.metricNames{font-family:Montserrat-Regular; font-size:18px;word-wrap: break-word;line-height:1;margin-top: 15px;}
+.FusionMetricNames{font-family:Montserrat-Regular; font-size:14px;word-wrap: break-word;line-height:1;margin-top: 5px;}
 .getMetricName{margin-top:-10px;}
-.metricDescription{font-family: Heebo-Thin;font-size: 11px;line-height: 1.3;}
-.nav-label{font-size: 12px;font-family: Heebo-Light;padding-left: 15px;color: #fff; display:none}
+.metricDescription{font-family: Montserrat-Regualr;font-size: 11px;line-height: 1.3;}
+.nav-label{font-size: 12px;font-family: Montserrat-Regular;padding-left: 15px;color: #fff; display:none}
 .logout{height: 11px;color:#fff}
 .nav .nav-tabs li:active{background: #000 url('data:image/svg+xml;utf8,<svg width="7px" height="5px" viewBox="102 51 7 5" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><desc>Created with Sketch.</desc><defs></defs></svg>')  no-repeat;}
 .choose-text{border-radius: 5px}
@@ -300,6 +303,28 @@ svg:hover #Calendar-Icon { fill: #293846; }
 @font-face { font-family: Bebas Neue-book; font-weight: bold; src: url('../fonts/BebasNeue/BebasNeue_Book.otf');}
 @font-face { font-family: Bebas Neue-thin; font-weight: bold; src: url('../fonts/BebasNeue/BebasNeue_Thin.otf');}
 @font-face { font-family: Bebas Neue-light; font-weight: bold; src: url('../fonts/BebasNeue/BebasNeue_Light.otf');}
+
+@font-face { font-family: Montserrat-Black; src: url('../fonts/montserrat/Montserrat-Black.otf');}
+@font-face { font-family: Montserrat-Bold; src: url('../fonts/montserrat/Montserrat-Bold.otf');}
+@font-face { font-family: Montserrat-ExtraBold; src: url('../fonts/montserrat/Montserrat-ExtraBold.otf');}
+@font-face { font-family: Montserrat-ExtraLight; src: url('../fonts/montserrat/Montserrat-ExtraLight.otf');}
+@font-face { font-family: Montserrat-Light; src: url('../fonts/montserrat/Montserrat-Light.otf');}
+@font-face { font-family: Montserrat-Medium; src: url('../fonts/montserrat/Montserrat-Medium.otf');}
+@font-face { font-family: Montserrat-Regular; src: url('../fonts/montserrat/Montserrat-Regular.otf');}
+@font-face { font-family: Montserrat-SemiBold; src: url('../fonts/montserrat/Montserrat-SemiBold.otf');}
+@font-face { font-family: Montserrat-Thin; src: url('../fonts/montserrat/Montserrat-Thin.otf');}
+
+@font-face { font-family: MontserratAlternates-Black; src: url('../fonts/montserrat/MontserratAlternates-Black.otf');}
+@font-face { font-family: MontserratAlternates-Bold; src: url('../fonts/montserrat/MontserratAlternates-Bold.otf');}
+@font-face { font-family: MontserratAlternates-ExtraBold; src: url('../fonts/montserrat/MontserratAlternates-ExtraBold.otf');}
+@font-face { font-family: MontserratAlternates-ExtraLight; src: url('../fonts/montserrat/MontserratAlternates-ExtraLight.otf');}
+@font-face { font-family: MontserratAlternates-Light; src: url('../fonts/montserrat/MontserratAlternates-Light.otf');}
+@font-face { font-family: MontserratAlternates-Medium; src: url('../fonts/montserrat/MontserratAlternates-Medium.otf');}
+@font-face { font-family: MontserratAlternates-Regular; src: url('../fonts/montserrat/MontserratAlternates-Regular.otf');}
+@font-face { font-family: MontserratAlternates-SemiBold; src: url('../fonts/montserrat/MontserratAlternates-SemiBold.otf');}
+@font-face { font-family: MontserratAlternates-Thin; src: url('../fonts/montserrat/MontserratAlternates-Thin.otf');}
+
+
 .nav li a:hover .nav-label{color: #a7b1c2 !important;}
 .add-profile{float: left;margin: 0px ; text-align: left;!important}
 .fa-3x{font-size: 28px!important;color:#fff;padding-left: 5px;}
@@ -311,11 +336,10 @@ svg:hover #Calendar-Icon { fill: #293846; }
     margin-left: 4px;}
 .link-img{vertical-align: super;
     font-size: 13px;
-    font-family: Heebo-Regular;
+    font-family: Montserrat-Regular;
     color: #000;
     white-space: nowrap;}
-.link-span{vertical-align: top;font-size: 13px;
-    font-family: Heebo-Regular;}
+.link-span{vertical-align: top;font-size: 13px;font-family: Montserrat-Regular;color:#232c3b;}
 .fusionButton-mode{border: 1px solid #f5f5f5 !important;
     width: 25%;
     background-color: #04509B !important;
@@ -342,23 +366,23 @@ svg:hover #Calendar-Icon { fill: #293846; }
     font-size: 14px !important;}
 .daterange .dr-selections .dr-calendar{min-width: 305px; !important}
 .daterange .dr-selections .dr-preset-list{font-size: 12px !important;
-    font-family: Heebo-Thin !important;
-    font-weight: 600 !important;
+    font-family: Montserrat-Regular !important;
     color: #293846 !important;}
 .daterange .dr-selections .dr-list-item .dr-item-aside{font-size: 11px;!important}
 .daterange .dr-input .dr-presets.dr-preset{}
 .daterange .dr-input .dr-presets {width: 100px !important;
     padding-left:3px;}
-.daterange .dr-input{border: 1px solid #e8e8e8 !important; color: #000 !important;}
+.daterange .dr-input{border: 1px solid #e8e8e8 !important; color: #232c3b !important;}
 .dashboardName pre{
     background-color: #fff !important;
     border-radius: 5px !important;
     font-size: 18px !important;
-    font-family: Heebo-Medium !important ;
+    font-family: Montserrat-Black !important ;
     font-style: normal !important;
     padding: 6.5px !important;
     border:none;
     float: left;
+    font-weight: bolder;
     /*text-transform: capitalize;*/
 }
 .dashboardName a:hover .hover-icon{
@@ -369,7 +393,7 @@ svg:hover #Calendar-Icon { fill: #293846; }
 }
 .dashboardName{width:325px }
 .daterange .dr-selections .dr-list-item .dr-item-aside{color: #000 !important;
-    font-size: 12px !important; font-family: Heebo-Medium !important ;}
+    font-size: 12px !important; font-family: Montserrat-Bold !important ; font-weight: bold;}
 .main-content{
     margin-left: 0px;
 }
@@ -486,7 +510,7 @@ h5 {
     color: #000000;
     font-weight: 600;
     font-size: 16px;
-    padding: 14px 0px 14px 5px;
+    padding: 14px 0px 14px 11px;
 }
 .nav.navbar-right > li > a {
     color: #999c9e;
@@ -530,7 +554,7 @@ h5 {
 .body-small .navbar-top-links li:last-child {
     margin-right: 0;
 }
-body{font-family: Heebo-Light; }
+body{font-family: Montserrat-Regular;color: #232c3b}
 .navbar-top-links li a {
     padding: 20px 10px;
     min-height: 50px;
@@ -542,7 +566,7 @@ body{font-family: Heebo-Light; }
     display: none;
     float: left;
     font-size: 12px;
-    left: 0;
+    left: 20px;
     list-style: none outside none;
     padding: 0;
     position: absolute;
@@ -553,10 +577,9 @@ body{font-family: Heebo-Light; }
 .dropdown-menu > li > a {
     border-radius: 3px;
     color: inherit;
-    line-height: 25px;
-    margin: 4px;
+    margin: 3px;
     text-align: left;
-    font-weight: normal;
+    font-weight: 500;
 }
 .dropdown-menu > li > a.font-bold {
     font-weight: 600;
@@ -636,7 +659,7 @@ body{font-family: Heebo-Light; }
 .minimalize-styl-1 {
     padding: 4px 12px;
     margin: 5px 5px 5px 5px;
-    font-size: 14px;
+    font-size: 12px;
     float: left;
     border-bottom: 1px solid #e7eaec;
 }
@@ -692,7 +715,7 @@ body{font-family: Heebo-Light; }
 .nav-second-level li a {
     padding: 7px 10px 7px 10px;
     padding-left: 52px;
-    font-family: Heebo-Light;
+    font-family: Montserrat-Regular;
     background: #FFFFFF;
     font-size: 12px;
     font-weight: 500;
@@ -1561,7 +1584,7 @@ button.dim:active:before {
     transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
     width: 100%;
     font-size: 12px;
-    font-family: Heebo-Regular;
+    font-family: Montserrat-Regular;
 }
 .form-control:focus,
 .single-line:focus {
@@ -2166,7 +2189,7 @@ body.body-small .footer.fixed {
     border: none;
 }
 .nav-tabs > li > a {
-    font-family: Heebo-Thin;
+    font-family: Montserrat-Regular;
     color: #FFFFFF;
     font-size: 18px;
     padding: 10px 20px 21px 25px;
@@ -2374,6 +2397,14 @@ body.mini-navbar .branding {
     padding-right: 2px!important;
     font-size: 1.0em!important;
     top: 30% !important;
+}
+.summaryThreeAlign{
+    text-align: center!important;
+    padding-top: 1px!important;
+    padding-left:0px!important;
+    padding-right: 2px!important;
+    font-size: 1.0em!important;
+    top: 20% !important;
 }
 .spiner-mobile-example {
     display:none;
@@ -2625,7 +2656,7 @@ del {
 .title-icons {
     float: right;
     min-width: 75px;
-    font-family:Heebo-Thin !important;
+    font-family: Montserrat-Regular !important;
     color: #676a6c;
 
 }
@@ -2634,7 +2665,7 @@ del {
     .title-icons {
         float: right;
         min-width: 50px;
-        font-family: Heebo-Thin !important;
+        font-family: Montserrat-Regular !important;
         color: #676a6c;
     }
 
@@ -2815,7 +2846,7 @@ a.customApiLink{
 
 .exportHeadText{
     font-size: 20px;
-    font-family: "Heebo-Thin";
+    font-family: Montserrat-Regular;
     color: rgb(4, 80, 155);
     text-align: center;
 }
@@ -2831,12 +2862,12 @@ a.customApiLink{
     padding: 0;
     line-height: 40px;
     display: block;
-    font-family: Heebo-Thin;
+    font-family: Montserrat-Regular;
 }
 
 .jpegContentText {
     background-color: white;
-    font-family: Heebo-Medium;
+    font-family: Montserrat-Regular;
     width: 478px;
     padding: 17px;
     border-radius: 5px;
@@ -2845,7 +2876,7 @@ a.customApiLink{
 
 .pdfExportContentText{
     background-color: white;
-    font-family: Heebo-Medium;
+    font-family: Montserrat-Regular;
     width: 478px;
     padding: 17px;
     border-radius: 5px;
@@ -2854,7 +2885,7 @@ a.customApiLink{
 
 .commonComingSoon{
     background-color: white;
-    font-family: Heebo-Medium;
+    font-family: Montserrat-Regular;
     width: 478px;
     padding: 17px;
     border-radius: 5px;
@@ -2864,7 +2895,7 @@ a.customApiLink{
 .pdfHeadText{
     background-color: white;
     color:#1074ae;
-    font-family: Heebo-Medium;
+    font-family: Montserrat-Regular;
     border-radius: 5px;
     text-align: center;
     font-size: 20px;
@@ -2906,7 +2937,7 @@ button.btn.btn-primary.changePassword {
 
 .commentTextContent{
     background-color: white;
-    font-family: Heebo-Medium;
+    font-family: Montserrat-Regular;
     width: 450px;
     padding: 17px;
     border-radius: 5px;
@@ -2919,7 +2950,7 @@ button.btn.btn-primary.changePassword {
     text-align: center;
     font-weight: 600;
     text-transform: none;
-    font-family: Heebo-Medium;
+    font-family: Montserrat-Black;
 }
 
 .exportCloseButton{
@@ -2959,7 +2990,7 @@ button.btn.btn-primary.changePassword {
     padding: 0;
     line-height: 40px;
     display: block;
-    font-family: Heebo-Medium;
+    font-family: Montserrat-Regular;
 }
 
 
@@ -2989,7 +3020,6 @@ button.btn.btn-primary.changePassword {
     cursor: pointer;
     display: block;
     height: 30px;
-
     float: right;
 }
 
@@ -4520,7 +4550,7 @@ body.rtls.top-navigation .footer.fixed {
 }
 
 .topdropdown-content a {
-    color: black;
+    color: #232c3b;
     text-decoration: none;
     display: block;
     min-height: 10px;
@@ -4781,7 +4811,7 @@ body.rtls.top-navigation .footer.fixed {
 }
 
 .pdfContentText b{
-    font-family: Heebo-Light !important ;
+    font-family: Montserrat-Regular !important ;
 }
 .uploadThumb {
     width: 24px;
@@ -4925,7 +4955,7 @@ body.rtls.top-navigation .footer.fixed {
     padding-top: 15px !important;
 }
 .profiletitle{
-    font-family: Heebo-Medium !important;
+    font-family: Montserrat-Black !important;
     color: #04509B !important;
     height:auto !important;
     margin-top: 15px !important
@@ -5062,8 +5092,9 @@ button.overlayCloseButton:hover{
     text-transform: capitalize;
 }
 .grid-font{
-    font-family: Heebo-Medium !important;
+    font-family: Montserrat-Black !important;
     text-transform: capitalize !important;
+    font-weight: bolder;
 }
 .mozOverViewTitle{
     float: left;
@@ -5166,7 +5197,7 @@ input:focus{
     cursor:pointer;
 }
 .autoarrange-export-delete {
-    float:left
+    float:right
 }
 .sidebar-icons{
     margin-left: 7px;
