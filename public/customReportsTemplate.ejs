@@ -1,0 +1,1325 @@
+<!--  <style>
+      .dr-calendar {
+          display: none !important;
+      }
+
+      .dr-presets {
+          display: none !important;
+      }
+  </style>-->
+<link href="css/sweetAlert/sweetalert.css" rel="stylesheet">
+<script src="js/sweetAlert/sweetalert.min.js"></script>
+<script src="js/datePicker/Calendar.js"></script>
+<script src="js/dom-to-image.js"></script>
+<div ng-init="customReportConfiguration()"  id="reportLayout" class="dashboardLayout">
+    <div ng-if="stepActive=='step1'&& !reportNotSupported" ng-show="stepActive=='step1'&& !reportNotSupported" class="border-bottom dashboardTitle darkblue-bg">
+        <div class="row" style="height:100%">
+            <div class="col col-xs-24 col-sm-12 col-md-12 col-lg-12">
+                <div class="dashboardTemplate-items">
+                    <div class="col-sm-2 col-md-2 col-lg-2 reportText-header">
+                        <p>Report Builder</p>
+                    </div >
+                    <div class="col-xs-6 col-sm-3 col-md-3 col-lg-3 reportName" style='color:#000'>
+                        <a title="Click to rename this Report" id='reset-btn' href="#" ng-model="reportName" editable-text="customReport.reportName"   onaftersave="changeReportName()"  e-maxlength="35">
+                            <pre ng-style="!customReport.reportName  && {'color':'#999'}  || customReport.reportName && {'color':'#fff'}">{{customReport.reportName || 'Name your Report'}}</pre>
+                            <i class="fa fa-pencil hover-icon" aria-hidden="true" style="font-size: 1.5em;margin-top: 6px;color:#000;display:none"></i>
+                        </a>
+                    </div >
+                    <div class="col-xs-6 col-sm-3 col-md-3 col-lg-3 ">
+                        <div style="width:100%" class="daterange daterange--double three"></div>
+                    </div>
+                    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 text-right">
+                        <button class="white rightMargin add-text"  ng-click="updateWidgetsInDb()">
+                            <i class="fa fa-floppy-o " aria-hidden="true"></i> &nbsp;Save
+                        </button>
+                        <button class="white rightMargin add-text" ng-class="{'exportDisabled': loadedWidgetCount != widgetDataLength}" ng-disabled="loadedWidgetCount != widgetDataLength"  ng-click="reportPdfPreview('step2')"><!-- ng-class="{'exportDisabled': loadedWidgetCount != customReport.widgets.length}" ng-disabled="loadedWidgetCount != customReport.widgets.length" -->
+                            <i class="fa fa-arrow-right" aria-hidden="true"></i> Next
+                        </button>
+                        <!--<div style='width:100%' class="daterange daterange&#45;&#45;double three"></div>-->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div ng-if="stepActive=='step2'&& !reportNotSupported" ng-show="stepActive=='step2'&& !reportNotSupported" class="border-bottom dashboardTitle darkblue-bg">
+        <div class="row" style="height:100%">
+            <div class="col col-xs-24 col-sm-12 col-md-12 col-lg-12">
+                <div class="dashboardTemplate-items">
+                    <div class="col-xs-4 col-sm-2 col-md-2 col-lg-2 reportText-header">
+                        <p>Report Builder</p>
+                    </div >
+                    <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 reportName" style='color:#000'>
+                        <a title="Click to rename this Report" id='reset-btn' href="#" ng-model="reportName" editable-text="customReport.reportName"   onaftersave="changeReportName()"  e-maxlength="35">
+                            <pre ng-style="!customReport.reportName  && {'color':'#999'}  || customReport.reportName && {'color':'#fff'}">{{customReport.reportName || 'Name your Report'}}</pre>
+                            <i class="fa fa-pencil hover-icon" aria-hidden="true" style="font-size: 1.5em;margin-top: 6px;color:#000;display:none"></i>
+                        </a>
+                    </div >
+                    <div class="col-xs-8 col-sm-4 col-md-4 col-lg-4 text-right">
+                        <button class="white rightMargin add-text"  ng-click="reportPdfPreview('step1')">
+                            <i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp;Back
+                        </button>
+                        <button class="white rightMargin add-text"  ng-click="reportPdfPreview('step3')"><!-- ng-class="{'exportDisabled': loadedWidgetCount != customReport.widgets.length}" ng-disabled="loadedWidgetCount != customReport.widgets.length" -->
+                            <i class="fa fa-arrow-right" aria-hidden="true"></i>&nbsp;Next
+                        </button>
+                        <!--<div style='width:100%' class="daterange daterange&#45;&#45;double three"></div>-->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div ng-if="stepActive=='step3'&& !reportNotSupported" ng-show="stepActive=='step3'&& !reportNotSupported" class="border-bottom dashboardTitle darkblue-bg">
+        <div class="row" style="height:100%">
+            <div class="col col-xs-24 col-sm-12 col-md-12 col-lg-12">
+                <div class="dashboardTemplate-items">
+                    <div class="col-sm-4 col-md-4 col-lg-4 reportText-header">
+                        <p >Print Preview</p>
+                    </div >
+                    <div class="col-xs-8 col-sm-4 col-md-4 col-lg-4 reportName" >
+                        <p  ng-style="!customReport.reportName  && {'color':'#999'}  || customReport.reportName && {'color':'#fff'}">{{customReport.reportName || 'Name your Report'}}</p>
+                    </div >
+                    <div class="col-xs-8 col-sm-4 col-md-4 col-lg-4 text-right">
+                        <button class="white rightMargin add-text"  ng-click="reportPdfPreview('step2')" id="reportEditButton">
+                            <i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;Edit
+                        </button>
+                        <button class="white rightMargin add-text"  id="reportDownloadButton" ng-click="exportReportinPDF()"><!-- ng-class="{'exportDisabled': loadedWidgetCount != customReport.widgets.length}" ng-disabled="loadedWidgetCount != customReport.widgets.length" -->
+                            <i class="fa fa-download" aria-hidden="true"></i>&nbsp;Download
+                        </button>
+                        <!--<div style='width:100%' class="daterange daterange&#45;&#45;double three"></div>-->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div ng-if="stepActive=='error'|| reportNotSupported" ng-show="stepActive=='error'|| reportNotSupported" class="border-bottom dashboardTitle darkblue-bg">
+        <div class="row" style="height:100%">
+            <div class="col col-xs-24 col-sm-12 col-md-12 col-lg-12 ">
+                <p style="color:#fff;margin-top:5px;font-size:18px;font-family:Montserrat-Bold;padding:5px">Report Builder</p>
+                <!--<div style='width:100%' class="daterange daterange&#45;&#45;double three"></div>-->
+            </div>
+        </div>
+    </div>
+    <div  class="greyish-bg reportLayoutContent" ng-style="{'height': docHeight+'px'}">
+        <div ng-show="reportLoading === true"  class="spiner-example">
+            <div class="sk-spinner sk-spinner-double-bounce">
+                <div class="sk-double-bounce1"></div>
+                <div class="sk-double-bounce2"></div>
+            </div>
+        </div>
+        <div class="reportDashboardContent" ng-if="reportLoading==false" ng-show="reportLoading === false "  ng-style="{'left': sideSpace+'px','right': sideSpace+'px'}">
+            <div ng-if="stepActive=='step1' && !reportNotSupported" ng-show="stepActive=='step1'&& !reportNotSupported" gridster="gridsterOptions" class="row center white-bg gridsterStlyeOptions"  id="gridsterItemsInReport"><!--ng-repeat="pages in totalPagesinReport" id="gridsterItems-{{pages}}"ng-switch-when="true"-->
+                <ul>
+                    <li gridster-item="empWidget" ><!--ng-if="widget.pageNumber==pages"-->
+                        <div class="box darkblue-bg" style=" border: 0px !important;">
+                            <div class='pagebreak-header'> <!--ng-style="{'background-color': customReport.widgetData[widget.id].color}"-->
+                                <div style="text-align:center;padding:5px 0px">
+                                    <h3>Avaliable Options</h3>
+                                </div>
+                            </div>
+                            <div class="box-content" style="top:30px !important;padding: 10px !important;vertical-align: middle" ng-style="{position:(isMobile?'static':'absolute')}">
+                                <div class="row " style="height: 100%;margin:0px;">
+                                    <div class="col col-sm-12 col-md-12 col-lg-12" style="margin-top:2px">
+                                        <div class="col-sm-12 col-md-12 col-lg-12 text-center">
+                                            <button class="white rightMargin add-text"  ng-click="addTextWidget('reportHeadingWidget',0,0,1)" ><!-- ng-class="{'exportDisabled': loadedWidgetCount != customReport.widgets.length}" ng-disabled="loadedWidgetCount != customReport.widgets.length" -->
+                                                <i class="fa fa-header" aria-hidden="true"></i>&nbsp;Add Title
+                                            </button>
+                                            <button class="white rightMargin add-text"  ng-click="addTextWidget('reportParaWidget',0,0,1)"><!-- ng-class="{'exportDisabled': loadedWidgetCount != customReport.widgets.length}" ng-disabled="loadedWidgetCount != customReport.widgets.length" -->
+                                                <i class="fa fa-paragraph" aria-hidden="true"></i>&nbsp;Add Text
+                                            </button>
+                                        </div >
+                                        <!--<div class="col-sm-6 col-md-6 col-lg-6 text-center">-->
+                                        <!---->
+                                        <!--&lt;!&ndash;<div style='width:100%' class="daterange daterange&#45;&#45;double three"></div>&ndash;&gt;-->
+                                        <!--</div>-->
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li gridster-item="widget" ng-repeat="(widgetIndex,widget) in customReport.widgets"><!--ng-if="widget.pageNumber==pages"-->
+                        <div ng-if="widget.widgetType=='reportHeadingWidget'||widget.widgetType=='reportParaWidget'" style="height: 100%;width: 100%;">
+                            <div class="box getBox-{{widget.id}}" style=" border: 0px !important;"  id="{{widget.id}}" >
+                                <div class="reportbox-header" id="getWidgetColor-{{widget.id}}"  style="border-bottom:0px !important;background-color: #ffffff;"> <!--ng-style="{'background-color': customReport.widgetData[widget.id].color}"-->
+                                    <div style="float: left;width: 93%;">
+                                        <h3 ng-style="widget.sizeX!=1  && {'width':'80%'}  || widget.sizeX==1 && {'width':'50%'} ">{{widget.name}}</h3>
+                                    </div>
+
+                                    <div class="reportGraph-icon">
+                                        <a title="Push up this widget" ng-hide="widgetIndex==0"  ng-click="pushUpWidget(widget,widgetIndex)"><i class="fa fa-hand-o-up" aria-hidden="true"></i></a><!--ng-hide="widgetIndex==0||widget.sizeY>reportPagesDetails[widget.pageNumber-1].sizeLeft||(reportPagesDetails[widget.pageNumber-1].lastWigdetIndex!=undefined && widget.sizeY!=customReport.widgets[reportPagesDetails[widget.pageNumber-1].lastWigdetIndex].sizeY)"-->
+                                        <a title="Pull down this widget" ng-hide="widgetIndex==customReport.widgets.length-2"  ng-click="pullDownWidget(widget,widgetIndex)"><i class="fa fa-hand-o-down" aria-hidden="true"></i></a><!--ng-hide="widgetIndex==customReport.widgets.length-2||widget.sizeY>reportPagesDetails[widget.pageNumber+1].sizeLeft||(reportPagesDetails[widget.pageNumber+1].firstWigdetIndex!=undefined&&widget.sizeY!=customReport.widgets[reportPagesDetails[widget.pageNumber+1].firstWigdetIndex].sizeY)" -->
+                                        <a title="Edit text content" ng-show='widget.textAreaHide==true' ng-click="disableTextEdit(widget,false)"><i class="fa fa-pencil-square-o"></i></a>
+                                        <a title="Save text content" ng-hide='widget.textAreaHide==true' ng-click="disableTextEdit(widget,true)"><i class="fa fa-floppy-o"></i></a>
+                                        <a title="Remove from Report" ng-click="deleteWidgetFromReport(widget)"><i class="fa fa-trash-o" aria-hidden="true"></i></a>
+                                    </div>
+                                </div>
+                                <div class="box-content widgetBoxBorder" style="top:25px!important;padding: 0px !important;vertical-align: middle" ng-style="{position:(isMobile?'static':'absolute')}">
+                                    <div class="row getWidgetGraph textWidget" style="height: 100%;margin:0px;" ng-if="widget.widgetType=='reportParaWidget'">
+                                        <!--<textarea class="para-widget" ng-hide='widget.textAreaHide==true' placeholder="Enter your text here" ng-model="widget.textData" text-size-watcher text-size-watcher-widget='widget' text-size-watcher-data="widget.textData" report-page-copy="reportPagesDetails[widget.pageNumber]" report-widgets-copy="customReport.widgets" maxlength="500"></textarea>-->
+                                        <textarea class="para-widget" ng-hide='widget.textAreaHide==true' placeholder="Enter your text here" ng-model="widget.textData"  maxlength="500"></textarea>
+                                        <p class="para-widget" ng-show='widget.textAreaHide==true'>{{widget.textData}}</p>
+                                    </div>
+                                    <div class="row getWidgetGraph textWidget" style="height: 100%;margin:0px;" ng-if="widget.widgetType=='reportHeadingWidget'">
+                                        <!--<textarea class="head-widget" ng-hide='widget.textAreaHide==true' placeholder="Enter your text here" ng-model="widget.textData" text-size-watcher text-size-watcher-widget='widget' text-size-watcher-data="widget.textData" report-page-copy="reportPagesDetails[widget.pageNumber]" report-widgets-copy="customReport.widgets"  maxlength="75"></textarea>-->
+                                        <textarea class="head-widget" ng-hide='widget.textAreaHide==true' placeholder="Enter your text here" ng-model="widget.textData"  maxlength="75"></textarea>
+                                        <p class="head-widget" ng-show='widget.textAreaHide==true'>{{widget.textData}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div ng-if="widget.widgetType=='pageBreakWidget'"  style="height: 100%;width: 100%;">
+                            <div class="box darkblue-bg" style=" border: 0px !important;"  >
+                                <div class='pagebreak-header'> <!--ng-style="{'background-color': customReport.widgetData[widget.id].color}"-->
+                                    <div style="text-align:center;padding:5px 0px">
+                                        <h3>- - - - - &nbsp;Page Break&nbsp; - - - - -</h3>
+                                    </div>
+                                    <!--<div class="graph-icon">-->
+                                    <!--<a title="Push up this widget" ng-click="pushUpWidget(widget,widgetIndex)"><i class="fa fa-hand-o-up" aria-hidden="true"></i></a>-->
+                                    <!--<a title="Pull down this widget" ng-click="pullDownWidget(widget,widgetIndex)"><i class="fa fa-hand-o-down" aria-hidden="true"></i></a>-->
+                                    <!--</div>-->
+                                </div>
+                                <div class="box-content " style="top:30px !important;padding: 10px !important;vertical-align: middle" ng-style="{position:(isMobile?'static':'absolute')}">
+                                    <div class="row" style="height: 100%;margin:0px;" >
+                                        <div class="col col-sm-12 col-md-12 col-lg-12" style="margin-top:2px">
+                                            <div class="col-sm-12 col-md-12 col-lg-12 text-center">
+                                                <button class="white rightMargin add-text"  ng-click="addTextWidget('reportHeadingWidget',widget.pageNumber+1,widgetIndex+1,widget.row+1)" ><!-- ng-class="{'exportDisabled': loadedWidgetCount != customReport.widgets.length}" ng-disabled="loadedWidgetCount != customReport.widgets.length" -->
+                                                    <i class="fa fa-header" aria-hidden="true"></i>&nbsp;Add Title
+                                                </button>
+                                                <button class="white rightMargin add-text"  ng-click="addTextWidget('reportParaWidget',widget.pageNumber+1,widgetIndex+1,widget.row+1)"><!-- ng-class="{'exportDisabled': loadedWidgetCount != customReport.widgets.length}" ng-disabled="loadedWidgetCount != customReport.widgets.length" -->
+                                                    <i class="fa fa-paragraph" aria-hidden="true"></i>&nbsp;Add Text
+                                                </button>
+                                            </div >
+                                            <!--<div class="col-sm-6 col-md-6 col-lg-6 text-left">-->
+                                            <!---->
+                                            <!--&lt;!&ndash;<div style='width:100%' class="daterange daterange&#45;&#45;double three"></div>&ndash;&gt;-->
+                                            <!--</div>-->
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div ng-if="widget.widgetType!='reportHeadingWidget'&&widget.widgetType!='reportParaWidget'&&widget.widgetType!='pageBreakWidget'" style="width: 100%;height: 100%">
+                            <div class="box getBox-{{widget.id}}" style=" border: 0px !important;"  id="{{widget.id}}">
+                                <div class="reportbox-header" id="getWidgetColor-{{widget.id}}" ref="{{customReport.widgetData[widget.id].color}}" style="border-bottom: 0px solid #e8e8e8 !important;background-color: #ffffff;"> <!--ng-style="{'background-color': customReport.widgetData[widget.id].color}"-->
+                                    <div style="float: left;width: 93%;">
+                                        <img src="image/thumbnail/{{widget.channelName}}.png" style="vertical-align: super;max-height: 31px; max-width: 50px; padding:5px"/>
+                                        <h3 ng-style="widget.sizeX!=1  && {'width':'80%'}  || widget.sizeX==1 && {'width':'50%'} ">{{customReport.widgetData[widget.id].name}}</h3>
+                                    </div>
+
+                                    <div class="reportGraph-icon">
+                                        <a title="Push up this widget" ng-hide="widgetIndex==0"  ng-click="pushUpWidget(widget,widgetIndex)"><i class="fa fa-hand-o-up" aria-hidden="true"></i></a><!--ng-hide="widgetIndex==0||widget.sizeY>reportPagesDetails[widget.pageNumber-1].sizeLeft||(reportPagesDetails[widget.pageNumber-1].lastWigdetIndex!=undefined && widget.sizeY!=customReport.widgets[reportPagesDetails[widget.pageNumber-1].lastWigdetIndex].sizeY)"-->
+                                        <a title="Pull down this widget" ng-hide="widgetIndex==customReport.widgets.length-2"  ng-click="pullDownWidget(widget,widgetIndex)"><i class="fa fa-hand-o-down" aria-hidden="true"></i></a><!--ng-hide="widgetIndex==customReport.widgets.length-2||widget.sizeY>reportPagesDetails[widget.pageNumber+1].sizeLeft||(reportPagesDetails[widget.pageNumber+1].firstWigdetIndex!=undefined&&widget.sizeY!=customReport.widgets[reportPagesDetails[widget.pageNumber+1].firstWigdetIndex].sizeY)" -->
+                                        <a title="Remove from Report" ng-click="deleteWidgetFromReport(widget)"><i class="fa fa-trash-o" aria-hidden="true"></i></a>
+                                    </div>
+                                </div>
+
+                                <div class="box-content widgetBoxBorder" style="vertical-align: middle" ng-style="{position:(isMobile?'static':'absolute')}">
+                                    <div ng-if="customReport.widgetData[widget.id].visibility == false" style="height:100%;">
+                                        <div class="spiner-example" id="widgetData-{{widget.id}}">
+                                            <div class="sk-spinner sk-spinner-double-bounce">
+                                                <div class="sk-double-bounce1"></div>
+                                                <div class="sk-double-bounce2"></div>
+                                            </div>
+                                        </div>
+                                        <div class="errorWidgetData" id="errorWidgetData-{{widget.id}}">
+                                            <div class="row" style="margin: 0px;height: 100%">
+                                                <div style="height:99%;">
+                                                    <div style="position:relative; top:36%; text-align:center; padding-right:20px">
+                                                        <p style="word-wrap:break-word;font-size: 10px;">Your credential is insufficient to fetch data for this metric</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class=" errorWidgetData  background-color" id="errorWidgetTokenexpire-{{widget.id}}" style="margin-top: 0%;">
+                                            <div class="row" style="margin: 0px;height: 100%">
+                                                <div style="height:99%;">
+                                                    <div style="position:relative; top:25%; text-align:center; padding-right:20px">
+                                                        <p style="word-wrap:break-word;font-size: 10px;">Access to one or more profiles has expired</p>
+                                                        <a ><i style="color: #23527c;" class="fa fa-refresh" aria-hidden="true"> </i><p style="color:#000;font-size: 10px">  Refresh</p></a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row getWidgetGraph" style="height: 100%;margin:0px;" ng-if="customReport.widgetData[widget.id].visibility == true">
+                                        <div ng-repeat="(chartIndex,chart) in customReport.widgetData[widget.id].chart" ng-if="chart.options.chart.type=== 'lineChart' || chart.options.chart.type=== 'engagedUsersReach' || chart.options.chart.type=== 'area' ||chart.options.chart.type=== 'pieChart' || chart.options.chart.type=== 'reachVsImpressions' || chart.options.chart.type=== 'multiBarChart' || chart.options.chart.type=== 'multiChart'" style="float: left;padding-left: 2px;padding-right: 2px;" ng-style="{'height': (100/customReport.widgetData[widget.id].layoutOptionsY)+'%', 'width': (100/customReport.widgetData[widget.id].layoutOptionsX)+'%'}">
+                                            <div class="col col-lg-4 col-sm-4 col-md-4 scrollbar scroller" ng-if="customReport.widgetData[widget.id].showSummary !=false" style="margin:0px;height:100%;padding-left:5px;padding-right:5px;"><!--  ng-style="calculateSummaryHeight(widget.sizeY,chart.data.length)">-->
+                                                <ul style="height:100%;font-size:12px;padding-left: 5px;">
+                                                    <li  ng-repeat="data in chart.data" ng-class="{'summaryAlign': chart.data.length<=3}" style="text-align: center;padding-top: 1px;padding-left:0px;padding-right: 2px;font-size: 1.0em!important;" id="li-{{widget.id}}-{{$index}}" class="col col-lg-12" ng-style="calculateRowHeight(data,chart.data.length,widget.sizeY,customReport.widgetData[widget.id].layoutOptionsX)"><!--size-watcher-width="data.mywidth"--><!--ng-class="calculateColumnWidth(chart.data.length,widget.sizeX,customReport.widgetData[widget.id].layoutOptionsX)" ng-style="calculateRowHeight(data,chart.data.length,widget.sizeX,widget.sizeY,customReport.widgetData[widget.id].layoutOptionsX)"-->
+                                                        <div style="margin: 0px;height: 100%;overflow: hidden;white-space: nowrap;color: #000000;text-align: center;" >
+                                                            <p class="summaryKeyFont" ng-class="{'reportSummaryKeyDoubleFont': customReport.widgetData[widget.id].layoutOptionsX>1}" ng-if="chart.options.chart.type != 'pieChart'" ng-show="data.showComparision==false" ng-style="{ 'font-family' : 'Montserrat-Regular','text-transform':'uppercase',  'border-bottom': '4px solid', 'border-color': data.color, 'padding-left': '3px'}" style="margin:0px 0px 3px!important;font-weight: bold;padding-top: 2px;padding-bottom: 2px;"> {{data.key}} - {{data.summaryDisplay}} <i ng-if="data.arrow==='up' && data.variance !=0" style="font-size:1.0em;color:#2A8539" class="fa fa-arrow-up" aria-hidden="true"></i><i ng-if='data.arrow==="down" && data.variance !=0' style="font-size: 1.0em;color:#FF1B1B" class="fa fa-arrow-down" aria-hidden="true"></i></p>
+                                                            <p class="summaryKeyFont" ng-class="{'reportSummaryKeyDoubleFont': customReport.widgetData[widget.id].layoutOptionsX>1}" ng-if="chart.options.chart.type == 'pieChart'" ng-show="data.showComparision==false" ng-style="{ 'font-family' : 'Montserrat-Regular', 'text-transform':'uppercase',  'border-bottom': '4px solid', 'border-color': data.color, 'padding-left': '3px'}" style="margin:0px 0px 3px!important;font-weight: bold;padding-top: 2px;padding-bottom: 2px;"> {{data.key}} - {{data.summaryDisplay}}</p>
+                                                            <p class="summaryKeyFont" ng-class="{'reportSummaryKeyDoubleFont': customReport.widgetData[widget.id].layoutOptionsX>1}" ng-show="data.showComparision==true" ng-style="{ 'font-family' : 'Montserrat-Balck', 'text-transform':'uppercase',  'border-bottom': '4px solid', 'border-color': data.color, 'padding-left': '3px'}" style="margin:0px 0px 3px!important;font-weight: bold;padding-top: 2px;padding-bottom: 2px;"> {{data.key}}</p>
+                                                            <div class="col col-lg-12 col-sm-12 col-md-12 col-xs-12 " style="padding: 0px 0px 0px 0px!important;">
+                                                                <div class="col col-lg-5 col-sm-5 col-md-5 col-xs-5">
+                                                                    <p ng-show="data.showComparision==true" class="summaryFont" ng-class="{'summaryDoubleFont': customReport.widgetData[widget.id].layoutOptionsX>1}"ng-style="{ 'font-family' : 'Montserrat-Balck', 'text-transform':'uppercase', 'padding-left': '0px', 'border-right': '3px solid white','float':'left'}" style="margin:0px 0px 3px!important;font-weight: bold;"> {{data.summaryDisplay}}</p>
+                                                                </div>
+                                                                <div class="col col-lg-7 col-sm-7 col-md-7 col-xs-7" style="padding: 0px 0px 0px 0px!important;">
+                                                                    <!--<p ng-style="{'color': '#979797', 'font-family' : 'Heebo-Medium','font-size':'12px', 'text-transform':'uppercase', 'background-color': 'whitesmoke'}" style="margin:0px 0px 3px!important;font-weight: bold;">{{data.key}} - <b ng-style="{'color':data.color, 'font-family' : 'Heebo-Medium'}"> {{data.summaryDisplay}} </b></p>-->
+                                                                    <p ng-if="chart.options.chart.type != 'pieChart'" class="summaryKeyFont" ng-class="{'reportSummaryKeyDoubleFont': customReport.widgetData[widget.id].layoutOptionsX>1}" ng-show="data.showComparision==true" style="padding-top:3px;margin:1px 0px 1px!important;overflow: hidden;float: right;">{{data.period}}: <span ng-if="data.variance !=0">{{data.variance}}%  </span><i ng-if="data.arrow==='up' && data.variance !=0" style="font-size:0.8em;color:#2A8539" class="fa fa-arrow-up" aria-hidden="true"></i><i ng-if='data.arrow==="down" && data.variance !=0' style="font-size: 0.8em;color:#FF1B1B" class="fa fa-arrow-down" aria-hidden="true"></i></p>
+                                                                </div>
+                                                            </div>
+                                                            <!--<p ng-if="chart.options.chart.type != 'pieChart'" style="font-size: 14px;font-family: Heebo-Light;">{{data.period}}- <span ng-if="data.variance !=0">{{data.variance}}%</span><i ng-if="data.arrow==='up' && data.variance !=0" style="font-size: 0.8em;color:#2A8539" class="fa fa-arrow-up" aria-hidden="true"></i><i ng-if='data.arrow==="down" && data.variance !=0' style="font-size: 0.8em;color:#FF1B1B" class="fa fa-arrow-down" aria-hidden="true"></i></p>-->
+                                                        </div>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            <div id="{{'updateHeight'+widgetIndex}}" ng-class="{'col col-lg-8 col-sm-8 col-md-8':customReport.widgetData[widget.id].showSummary !=false}" ng-class="{'col col-lg-12 col-sm-12 col-md-12':customReport.widgetData[widget.id].showSummary ===false}" style="height:100%;padding-left:5px;padding-right:5px;">
+                                                <!--
+                                                                                             ng-init="calculateChartHeight(widget.sizeY,chart.data.length,widgetIndex)">
+                                                -->
+                                                <!--<nvd3 options="chart.options" data="chart.data" api="chart.api" config="{refreshDataOnly:true, deepWatchDataDepth: 0}" events="events" ng-if="customReport.widgetData[widget.id].visibility == true"></nvd3>-->
+                                                <div id="{{'chartOptions'+widgetIndex}}"   style="width:100%;height:100%;">
+                                                    <hc-chart options="chart.chartOptions"
+                                                              id="{{'chartRepeat'+widgetIndex+'-'+chartIndex}}"
+                                                              ng-init="setChartSize(widgetIndex,chartIndex);"
+                                                    >Placeholder for generic chart
+                                                    </hc-chart>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div ng-repeat="(chartIndex,chart) in customReport.widgetData[widget.id].chart" ng-if="chart.options.chart.type=== 'visitorAcquisitionEfficiency'" style="float: left;padding-left: 2px;padding-right: 2px;" ng-style="{'height': (100/customReport.widgetData[widget.id].layoutOptionsY)+'%', 'width': (100/customReport.widgetData[widget.id].layoutOptionsX)+'%'}">
+                                            <div id="{{'updateHeight'+widgetIndex}}" class="col col-lg-12 col-sm-12 col-md-12 col-xs-12" style="height:100%;padding-left:5px;padding-right:5px;">
+                                                <div id="{{'chartOptions'+widgetIndex}}"   style="width:100%;height:100%;">
+                                                    <hc-chart options="chart.chartOptions"
+                                                              id="{{'chartRepeat'+widgetIndex+'-'+chartIndex}}"
+                                                              ng-init="setChartSize(widgetIndex,chartIndex);"
+                                                    >Placeholder for generic chart
+                                                    </hc-chart>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div ng-repeat="(chartIndex,chart) in customReport.widgetData[widget.id].chart" ng-if="chart.options.chart.type=== 'mozoverview'" style="padding-left: 2px;padding-right: 2px;" ng-style="{'height': (100/customReport.widgetData[widget.id].layoutOptionsY)+'%', 'width': (100/customReport.widgetData[widget.id].layoutOptionsX)+'%'}">
+                                            <div events="events" style="clear: both;height: 99%;" ng-if="customReport.widgetData[widget.id].visibility == true" >
+                                                <div class="scrollbar scrollInWidget" id="scroller">
+                                                    <table class="table table-striped">
+                                                        <tr style="padding:2px 5px;width:100%">
+                                                            <th style="padding:5px 5px;width:55%;">Moz Rank</th>
+                                                            <th style="padding:5px 5px;width:15%;text-align:right;">{{chart.displayData.mozRankURL}}</th>
+                                                        </tr>
+                                                        <tr style="padding:2px 5px;width:100%">
+                                                            <th style="padding:5px 5px;width:55%;">External Links</th>
+                                                            <th style="padding:5px 5px;width:15%;text-align:right;">{{chart.displayData.externalEquityLinks}}</th>
+                                                        </tr>
+                                                        <tr style="padding:2px 5px;width:100%">
+                                                            <th style="padding:5px 5px;width:55%;">Back Links</th>
+                                                            <th style="padding:5px 5px;width:15%;text-align:right;">{{chart.displayData.links}}</th>
+                                                        </tr>
+                                                        <tr style="padding:2px 5px;width:100%">
+                                                            <th style="padding:5px 5px;width:55%;">domain Authority</th>
+                                                            <th style="padding:5px 5px;width:15%;text-align:right;">{{chart.displayData.domainageAuthority}}</th>
+                                                        </tr>
+                                                        <tr style="padding:2px 5px;width:100%">
+                                                            <th style="padding:5px 5px;width:55%;">Page Authority</th>
+                                                            <th style="padding:5px 5px;width:15%;text-align:right;">{{chart.displayData.pageAuthority}}</th>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div ng-repeat="chart in customReport.widgetData[widget.id].chart" ng-if="chart.options.chart.type=== 'emptyCharts'" style="float: left;padding-left: 2px;padding-right: 2px;" ng-style="{'height': (100/customReport.widgetData[widget.id].layoutOptionsY)+'%', 'width': (100/customReport.widgetData[widget.id].layoutOptionsX)+'%'}">
+                                            <div class="row" style="margin: 0px;height: 100%">
+                                                <div events="events" style="height: 99%;" ng-if="customReport.widgetData[widget.id].visibility == true">
+                                                    <div style="position:relative; top: 36%; text-align: center" ng-repeat="data in chart.data">
+                                                        <p style="word-wrap:break-word;">{{data.message}}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div ng-repeat="chart in customReport.widgetData[widget.id].chart" ng-if="chart.options.chart.type=== 'instagramPosts'" style="float: left;padding-left: 2px;padding-right: 2px;" ng-style="{'height': (100/customReport.widgetData[widget.id].layoutOptionsY)+'%', 'width': (100/customReport.widgetData[widget.id].layoutOptionsX)+'%'}">
+                                            <div class="row" style="margin: 0px;height: 100%" id='chartTable-{{widget.id}}'>
+                                                <div events="events" style="height: 99%" ng-if="customReport.widgetData[widget.id].visibility == true">
+                                                    <div class="scrollbar scrollInWidget" id="scroller">
+                                                        <div class="col-lg-12 listed"  ng-class-odd="'odd'" ng-class-even="'even'" ng-class="{responsiveInstagramListed:widget.sizeX<2}" ng-repeat="data in chart.data">
+                                                            <div class="col-lg-1 listed-image" >
+                                                                <a  href="{{data.links}}" target="_blank"><img ng-src="{{data.image}}" height="50px" widget="50px"/></a>
+                                                            </div>
+                                                            <div class="col-lg-11 aside">
+                                                                <div class="postComment"><a class="apiLink" href="{{data.links}} " target="_blank">{{data.postComment}}</a></div>
+                                                                <div class="impression">
+                                                                    <div class="likes"><span>likes:{{data.likes}}</span></div>
+                                                                    <div class="comment"><span>Comments:{{data.comments}}</span></div>
+                                                                    <div class="date"><span class="date">{{data.date}}</span></div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div ng-repeat="chart in customReport.widgetData[widget.id].chart" ng-if="chart.options.chart.type=== 'highEngagementTweets'" style="float: left;padding-left: 2px;padding-right: 2px;" ng-style="{'height': (100/customReport.widgetData[widget.id].layoutOptionsY)+'%', 'width': (100/customReport.widgetData[widget.id].layoutOptionsX)+'%'}">
+                                            <div class="row" style="margin: 0px;height: 100%" id='chartTable-{{widget.id}}'>
+                                                <div events="events" style="height: 99%" ng-if="customReport.widgetData[widget.id].visibility == true">
+                                                    <div class="scrollbar scrollInWidget" id="scroller">
+                                                        <div class="col-lg-12 listed"  ng-class-odd="'odd'" ng-class-even="'even'" ng-repeat="data in chart.data" ng-if="data.postComment">
+                                                            <div class="col-lg-12">
+                                                                <div class="postComment"><a ng-if="data.links.media" class="apiLink" href="{{data.links.media[0].expanded_url}} " target="_blank">{{data.postComment}}</a><a ng-if="!data.links.media[0]" class="apiLink" href="https://twitter.com" target="_blank">{{data.postComment}}</a></div>
+                                                                <div class="impression">
+                                                                    <div class="likes"><span>Likes: {{data.likes}}</span></div>
+                                                                    <div class="comment"><span>Retweets: {{data.reTweet}}</span></div>
+                                                                    <div class="date"><span>{{data.date}}</span></div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div ng-repeat="chart in customReport.widgetData[widget.id].chart" ng-if="chart.options.chart.type=== 'highestEngagementLinkedIn'" style="float: left;padding-left: 2px;padding-right: 2px;" ng-style="{'height': (100/customReport.widgetData[widget.id].layoutOptionsY)+'%', 'width': (100/customReport.widgetData[widget.id].layoutOptionsX)+'%'}">
+                                            <div class="row" style="margin: 0px;height: 100%" id='chartTable-{{widget.id}}'>
+                                                <div events="events" style="height: 99%" ng-if="customReport.widgetData[widget.id].visibility == true">
+                                                    <div class="scrollbar scrollInWidget" id="scroller">
+                                                        <div class="col-lg-12 listed"  ng-class-odd="'odd'" ng-class-even="'even'" ng-class="{responsiveListed:widget.sizeX<2}" ng-repeat="data in chart.data" ng-if="data.postComment">
+                                                            <div class="col-lg-12">
+                                                                <div class="postComment"><a class="apiLink" href="{{data.link}} " target="_blank">{{data.postComment}}</a></div>
+                                                                <div class="impression">
+                                                                    <div class="likes"><span>Likes: {{data.likes}}</span></div>
+                                                                    <div class="comment"><span>comments: {{data.comments}}</span></div>
+                                                                    <div class="comment"><span>shares: {{data.shares}}</span></div>
+                                                                    <div class="comment"><span>clicks: {{data.clicks}}</span></div>
+                                                                    <div class="comment"><span>impressions: {{data.impressions}}</span></div>
+                                                                    <div ng-style="widget.sizeX<=2  && {'float':'left'}  || widget.sizeX>2 && {'float':'right'}"><span>{{data.date}}</span></div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <!--<div class="col-lg-12" style="position: relative;top:40%;text-align: center;" ng-if="!chart.data.postComment">-->
+                                                        <!--<span >No Updates available</span>-->
+                                                        <!--</div>-->
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div ng-repeat="chart in customReport.widgetData[widget.id].chart" ng-if="chart.options.chart.type=== 'gaTopPagesByVisit'" style="float: left;padding-left: 2px;padding-right: 2px;" ng-style="{'height': (100/customReport.widgetData[widget.id].layoutOptionsY)+'%', 'width': (100/customReport.widgetData[widget.id].layoutOptionsX)+'%'}">
+                                            <div class="row" style="margin: 0px;height: 100%" >
+                                                <div events="events" style="height: 99%" ng-if="customReport.widgetData[widget.id].visibility == true" ng-init="limitScroll=20">
+                                                    <div class="scrollbar scrollInWidget" id="scroller">
+                                                        <div class="col-lg-12 table-responsive" style="overflow-x: hidden;padding:0px;">
+                                                            <table class="table table-striped">
+                                                                <thead>
+                                                                <tr style="padding:2px 5px;width:100%">
+                                                                    <th style="padding:5px 5px;width:55%;text-align:center;">Page</th>
+                                                                    <th style="padding:5px 5px;width:15%;text-align:right;">Page views</th>
+                                                                    <th style="padding:5px 5px;width:15%;text-align:right;">Avg. Time on page</th>
+                                                                    <th style="padding:5px 5px;width:15%;text-align:right;">Bounce Rate</th>
+                                                                </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                <tr style="padding:2px 5px;width:100%" ng-repeat="data in chart.data | limitTo: limitScroll" ng-if="data.pagePath">
+                                                                    <td style="padding:5px 5px;width:55%;text-align:left;">{{data.pageTitle}}<br><i>{{data.pagePath}}</i></td>
+                                                                    <td style="padding:5px 5px;width:15%;text-align:right;">{{data.pageviews}}</td>
+                                                                    <td style="padding:5px 5px;width:15%;text-align:right;">{{data.avgTimeOnpage}}</td>
+                                                                    <td style="padding:5px 5px;width:15%;text-align:right;">{{data.bouncesRate}}</td>
+                                                                </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                        <div class="showmore" style="text-align:center" ng-show="chart.data.length>20">
+                                                            <a href ng-click="limitScroll=(limitScroll+10)" ng-show="limitScroll<chart.data.length">Show More</a>
+                                                            <span ng-show="limitScroll>20&&limitScroll<chart.data.length">|</span>
+                                                            <a href ng-click="limitScroll=(limitScroll-10)" ng-show="limitScroll>20">Show Less</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div ng-repeat="chart in customReport.widgetData[widget.id].chart" ng-if="chart.options.chart.type=== 'gaPageContentEfficiencyTable'" style="float: left;padding-left: 2px;padding-right: 2px;" ng-style="{'height': (100/customReport.widgetData[widget.id].layoutOptionsY)+'%', 'width': (100/customReport.widgetData[widget.id].layoutOptionsX)+'%'}">
+                                            <div class="row" style="margin: 0px;height: 100%" >
+                                                <div events="events" style="height: 99%" ng-if="customReport.widgetData[widget.id].visibility == true" ng-init="limitScroll=20">
+                                                    <div class="scrollbar scrollInWidget" id="scroller">
+                                                        <div class="col-lg-12 table-responsive" style="overflow-x: hidden;padding:0px;">
+                                                            <table class="table table-striped">
+                                                                <thead>
+                                                                <tr style="padding:2px 5px;width:100%">
+                                                                    <th style="padding:5px 5px;width:40%;text-align:center;">Page </th>
+                                                                    <th style="padding:5px 5px;width:10%;text-align:center;">Unique Page views </th>
+                                                                    <th style="padding:5px 5px;width:10%;text-align:center;">Page Views</th>
+                                                                    <th style="padding:5px 5px;width:10%;text-align:center;">Entrance Rate</th>
+                                                                    <th style="padding:5px 5px;width:10%;text-align:center;">Avg. Time on page</th>
+                                                                    <th style="padding:5px 5px;width:10%;text-align:center;">Bounce Rate</th>
+                                                                    <th style="padding:5px 5px;width:10%;text-align:center;">Page Value</th>
+                                                                </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                <tr style="padding:2px 5px;width:100%" ng-repeat="data in chart.data | limitTo: limitScroll" ng-if="data.pagePath">
+                                                                    <td style="padding:5px 5px;width:40%;text-align:left;">{{data.pageTitle}}<br><i>{{data.pagePath}}</i></td>
+                                                                    <td style="padding:5px 5px;width:10%;text-align:center;">{{data.uniquePageviews}}</td>
+                                                                    <td style="padding:5px 5px;width:10%;text-align:center;">{{data.pageviews}}</td>
+                                                                    <td style="padding:5px 5px;width:10%;text-align:center;">{{data.entranceRate}}</td>
+                                                                    <td style="padding:5px 5px;width:10%;text-align:center;">{{data.avgTimeOnPage}}</td>
+                                                                    <td style="padding:5px 5px;width:10%;text-align:center;">{{data.bounceRate}}</td>
+                                                                    <td style="padding:5px 5px;width:10%;text-align:center;">{{data.pageValue}}</td>
+                                                                </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                        <div class="showmore" style="text-align:center" ng-show="chart.data.length>20">
+                                                            <a href ng-click="limitScroll=(limitScroll+10)" ng-show="limitScroll<chart.data.length">Show More</a>
+                                                            <span ng-show="limitScroll>20&&limitScroll<chart.data.length">|</span>
+                                                            <a href ng-click="limitScroll=(limitScroll-10)" ng-show="limitScroll>20">Show Less</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div ng-repeat="chart in customReport.widgetData[widget.id].chart" ng-if="chart.options.chart.type=== 'gaPageTechnicalEfficiencyTable'" style="float: left;padding-left: 2px;padding-right: 2px;" ng-style="{'height': (100/customReport.widgetData[widget.id].layoutOptionsY)+'%', 'width': (100/customReport.widgetData[widget.id].layoutOptionsX)+'%'}">
+                                            <div class="row" style="margin: 0px;height: 100%" >
+                                                <div events="events" style="height: 99%" ng-if="customReport.widgetData[widget.id].visibility == true" ng-init="limitScroll=20">
+                                                    <div class="scrollbar scrollInWidget" id="scroller">
+                                                        <div class="col-lg-12 table-responsive" style="overflow-x: hidden;padding:0px;">
+                                                            <table class="table table-striped">
+                                                                <thead>
+                                                                <tr style="padding:2px 5px;width:100%">
+                                                                    <th style="padding:5px 5px;width:40%;text-align:center;">Page </th>
+                                                                    <th style="padding:5px 5px;width:15%;text-align:center;">Page Views</th>
+                                                                    <th style="padding:5px 5px;width:15%;text-align:center;"> Avg page load time</th>
+                                                                    <th style="padding:5px 5px;width:15%;text-align:center;"> Bounce rate</th>
+                                                                </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                <tr style="padding:2px 5px;width:100%" ng-repeat="data in chart.data | limitTo: limitScroll" ng-if="data.pagePath">
+                                                                    <td style="padding:5px 5px;width:40%;text-align:left;">{{data.pageTitle}}<br><i>{{data.pagePath}}</i></td>
+                                                                    <td style="padding:5px 5px;width:15%;text-align:center;">{{data.pageviews}}</td>
+                                                                    <td style="padding:5px 5px;width:15%;text-align:center;">{{data.avgPageLoadTime}}</td>
+                                                                    <td style="padding:5px 5px;width:15%;text-align:center;">{{data.bounceRate}}</td>
+                                                                </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                        <div class="showmore" style="text-align:center" ng-show="chart.data.length>20">
+                                                            <a href ng-click="limitScroll=(limitScroll+10)" ng-show="limitScroll<chart.data.length">Show More</a>
+                                                            <span ng-show="limitScroll>20&&limitScroll<chart.data.length">|</span>
+                                                            <a href ng-click="limitScroll=(limitScroll-10)" ng-show="limitScroll>20">Show Less</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div ng-repeat="chart in customReport.widgetData[widget.id].chart" ng-if="chart.options.chart.type=== 'gaVisitorAcquisitionEfficiencyAnalysisTable'" style="float: left;padding-left: 2px;padding-right: 2px;" ng-style="{'height': (100/customReport.widgetData[widget.id].layoutOptionsY)+'%', 'width': (100/customReport.widgetData[widget.id].layoutOptionsX)+'%'}">
+                                            <div class="row" style="margin: 0px;height: 100%" >
+                                                <div events="events" style="height: 99%" ng-if="customReport.widgetData[widget.id].visibility == true" ng-init="limitScroll=20">
+                                                    <div class="scrollbar scrollInWidget" id="scroller">
+                                                        <div class="col-lg-12 table-responsive" style="overflow-x: hidden;padding:0px;">
+                                                            <table class="table table-striped">
+                                                                <thead>
+                                                                <tr style="padding:2px 5px;width:100%">
+                                                                    <th style="padding:5px 5px;width:40%;text-align:center;">Source/Medium </th>
+                                                                    <th style="padding:5px 5px;width:12%;text-align:center;">Sessions </th>
+                                                                    <th style="padding:5px 5px;width:12%;text-align:center;">Users</th>
+                                                                    <th style="padding:5px 5px;width:12%;text-align:center;">New Users</th>
+                                                                    <th style="padding:5px 5px;width:12%;text-align:center;">Goal Conversion Rate</th>
+                                                                    <th style="padding:5px 5px;width:12%;text-align:center;">Per Session Goal Value</th>
+                                                                </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                <tr style="padding:2px 5px;width:100%" ng-repeat="data in chart.data | limitTo: limitScroll" ng-if="data.sourceMedium">
+                                                                    {{data}}
+                                                                    <td style="padding:5px 5px;width:40%;text-align:left;">{{data.sourceMedium}}</td>
+                                                                    <td style="padding:5px 5px;width:12%;text-align:center;">{{data.sessions}}</td>
+                                                                    <td style="padding:5px 5px;width:12%;text-align:center;">{{data.users}}</td>
+                                                                    <td style="padding:5px 5px;width:12%;text-align:center;">{{data.newUsers}}</td>
+                                                                    <td style="padding:5px 5px;width:12%;text-align:center;">{{data.goalConversionRateAll}}</td>
+                                                                    <td style="padding:5px 5px;width:12%;text-align:center;">{{data.goalValuePerSession}}</td>
+                                                                </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                        <div class="showmore" style="text-align:center" ng-show="chart.data.length>20">
+                                                            <a href ng-click="limitScroll=(limitScroll+10)" ng-show="limitScroll<chart.data.length">Show More</a>
+                                                            <span ng-show="limitScroll>20&&limitScroll<chart.data.length">|</span>
+                                                            <a href ng-click="limitScroll=(limitScroll-10)" ng-show="limitScroll>20">Show Less</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div ng-repeat="chart in customReport.widgetData[widget.id].chart" ng-if="chart.options.chart.type=== 'topReferringSitesTable'" style="float: left;padding-left: 2px;padding-right: 2px;" ng-style="{'height': (100/customReport.widgetData[widget.id].layoutOptionsY)+'%', 'width': (100/customReport.widgetData[widget.id].layoutOptionsX)+'%'}">
+                                            <div class="row" style="margin: 0px;height: 100%" >
+                                                <div events="events" style="height: 99%" ng-if="customReport.widgetData[widget.id].visibility == true" ng-init="limitScroll=20">
+                                                    <div class="scrollbar scrollInWidget" id="scroller">
+                                                        <div class="col-lg-12 table-responsive" style="overflow-x: hidden;padding:0px;">
+                                                            <table class="table table-striped">
+                                                                <thead>
+                                                                <tr style="padding:2px 5px;width:100%">
+                                                                    <th style="padding:5px 5px;width:40%;text-align:center;">Source</th>
+                                                                    <th style="padding:5px 5px;width:12%;text-align:center;">Sessions </th>
+                                                                    <th style="padding:5px 5px;width:12%;text-align:center;">Goal Completions</th>
+                                                                    <th style="padding:5px 5px;width:12%;text-align:center;">Goal Conversion Rate</th>
+
+                                                                </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                <tr style="padding:2px 5px;width:100%" ng-repeat="data in chart.data | limitTo: limitScroll" ng-if="data.source">
+                                                                    {{data}}
+                                                                    <td style="padding:5px 5px;width:40%;text-align:left;">{{data.source}}</td>
+                                                                    <td style="padding:5px 5px;width:12%;text-align:center;">{{data.sessions}}</td>
+                                                                    <td style="padding:5px 5px;width:12%;text-align:center;">{{data.goalCompletions}}</td>
+                                                                    <td style="padding:5px 5px;width:12%;text-align:center;">{{data.goalConversionRate}}</td>
+                                                                </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                        <div class="showmore" style="text-align:center" ng-show="chart.data.length>20">
+                                                            <a href ng-click="limitScroll=(limitScroll+10)" ng-show="limitScroll<chart.data.length">Show More</a>
+                                                            <span ng-show="limitScroll>20&&limitScroll<chart.data.length">|</span>
+                                                            <a href ng-click="limitScroll=(limitScroll-10)" ng-show="limitScroll>20">Show Less</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div ng-repeat="chart in customReport.widgetData[widget.id].chart" ng-if="chart.options.chart.type=== 'pinterestEngagementRate'" style="float: left;padding-left: 2px;padding-right: 2px;" ng-style="{'height': (100/customReport.widgetData[widget.id].layoutOptionsY)+'%', 'width': (100/customReport.widgetData[widget.id].layoutOptionsX)+'%'}">
+                                            <div class="row" style="margin: 0px;height: 100%" id='chartTable-{{widget.id}}'>
+                                                <div events="events" style="height: 99%" ng-if="customReport.widgetData[widget.id].visibility == true">
+                                                    <div class="scrollbar scrollInWidget" id="scroller">
+                                                        <div class="col-lg-12 listed"  ng-class-odd="'odd'" ng-class-even="'even'" ng-repeat="data in chart.data">
+                                                            <div class="col-lg-12">
+                                                                <div class="postComment"><a class="apiLink" href="{{data.links}} " target="_blank">{{data.postComment}}</a></div>
+                                                                <div class="impression">
+                                                                    <div class="likes"><span>Likes: {{data.likes}}</span></div>
+                                                                    <div class="comment"><span>comments: {{data.comments}}</span></div>
+                                                                    <div class="comment"><span>Repins: {{data.repin}}</span></div>
+                                                                    <div class="date"><span>{{data.date}}</span></div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div ng-repeat="chart in customReport.widgetData[widget.id].chart" ng-if="chart.options.chart.type=== 'pinterestLeaderboard'" style="float: left;padding-left: 2px;padding-right: 2px;" ng-style="{'height': (100/customReport.widgetData[widget.id].layoutOptionsY)+'%', 'width': (100/customReport.widgetData[widget.id].layoutOptionsX)+'%'}">
+                                            <div class="row" style="margin: 0px;height: 100%" id='chartTable-{{widget.id}}'>
+                                                <div events="events" style="height: 99%" ng-if="customReport.widgetData[widget.id].visibility == true">
+                                                    <div class="scrollbar scrollInWidget" id="scroller">
+                                                        <div class="col-lg-12 listed"  ng-class-odd="'odd'" ng-class-even="'even'" ng-repeat="data in chart.data">
+                                                            <div class="col-lg-12">
+                                                                <div class="postComment"><a class="apiLink" href="{{data.links}} " target="_blank">{{data.postComment}}</a></div>
+                                                                <div class="impression">
+                                                                    <div class="likes"><span>collaborators: {{data.collaborators}}</span></div>
+                                                                    <div class="comment"><span>pins: {{data.followers}}</span></div>
+                                                                    <div class="comment"><span>followers: {{data.pins}}</span></div>
+                                                                    <div class="date"><span>{{data.date}}</span></div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div ng-repeat="chart in customReport.widgetData[widget.id].chart" ng-if="chart.options.chart.type=== 'vimeoTopVideos'" style="float: left;padding-left: 2px;padding-right: 2px;" ng-style="{'height': (100/customReport.widgetData[widget.id].layoutOptionsY)+'%', 'width': (100/customReport.widgetData[widget.id].layoutOptionsX)+'%'}">
+                                            <div class="row" style="margin: 0px;height: 100%" id='chartTable-{{widget.id}}'>
+                                                <div events="events" style="height: 99%" ng-if="customReport.widgetData[widget.id].visibility == true">
+                                                    <div class="scrollbar scrollInWidget" id="scroller">
+                                                        <div class="col-lg-12 listed"  ng-class-odd="'odd'" ng-class-even="'even'" ng-repeat="data in chart.data" ng-if="data.title">
+                                                            <div class="col-lg-1 listed-image" >
+                                                                <a  href="{{data.link }}" target="_blank"><img ng-src="{{data.picture}}" height="50px" widget="50px" /></a>
+                                                            </div>
+                                                            <div class="col-lg-11 aside">
+                                                                <div class="postComment"> <a  class="apiLink" href="{{data.link }}" target="_blank">  {{data.title}}</a></div>
+                                                                <div class="impression">
+                                                                    <div class="likes"><span>Likes: {{data.likes}}</span></div>
+                                                                    <div class="comment"><span>comments: {{data.comments}}</span></div>
+                                                                    <div class="likes"><span>Views: {{data.views}}</span></div>
+                                                                    <div class="date"><span>{{data.date}}</span></div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div ng-repeat="chart in customReport.widgetData[widget.id].chart track by $index" ng-if="chart.options.chart.type=== 'costPerActionType'" style="float: left;padding-left: 2px;padding-right: 2px;" ng-style="{'height': (100/customReport.widgetData[widget.id].layoutOptionsY)+'%', 'width': (100/customReport.widgetData[widget.id].layoutOptionsX)+'%'}">
+                                            <div ng-show="chart.data[0].values.flag==true">
+                                                <div class="center" style="vertical-align: middle">
+                                                    <button class="btn btn-primary gobutton-mode" ng-click="getActionType(chart.data[0].values.action,customReport.widgetData[widget.id].id)">Configure</button>
+                                                </div>
+                                                <div class="col-md-12" style="width:100%;padding-top: 5px">
+                                                    <div class="col-md-8" style="padding: 0px!important;float: left">
+                                                        <select class="form-control m-b choose-text"
+                                                                ng-show="actionTypeEnable[customReport.widgetData[widget.id].id]==true"
+                                                                ng-model="actionTypeOptionsModel"
+                                                                ng-options="str.name for str in actionTypeList"
+                                                                ng-change="saveMeta(customReport.widgetData[widget.id].id,actionTypeOptionsModel)">
+                                                            <option value="">Choose Objective</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-md-2" style="float: left">
+                                                        <button  ng-show="submitEnable[customReport.widgetData[widget.id].id]==true" class="btn btn-primary gobutton-mode" ng-click="reloadDashboard(customReport.widgetData[widget.id].id,actionTypeOptionsModel)">Go</button>
+                                                    </div>
+                                                </div>
+                                                <p ng-show="messageEnable[customReport.widgetData[widget.id].id]==true" style="margin:0px 0px 3px!important;font-weight: normal;color: #000000; font-family : Montserrat-Regular;font-size : 14px ; text-transform : uppercase ; text-align:center ; padding-left : 3px ; border-right : 3px solid white;"> Actions related to objective not yet registered </p>
+                                            </div>
+                                        </div>
+                                        <div ng-repeat="chart in customReport.widgetData[widget.id].chart" ng-if="chart.options.chart.type=== 'instagramHashtagLeaderBoard'" style="float: left;padding-left: 2px;padding-right: 2px;" ng-style="{'height': (100/customReport.widgetData[widget.id].layoutOptionsY)+'%', 'width': (100/customReport.widgetData[widget.id].layoutOptionsX)+'%'}">
+                                            <div class="row" style="margin: 0px;height: 100%" >
+                                                <div events="events" style="height: 99%" ng-if="customReport.widgetData[widget.id].visibility == true" ng-init="limitScroll=20">
+                                                    <div class="scrollbar scrollInWidget" id="scroller">
+                                                        <div class="col-lg-12 table-responsive" style="overflow-x: hidden;padding:0px;">
+                                                            <table class="table table-striped">
+                                                                <thead>
+                                                                <tr style="padding:2px 5px;width:100%">
+                                                                    <th style="padding:5px 5px;width:55%;text-align:center;">HashTag</th>
+                                                                    <th style="padding:5px 5px;width:15%;text-align:right;">Likes</th>
+                                                                    <th style="padding:5px 5px;width:15%;text-align:right;">Comments</th>
+                                                                </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                <tr style="padding:2px 5px;width:100%" ng-repeat="data in chart.data ">
+                                                                    <td style="padding:5px 5px;width:55%;text-align:left;"><a style="color: #000;" href="{{data.tagLink}}" target="_blank">{{data.tag}}<br></a></td>
+                                                                    <td style="padding:5px 5px;width:15%;text-align:right;">{{data.likes}}</td>
+                                                                    <td style="padding:5px 5px;width:15%;text-align:right;">{{data.comments}}</td>
+                                                                </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--<div class="context widgetTransparentImage" id="widgetTransparentImage-{{widget.id}}" ng-hide="tempDashboard" ng-click="callThePosition($event,widget.id)" style="width: 100%;height: 100%;"></div>-->
+                                </div>
+
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div ng-if="stepActive=='step2'&& !reportNotSupported" ng-show="stepActive=='step2' && !reportNotSupported" class="row white-bg" style="padding-left: 20px;padding-top: 25px;margin-left: 0px;margin-right:0px" >
+                <div clas="row">
+                    <div class="col col-sm-12 col-md-12 col-lg-12">
+                        <div class="col-sm-6 col-md-6 col-lg-6" style="border-right:1px dotted #aeaeae">
+                            <legend style="text-align: center;font-family: Montserrat-Bold;font-size:18px;color:#1074ae !important">Choose Your Logo</legend>
+                            <div class="scrollbar" id="scroller" style="height:80px!important;">
+                                <div class="col-sm-2 col-md-2 col-lg-2 logo-icons orgIcon" id="orgLogoIcons-default">
+                                    <div style="height:15%;float:right;margin: -5px 0px 0px 0px;"></div>
+                                    <img src="/userFiles/datapoolt.png" ng-click="selectedIconIndicator('org','orgLogoIcons-default');selectedOrgLogo('/userFiles/datapoolt.png')" style="max-width: 100%;height:85%;padding: 5px 5px; "/>
+                                </div>
+                                <div class="col-sm-2 col-md-2 col-lg-2 logo-icons orgIcon" ng-repeat="data in orgLogosList" id="orgLogoIcons-{{data._id}}">
+                                    <div  style="height:15%;float:right;margin: -5px 0px 0px 0px;">
+                                        <i id="getCheck-{{data._id}}" class="fa fa-minus-square" style="display:block;" ng-click="removeLogo(data,'org')"></i>
+                                    </div>
+                                    <img ng-src="{{data.fileUrl}}"style="max-width: 100%;height:85%;padding: 5px 5px;" ng-click="selectedIconIndicator('org','orgLogoIcons-'+data._id);selectedOrgLogo(data.fileUrl)"/>
+                                </div>
+                            </div>
+                            <form ref='uploadOrgLogoForm' id='uploadOrgLogoForm' name="uploadOrgLogoForm"  style="padding: 5px 5px;">
+                                <div class="col-sm-6"><input type="file" name="sampleFile" file-model="orgFile" ng-click="enableUploadbutton('org')" required/></div>
+                                <div class="col-sm-6"><button type="submit" style="padding:9px 19px" class="componentBtn btn-4 btn-4a" id='orgUploadButton' ng-click="submitUpload(orgFile,'org')" disabled="disabled">Upload</button></div>
+                            </form>
+                        </div>
+                        <div class="col-sm-6 col-md-6 col-lg-6">
+                            <legend style="text-align: center;font-family: Montserrat-Bold;font-size:18px;color:#1074ae !important">Choose Client Logo (Optional)</legend>
+                            <div class="scrollbar" id="scroller" style="height:80px!important">
+                                <div class="col-sm-2 col-md-2 col-lg-2 logo-icons cliIcon"  id='cliLogoIcons-default'>
+                                    <div style="height:15%;float:right;margin: -5px 0px 0px 0px;"></div>
+                                    <img src='/userFiles/plain-white.jpg' ng-click="selectedIconIndicator('cli','cliLogoIcons-default');selectedCliLogo('/userFiles/plain-white.jpg')" style="max-width: 100%;height:85%;padding: 5px 5px; "/>
+                                </div>
+                                <div class="col-sm-2 col-md-2 col-lg-2 logo-icons cliIcon" ng-repeat="data in cliLogosList" id="cliLogoIcons-{{data._id}}">
+                                    <div style="height:15%;float:right;margin: -5px 0px 0px 0px;">
+                                        <i id="getCheck-{{data._id}}" class="fa fa-minus-square" style="display:block;"  ng-click="removeLogo(data,'cli')"></i></div>
+                                    <img ng-src="{{data.fileUrl}}" ng-click="selectedIconIndicator('cli','cliLogoIcons-'+data._id);selectedCliLogo(data.fileUrl)" style="max-width: 100%;height:85%;padding: 5px 5px;"/>
+                                </div>
+                            </div>
+                            <form ref='uploadClientLogo' id='uploadClientLogo'>
+                                <div class="col-sm-6"><input type="file" name="sampleFile" file-model="cliFile" ng-click="enableUploadbutton('cli')"/></div>
+                                <div class="col-sm-6"><button type="submit" style="padding:9px 19px" class="componentBtn btn-4 btn-4a" id="clientUploadButton" ng-click="submitUpload(cliFile,'cli')" disabled="disabled">Upload</button></div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="max-height:60px;margin-left: 0px;margin-right:0px">
+                    <div class="col col-sm-12 col-md-12 col-lg-12">
+                        <legend style="text-align: center;font-family: Montserrat-Bold;font-size:18px;color:#1074ae !important">Header</legend>
+                        <div class="dashboardTemplate-items">
+                            <div class="col-sm-4 col-md-4 col-lg-4" style="float: left;"><img style="max-width: 90%;max-height:40px;padding: 5px;" ng-src="{{orgLogoSrc}}" /></div>
+                            <div class="col-sm-4 col-md-4 col-lg-4 " style="float:left;"> <p style="text-align:center;color:#000;font-size:20px;font-family:Montserrat-Bold;padding:5px;" ng-style="!customReport.reportName  && {'color':'#999'}  || customReport.reportName && {'color':'#000'}">{{customReport.reportName || 'Untitled Report'}}</p></div>
+                            <div class="col-sm-4 col-md-4 col-lg-4"style="float: right;"><img class='logoImage-icons' ng-src="{{cliLogoSrc}}" style="float:right;"/></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="max-height:40px;margin-left: 0px;margin-right:0px">
+                    <div class="col col-sm-12">
+                        <legend style="text-align: center;font-family: Montserrat-Bold;font-size:18px;color:#1074ae !important">Footer</legend>
+                        <div class=dashboardTemplate-items">
+                            <div class="col-sm-4" style="float: left;"><p style="color:#000;font-size:20px;font-family:Montserrat-Light;padding:5px">1|Page</p></div>
+                            <div class="col-sm-4"style="float: left;"><p style="text-align:center;color:#000;font-size:20px;font-family:Montserrat-Light;padding:5px">{{displayDate}}</p></div>
+                            <div class="col-sm-4" style="float: right;text-align:right"><img style="max-width: 90%;max-height:40px;padding:  5px;float:right;" ng-src="{{orgLogoSrc}}"/></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div ng-if="stepActive=='step3'&& !reportNotSupported" ng-show="stepActive=='step3'&& !reportNotSupported" ng-repeat="(pageIndex,pageDetails) in exportReportPages" style="padding:40px 0px ">
+                <div id="gridsterItemsInReport-{{pageIndex}}">
+                    <div class="row  white-bg border-bottom" style="max-height:50px;padding:50px 0px 70px 0px;margin-left: 0px;margin-right:0px;">
+                        <div class="col col-sm-12 col-md-12 col-lg-12">
+                            <div class="dashboardTemplate-items ">
+                                <div class="col-sm-4 col-md-4 col-lg-4" style="float: left;"><img ng-src="{{orgLogoSrc}}" style="max-width: 90%;max-height:40px;padding: 5px 0px;"/></div>
+                                <div class="col-sm-4 col-md-4 col-lg-4 " style="float:left;"> <p style="text-align:center;color:#000;font-family:Montserrat-Bold;padding:5px;font-size:30px !important" ng-style="!customReport.reportName  && {'color':'#999'}  || customReport.reportName && {'color':'#000'}">{{customReport.reportName || 'Untitled Report'}}</p></div>
+                                <div class="col-sm-4 col-md-4 col-lg-4"style="float: right;"><img ng-src="{{cliLogoSrc}}" style="max-width: 90%;max-height:40px;padding:  5px 0px;float:right;"/></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div gridster="exportReportGridsterOptions" class="row center white-bg " style="min-height:500px;"><!--ng-repeat="pages in totalPagesinReport" id="gridsterItems-{{pages}}"ng-switch-when="true"-->
+                        <ul>
+                            <li gridster-item="widget" ng-repeat="(widgetIndex,widget) in pageDetails" ><!--ng-if="widget.pageNumber==pages"-->
+                                <div ng-if="widget.widgetType=='reportHeadingWidget'"  style="height: 100%;width: 100%;">
+                                    <div class="box getBox-{{widget.id}}" style=" border: 0px !important;"  id="{{widget.id}}" >
+                                        <div class="box-content" style="top:5px!important;padding: 0px !important;vertical-align: middle" ng-style="{position:(isMobile?'static':'absolute')}">
+                                            <div class="row getWidgetGraph textWidget" style="height: 100%;margin:0px;" ng-if="widget.widgetType=='reportHeadingWidget'">
+                                                <p class="head-widget" style="text-align: center !important;overflow:hidden">{{widget.textData}}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div ng-if="widget.widgetType=='reportParaWidget'"  style="height: 100%;width: 100%;">
+                                    <div class="box getBox-{{widget.id}}" style=" border: 0px !important;"  id="{{widget.id}}" >
+                                        <div class="box-content " style="top:5px!important;padding: 0px !important;vertical-align: middle" ng-style="{position:(isMobile?'static':'absolute')}">
+                                            <div class="row getWidgetGraph textWidget" style="height: 100%;margin:0px;" ng-if="widget.widgetType=='reportParaWidget'">
+                                                <p class="para-widget" style="text-align: left !important;overflow:hidden">{{widget.textData}}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div  ng-if="widget.widgetType!='reportHeadingWidget'&&widget.widgetType!='reportParaWidget'" style="width: 100%;height: 100%">
+                                    <div class="box getBox-{{widget.id}}" style=" border: 0px !important;"  id="{{widget.id}}">
+                                        <div class="reportbox-header" id="getWidgetColor-{{widget.id}}" ref="{{customReport.widgetData[widget.id].color}}" style="border-bottom: 0px solid #e8e8e8 !important;background-color: #ffffff;"> <!--ng-style="{'background-color': customReport.widgetData[widget.id].color}"-->
+                                            <div style="float: left;width: 93%;">
+                                                <img src="image/thumbnail/{{widget.channelName}}.png" style="vertical-align: super;max-height: 31px; max-width: 50px; padding:5px"/>
+                                                <h3 ng-style="widget.sizeX!=1  && {'width':'80%'}  || widget.sizeX==1 && {'width':'50%'} ">{{customReport.widgetData[widget.id].name}}</h3>
+                                            </div>
+                                        </div>
+
+                                        <div class="box-content widgetBoxBorder" style="vertical-align: middle" ng-style="{position:(isMobile?'static':'absolute')}">
+                                            <div ng-if="customReport.widgetData[widget.id].visibility == false" style="height:100%;">
+                                                <div class="spiner-example" id="widgetData-{{widget.id}}">
+                                                    <div class="sk-spinner sk-spinner-double-bounce">
+                                                        <div class="sk-double-bounce1"></div>
+                                                        <div class="sk-double-bounce2"></div>
+                                                    </div>
+                                                </div>
+                                                <div class="errorWidgetData" id="errorWidgetData-{{widget.id}}">
+                                                    <div class="row" style="margin: 0px;height: 100%">
+                                                        <div style="height:99%;">
+                                                            <div style="position:relative; top:36%; text-align:center; padding-right:20px">
+                                                                <p style="word-wrap:break-word;font-size: 10px;">Your credential is insufficient to fetch data for this metric</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class=" errorWidgetData  background-color" id="errorWidgetTokenexpire-{{widget.id}}" style="margin-top: 0%;">
+                                                    <div class="row" style="margin: 0px;height: 100%">
+                                                        <div style="height:99%;">
+                                                            <div style="position:relative; top:25%; text-align:center; padding-right:20px">
+                                                                <p style="word-wrap:break-word;font-size: 10px;">Access to one or more profiles has expired</p>
+                                                                <a ><i style="color: #23527c;" class="fa fa-refresh" aria-hidden="true"> </i><p style="color:#000;font-size: 10px">  Refresh</p></a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row getWidgetGraph" style="height: 100%;margin:0px;" ng-if="customReport.widgetData[widget.id].visibility == true">
+                                                <div ng-repeat="(chartIndex,chart) in customReport.widgetData[widget.id].chart" ng-if="chart.options.chart.type=== 'lineChart' || chart.options.chart.type=== 'engagedUsersReach' || chart.options.chart.type=== 'area' ||chart.options.chart.type=== 'pieChart' || chart.options.chart.type=== 'reachVsImpressions' || chart.options.chart.type=== 'multiBarChart' || chart.options.chart.type=== 'multiChart'" style="float: left;padding-left: 2px;padding-right: 2px;" ng-style="{'height': (100/customReport.widgetData[widget.id].layoutOptionsY)+'%', 'width': (100/customReport.widgetData[widget.id].layoutOptionsX)+'%'}">
+                                                    <div class="col col-lg-4 col-sm-4 col-md-4" ng-if="customReport.widgetData[widget.id].showSummary !=false" style="margin:0px;height:100%;padding-left:5px;padding-right:5px;"><!--  ng-style="calculateSummaryHeight(widget.sizeY,chart.data.length)">-->
+                                                        <ul style="height:100%;font-size:12px;padding-left: 5px;">
+                                                            <li  ng-repeat="data in chart.data" ng-class="{'summaryAlign': chart.data.length<=3}" style="text-align: center;padding-top: 1px;padding-left:0px;padding-right: 2px;font-size: 1.0em!important;" id="li-{{widget.id}}-{{$index}}" class="col col-lg-12" ng-style="calculateRowHeight(data,chart.data.length,widget.sizeY,customReport.widgetData[widget.id].layoutOptionsX)"><!--size-watcher-width="data.mywidth"--><!--ng-class="calculateColumnWidth(chart.data.length,widget.sizeX,customReport.widgetData[widget.id].layoutOptionsX)" ng-style="calculateRowHeight(data,chart.data.length,widget.sizeX,widget.sizeY,customReport.widgetData[widget.id].layoutOptionsX)"-->
+                                                                <div style="margin: 0px;height: 100%;overflow: hidden;white-space: nowrap;color: #000000;text-align: center;" >
+                                                                    <p class="summaryKeyFont" ng-class="{'reportSummaryKeyDoubleFont': customReport.widgetData[widget.id].layoutOptionsX>1}" ng-if="chart.options.chart.type != 'pieChart'" ng-show="data.showComparision==false" ng-style="{ 'font-family' : 'Montserrat-Regular','text-transform':'uppercase',  'border-bottom': '4px solid', 'border-color': data.color, 'padding-left': '3px'}" style="margin:0px 0px 3px!important;font-weight: bold;padding-top: 2px;padding-bottom: 2px;"> {{data.key}} - {{data.summaryDisplay}} <i ng-if="data.arrow==='up' && data.variance !=0" style="font-size:1.0em;color:#2A8539" class="fa fa-arrow-up" aria-hidden="true"></i><i ng-if='data.arrow==="down" && data.variance !=0' style="font-size: 1.0em;color:#FF1B1B" class="fa fa-arrow-down" aria-hidden="true"></i></p>
+                                                                    <p class="summaryKeyFont" ng-class="{'reportSummaryKeyDoubleFont': customReport.widgetData[widget.id].layoutOptionsX>1}" ng-if="chart.options.chart.type == 'pieChart'" ng-show="data.showComparision==false" ng-style="{ 'font-family' : 'Montserrat-Regular','text-transform':'uppercase',  'border-bottom': '4px solid', 'border-color': data.color, 'padding-left': '3px'}" style="margin:0px 0px 3px!important;font-weight: bold;padding-top: 2px;padding-bottom: 2px;"> {{data.key}} - {{data.summaryDisplay}}</p>
+                                                                    <p class="summaryKeyFont" ng-class="{'reportSummaryKeyDoubleFont': customReport.widgetData[widget.id].layoutOptionsX>1}" ng-show="data.showComparision==true" ng-style="{ 'font-family' : 'Montserrat-Black','text-transform':'uppercase',  'border-bottom': '4px solid', 'border-color': data.color, 'padding-left': '3px'}" style="margin:0px 0px 3px!important;font-weight: bold;padding-top: 2px;padding-bottom: 2px;"> {{data.key}}</p>
+                                                                    <div class="col col-lg-12 col-sm-12 col-md-12 col-xs-12 " style="padding: 0px 0px 0px 0px!important;">
+                                                                        <div class="col col-lg-5 col-sm-5 col-md-5 col-xs-5">
+                                                                            <p ng-show="data.showComparision==true" class="summaryFont" ng-class="{'summaryDoubleFont': customReport.widgetData[widget.id].layoutOptionsX>1}"ng-style="{ 'font-family' : 'Montserrat-Black', 'text-transform':'uppercase', 'padding-left': '0px', 'border-right': '3px solid white','float':'left'}" style="margin:0px 0px 3px!important;font-weight: bold;"> {{data.summaryDisplay}}</p>
+                                                                        </div>
+                                                                        <div class="col col-lg-7 col-sm-7 col-md-7 col-xs-7" style="padding: 0px 0px 0px 0px!important;">
+                                                                            <!--<p ng-style="{'color': '#979797', 'font-family' : 'Heebo-Medium','font-size':'12px', 'text-transform':'uppercase', 'background-color': 'whitesmoke'}" style="margin:0px 0px 3px!important;font-weight: bold;">{{data.key}} - <b ng-style="{'color':data.color, 'font-family' : 'Heebo-Medium'}"> {{data.summaryDisplay}} </b></p>-->
+                                                                            <p ng-if="chart.options.chart.type != 'pieChart'" class="summaryKeyFont" ng-class="{'reportSummaryKeyDoubleFont': customReport.widgetData[widget.id].layoutOptionsX>1}" ng-show="data.showComparision==true" style="padding-top:3px;margin:1px 0px 1px!important;overflow: hidden;float: right;">{{data.period}}: <span ng-if="data.variance !=0">{{data.variance}}%  </span><i ng-if="data.arrow==='up' && data.variance !=0" style="font-size:0.8em;color:#2A8539" class="fa fa-arrow-up" aria-hidden="true"></i><i ng-if='data.arrow==="down" && data.variance !=0' style="font-size: 0.8em;color:#FF1B1B" class="fa fa-arrow-down" aria-hidden="true"></i></p>
+                                                                        </div>
+                                                                    </div>
+                                                                    <!--<p ng-if="chart.options.chart.type != 'pieChart'" style="font-size: 14px;font-family: Heebo-Light;">{{data.period}}- <span ng-if="data.variance !=0">{{data.variance}}%</span><i ng-if="data.arrow==='up' && data.variance !=0" style="font-size: 0.8em;color:#2A8539" class="fa fa-arrow-up" aria-hidden="true"></i><i ng-if='data.arrow==="down" && data.variance !=0' style="font-size: 0.8em;color:#FF1B1B" class="fa fa-arrow-down" aria-hidden="true"></i></p>-->
+                                                                </div>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                    <div id="{{'reportUpdateHeight-'+pageIndex+'-'+widgetIndex}}" ng-class="{'col col-lg-8 col-sm-8 col-md-8':customReport.widgetData[widget.id].showSummary !=false}" ng-class="{'col col-lg-12 col-sm-12 col-md-12':customReport.widgetData[widget.id].showSummary ===false}" style="height:100%;padding-left:5px;padding-right:5px;">
+                                                        <!--
+                                                                                                     ng-init="calculateChartHeight(widget.sizeY,chart.data.length,widgetIndex)">
+                                                        -->
+                                                        <!--<nvd3 options="chart.options" data="chart.data" api="chart.api" config="{refreshDataOnly:true, deepWatchDataDepth: 0}" events="events" ng-if="customReport.widgetData[widget.id].visibility == true"></nvd3>-->
+                                                        <div id="{{'reportChartOptions-'+pageIndex+'-'+widgetIndex}}"   style="width:100%;height:100%;">
+                                                            <hc-chart options="chart.chartOptions"
+                                                                      id="{{'reportChartRepeat-'+pageIndex+'-'+widgetIndex+'-'+chartIndex}}"
+                                                                      ng-init="setChartSizeInReport(pageIndex,widgetIndex,chartIndex);"
+                                                            >Placeholder for generic chart
+                                                            </hc-chart>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div ng-repeat="(chartIndex,chart) in customReport.widgetData[widget.id].chart" ng-if="chart.options.chart.type=== 'visitorAcquisitionEfficiency'" style="float: left;padding-left: 2px;padding-right: 2px;" ng-style="{'height': (100/customReport.widgetData[widget.id].layoutOptionsY)+'%', 'width': (100/customReport.widgetData[widget.id].layoutOptionsX)+'%'}">
+                                                    <div id="{{'reportUpdateHeight-'+pageIndex+'-'+widgetIndex}}" class="col col-lg-12 col-sm-12 col-md-12 col-xs-12" style="height:100%;padding-left:5px;padding-right:5px;">
+                                                        <div id="{{'reportChartOptions-'+pageIndex+'-'+widgetIndex}}"   style="width:100%;height:100%;">
+                                                            <hc-chart options="chart.chartOptions"
+                                                                      id="{{'reportChartRepeat-'+pageIndex+'-'+widgetIndex+'-'+chartIndex}}"
+                                                                      ng-init="setChartSizeInReport(pageIndex,widgetIndex,chartIndex);"
+                                                            >Placeholder for generic chart
+                                                            </hc-chart>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div ng-repeat="(chartIndex,chart) in customReport.widgetData[widget.id].chart" ng-if="chart.options.chart.type=== 'mozoverview'" style="padding-left: 2px;padding-right: 2px;" ng-style="{'height': (100/customReport.widgetData[widget.id].layoutOptionsY)+'%', 'width': (100/customReport.widgetData[widget.id].layoutOptionsX)+'%'}">
+                                                    <div events="events" style="clear: both;height: 99%;" ng-if="customReport.widgetData[widget.id].visibility == true" >
+                                                        <div class="scrollbar scrollInWidget" id="scroller">
+                                                            <table class="table table-striped">
+                                                                <tr style="padding:2px 5px;width:100%">
+                                                                    <th style="padding:5px 5px;width:55%;">Moz Rank</th>
+                                                                    <th style="padding:5px 5px;width:15%;text-align:right;">{{chart.displayData.mozRankURL}}</th>
+                                                                </tr>
+                                                                <tr style="padding:2px 5px;width:100%">
+                                                                    <th style="padding:5px 5px;width:55%;">External Links</th>
+                                                                    <th style="padding:5px 5px;width:15%;text-align:right;">{{chart.displayData.externalEquityLinks}}</th>
+                                                                </tr>
+                                                                <tr style="padding:2px 5px;width:100%">
+                                                                    <th style="padding:5px 5px;width:55%;">Back Links</th>
+                                                                    <th style="padding:5px 5px;width:15%;text-align:right;">{{chart.displayData.links}}</th>
+                                                                </tr>
+                                                                <tr style="padding:2px 5px;width:100%">
+                                                                    <th style="padding:5px 5px;width:55%;">domain Authority</th>
+                                                                    <th style="padding:5px 5px;width:15%;text-align:right;">{{chart.displayData.domainageAuthority}}</th>
+                                                                </tr>
+                                                                <tr style="padding:2px 5px;width:100%">
+                                                                    <th style="padding:5px 5px;width:55%;">Page Authority</th>
+                                                                    <th style="padding:5px 5px;width:15%;text-align:right;">{{chart.displayData.pageAuthority}}</th>
+                                                                </tr>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div ng-repeat="chart in customReport.widgetData[widget.id].chart" ng-if="chart.options.chart.type=== 'emptyCharts'" style="float: left;padding-left: 2px;padding-right: 2px;" ng-style="{'height': (100/customReport.widgetData[widget.id].layoutOptionsY)+'%', 'width': (100/customReport.widgetData[widget.id].layoutOptionsX)+'%'}">
+                                                    <div class="row" style="margin: 0px;height: 100%">
+                                                        <div events="events" style="height: 99%;" ng-if="customReport.widgetData[widget.id].visibility == true">
+                                                            <div style="position:relative; top: 36%; text-align: center" ng-repeat="data in chart.data">
+                                                                <p style="word-wrap:break-word;">{{data.message}}</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div ng-repeat="chart in customReport.widgetData[widget.id].chart" ng-if="chart.options.chart.type=== 'instagramPosts'" style="float: left;padding-left: 2px;padding-right: 2px;" ng-style="{'height': (100/customReport.widgetData[widget.id].layoutOptionsY)+'%', 'width': (100/customReport.widgetData[widget.id].layoutOptionsX)+'%'}">
+                                                    <div class="row" style="margin: 0px;height: 100%" id='chartTable-{{widget.id}}'>
+                                                        <div events="events" style="height: 99%" ng-if="customReport.widgetData[widget.id].visibility == true">
+                                                            <div class="scrollbar scrollInWidget" id="scroller">
+                                                                <div class="col-lg-12 listed"  ng-class-odd="'odd'" ng-class-even="'even'" ng-class="{responsiveInstagramListed:widget.sizeX<2}" ng-repeat="data in chart.data">
+                                                                    <div class="col-lg-1 listed-image" >
+                                                                        <a  href="{{data.links}}" target="_blank"><img ng-src="{{data.image}}" height="50px" widget="50px"/></a>
+                                                                    </div>
+                                                                    <div class="col-lg-11 aside">
+                                                                        <div class="postComment"><a class="apiLink" href="{{data.links}} " target="_blank">{{data.postComment}}</a></div>
+                                                                        <div class="impression">
+                                                                            <div class="likes"><span>likes:{{data.likes}}</span></div>
+                                                                            <div class="comment"><span>Comments:{{data.comments}}</span></div>
+                                                                            <div class="date"><span class="date">{{data.date}}</span></div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div ng-repeat="chart in customReport.widgetData[widget.id].chart" ng-if="chart.options.chart.type=== 'highEngagementTweets'" style="float: left;padding-left: 2px;padding-right: 2px;" ng-style="{'height': (100/customReport.widgetData[widget.id].layoutOptionsY)+'%', 'width': (100/customReport.widgetData[widget.id].layoutOptionsX)+'%'}">
+                                                    <div class="row" style="margin: 0px;height: 100%" id='chartTable-{{widget.id}}'>
+                                                        <div events="events" style="height: 99%" ng-if="customReport.widgetData[widget.id].visibility == true">
+                                                            <div class="scrollbar scrollInWidget" id="scroller">
+                                                                <div class="col-lg-12 listed"  ng-class-odd="'odd'" ng-class-even="'even'" ng-repeat="data in chart.data" ng-if="data.postComment">
+                                                                    <div class="col-lg-12">
+                                                                        <div class="postComment"><a ng-if="data.links.media" class="apiLink" href="{{data.links.media[0].expanded_url}} " target="_blank">{{data.postComment}}</a><a ng-if="!data.links.media[0]" class="apiLink" href="https://twitter.com" target="_blank">{{data.postComment}}</a></div>
+                                                                        <div class="impression">
+                                                                            <div class="likes"><span>Likes: {{data.likes}}</span></div>
+                                                                            <div class="comment"><span>Retweets: {{data.reTweet}}</span></div>
+                                                                            <div class="date"><span>{{data.date}}</span></div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div ng-repeat="chart in customReport.widgetData[widget.id].chart" ng-if="chart.options.chart.type=== 'highestEngagementLinkedIn'" style="float: left;padding-left: 2px;padding-right: 2px;" ng-style="{'height': (100/customReport.widgetData[widget.id].layoutOptionsY)+'%', 'width': (100/customReport.widgetData[widget.id].layoutOptionsX)+'%'}">
+                                                    <div class="row" style="margin: 0px;height: 100%" id='chartTable-{{widget.id}}'>
+                                                        <div events="events" style="height: 99%" ng-if="customReport.widgetData[widget.id].visibility == true">
+                                                            <div class="scrollbar scrollInWidget" id="scroller">
+                                                                <div class="col-lg-12 listed"  ng-class-odd="'odd'" ng-class-even="'even'" ng-class="{responsiveListed:widget.sizeX<2}" ng-repeat="data in chart.data" ng-if="data.postComment">
+                                                                    <div class="col-lg-12">
+                                                                        <div class="postComment"><a class="apiLink" href="{{data.link}} " target="_blank">{{data.postComment}}</a></div>
+                                                                        <div class="impression">
+                                                                            <div class="likes"><span>Likes: {{data.likes}}</span></div>
+                                                                            <div class="comment"><span>comments: {{data.comments}}</span></div>
+                                                                            <div class="comment"><span>shares: {{data.shares}}</span></div>
+                                                                            <div class="comment"><span>clicks: {{data.clicks}}</span></div>
+                                                                            <div class="comment"><span>impressions: {{data.impressions}}</span></div>
+                                                                            <div ng-style="widget.sizeX<=2  && {'float':'left'}  || widget.sizeX>2 && {'float':'right'}"><span>{{data.date}}</span></div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <!--<div class="col-lg-12" style="position: relative;top:40%;text-align: center;" ng-if="!chart.data.postComment">-->
+                                                                <!--<span >No Updates available</span>-->
+                                                                <!--</div>-->
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div ng-repeat="chart in customReport.widgetData[widget.id].chart" ng-if="chart.options.chart.type=== 'gaTopPagesByVisit'" style="float: left;padding-left: 2px;padding-right: 2px;" ng-style="{'height': (100/customReport.widgetData[widget.id].layoutOptionsY)+'%', 'width': (100/customReport.widgetData[widget.id].layoutOptionsX)+'%'}">
+                                                    <div class="row" style="margin: 0px;height: 100%" >
+                                                        <div events="events" style="height: 99%" ng-if="customReport.widgetData[widget.id].visibility == true" ng-init="limitScroll=20">
+                                                            <div class="scrollbar scrollInWidget" id="scroller">
+                                                                <div class="col-lg-12 table-responsive" style="overflow-x: hidden;padding:0px;">
+                                                                    <table class="table table-striped">
+                                                                        <thead>
+                                                                        <tr style="padding:2px 5px;width:100%">
+                                                                            <th style="padding:5px 5px;width:55%;text-align:center;">Page</th>
+                                                                            <th style="padding:5px 5px;width:15%;text-align:right;">Page views</th>
+                                                                            <th style="padding:5px 5px;width:15%;text-align:right;">Avg. Time on page</th>
+                                                                            <th style="padding:5px 5px;width:15%;text-align:right;">Bounce Rate</th>
+                                                                        </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                        <tr style="padding:2px 5px;width:100%" ng-repeat="data in chart.data | limitTo: limitScroll" ng-if="data.pagePath">
+                                                                            <td style="padding:5px 5px;width:55%;text-align:left;">{{data.pageTitle}}<br><i>{{data.pagePath}}</i></td>
+                                                                            <td style="padding:5px 5px;width:15%;text-align:right;">{{data.pageviews}}</td>
+                                                                            <td style="padding:5px 5px;width:15%;text-align:right;">{{data.avgTimeOnpage}}</td>
+                                                                            <td style="padding:5px 5px;width:15%;text-align:right;">{{data.bouncesRate}}</td>
+                                                                        </tr>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                                <div class="showmore" style="text-align:center" ng-show="chart.data.length>20">
+                                                                    <a href ng-click="limitScroll=(limitScroll+10)" ng-show="limitScroll<chart.data.length">Show More</a>
+                                                                    <span ng-show="limitScroll>20&&limitScroll<chart.data.length">|</span>
+                                                                    <a href ng-click="limitScroll=(limitScroll-10)" ng-show="limitScroll>20">Show Less</a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div ng-repeat="chart in customReport.widgetData[widget.id].chart" ng-if="chart.options.chart.type=== 'gaPageContentEfficiencyTable'" style="float: left;padding-left: 2px;padding-right: 2px;" ng-style="{'height': (100/customReport.widgetData[widget.id].layoutOptionsY)+'%', 'width': (100/customReport.widgetData[widget.id].layoutOptionsX)+'%'}">
+                                                    <div class="row" style="margin: 0px;height: 100%" >
+                                                        <div events="events" style="height: 99%" ng-if="customReport.widgetData[widget.id].visibility == true" ng-init="limitScroll=20">
+                                                            <div class="scrollbar scrollInWidget" id="scroller">
+                                                                <div class="col-lg-12 table-responsive" style="overflow-x: hidden;padding:0px;">
+                                                                    <table class="table table-striped">
+                                                                        <thead>
+                                                                        <tr style="padding:2px 5px;width:100%">
+                                                                            <th style="padding:5px 5px;width:40%;text-align:center;">Page </th>
+                                                                            <th style="padding:5px 5px;width:10%;text-align:center;">Unique Page views </th>
+                                                                            <th style="padding:5px 5px;width:10%;text-align:center;">Page Views</th>
+                                                                            <th style="padding:5px 5px;width:10%;text-align:center;">Entrance Rate</th>
+                                                                            <th style="padding:5px 5px;width:10%;text-align:center;">Avg. Time on page</th>
+                                                                            <th style="padding:5px 5px;width:10%;text-align:center;">Bounce Rate</th>
+                                                                            <th style="padding:5px 5px;width:10%;text-align:center;">Page Value</th>
+                                                                        </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                        <tr style="padding:2px 5px;width:100%" ng-repeat="data in chart.data | limitTo: limitScroll" ng-if="data.pagePath">
+                                                                            <td style="padding:5px 5px;width:40%;text-align:left;">{{data.pageTitle}}<br><i>{{data.pagePath}}</i></td>
+                                                                            <td style="padding:5px 5px;width:10%;text-align:center;">{{data.uniquePageviews}}</td>
+                                                                            <td style="padding:5px 5px;width:10%;text-align:center;">{{data.pageviews}}</td>
+                                                                            <td style="padding:5px 5px;width:10%;text-align:center;">{{data.entranceRate}}</td>
+                                                                            <td style="padding:5px 5px;width:10%;text-align:center;">{{data.avgTimeOnPage}}</td>
+                                                                            <td style="padding:5px 5px;width:10%;text-align:center;">{{data.bounceRate}}</td>
+                                                                            <td style="padding:5px 5px;width:10%;text-align:center;">{{data.pageValue}}</td>
+                                                                        </tr>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                                <div class="showmore" style="text-align:center" ng-show="chart.data.length>20">
+                                                                    <a href ng-click="limitScroll=(limitScroll+10)" ng-show="limitScroll<chart.data.length">Show More</a>
+                                                                    <span ng-show="limitScroll>20&&limitScroll<chart.data.length">|</span>
+                                                                    <a href ng-click="limitScroll=(limitScroll-10)" ng-show="limitScroll>20">Show Less</a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div ng-repeat="chart in customReport.widgetData[widget.id].chart" ng-if="chart.options.chart.type=== 'gaPageTechnicalEfficiencyTable'" style="float: left;padding-left: 2px;padding-right: 2px;" ng-style="{'height': (100/customReport.widgetData[widget.id].layoutOptionsY)+'%', 'width': (100/customReport.widgetData[widget.id].layoutOptionsX)+'%'}">
+                                                    <div class="row" style="margin: 0px;height: 100%" >
+                                                        <div events="events" style="height: 99%" ng-if="customReport.widgetData[widget.id].visibility == true" ng-init="limitScroll=20">
+                                                            <div class="scrollbar scrollInWidget" id="scroller">
+                                                                <div class="col-lg-12 table-responsive" style="overflow-x: hidden;padding:0px;">
+                                                                    <table class="table table-striped">
+                                                                        <thead>
+                                                                        <tr style="padding:2px 5px;width:100%">
+                                                                            <th style="padding:5px 5px;width:40%;text-align:center;">Page </th>
+                                                                            <th style="padding:5px 5px;width:15%;text-align:center;">Page Views</th>
+                                                                            <th style="padding:5px 5px;width:15%;text-align:center;"> Avg page load time</th>
+                                                                            <th style="padding:5px 5px;width:15%;text-align:center;"> Bounce rate</th>
+                                                                        </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                        <tr style="padding:2px 5px;width:100%" ng-repeat="data in chart.data | limitTo: limitScroll" ng-if="data.pagePath">
+                                                                            <td style="padding:5px 5px;width:40%;text-align:left;">{{data.pageTitle}}<br><i>{{data.pagePath}}</i></td>
+                                                                            <td style="padding:5px 5px;width:15%;text-align:center;">{{data.pageviews}}</td>
+                                                                            <td style="padding:5px 5px;width:15%;text-align:center;">{{data.avgPageLoadTime}}</td>
+                                                                            <td style="padding:5px 5px;width:15%;text-align:center;">{{data.bounceRate}}</td>
+                                                                        </tr>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                                <div class="showmore" style="text-align:center" ng-show="chart.data.length>20">
+                                                                    <a href ng-click="limitScroll=(limitScroll+10)" ng-show="limitScroll<chart.data.length">Show More</a>
+                                                                    <span ng-show="limitScroll>20&&limitScroll<chart.data.length">|</span>
+                                                                    <a href ng-click="limitScroll=(limitScroll-10)" ng-show="limitScroll>20">Show Less</a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div ng-repeat="chart in customReport.widgetData[widget.id].chart" ng-if="chart.options.chart.type=== 'gaVisitorAcquisitionEfficiencyAnalysisTable'" style="float: left;padding-left: 2px;padding-right: 2px;" ng-style="{'height': (100/customReport.widgetData[widget.id].layoutOptionsY)+'%', 'width': (100/customReport.widgetData[widget.id].layoutOptionsX)+'%'}">
+                                                    <div class="row" style="margin: 0px;height: 100%" >
+                                                        <div events="events" style="height: 99%" ng-if="customReport.widgetData[widget.id].visibility == true" ng-init="limitScroll=20">
+                                                            <div class="scrollbar scrollInWidget" id="scroller">
+                                                                <div class="col-lg-12 table-responsive" style="overflow-x: hidden;padding:0px;">
+                                                                    <table class="table table-striped">
+                                                                        <thead>
+                                                                        <tr style="padding:2px 5px;width:100%">
+                                                                            <th style="padding:5px 5px;width:40%;text-align:center;">Source/Medium </th>
+                                                                            <th style="padding:5px 5px;width:12%;text-align:center;">Sessions </th>
+                                                                            <th style="padding:5px 5px;width:12%;text-align:center;">Users</th>
+                                                                            <th style="padding:5px 5px;width:12%;text-align:center;">New Users</th>
+                                                                            <th style="padding:5px 5px;width:12%;text-align:center;">Goal Conversion Rate</th>
+                                                                            <th style="padding:5px 5px;width:12%;text-align:center;">Per Session Goal Value</th>
+                                                                        </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                        <tr style="padding:2px 5px;width:100%" ng-repeat="data in chart.data | limitTo: limitScroll" ng-if="data.sourceMedium">
+                                                                            {{data}}
+                                                                            <td style="padding:5px 5px;width:40%;text-align:left;">{{data.sourceMedium}}</td>
+                                                                            <td style="padding:5px 5px;width:12%;text-align:center;">{{data.sessions}}</td>
+                                                                            <td style="padding:5px 5px;width:12%;text-align:center;">{{data.users}}</td>
+                                                                            <td style="padding:5px 5px;width:12%;text-align:center;">{{data.newUsers}}</td>
+                                                                            <td style="padding:5px 5px;width:12%;text-align:center;">{{data.goalConversionRateAll}}</td>
+                                                                            <td style="padding:5px 5px;width:12%;text-align:center;">{{data.goalValuePerSession}}</td>
+                                                                        </tr>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                                <div class="showmore" style="text-align:center" ng-show="chart.data.length>20">
+                                                                    <a href ng-click="limitScroll=(limitScroll+10)" ng-show="limitScroll<chart.data.length">Show More</a>
+                                                                    <span ng-show="limitScroll>20&&limitScroll<chart.data.length">|</span>
+                                                                    <a href ng-click="limitScroll=(limitScroll-10)" ng-show="limitScroll>20">Show Less</a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div ng-repeat="chart in customReport.widgetData[widget.id].chart" ng-if="chart.options.chart.type=== 'topReferringSitesTable'" style="float: left;padding-left: 2px;padding-right: 2px;" ng-style="{'height': (100/customReport.widgetData[widget.id].layoutOptionsY)+'%', 'width': (100/customReport.widgetData[widget.id].layoutOptionsX)+'%'}">
+                                                    <div class="row" style="margin: 0px;height: 100%" >
+                                                        <div events="events" style="height: 99%" ng-if="customReport.widgetData[widget.id].visibility == true" ng-init="limitScroll=20">
+                                                            <div class="scrollbar scrollInWidget" id="scroller">
+                                                                <div class="col-lg-12 table-responsive" style="overflow-x: hidden;padding:0px;">
+                                                                    <table class="table table-striped">
+                                                                        <thead>
+                                                                        <tr style="padding:2px 5px;width:100%">
+                                                                            <th style="padding:5px 5px;width:40%;text-align:center;">Source</th>
+                                                                            <th style="padding:5px 5px;width:12%;text-align:center;">Sessions </th>
+                                                                            <th style="padding:5px 5px;width:12%;text-align:center;">Goal Completions</th>
+                                                                            <th style="padding:5px 5px;width:12%;text-align:center;">Goal Conversion Rate</th>
+
+                                                                        </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                        <tr style="padding:2px 5px;width:100%" ng-repeat="data in chart.data | limitTo: limitScroll" ng-if="data.source">
+                                                                            {{data}}
+                                                                            <td style="padding:5px 5px;width:40%;text-align:left;">{{data.source}}</td>
+                                                                            <td style="padding:5px 5px;width:12%;text-align:center;">{{data.sessions}}</td>
+                                                                            <td style="padding:5px 5px;width:12%;text-align:center;">{{data.goalCompletions}}</td>
+                                                                            <td style="padding:5px 5px;width:12%;text-align:center;">{{data.goalConversionRate}}</td>
+                                                                        </tr>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                                <div class="showmore" style="text-align:center" ng-show="chart.data.length>20">
+                                                                    <a href ng-click="limitScroll=(limitScroll+10)" ng-show="limitScroll<chart.data.length">Show More</a>
+                                                                    <span ng-show="limitScroll>20&&limitScroll<chart.data.length">|</span>
+                                                                    <a href ng-click="limitScroll=(limitScroll-10)" ng-show="limitScroll>20">Show Less</a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div ng-repeat="chart in customReport.widgetData[widget.id].chart" ng-if="chart.options.chart.type=== 'pinterestEngagementRate'" style="float: left;padding-left: 2px;padding-right: 2px;" ng-style="{'height': (100/customReport.widgetData[widget.id].layoutOptionsY)+'%', 'width': (100/customReport.widgetData[widget.id].layoutOptionsX)+'%'}">
+                                                    <div class="row" style="margin: 0px;height: 100%" id='chartTable-{{widget.id}}'>
+                                                        <div events="events" style="height: 99%" ng-if="customReport.widgetData[widget.id].visibility == true">
+                                                            <div class="scrollbar scrollInWidget" id="scroller">
+                                                                <div class="col-lg-12 listed"  ng-class-odd="'odd'" ng-class-even="'even'" ng-repeat="data in chart.data">
+                                                                    <div class="col-lg-12">
+                                                                        <div class="postComment"><a class="apiLink" href="{{data.links}} " target="_blank">{{data.postComment}}</a></div>
+                                                                        <div class="impression">
+                                                                            <div class="likes"><span>Likes: {{data.likes}}</span></div>
+                                                                            <div class="comment"><span>comments: {{data.comments}}</span></div>
+                                                                            <div class="comment"><span>Repins: {{data.repin}}</span></div>
+                                                                            <div class="date"><span>{{data.date}}</span></div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div ng-repeat="chart in customReport.widgetData[widget.id].chart" ng-if="chart.options.chart.type=== 'pinterestLeaderboard'" style="float: left;padding-left: 2px;padding-right: 2px;" ng-style="{'height': (100/customReport.widgetData[widget.id].layoutOptionsY)+'%', 'width': (100/customReport.widgetData[widget.id].layoutOptionsX)+'%'}">
+                                                    <div class="row" style="margin: 0px;height: 100%" id='chartTable-{{widget.id}}'>
+                                                        <div events="events" style="height: 99%" ng-if="customReport.widgetData[widget.id].visibility == true">
+                                                            <div class="scrollbar scrollInWidget" id="scroller">
+                                                                <div class="col-lg-12 listed"  ng-class-odd="'odd'" ng-class-even="'even'" ng-repeat="data in chart.data">
+                                                                    <div class="col-lg-12">
+                                                                        <div class="postComment"><a class="apiLink" href="{{data.links}} " target="_blank">{{data.postComment}}</a></div>
+                                                                        <div class="impression">
+                                                                            <div class="likes"><span>collaborators: {{data.collaborators}}</span></div>
+                                                                            <div class="comment"><span>pins: {{data.followers}}</span></div>
+                                                                            <div class="comment"><span>followers: {{data.pins}}</span></div>
+                                                                            <div class="date"><span>{{data.date}}</span></div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div ng-repeat="chart in customReport.widgetData[widget.id].chart" ng-if="chart.options.chart.type=== 'vimeoTopVideos'" style="float: left;padding-left: 2px;padding-right: 2px;" ng-style="{'height': (100/customReport.widgetData[widget.id].layoutOptionsY)+'%', 'width': (100/customReport.widgetData[widget.id].layoutOptionsX)+'%'}">
+                                                    <div class="row" style="margin: 0px;height: 100%" id='chartTable-{{widget.id}}'>
+                                                        <div events="events" style="height: 99%" ng-if="customReport.widgetData[widget.id].visibility == true">
+                                                            <div class="scrollbar scrollInWidget" id="scroller">
+                                                                <div class="col-lg-12 listed"  ng-class-odd="'odd'" ng-class-even="'even'" ng-repeat="data in chart.data" ng-if="data.title">
+                                                                    <div class="col-lg-1 listed-image" >
+                                                                        <a  href="{{data.link }}" target="_blank"><img ng-src="{{data.picture}}" height="50px" widget="50px" /></a>
+                                                                    </div>
+                                                                    <div class="col-lg-11 aside">
+                                                                        <div class="postComment"> <a  class="apiLink" href="{{data.link }}" target="_blank">  {{data.title}}</a></div>
+                                                                        <div class="impression">
+                                                                            <div class="likes"><span>Likes: {{data.likes}}</span></div>
+                                                                            <div class="comment"><span>comments: {{data.comments}}</span></div>
+                                                                            <div class="likes"><span>Views: {{data.views}}</span></div>
+                                                                            <div class="date"><span>{{data.date}}</span></div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div ng-repeat="chart in customReport.widgetData[widget.id].chart track by $index" ng-if="chart.options.chart.type=== 'costPerActionType'" style="float: left;padding-left: 2px;padding-right: 2px;" ng-style="{'height': (100/customReport.widgetData[widget.id].layoutOptionsY)+'%', 'width': (100/customReport.widgetData[widget.id].layoutOptionsX)+'%'}">
+                                                    <div ng-show="chart.data[0].values.flag==true">
+                                                        <div class="center" style="vertical-align: middle">
+                                                            <button class="btn btn-primary gobutton-mode" ng-click="getActionType(chart.data[0].values.action,customReport.widgetData[widget.id].id)">Configure</button>
+                                                        </div>
+                                                        <div class="col-md-12" style="width:100%;padding-top: 5px">
+                                                            <div class="col-md-8" style="padding: 0px!important;float: left">
+                                                                <select class="form-control m-b choose-text"
+                                                                        ng-show="actionTypeEnable[customReport.widgetData[widget.id].id]==true"
+                                                                        ng-model="actionTypeOptionsModel"
+                                                                        ng-options="str.name for str in actionTypeList"
+                                                                        ng-change="saveMeta(customReport.widgetData[widget.id].id,actionTypeOptionsModel)">
+                                                                    <option value="">Choose Objective</option>
+                                                                </select>
+                                                            </div>
+                                                            <div class="col-md-2" style="float: left">
+                                                                <button  ng-show="submitEnable[customReport.widgetData[widget.id].id]==true" class="btn btn-primary gobutton-mode" ng-click="reloadDashboard(customReport.widgetData[widget.id].id,actionTypeOptionsModel)">Go</button>
+                                                            </div>
+                                                        </div>
+                                                        <p ng-show="messageEnable[customReport.widgetData[widget.id].id]==true" style="margin:0px 0px 3px!important;font-weight: normal;color: #000000; font-family : Montserrat-Regular;font-size : 14px ; text-transform : uppercase ; text-align:center ; padding-left : 3px ; border-right : 3px solid white;"> Actions related to objective not yet registered </p>
+                                                    </div>
+                                                </div>
+                                                <div ng-repeat="chart in customReport.widgetData[widget.id].chart" ng-if="chart.options.chart.type=== 'instagramHashtagLeaderBoard'" style="float: left;padding-left: 2px;padding-right: 2px;" ng-style="{'height': (100/customReport.widgetData[widget.id].layoutOptionsY)+'%', 'width': (100/customReport.widgetData[widget.id].layoutOptionsX)+'%'}">
+                                                    <div class="row" style="margin: 0px;height: 100%" >
+                                                        <div events="events" style="height: 99%" ng-if="customReport.widgetData[widget.id].visibility == true" ng-init="limitScroll=20">
+                                                            <div class="scrollbar scrollInWidget" id="scroller">
+                                                                <div class="col-lg-12 table-responsive" style="overflow-x: hidden;padding:0px;">
+                                                                    <table class="table table-striped">
+                                                                        <thead>
+                                                                        <tr style="padding:2px 5px;width:100%">
+                                                                            <th style="padding:5px 5px;width:55%;text-align:center;">HashTag</th>
+                                                                            <th style="padding:5px 5px;width:15%;text-align:right;">Likes</th>
+                                                                            <th style="padding:5px 5px;width:15%;text-align:right;">Comments</th>
+                                                                        </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                        <tr style="padding:2px 5px;width:100%" ng-repeat="data in chart.data ">
+                                                                            <td style="padding:5px 5px;width:55%;text-align:left;"><a style="color: #000;" href="{{data.tagLink}}" target="_blank">{{data.tag}}<br></a></td>
+                                                                            <td style="padding:5px 5px;width:15%;text-align:right;">{{data.likes}}</td>
+                                                                            <td style="padding:5px 5px;width:15%;text-align:right;">{{data.comments}}</td>
+                                                                        </tr>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!--<div class="context widgetTransparentImage" id="widgetTransparentImage-{{widget.id}}" ng-hide="tempDashboard" ng-click="callThePosition($event,widget.id)" style="width: 100%;height: 100%;"></div>-->
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="row white-bg" style="max-height:50px;padding-bottom:70px;margin-left: 0px;margin-right:0px;">
+                        <div class="col col-sm-12">
+                            <div class="dashboardTemplate-items center border-top">
+                                <div class="col-sm-4" style="float: left;"><p style="color:#000;font-size:15px;font-family:Montserrat--Light;padding:5px">{{pageIndex+1}}|Page</p></div>
+                                <div class="col-sm-4"style="float: left;"><p style="color:#000;font-size:15px;font-family:Montserrat-Light;padding:5px">{{displayDate}}</p></div>
+                                <div class="col-sm-4" style="float: right;"><img ng-src="{{orgLogoSrc}}" style="max-width: 90%;max-height:40px;padding: 5px 5px;"/></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div ng-if="stepActive=='error' || reportNotSupported" ng-show="stepActive=='error' || reportNotSupported" class="row center grid-font" >
+                <p>Report Builder Currently unavailable</p>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="md-modal md-effect-19 geryish-bg" id="reportPDFModalContent">
+    <div style='background:#eaeff3 !important;' class="md-content pdfExportContentText">
+        <div class="wrapper wrapper-content">
+            <div class="row loadingStatus">
+                <div class="col-md-12">
+                    <div class="center">
+                        <div class="mainLoading location">
+                            <!--<div class="slice">
+                                <div data-loader="circle-clock"></div>
+                            </div>-->
+                            <div class="sk-spinner sk-spinner-double-bounce">
+                                <div class="sk-double-bounce1"></div>
+                                <div class="sk-double-bounce2"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br/>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="center">
+                        <h5 class="reportPdfHeadText"></h5>
+                        <h2 class="pdfContentText" style="font-size: 16px">Please wait for few minutes while the PDF file is being generated</h2>
+                    </div>
+                </div>
+            </div>
+            <br/>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="center">
+                        <button class="btn btn-primary closeModalContent">OK</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+
+<script type="application/javascript">
+    $(".closeModalContent").on( 'click', function( ev ) {
+        $(".navbar").css("z-index","1");
+        $("#reportPDFModalContent").removeClass('md-show');
+    });
+</script>

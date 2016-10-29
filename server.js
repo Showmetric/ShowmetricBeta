@@ -33,7 +33,7 @@ var https = require('https');
 
 // configuration ===============================================================
 mongoose.connect(configDB.url); // connect to our database
-mongoose.set('debug',true);
+mongoose.set('debug',false);
 
 require('./helpers/passport')(passport); // pass passport for configuration
 
@@ -186,6 +186,7 @@ require('./controllers/exportHtml5ToPDF')(app);
 require('./controllers/alert')(app);
 require('./controllers/bgFetchUpdation')(app);
 require('./controllers/youTubeAuth')(app);
+require('./controllers/reports')(app);
 
 router.use(function (req, res, next) {
     req.app = {};

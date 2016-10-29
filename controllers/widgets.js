@@ -21,7 +21,10 @@ module.exports = function (app) {
     app.post('/api/v1/widgets', widgetsList.saveWidgets, function (req, res) {
             res.json({widgetsList: req.app.result});
     });
-
+    //To store the report's text containing widgets
+    app.post('/api/v1/create/textWidgets', widgetsList.saveTextWidgets, function (req, res) {
+        res.json({widgetsList: req.app.result});
+    });
     //To store the custom widgets
     app.post('/api/v1/create/customwidgets', widgetsList.saveCustomWidgets, function (req, res) {
             res.json({widgetsList: req.app.result});
@@ -29,6 +32,9 @@ module.exports = function (app) {
 
     //To delete the widgets
     app.post('/api/v1/delete/widgets/:widgetId', widgetsList.deleteWidgets, function (req, res) {
+            res.json({widgetsList: req.app.result});
+    });
+    app.post('/api/v1/delete/textWidgets/:widgetId', widgetsList.deleteTextWidgets, function (req, res) {
             res.json({widgetsList: req.app.result});
     });
 

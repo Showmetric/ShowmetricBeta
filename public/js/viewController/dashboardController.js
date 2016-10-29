@@ -797,7 +797,7 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
     $scope.deleteDashboard = function(){
         swal({
                 title: "Confirm Delete?",
-                text: "Dashboard and all its contents will be removed",
+                text: "Dashboard and all its associated Reports will be removed",
                 type: "warning",
                 showCancelButton: true,
                 confirmButtonColor: "#DD6B55",

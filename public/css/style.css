@@ -101,6 +101,9 @@
     background-color: transparent !important;
     padding: 5px 5px 0px 24px;
 }
+.reportDropdown{
+    padding: 0px !important;
+}
 .nav .dropdown dropdown-toggle:hover{
     background-color: transparent !important;
 }
@@ -149,6 +152,7 @@ border-radius:0px !important}
 .fontClass{color:#999;}
 .unfontClass{color:#000;}
 .graph-icon a{color:#979797;}
+.textwidget-icon a{color:#1074ae;}
 .alertList{margin: 30px;}
 .createAlert{margin-top:8px !important;}
 svg:hover #Calendar-Icon { fill: #293846; }
@@ -204,8 +208,15 @@ svg:hover #Calendar-Icon { fill: #293846; }
     justify-content: center;}
 .dashboards{width: 83%;line-height: 15px;white-space: nowrap;text-overflow: ellipsis;overflow: hidden;}
 .grid-header{height:55px !important;font-size: 20px !important;}
+.report-header{height:55px !important;font-size: 15px !important;}
+@media (min-width: 768px) {
+    .report-header {
+        height: 55px !important;
+    }
+}
 .dashboards a:hover{text-decoration: underline;}
 .gridAlign{padding: 27px 50px 40px !important; overflow-y: scroll !important;}
+.gridTableAlign{padding: 0px 5px 40px 5px!important; overflow-y: scroll !important;}
 .grid-text{padding: 5px;
     width: 23%;
     margin: 10px;
@@ -227,6 +238,18 @@ svg:hover #Calendar-Icon { fill: #293846; }
     width: 220px !important;
     height: 25px !important;
     font-size: 14px;
+}
+.editable-wrap {
+    display: inline-block;
+    white-space: pre;
+    margin: 0 !important;
+    width: 100% !important;
+    height: 90% !important;
+}
+.editable-wrap .editable-controls>textarea {
+    width: 100% !important;
+    height:95% !important;
+    margin-bottom: 0;
 }
 /*.box-header h3{
     overflow: hidden;
@@ -383,11 +406,78 @@ svg:hover #Calendar-Icon { fill: #293846; }
     border:none;
     float: left;
     font-weight: bolder;
-    /*text-transform: capitalize;*/
+ }
+.reportNameEdit pre{
+    background-color: #ffffff !important;
+    color:#000 ;
+    border-radius: 0px !important;
+    font-size: 18px !important;
+    font-family: Montserrat-Bold !important ;
+    font-style: normal !important;
+    font-weight: bolder;
+    padding: 6.5px !important;
+    border:none;
+    float: left;
+    text-transform: capitalize;
+}
+.reportNameEdit p{text-align:center;color:#000;font-size:20px;font-family:Montserrat-Bold;padding:5px;text-transform: capitalize;}
+.reportName pre{
+    background-color: #1074ae !important;
+    color:#ffffff ;
+    border-radius: 0px !important;
+    font-size: 18px !important;
+    font-family: Montserrat-Bold !important ;
+    font-style: normal !important;
+    font-weight: bolder;
+    padding: 6.5px !important;
+    border:none;
+    float: left;
+    text-transform: capitalize;
+}
+.reportName p{text-align:center;color:#000;font-size:20px;font-family:Montserrat-Bold;padding:5px;text-transform: capitalize;}
+.textWidget {
+    width:100% !important;
+    height:100% !important;
+    border:none;
+    float: left;
+    display: block;
+    padding: 0px;
+    margin: 0 0 10px;
+    /*line-height: inherit;*/
+    overflow: hidden;
+    /*overflow-x: hidden;*/
+    /*overflow-y: scroll;*/
+    color: #333;
+    word-break: break-all;
+    word-wrap: break-word;
+    background-color: #fff !important;
+    border: none;
+    border-radius: 4px;
+}
+.para-widget{
+    width: 100%;height: 100%;font-size: 14px!important;font-family: Montserrat-Regular !important;line-height:1.5em !important;   margin-bottom: 1.25em;
+    text-rendering: optimizeLegibility;overflow-y: scroll;
+}
+.head-widget{
+    width: 100%;height: 100%;font-size: 24px!important;font-family: Montserrat-Bold !important;line-height:1.2em !important;
+    margin-bottom: 1.25em;
 }
 .dashboardName a:hover .hover-icon{
     display:block !important;
 }
+.reportName a:hover .hover-icon{
+    display:block !important;
+}
+.reportNameEdit a:hover .hover-icon{
+    display:block !important;
+}
+.textWidget a:hover .hover-icon{
+    display:block !important;
+}
+.pageBreak a:hover .hover-icon{
+     display:block !important;
+ }
+
 .box-header a:hover .hover-icon{
     display:block !important;
 }
@@ -448,6 +538,7 @@ svg:hover #Calendar-Icon { fill: #293846; }
 .shw {display:flex;}
 
 .graph-icon{float: right; margin-top: 7px;margin-right: -25px;}
+.textwidget-icon{float: right; margin-top: 4px;margin-right: -25px;}
 .wizard > .steps > ul > li{width:auto !important;	position: relative !important;}
 .svg-line1{margin-top: 25px; margin-left: 43px;}
 .svg-line2{margin-top: 25px;margin-left: 43px;}
@@ -2025,6 +2116,9 @@ a:focus {
 .border-bottom {
     border-bottom: 1px solid #efefef !important;
 }
+.border-top {
+    border-top: 1px solid #efefef !important;
+}
 .font-bold {
     font-weight: 600;
 }
@@ -2342,10 +2436,13 @@ body.mini-navbar .branding {
     color: #ffffff;
 }
 .blue-bg {
-    background-color: #1c84c6;
-    color: #ffffff;
+    background-color: #1c84c6 !important;
+    color: #ffffff !important;
 }
-
+.darkblue-bg {
+    background-color: #1074ae !important;
+    color: #ffffff !important;
+}
 
 
 
@@ -2900,7 +2997,13 @@ a.customApiLink{
     text-align: center;
     font-size: 20px;
 }
-
+.reportPdfHeadText{
+    color:#000;
+    font-family: Montserrat-Regular;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 20px;
+}
 .closeModalContent{
     border: none;
     font-size: 17px;
@@ -3121,6 +3224,39 @@ div.context a.commentLink {
     z-index: 0;
     padding-bottom: 50px!important;
 }
+.reportLayoutContent{
+    width:100%;
+    height: 100%;
+    overflow-y: scroll !important;
+    padding-bottom: 50px!important;
+    z-index: 0;
+}
+@media(max-width: 991px) and (min-width : 767px) {
+    .reportDashboardContent {
+        width: 720px !important;
+        position: relative;
+        top: 20px;
+        z-index: 1;
+    }
+}
+@media(max-width: 1100px) and (min-width : 992px) {
+    .reportDashboardContent {
+        width: 990px !important;
+        position: relative;
+        top: 20px;
+        z-index: 1;
+    }
+}
+@media(min-width : 1100px) {
+    .reportDashboardContent {
+        width: 1080px !important;
+        position: relative;
+        top: 20px;
+        z-index: 1;
+    }
+}
+
+
 
 .daterange{
     position: relative;
@@ -4668,6 +4804,7 @@ body.rtls.top-navigation .footer.fixed {
 }
 @media (max-width: 1000px) {
     .dashboardName{display:none !important;}
+    .reportDate-select{display:none !important;}
     .dashboardSpace{display:none !important;}
     .response-view{display:block !important;}
     .desk-view{display:none !important ;}
@@ -4676,6 +4813,8 @@ body.rtls.top-navigation .footer.fixed {
 }
 @media (max-width: 767px) {
     .dashboardTitleIcons{display:none !important ;}
+    .reportName{display:none !important;}
+    .reportNameEdit{display:none !important;}
 }
 @media(max-width : 1020px) and (min-width:800px){.daterange{width: 280px !important; margin-left:0px !important;}}
 @media(max-width: 1000px) and (min-width : 768px)  {
@@ -4892,6 +5031,19 @@ body.rtls.top-navigation .footer.fixed {
     color: #283544;
     outline-style: none;
 }
+.darkBlue {
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    background: #1074ae;
+    color: #fff;
+    outline-style: none;
+}
+.white {
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    background: #fff;
+    box-shadow: inset 0px 0px 1px 1px rgba(255, 255, 255, 0.4);
+    color: #283544;
+    outline-style: none;
+}
 .arrangeDisabled{
     border: 1px solid rgba(0, 0, 0, 0.12);
     background: linear-gradient(to bottom, #f8f9fa 0%, #f5f5f5 100%);
@@ -4933,8 +5085,28 @@ body.rtls.top-navigation .footer.fixed {
     padding-top: 0px;
     text-align: center
 }
-
-.uploadbutton-mode{
+.add-text{
+    font-size:12px;
+    width:110px;
+    height:30px;
+    padding-top: 0px;
+    text-align: center
+}
+.add-reportBtn{
+    font-size:14px !important;
+    font-family:Montserrat-Light !important;
+    width:110px;
+    height:30px;
+    padding-top: 0px;
+    text-align: center
+}
+.build-report{
+    width:116px;
+    height:43px;
+    padding-top: 0px;
+    text-align: center
+}
+.uploadbutton-mode{border: 1px solid #f5f5f5 !important;
     background-color: #04509B !important;
     color:#fff !important;}
 .iconClicked {
@@ -5001,6 +5173,22 @@ hr{
         margin-top: 15px;
     }
 }
+@media(min-width : 769px) {
+    .reportGridsterStlye
+    {
+        border: 1px solid #efefef;
+        min-height: 500px;
+        margin: 100px 0px 0px 200px!important;
+    }
+}
+@media(min-width : 400px) and (max-width:768px) {
+    .reportGridsterStlye
+    {
+        border: 1px solid #efefef;
+        min-height: 500px;
+        margin: 100px 50px!important;
+    }
+}
 @media(min-width: 768px) and (max-width : 900px) {
     .summaryFont{
         font-size: 12px!important;
@@ -5047,6 +5235,9 @@ hr{
 .summaryKeyDoubleFont{
     font-size:10px !important;
 }
+.reportSummaryKeyDoubleFont{
+    font-size:9px !important;
+}
 .titleMargin{
     margin-left: 0px!important;margin-right: 0px!important;
 }
@@ -5055,6 +5246,12 @@ hr{
     border: 1px solid #efefef;
     min-height: 500px;
     margin-bottom: 60px !important;
+}
+.reportGridsterStlye
+{
+    border: 1px solid #efefef;
+    min-height: 500px;
+    margin: 100px 0px;
 }
 .modal-background{
     background-image:url(/image/overlay_bg.png) ;
@@ -5096,6 +5293,17 @@ button.overlayCloseButton:hover{
     text-transform: capitalize !important;
     font-weight: bolder;
 }
+@media(min-width : 768px) {
+    .dashboard-report{
+        font-family: Montserrat-Black!important;
+        text-transform: capitalize !important;
+        font-size: 20px;
+        font-weight: 600;
+        /*text-align:center ;*/
+    }
+}
+
+
 .mozOverViewTitle{
     float: left;
     font-weight: bolder;
@@ -5199,6 +5407,51 @@ input:focus{
 .autoarrange-export-delete {
     float:right
 }
-.sidebar-icons{
-    margin-left: 7px;
+.addReportBtn{
+    color: #283544 !important;
 }
+.addReportBtn:hover{
+    color: #1074ae !important;
+}
+.pagebreak-header {
+    width: 100%;
+    height: 35px;
+    color:#999 !important;
+    /*background: linear-gradient(to bottom, #f8f9fa 0%, #dadfe3 100%);*/
+    /*background-color: rgba(0, 0, 0, 0.12);*/
+    background-color:#ffffff;
+    padding: 0 30px 0 10px;
+    border-bottom: 0px solid #ffffff !important;
+/*position: relative;*/
+}
+.widgetBoxBorder{
+border: 1px solid #eaeff3;
+}
+.reportListingGrid{
+height: 30px;
+font-size: 15px;
+padding: 10px;
+}
+.reportListingGrid a {
+color:#1074ae !important;
+}
+.reportListingGrid a:hover{
+color:#283544 !important;
+}
+@media(max-width : 767px) {
+    .reportListingGrid{
+        height:60px;
+        font-size: 15px;
+        padding: 10px
+    }
+}
+@media(max-width : 1000px) {
+    .reportText-header{color:#fff;margin-top:5px;font-size:15px;font-family:Montserrat-Bold;padding:5px}
+}
+.reportGraph-icon{float: right; margin-top: 7px;margin-right: -25px;}
+.reportGraph-icon a{color:#283544 !important;}
+.reportGraph-icon a:hover{color:#1074ae !important;}
+.logoImage-icons{max-width: 90%;max-height:40px;padding: 10px 0 0 0;}
+.logoText-icons{color:#000;font-size:20px;font-family:Montserrat-Light;padding:10px 5px}
+.reportText-header{color:#fff;margin-top:5px;font-size:18px;font-family:Montserrat-Bold;padding:5px}
+.reportDate-select{display: block !important;}

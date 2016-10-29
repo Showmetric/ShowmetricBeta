@@ -86,6 +86,9 @@ module.exports = function (app, passport) {
     app.get('/reports', function (req, res) {
         res.render('../public/reports.ejs');
     });
+    app.get('/customReports', function (req, res) {
+        res.render('../public/customReports.ejs');
+    });
 
     app.get('/signout', function (req, res) {
         req.logout();
