@@ -231,6 +231,7 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
                                         'updated': response.data.referenceWidgets[i].updated,
                                         'widgetType': response.data.referenceWidgets[i].widgetType,
                                         'isAlert': response.data.referenceWidgets[i].isAlert,
+                                        'isFusion': response.data.referenceWidgets[i].isFusion!=undefined?response.data.referenceWidgets[i].isFusion:true,
                                         'isSelectedMetric': isSelectedMetric,
                                         'border': '2px solid #04509B'
                                     };
@@ -251,6 +252,7 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
                                     'updated': response.data.referenceWidgets[i].updated,
                                     'widgetType': response.data.referenceWidgets[i].widgetType,
                                     'isAlert': response.data.referenceWidgets[i].isAlert,
+                                    'isFusion': response.data.referenceWidgets[i].isFusion!=undefined?response.data.referenceWidgets[i].isFusion:true,
                                     'isSelectedMetric': isSelectedMetric,
                                     'border': '2px solid #e7eaec',
                                     'channelName':$scope.selectedTempChannelList[j].name
@@ -1853,6 +1855,7 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
                                     "color": widgetColor,
                                     "visibility": true,
                                     "isAlert": getReferenceWidgetsArr[getData].isAlert,
+                                    "isFusion":getReferenceWidgetsArr[getData].isFusion != undefined?getReferenceWidgetsArr[getData].isFusion:true,
                                     "channelName": channelName
                                 };
                                 inputParams.push(jsonData);
@@ -1922,6 +1925,7 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
                             "color": widgetColor,
                             "visibility": true,
                             "isAlert": getReferenceWidgetsArr[getData].isAlert,
+                            "isFusion":getReferenceWidgetsArr[getData].isFusion != undefined?getReferenceWidgetsArr[getData].isFusion:true,
                             "channelName": channelName
                         };
                         inputParams.push(jsonData);
@@ -1983,6 +1987,7 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
                             "color": widgetColor,
                             "visibility": true,
                             "isAlert": getReferenceWidgetsArr[getData].isAlert,
+                            "isFusion":getReferenceWidgetsArr[getData].isFusion != undefined?getReferenceWidgetsArr[getData].isFusion:true,
                             "channelName":channelName
                         };
                         inputParams.push(jsonData);
@@ -2033,6 +2038,7 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
                             "color": widgetColor,
                             "visibility": true,
                             "isAlert": getReferenceWidgetsArr[getData].isAlert,
+                            "isFusion":getReferenceWidgetsArr[getData].isFusion != undefined?getReferenceWidgetsArr[getData].isFusion:true,
                             "channelName": channelName
                         };
                         inputParams.push(jsonData);

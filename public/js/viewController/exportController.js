@@ -810,10 +810,13 @@ function ExportController($scope, $http, $state, $rootScope, $window,$q,$statePa
                                 var arrangeData = {};
                                 for (var k = 0; k < $scope.exportObject.widgetData[n].chart[chart].data.length; k++) {
                                     var noPushInArray = 0;
-                                    if ($scope.exportObject.widgetData[n].chart[chart].data[k].type == 'line' || $scope.exportObject.widgetData[n].chart[chart].data[k].type == 'bar' || $scope.exportObject.widgetData[n].chart[chart].data[k].type == 'area') {
+                                    if ($scope.exportObject.widgetData[n].chart[chart].data[k].type == 'line' || $scope.exportObject.widgetData[n].chart[chart].data[k].type == 'stackcolumn' || $scope.exportObject.widgetData[n].chart[chart].data[k].type == 'bar' || $scope.exportObject.widgetData[n].chart[chart].data[k].type == 'area' || $scope.exportObject.widgetData[n].chart[chart].data[k].type == 'column' || $scope.exportObject.widgetData[n].chart[chart].data[k].type == 'reachVsImpressions'|| $scope.exportObject.widgetData[n].chart[chart].data[k].type == 'engagedUsersReach' ) {
                                         if (!$scope.exportObject.widgetData[n].chart[chart].data[k].message) {
-                                            arrangeData.Date = moment($scope.exportObject.widgetData[n].chart[chart].data[k].values[j].x).format('YYYY-MM-DD');
                                             arrangeData[$scope.exportObject.widgetData[n].chart[chart].data[k].key] = $scope.exportObject.widgetData[n].chart[chart].data[k].values[j].y;
+                                            if( typeof $scope.exportObject.widgetData[n].chart[chart].data[k].values[j].x != 'object')
+                                                arrangeData.Date = $scope.exportObject.widgetData[n].chart[chart].data[k].values[j].x;
+                                            else
+                                                arrangeData.Date = moment($scope.exportObject.widgetData[n].chart[chart].data[k].values[j].x).format('YYYY-MM-DD');
                                         }
                                         else
                                             noPushInArray = 1;
@@ -826,17 +829,170 @@ function ExportController($scope, $http, $state, $rootScope, $window,$q,$statePa
                                 j++
                             }
                         }
-                        else if ($scope.exportObject.widgetData[n].chart[chart].data[0].type == 'pie') {
+                        else if ($scope.exportObject.widgetData[n].chart[chart].data[0].type == 'percentageArea'  ) {
+                            lengthOfValue = $scope.exportObject.widgetData[n].chart[0].data[0].totalChartLength.length;
+                            console.log("$scope.exportObject.widgetData[n].chart[0].data[0].totalChartLength",$scope.exportObject.widgetData[n].chart[0].data[0].totalChartLength[0].y)
+                            var j = 0;
+                            while (j < lengthOfValue) {
+                                var arrangeData = {};
+                                for (var k = 0; k < $scope.exportObject.widgetData[n].chart[chart].data.length; k++) {
+                                    console.log("j",j)
+                                    var noPushInArray = 0;
+                                    if ($scope.exportObject.widgetData[n].chart[chart].data[k].type == 'percentageArea' ) {
+                                        if (!$scope.exportObject.widgetData[n].chart[chart].data[k].message) {
+                                            arrangeData[$scope.exportObject.widgetData[n].chart[chart].data[k].key] = $scope.exportObject.widgetData[n].chart[chart].data[k].totalChartLength[j].y['total'];
+                                            if( typeof $scope.exportObject.widgetData[n].chart[chart].data[k].totalChartLength[j].x != 'object'){
+                                                console.log("here")
+                                                arrangeData.Date = $scope.exportObject.widgetData[n].chart[chart].data[k].totalChartLength[j].x;
+                                            }else
+                                                arrangeData.Date = moment($scope.exportObject.widgetData[n].chart[chart].data[k].totalChartLength[j].x).format('YYYY-MM-DD');
+                                        }
+                                        else
+                                            noPushInArray = 1;
+                                    }
+                                }
+                                console.log("arrangeData",arrangeData)
+                                if (noPushInArray != 1)
+                                    formatJson.push(arrangeData)
+                                j++
+                            }
+                            console.log("formatJson",formatJson)
+                        }
+                        else if ($scope.exportObject.widgetData[n].chart[chart].data[0].type == 'stackbar'  ) {
+                            formatJson=[];
+                            lengthOfValue = $scope.exportObject.widgetData[n].chart[0].data[0].values[0].total.length;
+                            console.log("$scope.exportObject.widgetData[n].chart[0].data[0].totalChartLength",$scope.exportObject.widgetData[n].chart[0].data[0].values[0].total[0])
+
+
+                                for (var k = 0; k < $scope.exportObject.widgetData[n].chart[chart].data.length; k++) {
+                                    var arrangeData = {};
+                                    for( var keys in $scope.exportObject.widgetData[n].chart[0].data[k].values[0].total[0] ) {
+                                    console.log("j",j)
+                                    var noPushInArray = 0;
+                                    if ($scope.exportObject.widgetData[n].chart[chart].data[k].type == 'stackbar' ) {
+                                        if (!$scope.exportObject.widgetData[n].chart[chart].data[k].message) {
+                                            arrangeData[keys] = $scope.exportObject.widgetData[n].chart[0].data[k].values[0].total[0][keys];
+                                            arrangeData['Type']= $scope.exportObject.widgetData[n].chart[0].data[k].values[0].date;
+
+                                        }
+                                        else
+                                            noPushInArray = 1;
+                                    }
+                                }
+                                console.log("arrangeData",arrangeData)
+                                if (noPushInArray != 1)
+                                    formatJson.push(arrangeData)
+                            }
+                            console.log("formatJson",formatJson)
+                        }
+                        else if ($scope.exportObject.widgetData[n].chart[chart].data[0].type == 'pie' || $scope.exportObject.widgetData[n].chart[chart].data[0].type == 'fbReachByCity' || $scope.exportObject.widgetData[n].chart[chart].data[0].type == 'angularGauge' ) {
+                            console.log("$scope.exportObject.widgetData[n].chart[chart].data11",$scope.exportObject.widgetData[n].chart[chart].data)
                             var arrangeData = {};
                             for (var k = 0; k < $scope.exportObject.widgetData[n].chart[chart].data.length; k++) {
                                 var noPushInArray = 0;
                                 if (!$scope.exportObject.widgetData[n].chart[chart].data[k].message)
-                                    arrangeData[$scope.exportObject.widgetData[n].chart[chart].data[k].key] = $scope.exportObject.widgetData[n].chart[chart].data[k].y;
+                                    arrangeData[$scope.exportObject.widgetData[n].chart[chart].data[k].key] = $scope.exportObject.widgetData[n].chart[chart].data[k].y!== undefined ? $scope.exportObject.widgetData[n].chart[chart].data[k].y:$scope.exportObject.widgetData[n].chart[chart].data[k].summaryDisplay ;
                                 else
                                     noPushInArray = 1
                             }
                             if (noPushInArray != 1)
                                 formatJson.push(arrangeData)
+                        }
+                      else if($scope.exportObject.widgetData[n].chart[chart].data[0].type =='audienceBehaviourbyDay'){
+
+                            var noPushInArray;
+                            var formatJson=[]
+                            if (!$scope.exportObject.widgetData[n].chart[chart].data[0].message) {
+                            for(var i=0;i<$scope.exportObject.widgetData[n].chart[chart].data[0].values.length;i++){
+                                var arrangeData={}
+                                     noPushInArray=0;
+                                    for (var key in $scope.exportObject.widgetData[n].chart[chart].data[0].values[i].total) {
+                                        arrangeData[key] = $scope.exportObject.widgetData[n].chart[chart].data[0].values[i].total[key]
+                                    }
+
+                                    arrangeData.Day = $scope.exportObject.widgetData[n].chart[chart].data[0].values[i].date
+                                console.log("arrangeData",arrangeData)
+                                formatJson.push(arrangeData)
+                                }
+
+                            }
+
+                        }
+                      else if($scope.exportObject.widgetData[n].chart[chart].data[0].type =='twitterEngagements'){
+
+                            var noPushInArray;
+                            var formatJson=[]
+                            if (!$scope.exportObject.widgetData[n].chart[chart].data[0].message) {
+                            for(var i=0;i<$scope.exportObject.widgetData[n].chart[chart].data[0].values.length;i++){
+                                var arrangeData={}
+                                     noPushInArray=0;
+                                    for (var key in $scope.exportObject.widgetData[n].chart[chart].data[0].values[i]) {
+                                        arrangeData[key] = $scope.exportObject.widgetData[n].chart[chart].data[0].values[i][key]
+                                    }
+                                console.log("arrangeData",arrangeData)
+                                formatJson.push(arrangeData)
+                                }
+
+                            }
+
+                        }
+                      else if(
+                            $scope.exportObject.widgetData[n].chart[chart].data[0].type =='pageContentEfficiency' ||$scope.exportObject.widgetData[n].chart[chart].data[0].type =='visitorAcquisitionEfficiency'||
+                            $scope.exportObject.widgetData[n].chart[chart].data[0].type =='pageTechnicalEfficiency' || $scope.exportObject.widgetData[n].chart[chart].data[0].type =='topReferringSites'||
+                            $scope.exportObject.widgetData[n].chart[chart].data[0].type =='gaSocialMediaOverview'|| $scope.exportObject.widgetData[n].chart[chart].data[0].type =='socialContributionToSiteTraffic'
+                        ){
+                            var noPushInArray;
+                            var formatJson=[]
+                            if (!$scope.exportObject.widgetData[n].chart[chart].data[0].message) {
+                            for(var i=0;i<$scope.exportObject.widgetData[n].chart[chart].data[0].values.length;i++){
+                                var arrangeData={}
+                                     noPushInArray=0;
+                                    for (var key in $scope.exportObject.widgetData[n].chart[chart].data[0].values[i]) {console.log("$scope.exportObject.widgetData[n].chart[chart].data[0].values[i][key]",typeof ($scope.exportObject.widgetData[n].chart[chart].data[0].values[i][key]))
+                                        if(typeof $scope.exportObject.widgetData[n].chart[chart].data[0].values[i][key] === 'string'){
+                                            var string=$scope.exportObject.widgetData[n].chart[chart].data[0].values[i][key]
+                                            $scope.exportObject.widgetData[n].chart[chart].data[0].values[i][key]=string.split(',').join("")
+                                            console.log("$scope.exportObject.widgetData[n].chart[chart].data[0].values[i][key]",$scope.exportObject.widgetData[n].chart[chart].data[0].values[i][key])
+                                        }
+
+                                        arrangeData[key] = $scope.exportObject.widgetData[n].chart[chart].data[0].values[i][key]
+                                    }
+                                formatJson.push(arrangeData)
+                                }
+
+                            }
+
+                        }
+                    else if(
+                            $scope.exportObject.widgetData[n].chart[chart].options.chart.type=='gaVisitorAcquisitionEfficiencyAnalysisTable'||$scope.exportObject.widgetData[n].chart[chart].options.chart.type=='gaPageTechnicalEfficiencyTable'||$scope.exportObject.widgetData[n].chart[chart].options.chart.type=='gaPageContentEfficiencyTable'
+                            ||$scope.exportObject.widgetData[n].chart[chart].options.chart.type=='topReferringSitesTable'
+                            ||$scope.exportObject.widgetData[n].chart[chart].options.chart.type=='topLinks'
+                            ||$scope.exportObject.widgetData[n].chart[chart].options.chart.type=='engagementByUsersTalkedAbout'
+                            ||$scope.exportObject.widgetData[n].chart[chart].options.chart.type=='hashTag'
+                            ||$scope.exportObject.widgetData[n].chart[chart].options.chart.type=='instagramHashtagLeaderBoard'
+                            ||$scope.exportObject.widgetData[n].chart[chart].options.chart.type=='campaignOverview'
+                            ||$scope.exportObject.widgetData[n].chart[chart].options.chart.type=='adgroupOverview'
+                            ||$scope.exportObject.widgetData[n].chart[chart].options.chart.type=='campaignOverViewbyAge'
+                            ||$scope.exportObject.widgetData[n].chart[chart].options.chart.type=='adOverview'
+                            ||$scope.exportObject.widgetData[n].chart[chart].options.chart.type=='youtubeVideosOverview'
+                        ){
+                            var noPushInArray;
+                            var formatJson=[]
+                            if (!$scope.exportObject.widgetData[n].chart[chart].data[0].message) {
+                            for(var i=0;i<$scope.exportObject.widgetData[n].chart[chart].data.length;i++){
+                                var arrangeData={}
+                                     noPushInArray=0;
+                                    for (var key in $scope.exportObject.widgetData[n].chart[chart].data[i]) {
+                                        if(typeof $scope.exportObject.widgetData[n].chart[chart].data[i][key] === 'string'){
+                                            var string=$scope.exportObject.widgetData[n].chart[chart].data[i][key]
+                                            $scope.exportObject.widgetData[n].chart[chart].data[i][key]=string.split(',').join("")
+                                        }
+                                        if(key != '$$hashKey')
+                                        arrangeData[key] = $scope.exportObject.widgetData[n].chart[chart].data[i][key]
+                                    }
+                                formatJson.push(arrangeData)
+                                }
+
+                            }
                             
                         }
                         else if ($scope.exportObject.widgetData[n].chart[chart].options.chart.type == 'highEngagementTweets') {
@@ -1024,16 +1180,12 @@ function ExportController($scope, $http, $state, $rootScope, $window,$q,$statePa
                 tempArray.push(JSONToCSVConvertor(finalData[i].data, finalData[i].title, true));
             }
             $q.all(tempArray).then(function(tempArray){
-                if (navigator.msSaveBlob) { // IE10 ie
-                    var fileName = "Report_"+newDateFormat;
-                    return navigator.msSaveBlob(new Blob([tempArray], {type: 'text/csv;charset=utf-8'}), fileName);
-                }
                 var excel ='data:text/csv;charset=utf-8,'+escape(tempArray);
                 var link = document.createElement("a");
                 link.href = excel;
                 var fileName = "Report_"+newDateFormat;
                 //this will remove the blank-spaces from the title and replace it with an underscore
-                escape(fileName);
+                //fileName += ReportTitle.replace(/ /g,"_");
                 //set the visibility hidden so it will not effect on your web-layout
                 link.style = "visibility:hidden";
                 link.download = fileName + ".csv";
@@ -1060,6 +1212,53 @@ function ExportController($scope, $http, $state, $rootScope, $window,$q,$statePa
                 var deferred=$q.defer();
                 //If JSONData is not an object then JSON.parse will parse the JSON string in an Object
                 var arrData = typeof JSONData != 'object' ? JSON.parse(JSONData) : JSONData;
+               var keyArray=[]
+               for (var index in arrData[0]) {
+                   keyArray.push(index)
+               }
+               function sortObj(obj, type, caseSensitive) {
+                   var temp_array = [];
+                   for (var key in obj) {
+                       if (obj.hasOwnProperty(key)) {
+                           temp_array.push(key);
+                       }
+                   }
+                   if (typeof type === 'function') {
+                       temp_array.sort(type);
+                   }
+                   else if (type === 'value') {
+                       temp_array.sort(function(a,b) {
+                           var x = obj[a];
+                           var y = obj[b];
+                           if (!caseSensitive) {
+                               x = (x['toLowerCase'] ? x.toLowerCase() : x);
+                               y = (y['toLowerCase'] ? y.toLowerCase() : y);
+                           }
+                           return ((x > y) ? -1 : ((x < y) ? 1 : 0));
+                       }).reverse();
+                   } else {
+                       temp_array.sort().reverse();
+                   }
+                   var temp_obj = {};
+                   console.log('objobj')
+                   for (var i=0; i<temp_array.length; i++) {
+                       temp_obj[temp_array[i]] = obj[temp_array[i]];
+                   }
+                   return temp_obj;
+               };
+               var k=keyArray.indexOf("Date")
+               if(k !== -1){
+                   if(k !== 0){
+                       var samplearray=[];
+                       for (var i = 0; i < arrData.length; i++) {
+                        var  obj=sortObj(arrData[i])
+                           samplearray.push(obj)
+                       }
+                       arrData=samplearray;
+                   }
+               }
+                //If JSONData is not an object then JSON.parse will parse the JSON string in an Object
+                // var arrData = typeof JSONData != 'object' ? JSON.parse(JSONData) : JSONData;
                var CSV = '';
                 //Set Report title in first row or line
                 CSV='\r\n';

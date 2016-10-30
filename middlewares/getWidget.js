@@ -375,6 +375,7 @@ exports.saveWidgets = function (req, res, next) {
             var widgets = req.body;
             var widgetsForCustomFusion;
             var isAlert;
+            var isFusion;
             var channelName;
 
             async.concatSeries(widgets, saveAllWidgets, callback);
@@ -394,6 +395,7 @@ exports.saveWidgets = function (req, res, next) {
                 widgetName = result.name;
                 widgetType = result.widgetType;
                 isAlert = result.isAlert;
+                isFusion=result.isFusion != undefined ?result.isFusion:true;
                 channelName = result.channelName;
                 userPermission.checkUserAccess(req, res, function (err, response) {
                     if (err)
@@ -424,6 +426,7 @@ exports.saveWidgets = function (req, res, next) {
                             createWidget.updated = new Date();
                             createWidget.visibility = true;
                             createWidget.isAlert = isAlert;
+                            createWidget.isFusion = isFusion;
                             createWidget.channelName = channelName;
                             createWidget.save(function (err, widgetDetail) {
                                 if (err)

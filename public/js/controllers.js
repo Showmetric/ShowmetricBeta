@@ -424,7 +424,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                         }
                         widget.charts[charts].chartData = changeArray;
                     }
-                     else if(chartType == "costPerClick" || chartType == "costPerThosuandImpressions" || chartType == "clickThroughRate" || chartType == "ConversionRate" || chartType == "costPerConversion"){
+                    else if (chartType == "costPerClick" || chartType == "costPerThosuandImpressions" || chartType == "clickThroughRate" || chartType == "ConversionRate" || chartType == "costPerConversion"){
                         var changeArray=[];
                         if(chartType == "costPerClick" ){
                             var dividendKeyWord='Cost'
@@ -2300,7 +2300,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                 widget.charts[charts].chartData = finalData;
                             }
                     }
-                    else if(chartType === 'youtubeVideosOverview'){
+                    else if (chartType === 'youtubeVideosOverview'){
                         var videosArray = [];
                         for (var key = 0; key < widget.charts[charts].chartData.length; key++) {
                             if (typeof widget.charts[charts].chartData[key] != 'undefined') {
@@ -2657,7 +2657,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                         }
                         else console.log('error')
                     }
-                    else if(chartType === "campaignOverview"){
+                    else if (chartType === "campaignOverview"){
                         if (widget.charts[charts].chartData[0] != 'undefined') {
                             formattedChartDataArray=[];
                            var campaignArray=[]
@@ -2737,7 +2737,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                         }
                         widget.charts[charts].chartData=formattedChartDataArray
                     }
-                    else if(chartType === "adgroupOverview"){
+                    else if (chartType === "adgroupOverview"){
                         if (widget.charts[charts].chartData[0] != 'undefined') {
                             formattedChartDataArray=[];
                             var adGroupArray=[]
@@ -2814,7 +2814,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                         }
                         widget.charts[charts].chartData=formattedChartDataArray
                     }
-                    else if(chartType === "adOverview"){
+                    else if (chartType === "adOverview"){
                         if (widget.charts[charts].chartData[0] != 'undefined') {
                             formattedChartDataArray=[];
                             var adGroupArray=[]
@@ -2889,7 +2889,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                         }
                         widget.charts[charts].chartData=formattedChartDataArray
                     }
-                    else if(chartType === "adwordsDemography"){
+                    else if (chartType === "adwordsDemography"){
                         var subType=widget.charts[charts].chartSubType;
                         if (widget.charts[charts].chartData[0] != 'undefined') {
                             formattedChartDataArray=[];
@@ -3743,11 +3743,12 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                             var timeDiff = Math.abs(date2.getTime() - date1.getTime());
                             var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
                             widgetCharts.push({
+                                'key':'Post per day',
                                 'type': 'angularGauge',
                                 'y': Math.round((widget.charts[charts].chartData / diffDays) * 100) / 100,   //values - represents the array of {x,y} data points
                                 'displaySummary': false,
                                 'color': typeof widget.charts[charts].chartColour != 'undefined' ? (typeof widget.charts[charts].chartColour[colorIndex] != 'undefined' ? widget.charts[charts].chartColour[colorIndex] : '') : '',  //color - optional: choose your own line color.
-                                'summaryDisplay': Math.round(widget.charts[charts].chartData[index] * 100) / 100
+                                'summaryDisplay': Math.round((widget.charts[charts].chartData / diffDays) * 100) / 100
                             });
                         }
 
@@ -3924,7 +3925,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
 
                         }
                     }
-                    else if(chartType === 'youtubeVideosOverview'){
+                    else if (chartType === 'youtubeVideosOverview'){
                         widgetCharts.push({
                             'type': widget.charts[charts].chartType,
                             'values': widget.charts[charts].chartData,
@@ -5486,11 +5487,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                     },
                     series: chartSeriesArray,
                 }
-                if(finalCharts.pieCharts[charts].name ==='Post types' ){
-                    finalCharts.pieCharts=[{
-                        keys:'summaryHide'
-                    }]
-                }
+
                 chartColorChecker = [];
                 finalChartData.push({
                     'options': graphOptions.pieDataOptions,
@@ -6359,13 +6356,10 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                         }]
                     }
                 }
-                var displayArray=[{
-                    'keys':'undefined'
-                }]
 
                 finalChartData.push({
                     'options': graphOptions.pieDataOptions,
-                    'data': displayArray,
+                    'data': finalCharts.angularGauge,
                     'chartOptions': chartOptions
                 });
             }
@@ -6701,7 +6695,19 @@ showMetricApp.service('createWidgets', function ($http, $q) {
             setLayoutOptions();
             if (widget.widgetType == 'custom') chartName = "Custom Data";
             else chartName = (typeof widget.name != 'undefined' ? widget.name : '');
-            if (typeof finalChartData[0].data[0].key != 'undefined') {
+            if(finalChartData[0].data[0].displaySummary != undefined && finalChartData[0].data[0].displaySummary === false ){
+                var modifiedWidget = {
+                    'showSummary': false,
+                    'name': chartName,
+                    'visibility': true,
+                    'id': widget._id,
+                    'color': widget.color,
+                    'chart': finalChartData,
+                    'layoutOptionsX': individualGraphWidthDivider,
+                    'layoutOptionsY': individualGraphHeightDivider
+                };
+            }
+           else if (typeof finalChartData[0].data[0].key != 'undefined') {
                 var modifiedWidget = {
                     'name': chartName,
                     'visibility': true,
