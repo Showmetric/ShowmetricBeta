@@ -39,20 +39,20 @@ function FusionWidgetController($scope, $http, $q, $window, $state, $rootScope, 
                 }, 50 );
             }
         });
-
+      
 
     });
 
     $scope.changeViewsInBasicWidget = function (obj) {
         $scope.currentView = obj;
         if ($scope.currentView === 'step_one') {
-            /*  document.getElementById('basicWidgetBackButton1').disabled = true;
-             document.getElementById('basicWidgetNextButton').disabled = true;*/
+          /*  document.getElementById('basicWidgetBackButton1').disabled = true;
+            document.getElementById('basicWidgetNextButton').disabled = true;*/
             $scope.clearReferenceWidget();
             $scope.listOfReferenceWidget();
         }
         else if ($scope.currentView === 'step_two') {
-            /* document.getElementById('basicWidgetBackButton1').disabled = true;*/
+           /* document.getElementById('basicWidgetBackButton1').disabled = true;*/
             $scope.getProfilesForDropdown();
         }
     };
@@ -300,7 +300,7 @@ function FusionWidgetController($scope, $http, $q, $window, $state, $rootScope, 
             $scope.hasNoAccess = profileObj.hasNoAccess;
             if($scope.uniquechannelNames[index] === 'Google Analytics'){
                 this.objectOptionsModel1='';
-                document.getElementById('basicWidgetFinishButton').disabled = true;
+				document.getElementById('basicWidgetFinishButton').disabled = true;
             }
             if ((profileObj.canManageClients === false) && ($scope.uniquechannelNames[index] === 'GoogleAdwords')) {
                 $scope.canManage = false;

@@ -263,18 +263,31 @@ function ExportController($scope, $http, $state, $rootScope, $window,$q,$statePa
     });
 
     $scope.$on('resize', function (e) {
-        $timeout(function () {
-            var len = $scope.expPages.length;
-            for (var j = 0; j < len; j++) {
-                var widLen = $scope.expPages[j].widgets.length;
-                for (var ind = 0; ind < widLen; ind++) {
-                    for (var i = 0; i < $scope.expPages[j].widgetData[ind].chart.length; i++) {
-                        if ($scope.expPages[j].widgetData[ind].chart[i].api)
-                            $scope.expPages[j].widgetData[ind].chart[i].api.update();
+        $timeout(function(){
+            for(var pageWids in $scope.expPages) {
+                for (var i in $scope.expPages[pageWids].widgets) {
+                    if($scope.expPages[pageWids].widgets[i].widgetType!='reportParaWidget'||$scope.expPages[pageWids].widgets[i].widgetType!='reportHeadingWidget') {
+                        $timeout(resizeReportWidget(pageWids, i), 300);
                     }
                 }
             }
-        }, 800);
+            function resizeReportWidget(pageInd,k) {
+                return function () {
+                    if(document.getElementById('exportChartOptions-'+pageInd+'-'+k)!=null){
+                        var parentWidth = document.getElementById('exportChartOptions-'+pageInd+'-'+k).offsetWidth;
+                        var parentHeight = document.getElementById('exportChartOptions-'+pageInd+'-'+k).offsetHeight;
+                        for(var i=0;i<Highcharts.charts.length;i++){
+                            //console.log('parent elemt id',Highcharts.charts[i].container.parentElement.id,'reportChartRepeat-'+pageInd+'-'+k)
+                            if(Highcharts.charts[i].container.parentElement.id.includes('exportChartRepeat-'+pageInd+'-'+k)){
+                                // console.log('chart reflowing happens at',i,k,Highcharts.charts[i]);
+                                Highcharts.charts[i].setSize(parentWidth,parentHeight); // reflow the first chart..
+                                Highcharts.charts[i].reflow(); // reflow the chart..
+                            }
+                        }
+                    }
+                };
+            }
+        },10);
     });
 
 
@@ -295,54 +308,68 @@ function ExportController($scope, $http, $state, $rootScope, $window,$q,$statePa
             return ('col-sm-' + 4 + ' col-md-' + 4 + ' col-lg-' + 4);
     };
 
-    $scope.calcRowHeight = function (data,noOfItems,widgetWidth,widgetHeight,layoutHeight) {
-        // var availableHeight = data.myheight;
-        var fontSizeEm;
-        var cols;
-        if (noOfItems <= 2) {
-            cols = 1;
-            fontSizeEm = 1.0;
+    $scope.calculateRowHeight = function (data,noOfItems,widgetHeight,layoutHeight) {
+        data.showComparision = false;
+        if(widgetHeight<6) {
+            if (noOfItems > 6)
+                data.showComparision = false;
+            else data.showComparision = true;
         }
-        else if (noOfItems > 2 && noOfItems <= 4) {
-            cols = 2;
-            fontSizeEm = 0.85;
+        else{
+            if (noOfItems > 12)
+                data.showComparision = false;
+            else data.showComparision = true;
         }
-        else if (noOfItems > 5 && noOfItems <= 9) {
-            if (widgetWidth == 1 && widgetHeight != 1) {
-                cols = 2;
-                fontSizeEm = 0.85;
-            }
-            else {
-                cols = 3;
-                fontSizeEm = 0.7;
-            }
-        }
-        else {
-            cols = 3;
-            fontSizeEm = 0.7;
-        }
-        if(widgetWidth === 1 || noOfItems > 15 ||widgetHeight === 1||layoutHeight>1)
-            data.showComparision = false;
-        else
-            data.showComparision = true;
-
-
-        //var cols = $window.innerWidth>=768 ? 2 : 1;
-        var rows = Math.ceil(noOfItems / cols);
-        var heightPercent = 100 / rows;
-        // var rowHeight = document.getElementById('chartRowHeight-'+widgetId).offsetHeight;
-        // var rHeight = rowHeight;
-        //  var availableHeight = Math.floor(rHeight/rows);
-        // var fontSizeEm = availableHeight / 100 * 3.5;
-
-
-        var minSize = 0.7, maxSize = 1.0;
-        if (fontSizeEm < minSize)
-            fontSizeEm = minSize;
-        if (fontSizeEm > maxSize)
-            fontSizeEm = maxSize;
-        return {'height': (heightPercent + '%'), 'font-size': (fontSizeEm + 'em')};
     };
+    /* $scope.calcRowHeight = function (data,noOfItems,widgetWidth,widgetHeight,layoutHeight) {
+     // var availableHeight = data.myheight;
+     var fontSizeEm;
+     var cols;
+     if (noOfItems <= 2) {
+     cols = 1;
+     fontSizeEm = 1.0;
+     }
+     else if (noOfItems > 2 && noOfItems <= 4) {
+     cols = 2;
+     fontSizeEm = 0.85;
+     }
+     else if (noOfItems > 5 && noOfItems <= 9) {
+     if (widgetWidth == 1 && widgetHeight != 1) {
+     cols = 2;
+     fontSizeEm = 0.85;
+     }
+     else {
+     cols = 3;
+     fontSizeEm = 0.7;
+     }
+     }
+     else {
+     cols = 3;
+     fontSizeEm = 0.7;
+     }
+     if(widgetWidth === 1 || noOfItems > 15 ||widgetHeight === 1||layoutHeight>1)
+     data.showComparision = false;
+     else
+     data.showComparision = true;
+
+
+     //var cols = $window.innerWidth>=768 ? 2 : 1;
+     var rows = Math.ceil(noOfItems / cols);
+     var heightPercent = 100 / rows;
+     // var rowHeight = document.getElementById('chartRowHeight-'+widgetId).offsetHeight;
+     // var rHeight = rowHeight;
+     //  var availableHeight = Math.floor(rHeight/rows);
+     // var fontSizeEm = availableHeight / 100 * 3.5;
+
+
+     var minSize = 0.7, maxSize = 1.0;
+     if (fontSizeEm < minSize)
+     fontSizeEm = minSize;
+     if (fontSizeEm > maxSize)
+     fontSizeEm = maxSize;
+     return {'height': (heightPercent + '%'), 'font-size': (fontSizeEm + 'em')};
+
+     };*/
 
     $scope.calculateSummaryHeight = function(widgetHeight,noOfItems) {
         var heightPercent;
@@ -564,23 +591,50 @@ function ExportController($scope, $http, $state, $rootScope, $window,$q,$statePa
         }
         while (tempWidgetList1.length > 0);
         $scope.expPages = pages;
-
-
-        $timeout(function () {
+        $timeout(function(){
             var len = $scope.expPages.length;
-            for (var j = 0; j < len; j++) {
-                var widLen = $scope.expPages[j].widgets.length;
-                for (var ind = 0; ind < widLen; ind++) {
-                    for (var i = 0; i < $scope.expPages[j].widgetData[ind].chart.length; i++) {
-                        if ($scope.expPages[j].widgetData[ind].chart[i].api)
-                            $scope.expPages[j].widgetData[ind].chart[i].api.update();
+            for(var pageWids in $scope.expPages) {
+                for (var i in $scope.expPages[pageWids].widgets) {
+                    if($scope.expPages[pageWids].widgets[i].widgetType!='reportParaWidget'||$scope.expPages[pageWids].widgets[i].widgetType!='reportHeadingWidget') {
+                        $timeout(resizeReportWidget(pageWids, i), 300);
                     }
                 }
-                if(j==len-1)
+                if(pageWids==len-1)
                     document.getElementById('submitExportButton').disabled = false;
+                // console.log('page details',Highcharts.charts, pageWids,$scope.expPages[pageWids]);
             }
-        }, 600);
+            function resizeReportWidget(pageInd,k) {
+                return function () {
+                    if(document.getElementById('exportChartOptions-'+pageInd+'-'+k)!=null){
+                        var parentWidth = document.getElementById('exportChartOptions-'+pageInd+'-'+k).offsetWidth;
+                        var parentHeight = document.getElementById('exportChartOptions-'+pageInd+'-'+k).offsetHeight;
+                        for(var i=0;i<Highcharts.charts.length;i++){
+                            // console.log('parent elemt id',Highcharts.charts[i].container.parentElement.id,'reportChartRepeat-'+pageInd+'-'+k)
+                            if(Highcharts.charts[i].container.parentElement.id.includes('exportChartRepeat-'+pageInd+'-'+k)){
+                                //console.log('chart reflowing happens at',i,k,Highcharts.charts[i]);
+                                Highcharts.charts[i].setSize(parentWidth,parentHeight); // reflow the first chart..
+                                Highcharts.charts[i].reflow(); // reflow the chart..
+                            }
+                        }
+                    }
+                };
+            }
+        },10);
 
+        /*$timeout(function () {
+         var len = $scope.expPages.length;
+         for (var j = 0; j < len; j++) {
+         var widLen = $scope.expPages[j].widgets.length;
+         for (var ind = 0; ind < widLen; ind++) {
+         for (var i = 0; i < $scope.expPages[j].widgetData[ind].chart.length; i++) {
+         if ($scope.expPages[j].widgetData[ind].chart[i].api)
+         $scope.expPages[j].widgetData[ind].chart[i].api.update();
+         }
+         }
+         if(j==len-1)
+         document.getElementById('submitExportButton').disabled = false;
+         }
+         }, 600);*/
     };
 
     $scope.closeExport = function () {
@@ -699,7 +753,6 @@ function ExportController($scope, $http, $state, $rootScope, $window,$q,$statePa
                         "dashboardId": $state.params.id,
                         "dashboardName": dashboardName
                     };
-
                     $http({
                         method: 'POST',
                         url: '/api/v1/createHtml5ToPdf/dashboard',
@@ -805,17 +858,20 @@ function ExportController($scope, $http, $state, $rootScope, $window,$q,$statePa
                 for(var chart=0;chart<$scope.exportObject.widgetData[n].chart.length;chart++){
                     if($scope.exportObject.widgetData[n].chart[chart].data) {
                         var formatJson = [];
-                        if ($scope.exportObject.widgetData[n].chart[chart].data[0].type == 'line' || $scope.exportObject.widgetData[n].chart[chart].data[0].type == 'bar' || $scope.exportObject.widgetData[n].chart[chart].data[0].type == 'area') {
+                        if ($scope.exportObject.widgetData[n].chart[chart].data[0].type == 'line' || $scope.exportObject.widgetData[n].chart[chart].data[0].type == 'stackcolumn' || $scope.exportObject.widgetData[n].chart[chart].data[0].type == 'bar' || $scope.exportObject.widgetData[n].chart[chart].data[0].type == 'area' || $scope.exportObject.widgetData[n].chart[chart].data[0].type == 'reachVsImpressions' || $scope.exportObject.widgetData[n].chart[chart].data[0].type == 'engagedUsersReach'|| $scope.exportObject.widgetData[n].chart[chart].data[0].type == 'column'  ) {
                             lengthOfValue = $scope.exportObject.widgetData[n].chart[0].data[0].values.length;
                             var j = 0;
                             while (j < lengthOfValue) {
                                 var arrangeData = {};
                                 for (var k = 0; k < $scope.exportObject.widgetData[n].chart[chart].data.length; k++) {
                                     var noPushInArray = 0;
-                                    if ($scope.exportObject.widgetData[n].chart[chart].data[k].type == 'line' || $scope.exportObject.widgetData[n].chart[chart].data[k].type == 'bar' || $scope.exportObject.widgetData[n].chart[chart].data[k].type == 'area') {
+                                    if ($scope.exportObject.widgetData[n].chart[chart].data[k].type == 'line' || $scope.exportObject.widgetData[n].chart[chart].data[k].type == 'stackcolumn' || $scope.exportObject.widgetData[n].chart[chart].data[k].type == 'bar' || $scope.exportObject.widgetData[n].chart[chart].data[k].type == 'area' || $scope.exportObject.widgetData[n].chart[chart].data[k].type == 'column' || $scope.exportObject.widgetData[n].chart[chart].data[k].type == 'reachVsImpressions'|| $scope.exportObject.widgetData[n].chart[chart].data[k].type == 'engagedUsersReach' ) {
                                         if (!$scope.exportObject.widgetData[n].chart[chart].data[k].message) {
-                                            arrangeData.Date = moment($scope.exportObject.widgetData[n].chart[chart].data[k].values[j].x).format('YYYY-MM-DD');
                                             arrangeData[$scope.exportObject.widgetData[n].chart[chart].data[k].key] = $scope.exportObject.widgetData[n].chart[chart].data[k].values[j].y;
+                                            if( typeof $scope.exportObject.widgetData[n].chart[chart].data[k].values[j].x != 'object')
+                                                arrangeData.Date = $scope.exportObject.widgetData[n].chart[chart].data[k].values[j].x;
+                                            else
+                                                arrangeData.Date = moment($scope.exportObject.widgetData[n].chart[chart].data[k].values[j].x).format('YYYY-MM-DD');
                                         }
                                         else
                                             noPushInArray = 1;
@@ -828,17 +884,170 @@ function ExportController($scope, $http, $state, $rootScope, $window,$q,$statePa
                                 j++
                             }
                         }
-                        else if ($scope.exportObject.widgetData[n].chart[chart].data[0].type == 'pie') {
+                        else if ($scope.exportObject.widgetData[n].chart[chart].data[0].type == 'percentageArea'  ) {
+                            lengthOfValue = $scope.exportObject.widgetData[n].chart[0].data[0].totalChartLength.length;
+                            console.log("$scope.exportObject.widgetData[n].chart[0].data[0].totalChartLength",$scope.exportObject.widgetData[n].chart[0].data[0].totalChartLength[0].y)
+                            var j = 0;
+                            while (j < lengthOfValue) {
+                                var arrangeData = {};
+                                for (var k = 0; k < $scope.exportObject.widgetData[n].chart[chart].data.length; k++) {
+                                    console.log("j",j)
+                                    var noPushInArray = 0;
+                                    if ($scope.exportObject.widgetData[n].chart[chart].data[k].type == 'percentageArea' ) {
+                                        if (!$scope.exportObject.widgetData[n].chart[chart].data[k].message) {
+                                            arrangeData[$scope.exportObject.widgetData[n].chart[chart].data[k].key] = $scope.exportObject.widgetData[n].chart[chart].data[k].totalChartLength[j].y['total'];
+                                            if( typeof $scope.exportObject.widgetData[n].chart[chart].data[k].totalChartLength[j].x != 'object'){
+                                                console.log("here")
+                                                arrangeData.Date = $scope.exportObject.widgetData[n].chart[chart].data[k].totalChartLength[j].x;
+                                            }else
+                                                arrangeData.Date = moment($scope.exportObject.widgetData[n].chart[chart].data[k].totalChartLength[j].x).format('YYYY-MM-DD');
+                                        }
+                                        else
+                                            noPushInArray = 1;
+                                    }
+                                }
+                                console.log("arrangeData",arrangeData)
+                                if (noPushInArray != 1)
+                                    formatJson.push(arrangeData)
+                                j++
+                            }
+                            console.log("formatJson",formatJson)
+                        }
+                        else if ($scope.exportObject.widgetData[n].chart[chart].data[0].type == 'stackbar'  ) {
+                            formatJson=[];
+                            lengthOfValue = $scope.exportObject.widgetData[n].chart[0].data[0].values[0].total.length;
+                            console.log("$scope.exportObject.widgetData[n].chart[0].data[0].totalChartLength",$scope.exportObject.widgetData[n].chart[0].data[0].values[0].total[0])
+
+
+                            for (var k = 0; k < $scope.exportObject.widgetData[n].chart[chart].data.length; k++) {
+                                var arrangeData = {};
+                                for( var keys in $scope.exportObject.widgetData[n].chart[0].data[k].values[0].total[0] ) {
+                                    console.log("j",j)
+                                    var noPushInArray = 0;
+                                    if ($scope.exportObject.widgetData[n].chart[chart].data[k].type == 'stackbar' ) {
+                                        if (!$scope.exportObject.widgetData[n].chart[chart].data[k].message) {
+                                            arrangeData[keys] = $scope.exportObject.widgetData[n].chart[0].data[k].values[0].total[0][keys];
+                                            arrangeData['Type']= $scope.exportObject.widgetData[n].chart[0].data[k].values[0].date;
+
+                                        }
+                                        else
+                                            noPushInArray = 1;
+                                    }
+                                }
+                                console.log("arrangeData",arrangeData)
+                                if (noPushInArray != 1)
+                                    formatJson.push(arrangeData)
+                            }
+                            console.log("formatJson",formatJson)
+                        }
+                        else if ($scope.exportObject.widgetData[n].chart[chart].data[0].type == 'pie' || $scope.exportObject.widgetData[n].chart[chart].data[0].type == 'fbReachByCity' || $scope.exportObject.widgetData[n].chart[chart].data[0].type == 'angularGauge' ) {
+                            console.log("$scope.exportObject.widgetData[n].chart[chart].data11",$scope.exportObject.widgetData[n].chart[chart].data)
                             var arrangeData = {};
                             for (var k = 0; k < $scope.exportObject.widgetData[n].chart[chart].data.length; k++) {
                                 var noPushInArray = 0;
                                 if (!$scope.exportObject.widgetData[n].chart[chart].data[k].message)
-                                    arrangeData[$scope.exportObject.widgetData[n].chart[chart].data[k].key] = $scope.exportObject.widgetData[n].chart[chart].data[k].y;
+                                    arrangeData[$scope.exportObject.widgetData[n].chart[chart].data[k].key] = $scope.exportObject.widgetData[n].chart[chart].data[k].y!== undefined ? $scope.exportObject.widgetData[n].chart[chart].data[k].y:$scope.exportObject.widgetData[n].chart[chart].data[k].summaryDisplay ;
                                 else
                                     noPushInArray = 1
                             }
                             if (noPushInArray != 1)
                                 formatJson.push(arrangeData)
+                        }
+                        else if($scope.exportObject.widgetData[n].chart[chart].data[0].type =='audienceBehaviourbyDay'){
+
+                            var noPushInArray;
+                            var formatJson=[]
+                            if (!$scope.exportObject.widgetData[n].chart[chart].data[0].message) {
+                                for(var i=0;i<$scope.exportObject.widgetData[n].chart[chart].data[0].values.length;i++){
+                                    var arrangeData={}
+                                    noPushInArray=0;
+                                    for (var key in $scope.exportObject.widgetData[n].chart[chart].data[0].values[i].total) {
+                                        arrangeData[key] = $scope.exportObject.widgetData[n].chart[chart].data[0].values[i].total[key]
+                                    }
+
+                                    arrangeData.Day = $scope.exportObject.widgetData[n].chart[chart].data[0].values[i].date
+                                    console.log("arrangeData",arrangeData)
+                                    formatJson.push(arrangeData)
+                                }
+
+                            }
+
+                        }
+                        else if($scope.exportObject.widgetData[n].chart[chart].data[0].type =='twitterEngagements'){
+
+                            var noPushInArray;
+                            var formatJson=[]
+                            if (!$scope.exportObject.widgetData[n].chart[chart].data[0].message) {
+                                for(var i=0;i<$scope.exportObject.widgetData[n].chart[chart].data[0].values.length;i++){
+                                    var arrangeData={}
+                                    noPushInArray=0;
+                                    for (var key in $scope.exportObject.widgetData[n].chart[chart].data[0].values[i]) {
+                                        arrangeData[key] = $scope.exportObject.widgetData[n].chart[chart].data[0].values[i][key]
+                                    }
+                                    console.log("arrangeData",arrangeData)
+                                    formatJson.push(arrangeData)
+                                }
+
+                            }
+
+                        }
+                        else if(
+                            $scope.exportObject.widgetData[n].chart[chart].data[0].type =='pageContentEfficiency' ||$scope.exportObject.widgetData[n].chart[chart].data[0].type =='visitorAcquisitionEfficiency'||
+                            $scope.exportObject.widgetData[n].chart[chart].data[0].type =='pageTechnicalEfficiency' || $scope.exportObject.widgetData[n].chart[chart].data[0].type =='topReferringSites'||
+                            $scope.exportObject.widgetData[n].chart[chart].data[0].type =='gaSocialMediaOverview'|| $scope.exportObject.widgetData[n].chart[chart].data[0].type =='socialContributionToSiteTraffic'
+                        ){
+                            var noPushInArray;
+                            var formatJson=[]
+                            if (!$scope.exportObject.widgetData[n].chart[chart].data[0].message) {
+                                for(var i=0;i<$scope.exportObject.widgetData[n].chart[chart].data[0].values.length;i++){
+                                    var arrangeData={}
+                                    noPushInArray=0;
+                                    for (var key in $scope.exportObject.widgetData[n].chart[chart].data[0].values[i]) {console.log("$scope.exportObject.widgetData[n].chart[chart].data[0].values[i][key]",typeof ($scope.exportObject.widgetData[n].chart[chart].data[0].values[i][key]))
+                                        if(typeof $scope.exportObject.widgetData[n].chart[chart].data[0].values[i][key] === 'string'){
+                                            var string=$scope.exportObject.widgetData[n].chart[chart].data[0].values[i][key]
+                                            $scope.exportObject.widgetData[n].chart[chart].data[0].values[i][key]=string.split(',').join("")
+                                            console.log("$scope.exportObject.widgetData[n].chart[chart].data[0].values[i][key]",$scope.exportObject.widgetData[n].chart[chart].data[0].values[i][key])
+                                        }
+
+                                        arrangeData[key] = $scope.exportObject.widgetData[n].chart[chart].data[0].values[i][key]
+                                    }
+                                    formatJson.push(arrangeData)
+                                }
+
+                            }
+
+                        }
+                        else if(
+                            $scope.exportObject.widgetData[n].chart[chart].options.chart.type=='gaVisitorAcquisitionEfficiencyAnalysisTable'||$scope.exportObject.widgetData[n].chart[chart].options.chart.type=='gaPageTechnicalEfficiencyTable'||$scope.exportObject.widgetData[n].chart[chart].options.chart.type=='gaPageContentEfficiencyTable'
+                            ||$scope.exportObject.widgetData[n].chart[chart].options.chart.type=='topReferringSitesTable'
+                            ||$scope.exportObject.widgetData[n].chart[chart].options.chart.type=='topLinks'
+                            ||$scope.exportObject.widgetData[n].chart[chart].options.chart.type=='engagementByUsersTalkedAbout'
+                            ||$scope.exportObject.widgetData[n].chart[chart].options.chart.type=='hashTag'
+                            ||$scope.exportObject.widgetData[n].chart[chart].options.chart.type=='instagramHashtagLeaderBoard'
+                            ||$scope.exportObject.widgetData[n].chart[chart].options.chart.type=='campaignOverview'
+                            ||$scope.exportObject.widgetData[n].chart[chart].options.chart.type=='adgroupOverview'
+                            ||$scope.exportObject.widgetData[n].chart[chart].options.chart.type=='campaignOverViewbyAge'
+                            ||$scope.exportObject.widgetData[n].chart[chart].options.chart.type=='adOverview'
+                            ||$scope.exportObject.widgetData[n].chart[chart].options.chart.type=='youtubeVideosOverview'
+                        ){
+                            var noPushInArray;
+                            var formatJson=[]
+                            if (!$scope.exportObject.widgetData[n].chart[chart].data[0].message) {
+                                for(var i=0;i<$scope.exportObject.widgetData[n].chart[chart].data.length;i++){
+                                    var arrangeData={}
+                                    noPushInArray=0;
+                                    for (var key in $scope.exportObject.widgetData[n].chart[chart].data[i]) {
+                                        if(typeof $scope.exportObject.widgetData[n].chart[chart].data[i][key] === 'string'){
+                                            var string=$scope.exportObject.widgetData[n].chart[chart].data[i][key]
+                                            $scope.exportObject.widgetData[n].chart[chart].data[i][key]=string.split(',').join("")
+                                        }
+                                        if(key != '$$hashKey')
+                                            arrangeData[key] = $scope.exportObject.widgetData[n].chart[chart].data[i][key]
+                                    }
+                                    formatJson.push(arrangeData)
+                                }
+
+                            }
 
                         }
                         else if ($scope.exportObject.widgetData[n].chart[chart].options.chart.type == 'highEngagementTweets') {
@@ -1026,16 +1235,12 @@ function ExportController($scope, $http, $state, $rootScope, $window,$q,$statePa
                 tempArray.push(JSONToCSVConvertor(finalData[i].data, finalData[i].title, true));
             }
             $q.all(tempArray).then(function(tempArray){
-                if (navigator.msSaveBlob) { // IE10 ie
-                    var fileName = "Report_"+newDateFormat;
-                    return navigator.msSaveBlob(new Blob([tempArray], {type: 'text/csv;charset=utf-8'}), fileName);
-                }
                 var excel ='data:text/csv;charset=utf-8,'+escape(tempArray);
                 var link = document.createElement("a");
                 link.href = excel;
                 var fileName = "Report_"+newDateFormat;
                 //this will remove the blank-spaces from the title and replace it with an underscore
-                escape(fileName);
+                //fileName += ReportTitle.replace(/ /g,"_");
                 //set the visibility hidden so it will not effect on your web-layout
                 link.style = "visibility:hidden";
                 link.download = fileName + ".csv";
@@ -1062,6 +1267,53 @@ function ExportController($scope, $http, $state, $rootScope, $window,$q,$statePa
                 var deferred=$q.defer();
                 //If JSONData is not an object then JSON.parse will parse the JSON string in an Object
                 var arrData = typeof JSONData != 'object' ? JSON.parse(JSONData) : JSONData;
+                var keyArray=[]
+                for (var index in arrData[0]) {
+                    keyArray.push(index)
+                }
+                function sortObj(obj, type, caseSensitive) {
+                    var temp_array = [];
+                    for (var key in obj) {
+                        if (obj.hasOwnProperty(key)) {
+                            temp_array.push(key);
+                        }
+                    }
+                    if (typeof type === 'function') {
+                        temp_array.sort(type);
+                    }
+                    else if (type === 'value') {
+                        temp_array.sort(function(a,b) {
+                            var x = obj[a];
+                            var y = obj[b];
+                            if (!caseSensitive) {
+                                x = (x['toLowerCase'] ? x.toLowerCase() : x);
+                                y = (y['toLowerCase'] ? y.toLowerCase() : y);
+                            }
+                            return ((x > y) ? -1 : ((x < y) ? 1 : 0));
+                        }).reverse();
+                    } else {
+                        temp_array.sort().reverse();
+                    }
+                    var temp_obj = {};
+                    console.log('objobj')
+                    for (var i=0; i<temp_array.length; i++) {
+                        temp_obj[temp_array[i]] = obj[temp_array[i]];
+                    }
+                    return temp_obj;
+                };
+                var k=keyArray.indexOf("Date")
+                if(k !== -1){
+                    if(k !== 0){
+                        var samplearray=[];
+                        for (var i = 0; i < arrData.length; i++) {
+                            var  obj=sortObj(arrData[i])
+                            samplearray.push(obj)
+                        }
+                        arrData=samplearray;
+                    }
+                }
+                //If JSONData is not an object then JSON.parse will parse the JSON string in an Object
+                // var arrData = typeof JSONData != 'object' ? JSON.parse(JSONData) : JSONData;
                 var CSV = '';
                 //Set Report title in first row or line
                 CSV='\r\n';
@@ -1074,11 +1326,10 @@ function ExportController($scope, $http, $state, $rootScope, $window,$q,$statePa
                     //This loop will extract the label from 1st index of on array
                     for (var index in arrData[0]) {
                         //Now convert each value to string and comma-seprated
-                            row += '="'+index +'"'+ ',';
+                        row += '="'+index +'"'+ ',';
                     }
 
                     row = row.slice(0, -1);
-
                     //append Label row with line break
                     CSV += row + '\r\n';
                 }
@@ -1086,7 +1337,6 @@ function ExportController($scope, $http, $state, $rootScope, $window,$q,$statePa
                 //1st loop is to extract each row
                 for (var i = 0; i < arrData.length; i++) {
                     var row = "";
-
                     //2nd loop will extract each column and convert it in string comma-seprated
                     for (var index in arrData[i]) {
                         row += '="' + arrData[i][index] + '",';

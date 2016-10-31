@@ -2,13 +2,12 @@
     <nav class="navbar navbar-static-top" role="navigation">
         <div class="navbar-header topnavbar-header">
             <span minimaliza-sidebar class="menus-img menuButton"></span>
-            <select class="dashboardSelect"
-                    ng-model="recentDashboardModel"
-                    ng-change="chosenDashboard(recentDashboardModel)">
-                <option value="" disabled>Recent Dashboards</option>
-                <option  ng-repeat="recentDashboard in recentDashboards" value={{recentDashboard}}>{{recentDashboard.name || 'unnamed'}} </option>
-                <option value="gridview" style="background: #f1f1f1; font-weight: bolder;font-size:16px;">All Dashboards</option>
-            </select>
+            <button style="margin-top:7px" data-toggle="dropdown" class="btn btn-white dropdown-toggle" type="button" aria-expanded="false">Recent Dashboards <span class="caret"></span></button>
+            <ul class="dropdown-menu">
+                <li ng-repeat="recentDashboard in recentDashboards"><a ui-sref="app.reporting.dashboard({id: recentDashboard._id})">{{recentDashboard.name || 'unnamed'}}</a></li>
+                <li class="divider"></li>
+                <li style="font-weight: bolder !important;font-size: 15px;"><a ui-sref="app.reporting.dashboards">All Dashboards</a></li>
+            </ul>
             <div class="topName">
                 <span class="sessionName" style="float: right;padding-right:20px;height: inherit;">
                        <h3 style="vertical-align: middle;color: #ffffff;float: left;margin: 0px;padding: 15px 0px;height: inherit;">

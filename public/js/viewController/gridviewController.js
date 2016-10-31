@@ -20,7 +20,7 @@ function GridviewController($scope,$http,$window,$rootScope) {
             function successCallback(response){
                 $scope.gridloading=false;
                 if(response.status == '200')
-                    $scope.dashboardList = response.data.dashboardList;
+                    $scope.dashboardList = response.data.dashboardList; 
                 else
                     $scope.dashboardList = null;
             },

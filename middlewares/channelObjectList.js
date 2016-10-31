@@ -40,8 +40,6 @@ var NA = new NodeAweber(configAuth.aweberAuth.clientID, configAuth.aweberAuth.cl
 
 // set auth as a global default
 var analytics = googleapis.analytics({version: 'v3', auth: oauth2Client});
-
-
 exports.listAccounts = function (req, res, next) {
 
     //Using async's auto method for handling asynchronous functions
@@ -174,11 +172,11 @@ exports.listAccounts = function (req, res, next) {
                                     else if(result.statusCode == 401){
                                         accesserror(profile._id)
                                     }
-                                    else {
+                                    else{
                                         // var vimeoObject=[];
                                         var parsedData = JSON.parse(body);
                                         var length = parsedData.data.length;
-
+    
                                         // req.app.result = parsedData.data;
                                         for (var i = 0; i < length; i++) {
                                             var objectItem = {
@@ -189,9 +187,7 @@ exports.listAccounts = function (req, res, next) {
                                             };
                                             channelObject.push(objectItem);
                                         }
-
                                         callback(err, channelObject);
-
                                     }
                                 }
                             )

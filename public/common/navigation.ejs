@@ -12,7 +12,7 @@
             </li>
             <li class="sideBar-wrapper">
                 <a ng-click="stateValidation('chooseDashboardType')">
-                    <img src="https://cdn0.iconfinder.com/data/icons/seo-and-internet-marketing-cool-vector-1/128/47-48.png">
+                    <img src="image/BlankDashboard.png" class ="sidebar-icons" height="32" width="32">
                     <!--<i class="icon icon-edit navigation-menu-icon"></i>-->
                     <span class="nav-label"> Blank Dashboard</span>
                 </a>
@@ -20,7 +20,7 @@
             </li>
             <li  class="sideBar-wrapper">
                 <a ng-click="stateValidation('recommendedDashboard')">
-                    <img src="https://cdn0.iconfinder.com/data/icons/seo-and-internet-marketing-cool-vector-1/128/5-48.png">
+                    <img src="image/dashboardtemplate.png"  class ="sidebar-icons" height="32" width="32">
                     <!--<i class="icon icon-browser navigation-menu-icon" style="font-size: 13px !important;"></i>-->
                     <span class="nav-label" style="padding-left: 13px;">Dashboard Templates</span>
                     <div class="tooltip">Dashboard Templates</div>
@@ -37,7 +37,7 @@
 -->
             <li class="sideBar-wrapper">
                 <a ng-click="stateValidation('basicWidget')">
-                    <img src="https://cdn0.iconfinder.com/data/icons/seo-and-internet-marketing-cool-vector-1/128/46-48.png">
+                    <img src="image/Widget.png" class ="sidebar-icons" height="32" width="32">
                     <!--<i class="icon icon-presentation navigation-menu-icon"></i>-->
                     <span class="nav-label"> Add Widgets</span>
                     <div class="tooltip">Add Widgets</div>
@@ -45,10 +45,19 @@
             </li>
             <li class="sideBar-wrapper">
                 <a ng-click="stateValidation('fusionWidget')">
-                    <img src="https://cdn0.iconfinder.com/data/icons/seo-and-internet-marketing-cool-vector-1/128/7-48.png">
+                    <img src="image/fusion.png" class ="sidebar-icons" height="32" width="32">
                     <!--<i class="icon icon-expand navigation-menu-icon"></i>-->
                     <span class="nav-label"> Fusions</span>
                     <div class="tooltip">Fusions</div>
+                </a>
+            </li>
+            <li class="sideBar-wrapper">
+                    <a ui-sref="app.reporting.buildReports">
+                        <img src="image/reportBuilder.png" class ="sidebar-icons" height="32" width="32">
+                        <!--<i class="icon icon-grid navigation-menu-icon"></i>-->
+                        <span class="nav-label">Reports</span>
+                        <div class="tooltip">Create Customized Reports from your Dashboards</div>
+                    </a>
                 </a>
             </li>
 <!--
@@ -60,6 +69,14 @@
                 </a>
             </li>
 -->
+            <!--<li class="sideBar-wrapper">&lt;!&ndash;class="md-trigger md-setperspective md-effect-19 addRemoveModalContent" data-modal="addRemoveModalContent"&ndash;&gt;-->
+                <!--<a ui-sref="app.reporting.buildReports">-->
+                    <!--&lt;!&ndash;<i class="icon icon-grid navigation-menu-icon"></i>&ndash;&gt;-->
+                    <!--<i class="fa fa-file-text fa-4x" aria-hidden="true"></i>-->
+                    <!--<span class="nav-label">Build Reports</span>-->
+                    <!--<div class="tooltip">Create Customized Reports from your Dashboards</div>-->
+                <!--</a>-->
+            <!--</li>-->
         </ul>
         <!--
                 &lt;!&ndash;List to be displayed in the sidebar when the 'adReporting' state is active&ndash;&gt;

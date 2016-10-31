@@ -605,7 +605,7 @@
     border: 3px solid #fff;
     color: #fff;
     overflow: hidden;
-    background: #1074ae ;
+    background: #ff6c3a ;
 }
 
 /*.btn-4:active {
@@ -614,7 +614,7 @@
 }*/
 
 .btn-4:hover {
-    background: #1074ae ;
+    background: #ff6c3a ;
 }
 
 .btn-4:before {

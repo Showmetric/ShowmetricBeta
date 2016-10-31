@@ -45,7 +45,7 @@ function RecommendedDashboardController($scope, $http, $window, $q, $state, $roo
 
 
     });
-
+    
     $scope.dropdownWidth=function(hasnoAccess,tokenExpired){
         if(hasnoAccess==true || tokenExpired==true){
             return ('col-sm-'+10+' col-md-'+10+' col-lg-'+10+' col-xs-10');
@@ -180,9 +180,9 @@ function RecommendedDashboardController($scope, $http, $window, $q, $state, $roo
         }
         else {
             if($scope.getChannelList[index].name === 'Google Analytics'){
-                this.objectOptionsModel1='';
-                document.getElementById('basicWidgetFinishButton').disabled = true;
-            }
+				this.objectOptionsModel1='';			
+				document.getElementById('basicWidgetFinishButton').disabled = true;
+			}
             if ((profileObj.canManageClients === false)&&($scope.getChannelList[index].name === 'GoogleAdwords')){
                 $scope.canManage = false;
                 $scope.objectList[index]=null;

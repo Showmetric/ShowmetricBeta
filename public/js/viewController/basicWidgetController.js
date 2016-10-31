@@ -82,6 +82,7 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
             $scope.clearReferenceWidget();
             $scope.selectedChannelList=[];
             $scope.customMessageEnable=false;
+            $scope.metricMessage=false;
             storeChosenObject = [];
             $scope.fbObjectTypeList={};
             $scope.canManageClients = true;
@@ -115,6 +116,7 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
                 fbAdsPresent=false;
                 googleAdsPresent=false;
                 $scope.fbSelectEnable=false;
+                $scope.metricMessage=false;
                 $scope.googleSelectEnable=false;
                 $scope.headerHide=false;
                 document.getElementById('basicWidgetFinishButton').disabled = true;
@@ -139,6 +141,7 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
             $scope.campaignChosen = false;
             $scope.adSetChosen = false;
             $scope.adSetAdsChosen = false;
+            $scope.metricMessage=false;
             $scope.campaignEnable = false;
             $scope.adSetEnable = false;
             $scope.adSetAdsEnable = false;
@@ -228,6 +231,7 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
                                         'updated': response.data.referenceWidgets[i].updated,
                                         'widgetType': response.data.referenceWidgets[i].widgetType,
                                         'isAlert': response.data.referenceWidgets[i].isAlert,
+                                        'isFusion': response.data.referenceWidgets[i].isFusion!=undefined?response.data.referenceWidgets[i].isFusion:true,
                                         'isSelectedMetric': isSelectedMetric,
                                         'border': '2px solid #04509B'
                                     };
@@ -248,6 +252,7 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
                                     'updated': response.data.referenceWidgets[i].updated,
                                     'widgetType': response.data.referenceWidgets[i].widgetType,
                                     'isAlert': response.data.referenceWidgets[i].isAlert,
+                                    'isFusion': response.data.referenceWidgets[i].isFusion!=undefined?response.data.referenceWidgets[i].isFusion:true,
                                     'isSelectedMetric': isSelectedMetric,
                                     'border': '2px solid #e7eaec',
                                     'channelName':$scope.selectedTempChannelList[j].name
@@ -725,7 +730,71 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
     };
 
     $scope.googleSelectLevelChosen = function (level,index) {
+        $scope.messageEnable=false;
         if(level) {
+            var accountLimitation=0;
+            var campaignLimitation=0;
+            var adGroupLimitation=0;
+            var adSetLimitation=0;
+            var campaignPresent=false;
+            var adGroupPresent=false;
+            var accountPresent=false;
+            for (var getData in getReferenceWidgetsArr) {
+                if(getReferenceWidgetsArr[getData].name == "Account's campaigns performance (Account level only)")
+                    accountPresent=true;
+                if(getReferenceWidgetsArr[getData].name == "Campaign's Adgroup performance (Campaign level only)" || getReferenceWidgetsArr[getData].name == "Campaign Demographics - Age Analysis (Campaign Level only)" || getReferenceWidgetsArr[getData].name == "Campaign Demographics - Gender Analysis (Campaign Level only)"|| getReferenceWidgetsArr[getData].name == "Campaign Demographics - Device Analysis (Campaign Level only)")
+                    campaignPresent=true;
+                if(getReferenceWidgetsArr[getData].name == "Adgroup's Ad performance (Adgroup level only)"|| getReferenceWidgetsArr[getData].name == "Adgroup Demographics - Age Analysis (Adgroup Level only)"|| getReferenceWidgetsArr[getData].name == "Adgroup Demographics - Gender Analysis (Adgroup Level only)"|| getReferenceWidgetsArr[getData].name == "Adgroup Demographics - Device Analysis (Adgroup Level only)")
+                    adGroupPresent=true;
+            }
+            if(campaignPresent==false && adGroupPresent==false && accountPresent==false){
+                accountLimitation=0;
+                campaignLimitation=0;
+                adGroupLimitation=0;
+                adSetLimitation=0;
+            }
+            if(campaignPresent==false && adGroupPresent==true && accountPresent==false){
+                accountLimitation=1;
+                campaignLimitation=1;
+                adGroupLimitation=0;
+                adSetLimitation=1;
+            }
+            if(campaignPresent==true && adGroupPresent==false && accountPresent==false){
+                accountLimitation=1;
+                campaignLimitation=0;
+                adGroupLimitation=1;
+                adSetLimitation=1;
+            }
+            if(campaignPresent==false && adGroupPresent==false && accountPresent==true){
+                accountLimitation=0;
+                campaignLimitation=1;
+                adGroupLimitation=1;
+                adSetLimitation=1;
+            }
+            if(campaignPresent==true && adGroupPresent==true && accountPresent==false){
+                accountLimitation=1;
+                campaignLimitation=1;
+                adGroupLimitation=1;
+                adSetLimitation=1;
+            }
+            if(campaignPresent==true && adGroupPresent==false && accountPresent==true){
+                accountLimitation=1;
+                campaignLimitation=1;
+                adGroupLimitation=1;
+                adSetLimitation=1;
+            }
+            if(campaignPresent==false && adGroupPresent==true && accountPresent==true){
+                accountLimitation=1;
+                campaignLimitation=1;
+                adGroupLimitation=1;
+                adSetLimitation=1;
+            }
+            if(campaignPresent==true && adGroupPresent==true && accountPresent==true){
+                accountLimitation=1;
+                campaignLimitation=1;
+                adGroupLimitation=1;
+                adSetLimitation=1;
+            }
             if(this.objectTypeOptionsModel[index]) {
                 document.getElementById('basicWidgetFinishButton').disabled = true;
                 $scope.selectedGoogleObjectType =null;
@@ -766,103 +835,127 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
             }
         }
         if($scope.selectedGoogleLevel=='adwordaccount'){
-            if(($scope.profileOptionsModel!=null)&&($scope.googleAccountId!=null))
-                googleAdsComplete=true;
-            else
+            if(accountLimitation){
+                $scope.messageEnable=true;
                 googleAdsComplete=false;
+            }
+            else{
+                if(($scope.profileOptionsModel!=null)&&($scope.googleAccountId!=null))
+                    googleAdsComplete=true;
+                else
+                    googleAdsComplete=false;
+            }
             $scope.checkComplete();
         }
         else if($scope.selectedGoogleLevel=='adwordCampaign'){
-            if($scope.googleCampaignChosen==false){
+            if(campaignLimitation){
+                $scope.messageEnable=true;
                 googleAdsComplete=false;
-                $scope.googleCampaignEnable=true;
-                $scope.getGoogleCampaigns();
             }
             else{
-                if(($scope.googleProfileId!=null)&&($scope.googleAccountId!=null)&&($scope.googleCampaign!=null))
-                    googleAdsComplete=true;
-                else{
+                if($scope.googleCampaignChosen==false){
                     googleAdsComplete=false;
+                    $scope.googleCampaignEnable=true;
+                    $scope.getGoogleCampaigns();
+                }
+                else{
+                    if(($scope.googleProfileId!=null)&&($scope.googleAccountId!=null)&&($scope.googleCampaign!=null))
+                        googleAdsComplete=true;
+                    else{
+                        googleAdsComplete=false;
+                    }
                 }
             }
             $scope.checkComplete();
         }
         else if($scope.selectedGoogleLevel=='adwordAdgroup'){
-            if(($scope.googleCampaignChosen==true)&&($scope.groupChosen==true)){
-                if(($scope.profileOptionsModel!=null)&&($scope.googleAccountId!=null)&&($scope.googleCampaign!=null)&&($scope.googleGroup!=null))
-                    googleAdsComplete=true;
-                else {
+            if(adGroupLimitation){
+                $scope.messageEnable=true;
+                googleAdsComplete=false;
+            }
+            else{
+                if(($scope.googleCampaignChosen==true)&&($scope.groupChosen==true)){
+                    if(($scope.profileOptionsModel!=null)&&($scope.googleAccountId!=null)&&($scope.googleCampaign!=null)&&($scope.googleGroup!=null))
+                        googleAdsComplete=true;
+                    else {
+                        googleAdsComplete=false;
+                    }
+                }
+                else if(($scope.googleCampaignChosen==false)&&($scope.groupChosen==false)){
+                    $scope.googleCampaignEnable=true;
+                    $scope.getGoogleCampaigns();
+                }
+                else if(($scope.googleCampaignChosen==true)&&($scope.groupChosen==false)){
+                    $scope.googleCampaignEnable=true;
+                    $scope.groupEnable=true;
+                    $scope.getGoogleGroup();
                     googleAdsComplete=false;
                 }
+                else
+                    googleAdsComplete=false;
             }
-            else if(($scope.googleCampaignChosen==false)&&($scope.groupChosen==false)){
-                $scope.googleCampaignEnable=true;
-                $scope.getGoogleCampaigns();
-            }
-            else if(($scope.googleCampaignChosen==true)&&($scope.groupChosen==false)){
-                $scope.googleCampaignEnable=true;
-                $scope.groupEnable=true;
-                $scope.getGoogleGroup();
-                googleAdsComplete=false;
-            }
-            else
-                googleAdsComplete=false;
             $scope.checkComplete();
         }
         else if($scope.selectedGoogleLevel=='adwordsAd'){
-            if(($scope.googleCampaignChosen==true)&&($scope.groupChosen==true)&&($scope.adChosen==true)){
-                if(($scope.profileOptionsModel!=null)&&($scope.googleAccountId!=null)&&($scope.googleCampaign!=null)&&($scope.googleGroup!=null)&&($scope.googleAd!=null))
-                    googleAdsComplete=true;
-                else {
-                    googleAdsComplete=false;
+            if(adSetLimitation){
+                $scope.messageEnable=true;
+                googleAdsComplete=false;
+            }
+            else{
+                if(($scope.googleCampaignChosen==true)&&($scope.groupChosen==true)&&($scope.adChosen==true)){
+                    if(($scope.profileOptionsModel!=null)&&($scope.googleAccountId!=null)&&($scope.googleCampaign!=null)&&($scope.googleGroup!=null)&&($scope.googleAd!=null))
+                        googleAdsComplete=true;
+                    else {
+                        googleAdsComplete=false;
+                    }
                 }
-            }
-            else if((($scope.googleCampaignChosen==false)&&($scope.groupChosen==false))&&($scope.adChosen==true)){
-                googleAdsComplete=false;
-                $scope.googleCampaignEnable=true;
-                $scope.getGoogleCampaigns();
-                $scope.adChosen=false;
-                $scope.googleAd=null;
-            }
-            else if(($scope.googleCampaignChosen==true)&&($scope.groupChosen==true)&&($scope.adChosen==false)){
-                googleAdsComplete=false;
-                $scope.adEnable=true;
-                $scope.getGoogleAd();
-            }
-            else if(($scope.googleCampaignChosen==false)&&($scope.groupChosen==false)&&($scope.adChosen==false)){
-                googleAdsComplete=false;
-                $scope.googleCampaignEnable=true;
-                $scope.getGoogleCampaigns();
-            }
-            else if(($scope.googleCampaignChosen==true)&&($scope.groupChosen==false)&&($scope.adChosen==false)){
-                googleAdsComplete=false;
-                $scope.groupEnable=true;
-                $scope.getGoogleGroup();
-            }
-            else if(($scope.googleCampaignChosen==true)&&($scope.groupChosen==false)&&($scope.adChosen==true)){
-                googleAdsComplete=false;
-                $scope.groupEnable=true;
-                $scope.getGoogleGroup();
-                $scope.adChosen=false;
-                $scope.googleAd=null;
-            }
-            else if(($scope.googleCampaignChosen==false)&&($scope.groupChosen==true)&&($scope.adChosen==true)){
-                googleAdsComplete=false;
-                $scope.googleCampaignEnable=true;
-                $scope.getGoogleCampaigns();
-                $scope.adChosen=false;
-                $scope.googleAd=null;
-                $scope.groupChosen=false;
-                $scope.googleGroup=null;
-            }
-            else if(($scope.googleCampaignChosen==false)&&($scope.groupChosen==true)&&($scope.adChosen==false)){
-                googleAdsComplete=false;
-                $scope.googleCampaignEnable=true;
-                $scope.getGoogleCampaigns();
-                $scope.adChosen=false;
-                $scope.googleAds=null;
-                $scope.groupChosen=false;
-                $scope.googleGroup=null;
+                else if((($scope.googleCampaignChosen==false)&&($scope.groupChosen==false))&&($scope.adChosen==true)){
+                    googleAdsComplete=false;
+                    $scope.googleCampaignEnable=true;
+                    $scope.getGoogleCampaigns();
+                    $scope.adChosen=false;
+                    $scope.googleAd=null;
+                }
+                else if(($scope.googleCampaignChosen==true)&&($scope.groupChosen==true)&&($scope.adChosen==false)){
+                    googleAdsComplete=false;
+                    $scope.adEnable=true;
+                    $scope.getGoogleAd();
+                }
+                else if(($scope.googleCampaignChosen==false)&&($scope.groupChosen==false)&&($scope.adChosen==false)){
+                    googleAdsComplete=false;
+                    $scope.googleCampaignEnable=true;
+                    $scope.getGoogleCampaigns();
+                }
+                else if(($scope.googleCampaignChosen==true)&&($scope.groupChosen==false)&&($scope.adChosen==false)){
+                    googleAdsComplete=false;
+                    $scope.groupEnable=true;
+                    $scope.getGoogleGroup();
+                }
+                else if(($scope.googleCampaignChosen==true)&&($scope.groupChosen==false)&&($scope.adChosen==true)){
+                    googleAdsComplete=false;
+                    $scope.groupEnable=true;
+                    $scope.getGoogleGroup();
+                    $scope.adChosen=false;
+                    $scope.googleAd=null;
+                }
+                else if(($scope.googleCampaignChosen==false)&&($scope.groupChosen==true)&&($scope.adChosen==true)){
+                    googleAdsComplete=false;
+                    $scope.googleCampaignEnable=true;
+                    $scope.getGoogleCampaigns();
+                    $scope.adChosen=false;
+                    $scope.googleAd=null;
+                    $scope.groupChosen=false;
+                    $scope.googleGroup=null;
+                }
+                else if(($scope.googleCampaignChosen==false)&&($scope.groupChosen==true)&&($scope.adChosen==false)){
+                    googleAdsComplete=false;
+                    $scope.googleCampaignEnable=true;
+                    $scope.getGoogleCampaigns();
+                    $scope.adChosen=false;
+                    $scope.googleAds=null;
+                    $scope.groupChosen=false;
+                    $scope.googleGroup=null;
+                }
             }
             $scope.checkComplete();
         }
@@ -1762,6 +1855,7 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
                                     "color": widgetColor,
                                     "visibility": true,
                                     "isAlert": getReferenceWidgetsArr[getData].isAlert,
+                                    "isFusion":getReferenceWidgetsArr[getData].isFusion != undefined?getReferenceWidgetsArr[getData].isFusion:true,
                                     "channelName": channelName
                                 };
                                 inputParams.push(jsonData);
@@ -1831,6 +1925,7 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
                             "color": widgetColor,
                             "visibility": true,
                             "isAlert": getReferenceWidgetsArr[getData].isAlert,
+                            "isFusion":getReferenceWidgetsArr[getData].isFusion != undefined?getReferenceWidgetsArr[getData].isFusion:true,
                             "channelName": channelName
                         };
                         inputParams.push(jsonData);
@@ -1892,6 +1987,7 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
                             "color": widgetColor,
                             "visibility": true,
                             "isAlert": getReferenceWidgetsArr[getData].isAlert,
+                            "isFusion":getReferenceWidgetsArr[getData].isFusion != undefined?getReferenceWidgetsArr[getData].isFusion:true,
                             "channelName":channelName
                         };
                         inputParams.push(jsonData);
@@ -1942,6 +2038,7 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
                             "color": widgetColor,
                             "visibility": true,
                             "isAlert": getReferenceWidgetsArr[getData].isAlert,
+                            "isFusion":getReferenceWidgetsArr[getData].isFusion != undefined?getReferenceWidgetsArr[getData].isFusion:true,
                             "channelName": channelName
                         };
                         inputParams.push(jsonData);
@@ -2074,24 +2171,61 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
     $scope.storeReferenceWidget = function () {
         $scope.storedReferenceWidget = this.referenceWidgets;
         $scope.uniqueObjectCount=[];
+        $scope.metricMessage=false;
         var IsAlreadyExist = 0;
-        for (var getData in getReferenceWidgetsArr) {
-            if (getReferenceWidgetsArr[getData]._id == this.referenceWidgets._id) {
-                removeByAttr(getReferenceWidgetsArr, '_id', getReferenceWidgetsArr[getData]._id);
-                $("#referenceWidgets-" + this.referenceWidgets._id).css("border", "2px solid #e7eaec");
-                $("#triangle-topright-" + this.referenceWidgets._id).removeClass("triangle-topright");
-                $("#metricNames-" + this.referenceWidgets._id).removeClass("getMetricName");
-                $("#getCheck-" + this.referenceWidgets._id).hide();
-                IsAlreadyExist = 1;
+        var canProcess=0;
+        var accountLevel=false;
+        var campaignLevel=false;
+        var adgroupLevel=false;
+        if($scope.storedReferenceWidget.channelName=="GoogleAdwords"){
+            if(!getReferenceWidgetsArr.length)
+                canProcess=1;
+            else{
+                for (var getData in getReferenceWidgetsArr){
+                    if(getReferenceWidgetsArr[getData].name == "Account's campaigns performance (Account level only)")
+                        accountLevel=true;
+                    else if(getReferenceWidgetsArr[getData].name == "Campaign's Adgroup performance (Campaign level only)" || getReferenceWidgetsArr[getData].name == "Campaign Demographics - Age Analysis (Campaign Level only)" || getReferenceWidgetsArr[getData].name == "Campaign Demographics - Gender Analysis (Campaign Level only)"|| getReferenceWidgetsArr[getData].name == "Campaign Demographics - Device Analysis (Campaign Level only)")
+                        campaignLevel=true;
+                    else if(getReferenceWidgetsArr[getData].name == "Adgroup's Ad performance (Adgroup level only)"|| getReferenceWidgetsArr[getData].name == "Adgroup Demographics - Age Analysis (Adgroup Level only)"|| getReferenceWidgetsArr[getData].name == "Adgroup Demographics - Gender Analysis (Adgroup Level only)"|| getReferenceWidgetsArr[getData].name == "Adgroup Demographics - Device Analysis (Adgroup Level only)")
+                        adgroupLevel=true;
+                }
+                if(accountLevel==true && ($scope.storedReferenceWidget.name == "Campaign's Adgroup performance (Campaign level only)" || $scope.storedReferenceWidget.name == "Campaign Demographics - Age Analysis (Campaign Level only)" || $scope.storedReferenceWidget.name == "Campaign Demographics - Gender Analysis (Campaign Level only)"|| $scope.storedReferenceWidget.name == "Campaign Demographics - Device Analysis (Campaign Level only)" || $scope.storedReferenceWidget.name == "Adgroup's Ad performance (Adgroup level only)" || $scope.storedReferenceWidget.name == "Adgroup Demographics - Age Analysis (Adgroup Level only)" || $scope.storedReferenceWidget.name == "Adgroup Demographics - Gender Analysis (Adgroup Level only)"|| $scope.storedReferenceWidget.name == "Adgroup Demographics - Device Analysis (Adgroup Level only)")){
+                    canProcess=0;
+                    $scope.metricMessage=true;
+                }
+                else if(campaignLevel==true && ($scope.storedReferenceWidget.name == "Account's campaigns performance (Account level only)" || $scope.storedReferenceWidget.name == "Adgroup's Ad performance (Adgroup level only)" || $scope.storedReferenceWidget.name == "Adgroup Demographics - Age Analysis (Adgroup Level only)" || $scope.storedReferenceWidget.name == "Adgroup Demographics - Gender Analysis (Adgroup Level only)"|| $scope.storedReferenceWidget.name == "Adgroup Demographics - Device Analysis (Adgroup Level only)")){
+                    canProcess=0;
+                    $scope.metricMessage=true;
+                }
+                else if(adgroupLevel==true && ($scope.storedReferenceWidget.name == "Account's campaigns performance (Account level only)" || $scope.storedReferenceWidget.name == "Campaign's Adgroup performance (Campaign level only)" || $scope.storedReferenceWidget.name == "Campaign Demographics - Age Analysis (Campaign Level only)" || $scope.storedReferenceWidget.name == "Campaign Demographics - Gender Analysis (Campaign Level only)"|| $scope.storedReferenceWidget.name == "Campaign Demographics - Device Analysis (Campaign Level only)")){
+                    canProcess=0;
+                    $scope.metricMessage=true;
+                }
+                else
+                    canProcess=1;
             }
         }
-        if (IsAlreadyExist != 1) {
-            getReferenceWidgetsArr.push(this.referenceWidgets);
-            $("#referenceWidgets-" + this.referenceWidgets._id).css("border", "2px solid #04509B");
-            $("#triangle-topright-" + this.referenceWidgets._id).addClass("triangle-topright");
-            $("#metricNames-" + this.referenceWidgets._id).addClass("getMetricName");
-            $("#getCheck-" + this.referenceWidgets._id).show();
-            document.getElementById('basicWidgetNextButton2').disabled = false;
+        else
+            canProcess=1;
+        if(canProcess){
+            for (var getData in getReferenceWidgetsArr) {
+                if (getReferenceWidgetsArr[getData]._id == this.referenceWidgets._id) {
+                    removeByAttr(getReferenceWidgetsArr, '_id', getReferenceWidgetsArr[getData]._id);
+                    $("#referenceWidgets-" + this.referenceWidgets._id).css("border", "2px solid #e7eaec");
+                    $("#triangle-topright-" + this.referenceWidgets._id).removeClass("triangle-topright");
+                    $("#metricNames-" + this.referenceWidgets._id).removeClass("getMetricName");
+                    $("#getCheck-" + this.referenceWidgets._id).hide();
+                    IsAlreadyExist = 1;
+                }
+            }
+            if (IsAlreadyExist != 1) {
+                getReferenceWidgetsArr.push(this.referenceWidgets);
+                $("#referenceWidgets-" + this.referenceWidgets._id).css("border", "2px solid #04509B");
+                $("#triangle-topright-" + this.referenceWidgets._id).addClass("triangle-topright");
+                $("#metricNames-" + this.referenceWidgets._id).addClass("getMetricName");
+                $("#getCheck-" + this.referenceWidgets._id).show();
+                document.getElementById('basicWidgetNextButton2').disabled = false;
+            }
         }
         if (getReferenceWidgetsArr == "" || getReferenceWidgetsArr == "[]" || getReferenceWidgetsArr == null) {
             document.getElementById('basicWidgetNextButton2').disabled = true;

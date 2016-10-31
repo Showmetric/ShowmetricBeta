@@ -3,7 +3,7 @@ function ProfileListController($scope, $http, $window, $stateParams) {
     $scope.profile={};
     $scope.channelList=[];
     $scope.currentView='step_one';
-   $scope.configProfileListModal=function(){
+    $scope.configProfileListModal=function(){
         $scope.profileListArray=[];
         $http({
             method: 'GET',

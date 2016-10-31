@@ -2841,27 +2841,82 @@ exports.getChannelData = function (req, res, next) {
                                     var startDate = moment(new Date()).format('YYYY-MM-DD');
                                     // var newStartDate = updated.replace(/-/g, "");
                                     if (configAuth.objectType.googleAdwordAdGroup == objectType.type) {
-                                        var query = [configAuth.googleAdwordsStatic.adGroupId, configAuth.googleAdwordsStatic.date, initialResults.metric[j].objectTypes[0].meta.gAdsMetricName];
-                                        var performance = configAuth.googleAdwordsStatic.ADGROUP_PERFORMANCE_REPORT;
-                                        var clientId = initialResults.object[j].meta.accountId;
-                                        var objects = [{
-                                            field: configAuth.googleAdwordsStatic.adGroupIdEqual,
-                                            operator: "EQUALS",
-                                            values: [initialResults.object[j].channelObjectId]
-                                        }];
+                                        if(initialResults.metric[j].objectTypes[0].meta.decreaseLevel != undefined){
+                                            if(initialResults.metric[j].objectTypes[0].meta.decreaseLevel){
+                                                var query= initialResults.metric[j].objectTypes[0].meta.gAdsMetricName.split(',');
+                                                var query = query;
+                                                var performance = configAuth.googleAdwordsStatic.AD_PERFORMANCE_REPORT;
+                                                var clientId = initialResults.object[j].meta.accountId;
+                                                var objects = [{
+                                                    field: configAuth.googleAdwordsStatic.adGroupIdEqual,
+                                                    operator: "EQUALS",
+                                                    values: [initialResults.object[j].channelObjectId]
+                                                }];
+                                            }else{
+                                                var query= initialResults.metric[j].objectTypes[0].meta.gAdsMetricName.split(',');
+                                                var query = query;
+                                                var performance = configAuth.googleAdwordsStatic[initialResults.metric[j].code];
+                                                var clientId = initialResults.object[j].meta.accountId;
+                                                var objects = [{
+                                                    field: configAuth.googleAdwordsStatic.adGroupIdEqual,
+                                                    operator: "EQUALS",
+                                                    values: [initialResults.object[j].channelObjectId]
+                                                }];
+                                            }
+
+                                        } else
+                                        {
+                                            var query=initialResults.metric[j].objectTypes[0].meta.gAdsMetricName.split(',');
+                                            query.push(configAuth.googleAdwordsStatic.adGroupId,configAuth.googleAdwordsStatic.date);
+                                            var performance = configAuth.googleAdwordsStatic.ADGROUP_PERFORMANCE_REPORT;
+                                            var clientId = initialResults.object[j].meta.accountId;
+                                            var objects = [{
+                                                field: configAuth.googleAdwordsStatic.adGroupIdEqual,
+                                                operator: "EQUALS",
+                                                values: [initialResults.object[j].channelObjectId]
+                                            }];
+                                        }
                                     }
                                     else if (configAuth.objectType.googleAdwordCampaign == objectType.type) {
-                                        var query = [configAuth.googleAdwordsStatic.campaignId, configAuth.googleAdwordsStatic.date, initialResults.metric[j].objectTypes[0].meta.gAdsMetricName];
-                                        var performance = configAuth.googleAdwordsStatic.CAMPAIGN_PERFORMANCE_REPORT;
-                                        var clientId = initialResults.object[j].meta.accountId;
-                                        var objects = [{
-                                            field: configAuth.googleAdwordsStatic.campaignEqual,
-                                            operator: "EQUALS",
-                                            values: [initialResults.object[j].channelObjectId]
-                                        }];
+                                        if(initialResults.metric[j].objectTypes[0].meta.decreaseLevel != undefined){
+                                            if(initialResults.metric[j].objectTypes[0].meta.decreaseLevel){
+                                                var query= initialResults.metric[j].objectTypes[0].meta.gAdsMetricName.split(',');
+                                                var query = query;
+                                                var performance = configAuth.googleAdwordsStatic.ADGROUP_PERFORMANCE_REPORT;
+                                                var clientId = initialResults.object[j].meta.accountId;
+                                                var objects = [{
+                                                    field: configAuth.googleAdwordsStatic.campaignEqual,
+                                                    operator: "EQUALS",
+                                                    values: [initialResults.object[j].channelObjectId]
+                                                }];
+                                            }else{
+                                                var query= initialResults.metric[j].objectTypes[0].meta.gAdsMetricName.split(',');
+                                                var query = query;
+                                                var performance = configAuth.googleAdwordsStatic[initialResults.metric[j]];
+                                                var clientId = initialResults.object[j].meta.accountId;
+                                                var objects = [{
+                                                    field: configAuth.googleAdwordsStatic.campaignEqual,
+                                                    operator: "EQUALS",
+                                                    values: [initialResults.object[j].channelObjectId]
+                                                }];
+                                            }
+
+                                        } else{
+                                            var query=initialResults.metric[j].objectTypes[0].meta.gAdsMetricName.split(',')
+                                            query.push(configAuth.googleAdwordsStatic.campaignId,configAuth.googleAdwordsStatic.date)
+                                            var performance = configAuth.googleAdwordsStatic.CAMPAIGN_PERFORMANCE_REPORT;
+                                            var clientId = initialResults.object[j].meta.accountId;
+                                            var objects = [{
+                                                field: configAuth.googleAdwordsStatic.campaignEqual,
+                                                operator: "EQUALS",
+                                                values: [initialResults.object[j].channelObjectId]
+                                            }];
+                                        }
+
                                     }
                                     else if (configAuth.objectType.googleAdwordAd == objectType.type) {
-                                        var query = [configAuth.googleAdwordsStatic.id, configAuth.googleAdwordsStatic.date, initialResults.metric[j].objectTypes[0].meta.gAdsMetricName];
+                                        var  query=initialResults.metric[j].objectTypes[0].meta.gAdsMetricName.split(',')
+                                        query.push(configAuth.googleAdwordsStatic.id, configAuth.googleAdwordsStatic.date)
                                         var performance = configAuth.googleAdwordsStatic.AD_PERFORMANCE_REPORT;
                                         var clientId = initialResults.object[j].meta.accountId;
                                         var objects = [{
@@ -2871,10 +2926,21 @@ exports.getChannelData = function (req, res, next) {
                                         }];
                                     }
                                     else {
-                                        var query = [configAuth.googleAdwordsStatic.date, initialResults.metric[j].objectTypes[0].meta.gAdsMetricName];
-                                        var performance = configAuth.googleAdwordsStatic.ACCOUNT_PERFORMANCE_REPORT;
-                                        var clientId = initialResults.object[j].channelObjectId;
-                                        var objects = ""
+                                        if(initialResults.metric[j].objectTypes[0].meta.decreaseLevel != undefined){
+                                            var query= initialResults.metric[j].objectTypes[0].meta.gAdsMetricName.split(',');
+                                            var query = query;
+                                            var performance = configAuth.googleAdwordsStatic.CAMPAIGN_PERFORMANCE_REPORT;
+                                            var clientId = initialResults.object[j].channelObjectId;
+                                            var objects = ""
+                                        }
+                                        else{
+                                            var query=initialResults.metric[j].objectTypes[0].meta.gAdsMetricName.split(',')
+                                            query.push(configAuth.googleAdwordsStatic.date)
+                                            var performance = configAuth.googleAdwordsStatic.ACCOUNT_PERFORMANCE_REPORT;
+                                            var clientId = initialResults.object[j].channelObjectId;
+                                            var objects = ""
+                                        }
+
                                     }
                                     allObjects = {
                                         profile: initialResults.get_profile[j],
@@ -2905,29 +2971,78 @@ exports.getChannelData = function (req, res, next) {
                                 // var newEndDate = endDate.replace(/-/g, "");
                                 // var endDate = newEndDate;
                                 if (configAuth.objectType.googleAdwordAdGroup == objectType.type) {
+                                    if(initialResults.metric[j].objectTypes[0].meta.decreaseLevel != undefined){
+                                        if(initialResults.metric[j].objectTypes[0].meta.decreaseLevel){
+                                            var query =  initialResults.metric[j].objectTypes[0].meta.gAdsMetricName.split(',');
+                                            var performance = configAuth.googleAdwordsStatic.AD_PERFORMANCE_REPORT;
+                                            var clientId = initialResults.object[j].meta.accountId;
+                                            var objects = [{
+                                                field: configAuth.googleAdwordsStatic.adGroupIdEqual,
+                                                operator: "EQUALS",
+                                                values: [initialResults.object[j].channelObjectId]
+                                            }];
+                                        }else{
+                                            var query =  initialResults.metric[j].objectTypes[0].meta.gAdsMetricName.split(',');
+                                            var performance = configAuth.googleAdwordsStatic[initialResults.metric[j].code];
+                                            var clientId = initialResults.object[j].meta.accountId;
+                                            var objects = [{
+                                                field: configAuth.googleAdwordsStatic.adGroupIdEqual,
+                                                operator: "EQUALS",
+                                                values: [initialResults.object[j].channelObjectId]
+                                            }];
+                                        }
 
-                                    var query = [configAuth.googleAdwordsStatic.adGroupId, configAuth.googleAdwordsStatic.date, initialResults.metric[j].objectTypes[0].meta.gAdsMetricName];
-                                    var performance = configAuth.googleAdwordsStatic.ADGROUP_PERFORMANCE_REPORT;
-                                    var clientId = initialResults.object[j].meta.accountId;
-                                    var objects = [{
-                                        field: configAuth.googleAdwordsStatic.adGroupIdEqual,
-                                        operator: "EQUALS",
-                                        values: [initialResults.object[j].channelObjectId]
-                                    }];
+                                    } else{
+                                        var query=initialResults.metric[j].objectTypes[0].meta.gAdsMetricName.split(',')
+                                        query.push(configAuth.googleAdwordsStatic.adGroupId, configAuth.googleAdwordsStatic.date)
+                                        var performance = configAuth.googleAdwordsStatic.ADGROUP_PERFORMANCE_REPORT;
+                                        var clientId = initialResults.object[j].meta.accountId;
+                                        var objects = [{
+                                            field: configAuth.googleAdwordsStatic.adGroupIdEqual,
+                                            operator: "EQUALS",
+                                            values: [initialResults.object[j].channelObjectId]
+                                        }];
+                                    }
                                 }
                                 else if (configAuth.objectType.googleAdwordCampaign == objectType.type) {
-                                    var query = [configAuth.googleAdwordsStatic.campaignId, configAuth.googleAdwordsStatic.date, initialResults.metric[j].objectTypes[0].meta.gAdsMetricName];
-                                    var performance = configAuth.googleAdwordsStatic.CAMPAIGN_PERFORMANCE_REPORT;
-                                    var clientId = initialResults.object[j].meta.accountId;
-                                    var objects = [{
-                                        field: configAuth.googleAdwordsStatic.campaignEqual,
-                                        operator: "EQUALS",
-                                        values: [initialResults.object[j].channelObjectId]
-                                    }];
+                                    if(initialResults.metric[j].objectTypes[0].meta.decreaseLevel != undefined){
+                                        if(initialResults.metric[j].objectTypes[0].meta.decreaseLevel){
+                                            var query= initialResults.metric[j].objectTypes[0].meta.gAdsMetricName.split(',');
+                                            var query = query;
+                                            var performance = configAuth.googleAdwordsStatic.ADGROUP_PERFORMANCE_REPORT;
+                                            var clientId = initialResults.object[j].meta.accountId;
+                                            var objects = [{
+                                                field: configAuth.googleAdwordsStatic.campaignEqual,
+                                                operator: "EQUALS",
+                                                values: [initialResults.object[j].channelObjectId]
+                                            }];
+                                        }else{
+                                            var performance =configAuth.googleAdwordsStatic[initialResults.metric[j].code];
+                                            var query= initialResults.metric[j].objectTypes[0].meta.gAdsMetricName.split(',');
+                                            var query = query;
+                                            var clientId = initialResults.object[j].meta.accountId;
+                                            var objects = [{
+                                                field: configAuth.googleAdwordsStatic.campaignEqual,
+                                                operator: "EQUALS",
+                                                values: [initialResults.object[j].channelObjectId]
+                                            }];
+                                        }
+                                    } else{
+                                        var query=initialResults.metric[j].objectTypes[0].meta.gAdsMetricName.split(',')
+                                        query.push(configAuth.googleAdwordsStatic.campaignId, configAuth.googleAdwordsStatic.date)
+                                        var performance = configAuth.googleAdwordsStatic.CAMPAIGN_PERFORMANCE_REPORT;
+                                        var clientId = initialResults.object[j].meta.accountId;
+                                        var objects = [{
+                                            field: configAuth.googleAdwordsStatic.campaignEqual,
+                                            operator: "EQUALS",
+                                            values: [initialResults.object[j].channelObjectId]
+                                        }];
+                                    }
                                     // var objects = configAuth.googleAdwordsStatic.campaignEqual + initialResults.object[j].channelObjectId;
                                 }
                                 else if (configAuth.objectType.googleAdwordAd == objectType.type) {
-                                    var query = [configAuth.googleAdwordsStatic.id, configAuth.googleAdwordsStatic.date, initialResults.metric[j].objectTypes[0].meta.gAdsMetricName];
+                                    var query=initialResults.metric[j].objectTypes[0].meta.gAdsMetricName.split(',')
+                                    query.push(configAuth.googleAdwordsStatic.id, configAuth.googleAdwordsStatic.date)
                                     var performance = configAuth.googleAdwordsStatic.AD_PERFORMANCE_REPORT;
                                     var clientId = initialResults.object[j].meta.accountId;
                                     var objects = [{
@@ -2939,10 +3054,21 @@ exports.getChannelData = function (req, res, next) {
                                     // var objects = configAuth.googleAdwordsStatic.idEquals + initialResults.object[j].channelObjectId;
                                 }
                                 else {
-                                    var query = [configAuth.googleAdwordsStatic.date, initialResults.metric[j].objectTypes[0].meta.gAdsMetricName];
-                                    var performance = configAuth.googleAdwordsStatic.ACCOUNT_PERFORMANCE_REPORT;
-                                    var clientId = initialResults.object[j].channelObjectId;
-                                    var objects = ""
+                                    if(initialResults.metric[j].objectTypes[0].meta.decreaseLevel != undefined){
+                                        var query= initialResults.metric[j].objectTypes[0].meta.gAdsMetricName.split(',');
+                                        var query = query;
+                                        var performance = configAuth.googleAdwordsStatic.CAMPAIGN_PERFORMANCE_REPORT;
+                                        var clientId = initialResults.object[j].channelObjectId;
+                                        var objects = ""
+                                    }
+                                    else{
+                                        var query=initialResults.metric[j].objectTypes[0].meta.gAdsMetricName.split(',')
+                                        query.push(configAuth.googleAdwordsStatic.date)
+                                        var performance = configAuth.googleAdwordsStatic.ACCOUNT_PERFORMANCE_REPORT;
+                                        var clientId = initialResults.object[j].channelObjectId;
+                                        var objects = ""
+                                    }
+
                                 }
                                 allObjects = {
                                     profile: initialResults.get_profile[j],
@@ -3060,42 +3186,87 @@ exports.getChannelData = function (req, res, next) {
                 if (data.error) {
                     return res.status(500).json({error: 'Internal server error', id: req.params.widgetId});
                 }
-
+               if(initialResults.metric[0].objectTypes[0].meta.decreaseLevel != undefined){
+                   for(var i=0;i<data.length;i++){
+                     var  str= JSON.stringify(data[i]);
+                       str = str.replace(configAuth.googleAdwordsStatic.costPerConversionapper,configAuth.googleAdwordsStatic.costPerConversionchange);
+                       str = str.replace(configAuth.googleAdwordsStatic.DefaultmaxCPCapper,configAuth.googleAdwordsStatic.DefaultmaxCPCchange);
+                       str = str.replace(configAuth.googleAdwordsStatic.MaxCPVapper,configAuth.googleAdwordsStatic.MaxCPVchange);
+                       str = str.replace(configAuth.googleAdwordsStatic.MaxCPMapper,configAuth.googleAdwordsStatic.MaxCPMchange);
+                       str = str.replace(configAuth.googleAdwordsStatic.Totalconvvalueapper,configAuth.googleAdwordsStatic.Totalconvvaluechange);
+                       data[i] = JSON.parse(str);
+                   }
+                  var sampleArray=[]
+                 var groupData=  _.groupBy(data,'Day')
+                   for(var keys in groupData){
+                       var key=keys;
+                       sampleArray.push({
+                           total:groupData[keys],
+                           date:key
+                       })
+                   }
+               }
+                else{
+                   var param = [];
+                   if (results.metricCode === configAuth.googleAdwordsMetric.clicks)
+                       param.push('Clicks');
+                   else if (results.metricCode === configAuth.googleAdwordsMetric.cost)
+                       param.push('Cost');
+                   else if (results.metricCode === configAuth.googleAdwordsMetric.conversionRate)
+                       param.push('ConversionsRate');
+                   else if (results.metricCode === configAuth.googleAdwordsMetric.conversions)
+                       param.push('Conversions');
+                   else if (results.metricCode === configAuth.googleAdwordsMetric.impressions)
+                       param.push('Impressions');
+                   else if (results.metricCode === configAuth.googleAdwordsMetric.clickThroughRate)
+                       param.push('CTR')
+                   else if (results.metricCode === configAuth.googleAdwordsMetric.costPerClick)
+                       param.push('Avg. CPC');
+                   else if (results.metricCode === configAuth.googleAdwordsMetric.costPerThousandImpressions)
+                       param.push('Avg. CPM');
+                   else
+                       param.push('Cost / conv.');
+                   var sampleArray = [];
+                   var totalValue;
+                 
+                       if (results.metricCode === configAuth.googleAdwordsMetric.costPerConversion || results.metricCode === configAuth.googleAdwordsMetric.costPerClick || results.metricCode === configAuth.googleAdwordsMetric.costPerThousandImpressions || results.metricCode === configAuth.googleAdwordsMetric.clickThroughRate || results.metricCode === configAuth.googleAdwordsMetric.conversionRate)
+                       {
+                           for(var i=0;i<data.length;i++){
+                               var  str= JSON.stringify(data[i]);
+                               str = str.replace(configAuth.googleAdwordsStatic.costPerConversionapper,configAuth.googleAdwordsStatic.costPerConversionchange);
+                               str = str.replace(configAuth.googleAdwordsStatic.DefaultmaxCPCapper,configAuth.googleAdwordsStatic.DefaultmaxCPCchange);
+                               str = str.replace(configAuth.googleAdwordsStatic.MaxCPVapper,configAuth.googleAdwordsStatic.MaxCPVchange);
+                               str = str.replace(configAuth.googleAdwordsStatic.MaxCPMapper,configAuth.googleAdwordsStatic.MaxCPMchange);
+                               str = str.replace(configAuth.googleAdwordsStatic.Totalconvvalueapper,configAuth.googleAdwordsStatic.Totalconvvaluechange);
+                               data[i] = JSON.parse(str);
+                           }
+                           var groupData=  _.groupBy(data,'Day')
+                           for(var keys in groupData){
+                               var key=keys;
+                               sampleArray.push({
+                                   total:groupData[keys],
+                                   date:key
+                               })
+                           }
+                       }
+                       else{
+                           for (var prop = 0; prop < data.length; prop++) {
+                             if( results.metricCode === configAuth.googleAdwordsMetric.cost)
+                           totalValue = parseFloat(data[prop][param]/1000000).toFixed(2);
+                               else
+                                 totalValue = parseFloat(data[prop][param]);
+                           var value = {};
+                           value = {
+                               total: totalValue,
+                               date: data[prop].Day
+                           };
+                           sampleArray.push(value);
+                       }
+                          
+                   }
+               }
                 //Array to hold the final result
-                var param = [];
-                if (results.metricCode === configAuth.googleAdwordsMetric.clicks)
-                    param.push('Clicks');
-                else if (results.metricCode === configAuth.googleAdwordsMetric.cost)
-                    param.push('Cost');
-                else if (results.metricCode === configAuth.googleAdwordsMetric.conversionRate)
-                    param.push('Conv. rate');
-                else if (results.metricCode === configAuth.googleAdwordsMetric.conversions)
-                    param.push('Conversions');
-                else if (results.metricCode === configAuth.googleAdwordsMetric.impressions)
-                    param.push('Impressions');
-                else if (results.metricCode === configAuth.googleAdwordsMetric.clickThroughRate)
-                    param.push('CTR')
-                else if (results.metricCode === configAuth.googleAdwordsMetric.costPerClick)
-                    param.push('Avg. CPC');
-                else if (results.metricCode === configAuth.googleAdwordsMetric.costPerThousandImpressions)
-                    param.push('Avg. CPM');
-                else
-                    param.push('Cost / conv.');
                 var finalData = [];
-                var sampleArray = [];
-                var totalValue;
-                for (var prop = 0; prop < data.length; prop++) {
-                    if (results.metricCode === configAuth.googleAdwordsMetric.costPerConversion || results.metricCode === configAuth.googleAdwordsMetric.costPerClick || results.metricCode === configAuth.googleAdwordsMetric.costPerThousandImpressions || results.metricCode === configAuth.googleAdwordsMetric.cost)
-                        totalValue = parseFloat((data[prop][param] / 1000000).toFixed(2));
-                    else
-                        totalValue = parseFloat(data[prop][param]);
-                    var value = {};
-                    value = {
-                        total: totalValue,
-                        date: data[prop].Day
-                    };
-                    sampleArray.push(value);
-                }
                 var storeStartDate = new Date(results.startDate);
                 var storeEndDate = new Date(results.endDate);
                 var timeDiff = Math.abs(storeEndDate.getTime() - storeStartDate.getTime());

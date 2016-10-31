@@ -585,6 +585,7 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
                             'name': (typeof dashboardWidgetList[getWidgetInfo].name != 'undefined'? dashboardWidgetList[getWidgetInfo].name : ''),
                             'widgetType': (typeof dashboardWidgetList[getWidgetInfo].widgetType != 'undefined'? dashboardWidgetList[getWidgetInfo].widgetType : ''),
                             'isAlert':(typeof dashboardWidgetList[getWidgetInfo].isAlert != 'undefined'? dashboardWidgetList[getWidgetInfo].isAlert : false),
+                            'isFusion':(typeof dashboardWidgetList[getWidgetInfo].isFusion != 'undefined'? dashboardWidgetList[getWidgetInfo].isFusion : true),
                             'id': dashboardWidgetList[getWidgetInfo]._id,
                             'visibility': false,
                             'channelName':(typeof dashboardWidgetList[getWidgetInfo].channelName != 'undefined'? dashboardWidgetList[getWidgetInfo].channelName : '')
@@ -665,6 +666,7 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
             'name': (typeof widget.name != 'undefined'? widget.name : ''),
             'widgetType':(typeof widget.widgetType != 'undefined'? widget.widgetType : ''),
             'isAlert':(typeof widget.isAlert != 'undefined'? widget.isAlert : false),
+            'isFusion':(typeof widget.isAlert != 'undefined'? widget.isFusion : true),
             'id': widget._id,
             //'chart': {'api': {}},
             'visibility': false,
@@ -781,6 +783,7 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
                 'name': (typeof tempWidgetList[getWidgetInfo].name != 'undefined'? tempWidgetList[getWidgetInfo].name : ''),
                 'widgetType': (typeof tempWidgetList[getWidgetInfo].widgetType != 'undefined'? tempWidgetList[getWidgetInfo].widgetType : ''),
                 'isAlert':(typeof tempWidgetList[getWidgetInfo].isAlert != 'undefined'? tempWidgetList[getWidgetInfo].isAlert : false),
+                'isFusion':(typeof tempWidgetList[getWidgetInfo].isAlert != 'undefined'? tempWidgetList[getWidgetInfo].isFusion : true),
                 'id': tempWidgetList[getWidgetInfo].id,
                 'visibility': false,
                 'channelName': (typeof tempWidgetList[getWidgetInfo].channelName != 'undefined'? tempWidgetList[getWidgetInfo].channelName : '')
@@ -797,7 +800,7 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
     $scope.deleteDashboard = function(){
         swal({
                 title: "Confirm Delete?",
-                text: "Dashboard and all its contents will be removed",
+                text: "Dashboard and all its associated Reports will be removed",
                 type: "warning",
                 showCancelButton: true,
                 confirmButtonColor: "#DD6B55",

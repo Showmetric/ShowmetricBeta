@@ -215,6 +215,15 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider, IdlePro
                 }
             }
         })
+        .state('app.reporting.buildReports', {
+            url: "/buildReports",
+            views: {
+                'main@app': {
+                    templateUrl: "buildReport.ejs",
+                    controller: 'buildReportController'
+                }
+            }
+        })
 
         .state('app.changePassword', {
             url: "/changePassword",
