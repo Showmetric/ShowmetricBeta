@@ -280,13 +280,13 @@ svg:hover #Calendar-Icon { fill: #293846; }
 .model-title {
     text-align:center !important;
     font-size: 20px;
-    font-family: Montserrat-Black;
+    font-family: Montserrat-SemiBold;
     color:#1074ae;
 }
 .dashboardContentmodel-title {
     text-align:center !important;
     font-size: 20px;
-    font-family: Heebo-Medium;
+    font-family: Montserrat-Regular;
     color:#04509B;
 }
 .daterange{width: 350px !important;
@@ -297,10 +297,10 @@ svg:hover #Calendar-Icon { fill: #293846; }
     border-radius: 5px!important;
     color: #000 !important;}
 .modal-header .close{margin-top: -17px !important; margin-right: -12px !important;}
-.metricNames{font-family:Montserrat-Regular; font-size:18px;word-wrap: break-word;line-height:1;margin-top: 15px;}
+.metricNames{font-family:Montserrat-Regular; font-size:15px;word-wrap: break-word;line-height:1;margin-top: 25px;}
 .FusionMetricNames{font-family:Montserrat-Regular; font-size:14px;word-wrap: break-word;line-height:1;margin-top: 5px;}
 .getMetricName{margin-top:-10px;}
-.metricDescription{font-family: Montserrat-Regualr;font-size: 11px;line-height: 1.3;}
+.metricDescription{font-family: Montserrat-Regular;font-size: 11px;line-height: 1.3;}
 .nav-label{font-size: 12px;font-family: Montserrat-Regular;padding-left: 15px;color: #fff; display:none}
 .logout{height: 11px;color:#fff}
 .nav .nav-tabs li:active{background: #000 url('data:image/svg+xml;utf8,<svg width="7px" height="5px" viewBox="102 51 7 5" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><desc>Created with Sketch.</desc><defs></defs></svg>')  no-repeat;}
@@ -400,7 +400,7 @@ svg:hover #Calendar-Icon { fill: #293846; }
     background-color: #fff !important;
     border-radius: 5px !important;
     font-size: 18px !important;
-    font-family: Montserrat-Black !important ;
+    font-family: Montserrat-Bold !important ;
     font-style: normal !important;
     padding: 6.5px !important;
     border:none;
@@ -496,7 +496,7 @@ svg:hover #Calendar-Icon { fill: #293846; }
     margin-top:0px !important;
     background-color: #fff !important;
     border-radius: 5px !important;
-    font-size: 14px !important;
+    font-size: 12px !important;
     font-style: normal !important;
     border:none;
     color:#000!important;
@@ -633,8 +633,8 @@ h5 {
     margin: 0px;
 }
 .navbar-default {
-    background-color: #283544;
-    border-color: #283544;
+    background-color: #232c3b;
+    border-color: #232c3b;
 }
 .navbar-top-links li {
     display: inline-block;
@@ -723,7 +723,10 @@ body{font-family: Montserrat-Regular;color: #232c3b}
     font-size: 12px;
 }
 .nav-header {
-    padding:11px;
+    padding-left: 9px;
+    padding-top: 11px;
+    padding-right: 11px;
+    padding-bottom: 11px;
     /*background: #04509B  url('data:image/svg+xml;utf8,<svg width="168px" height="142px" viewBox="13 -4 168 142" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><defs><path d="M17,96.4198718 L39.2909091,48.3173077 L61.5818182,0.21474359 L119.290909,0.0858974359 L177,0 L177,53.6858974 C177,91.7384615 176.890909,107.371795 176.6,107.371795 C176.381818,107.371795 153.836364,100.800641 126.527273,92.8121795 C99.1818182,84.8237179 76.5272727,78.1666667 76.1636364,78.0807692 C75.6181818,77.9948718 73,83.3634615 62.4909091,105.86859 L49.5090909,133.785256 L33.2545455,133.914103 L17,134 L17,115.23141 L17,96.4198718 Z" id="path-1"></path><filter x="-50%" y="-50%" width="200%" height="200%" filterUnits="objectBoundingBox" id="filter-2"><feOffset dx="0" dy="0" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset><feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.5 0" type="matrix" in="shadowOffsetOuter1" result="shadowMatrixOuter1"></feColorMatrix><feOffset dx="0" dy="0" in="SourceAlpha" result="shadowOffsetOuter2"></feOffset><feGaussianBlur stdDeviation="2" in="shadowOffsetOuter2" result="shadowBlurOuter2"></feGaussianBlur><feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.5 0" type="matrix" in="shadowBlurOuter2" result="shadowMatrixOuter2"></feColorMatrix><feMerge><feMergeNode in="shadowMatrixOuter1"></feMergeNode><feMergeNode in="shadowMatrixOuter2"></feMergeNode></feMerge></filter></defs><g id="Shape" stroke="none" fill="none"><use fill="black" fill-opacity="1" filter="url(#filter-2)" xlink:href="#path-1"></use><use fill="#512DA8" fill-rule="evenodd" xlink:href="#path-1" ></use></g></svg>')  no-repeat ;*/
 }
 .pace-done .nav-header {
@@ -836,25 +839,25 @@ body.mini-navbar .navbar-default .nav > li > .nav-second-level li a {
 }
 .mini-navbar .nav-second-level li a {
     padding: 10px 10px 10px 10px;
-    background-color: #283544;
+    background-color: #232c3b;
     border-radius: 0px !important;
     color: #ffffff  !important;
 }
 .mini-navbar .nav-second-level li a:hover {
-    background-color:#283544;
+    background-color:#232c3b;
 }
 
 .mini-navbar .nav-second-level {
     position: absolute;
     left: 70px;
     top: 0px;
-    background-color: #283544;
+    background-color: #232c3b;
     font-size: 12px;
     width: 100px;
 }
 
 .mini-navbar .nav-second-level li a:hover {
-    background-color:#283544 ;
+    background-color:#232c3b ;
 }
 .canvas-menu.mini-navbar .nav-second-level {
     background: #293846;
@@ -874,7 +877,7 @@ body.mini-navbar .navbar-default .nav > li > a:hover{
 }
 .navbar-fixed-top,
 .navbar-static-top {
-    background: #1074ae;
+    background: #232c3b;
 }
 .fixed-nav #wrapper {
     margin-top: 0;
@@ -914,7 +917,7 @@ body.mini-navbar .navbar-default .nav > li > a {
 
 body.mini-navbar .nav-header {
     padding: 0;
-    background-color: #283544;
+    background-color: #232c3b;
 }
 
 body.mini-navbar #page-wrapper {
@@ -964,7 +967,7 @@ body.fixed-sidebar.mini-navbar .navbar-default .nav li a span,
 }
 .white-bg .navbar-fixed-top,
 .white-bg .navbar-static-top {
-    background-image: linear-gradient(45deg, #288dc0 0%,#004a97 99%);
+    background-image: linear-gradient(45deg, #283544 0%,#232c3b 99%);
 }
 .top-navigation .navbar {
     margin-bottom: 0;
@@ -2007,7 +2010,7 @@ label.error {
     padding: 12px 10px;
     margin: 0;
     border-radius: 0;
-    background: #283544;
+    background: #232c3b;
     color: #fff;
     text-align: center;
     border-right: 1px solid #334556;
@@ -2579,14 +2582,12 @@ body.mini-navbar .logo-element {
     /*padding: 18px 0;*/
 }
 .dataimage{
-    height: 25px;
-    width:50px;
+    height: 35px;
 }
 @media(min-width: 319px) and (max-width : 767px) {
     .dataimage{
         margin-top:15px;
-        height: 25px;
-        width:50px;
+        height: 35px;
     }
 }
 .navbar-static-side .profile-element{
@@ -3053,7 +3054,7 @@ button.btn.btn-primary.changePassword {
     text-align: center;
     font-weight: 600;
     text-transform: none;
-    font-family: Montserrat-Black;
+    font-family: Montserrat-Bold;
 }
 
 .exportCloseButton{
@@ -3499,7 +3500,7 @@ svg.nvd3-svg {
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background-color: #283544;
+    background-color: #232c3b;
     opacity: 0.6;
     position: absolute;
     -webkit-animation: sk-doubleBounce 2s infinite ease-in-out;
@@ -4649,7 +4650,7 @@ body.rtls.top-navigation .footer.fixed {
     color: #ffffff;
     border: none;
     cursor: pointer;
-    background-color: #1074ae !important;
+    background-color: #232c3b !important;
     height: 20px;
     width: 30px;
     outline-style: none;
@@ -4903,7 +4904,7 @@ body.rtls.top-navigation .footer.fixed {
 }
 
 .pace .pace-progress {
-    background: #283544 ;
+    background: #232c3b ;
     position: fixed;
     z-index: 2000;
     top: 0;
@@ -5028,7 +5029,7 @@ body.rtls.top-navigation .footer.fixed {
     border: 1px solid rgba(0, 0, 0, 0.12);
     background: linear-gradient(to bottom, #f8f9fa 0%, #dadfe3 100%);
     box-shadow: inset 0px 0px 1px 1px rgba(255, 255, 255, 0.4);
-    color: #283544;
+    color: #232c3b;
     outline-style: none;
 }
 .darkBlue {
@@ -5041,7 +5042,7 @@ body.rtls.top-navigation .footer.fixed {
     border: 1px solid rgba(0, 0, 0, 0.12);
     background: #fff;
     box-shadow: inset 0px 0px 1px 1px rgba(255, 255, 255, 0.4);
-    color: #283544;
+    color: #232c3b;
     outline-style: none;
 }
 .arrangeDisabled{
@@ -5290,19 +5291,19 @@ button.overlayCloseButton:hover{
 
 .exportDashbdNameStyle{
     font-size:18px!important;
-    font-family: Heebo-Mediu !important ;
+    font-family: Montserrat-Bold !important ;
     font-style: normal !important;
     font-weight:200 !important;
     text-transform: capitalize;
 }
 .grid-font{
-    font-family: Montserrat-Black !important;
+    font-family: Montserrat-Bold !important;
     text-transform: capitalize !important;
     font-weight: bolder;
 }
 @media(min-width : 768px) {
     .dashboard-report{
-        font-family: Montserrat-Black!important;
+        font-family: Montserrat-Bold!important;
         text-transform: capitalize !important;
         font-size: 20px;
         font-weight: 600;
@@ -5415,7 +5416,7 @@ input:focus{
     float:right
 }
 .addReportBtn{
-    color: #283544 !important;
+    color: #232c3b !important;
 }
 .addReportBtn:hover{
     color: #1074ae !important;
@@ -5432,18 +5433,18 @@ input:focus{
 /*position: relative;*/
 }
 .widgetBoxBorder{
-border: 1px solid #eaeff3;
+    border: 1px solid #eaeff3;
 }
 .reportListingGrid{
-height: 30px;
-font-size: 15px;
-padding: 10px;
+    height: 30px;
+    font-size: 15px;
+    padding: 10px;
 }
 .reportListingGrid a {
-color:#1074ae !important;
+    color:#1074ae !important;
 }
 .reportListingGrid a:hover{
-color:#283544 !important;
+    color:#232c3b !important;
 }
 @media(max-width : 767px) {
     .reportListingGrid{
@@ -5456,7 +5457,7 @@ color:#283544 !important;
     .reportText-header{color:#fff;margin-top:5px;font-size:15px;font-family:Montserrat-Bold;padding:5px}
 }
 .reportGraph-icon{float: right; margin-top: 7px;margin-right: -25px;}
-.reportGraph-icon a{color:#283544 !important;}
+.reportGraph-icon a{color:#232c3b !important;}
 .reportGraph-icon a:hover{color:#1074ae !important;}
 .logoImage-icons{max-width: 90%;max-height:40px;padding: 10px 0 0 0;}
 .logoText-icons{color:#000;font-size:20px;font-family:Montserrat-Light;padding:10px 5px}
