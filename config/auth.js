@@ -34,7 +34,7 @@ module.exports = {
         site: 'https://api.vimeo.com',
         tokenPath: '/oauth/access_token',
         authorizationPath: '/oauth/authorize',
-        redirect_uri:'/auth/vimeo/callback/',
+        redirect_uri:'https://uat.datapoolt.co/auth/vimeo/callback/',
         scope: 'public',
         state: '3(#0/!~',
         localCallingURL: '/api/auth/vimeo',
