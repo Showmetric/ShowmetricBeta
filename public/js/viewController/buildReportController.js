@@ -135,6 +135,7 @@ function buildReportController($scope,$http,$window,$timeout) {
             method: 'POST', url: '/api/v1/create/reports', data: jsonData
         }).then(
             function successCallback(response){
+                var newWindow = $window.open('', '_blank');
                 $scope.gridloading=false;
                 if(response.status == '200'){
                     $scope.fetchAllReports();
@@ -144,9 +145,9 @@ function buildReportController($scope,$http,$window,$timeout) {
                     var reportUrl = String(reportDomain + '#/' + reportId);
                     // $window.open(reportUrl,'_blank');
                     console.log("Window Opens",reportUrl)
-                    var newWindow = $window.open('', '_blank');
-                    newWindow.location=reportUrl;
                     $scope.addNewReport(false);
+                    newWindow.location=reportUrl;
+
                 }
                 else
                     $scope.dashboardList = null;

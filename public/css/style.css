@@ -5,56 +5,47 @@
  *   version 0.1
  *
 */
-/* heebo-regular - latin */
-@font-face {
-    font-family: 'Heebo';
-    font-style: normal;
-    font-weight: 400;
-    src: local('Heebo'), local('Heebo-Regular'),
-    url('../fonts/heebo-v2-latin-regular.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
-    url('../fonts/heebo-v2-latin-regular.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
-}
 .sideBar-wrapper {
 
     position: relative;
     margin :40px auto
 }
 /*.sideBar-wrapper .tooltip {*/
-/*background: #2b3947;*/
-/*bottom: 100%;*/
-/*color: #fff;*/
-/*display: block;*/
-/*left: 70px;*/
-/*margin-bottom: -51px;*/
-/*opacity: 0;*/
-/*padding: 18px 11px 17px 16px;;*/
-/*pointer-events: none;*/
-/*position: absolute;*/
-/*width: 205px;*/
-/*-webkit-transform: translateX(-10px);*/
-/*-moz-transform: translateX(-10px);*/
-/*-ms-transform: translateX(-10px);*/
-/*-o-transform: translateX(-10px);*/
-/*transform: translateX(-10px);*/
-/*-webkit-transition: all .25s ease-out;*/
-/*-moz-transition: all .25s ease-out;*/
-/*-ms-transition: all .25s ease-out;*/
-/*-o-transition: all .25s ease-out;*/
-/*transition: all .25s ease-out;*/
-/*-webkit-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);*/
-/*-moz-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);*/
-/*-ms-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);*/
-/*-o-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);*/
-/*box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);*/
+    /*background: #2b3947;*/
+    /*bottom: 100%;*/
+    /*color: #fff;*/
+    /*display: block;*/
+    /*left: 70px;*/
+    /*margin-bottom: -51px;*/
+    /*opacity: 0;*/
+    /*padding: 18px 11px 17px 16px;;*/
+    /*pointer-events: none;*/
+    /*position: absolute;*/
+    /*width: 205px;*/
+    /*-webkit-transform: translateX(-10px);*/
+    /*-moz-transform: translateX(-10px);*/
+    /*-ms-transform: translateX(-10px);*/
+    /*-o-transform: translateX(-10px);*/
+    /*transform: translateX(-10px);*/
+    /*-webkit-transition: all .25s ease-out;*/
+    /*-moz-transition: all .25s ease-out;*/
+    /*-ms-transition: all .25s ease-out;*/
+    /*-o-transition: all .25s ease-out;*/
+    /*transition: all .25s ease-out;*/
+    /*-webkit-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);*/
+    /*-moz-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);*/
+    /*-ms-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);*/
+    /*-o-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);*/
+    /*box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);*/
 /*}*/
 /*.sideBar-wrapper:hover .tooltip {*/
-/*opacity: 1;*/
-/*pointer-events: auto;*/
-/*-webkit-transform: translateX(0px);*/
-/*-moz-transform: translateX(0px);*/
-/*-ms-transform: translateX(0px);*/
-/*-o-transform: translateX(0px);*/
-/*transform: translateX(0px);*/
+    /*opacity: 1;*/
+    /*pointer-events: auto;*/
+    /*-webkit-transform: translateX(0px);*/
+    /*-moz-transform: translateX(0px);*/
+    /*-ms-transform: translateX(0px);*/
+    /*-o-transform: translateX(0px);*/
+    /*transform: translateX(0px);*/
 /*}*/
 .gobutton-mode{
     background-color: #efefef  !important;
@@ -69,7 +60,7 @@
 }
 .shareUrl{
     font-size: 15px;
-    font-family: Heebo-Medium;
+    font-family: Montserrat-Regular;
 }
 .shareUrl p button{
     margin-left: 8px;
@@ -93,7 +84,7 @@
 }
 .dropdown-menu{
     color:#333 !important;
-    font-family: Heebo-Light;
+    font-family: Montserrat-Regular;
     font-weight: 500;
     background-color: #f9f9f9 !important;
 }
@@ -207,7 +198,7 @@ svg:hover #Calendar-Icon { fill: #293846; }
 .nv-axis.nv-y2 .tick line {
     display:none;opacity: 0;
 }
-.tooltip{font-family: Heebo-Thin; width: 140px;}
+.tooltip{font-family: Montserrat-Regular; width: 140px;}
 .tooltip-inner{background-color:#2f4050 !important;border:1px solid #333 !important;color: #ffffff !important}
 .contentName{display: flex;
     align-items: center;
@@ -312,26 +303,6 @@ svg:hover #Calendar-Icon { fill: #293846; }
 .nav .nav-tabs li:active{background: #000 url('data:image/svg+xml;utf8,<svg width="7px" height="5px" viewBox="102 51 7 5" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><desc>Created with Sketch.</desc><defs></defs></svg>')  no-repeat;}
 .choose-text{border-radius: 5px}
 .ibox-title span{padding-left: 10px; vertical-align: sub; }
-@font-face { font-family: Heebo-Black;  src: url('../fonts/Datapooltfonts/Heebo-Black.ttf');}
-@font-face { font-family: Heebo-Bold;  src: url('../fonts/Datapooltfonts/Heebo-Bold.ttf');}
-@font-face { font-family: Heebo-ExtraBold;  src: url('../fonts/Datapooltfonts/Heebo-ExtraBold.ttf');}
-@font-face { font-family: Heebo-Light;  src: url('../fonts/Datapooltfonts/Heebo-Light.ttf');}
-@font-face { font-family: Heebo-Medium;  src: url('../fonts/Datapooltfonts/Heebo-Medium.ttf');}
-@font-face { font-family: Heebo-Regular;  src: url('../fonts/Datapooltfonts/Heebo-Regular.ttf');}
-@font-face { font-family: Heebo-Thin;  src: url('../fonts/Datapooltfonts/Heebo-Thin.ttf');}
-
-@font-face { font-family: Brandon Grotesque; src: url('../fonts/Brandon Grotesque/Brandon_med.otf'); }
-@font-face { font-family: Brandon Grotesque-medium; font-weight: bold; src: url('../fonts/Brandon Grotesque/Brandon_med.otf');}
-@font-face { font-family: Brandon Grotesque-regular; font-weight: bold; src: url('../fonts/Brandon Grotesque/Brandon_reg.otf');}
-@font-face { font-family: Brandon Grotesque-bold; font-weight: bold; src: url('../fonts/Brandon Grotesque/Brandon_bld.otf');}
-
-
-
-@font-face { font-family: Bebas Neue; src: url('../fonts/BebasNeue/BebasNeue_Regular.otf'); }
-@font-face { font-family: Bebas Neue-bold; font-weight: bold; src: url('../fonts/BebasNeue/BebasNeue_Bold.otf');}
-@font-face { font-family: Bebas Neue-book; font-weight: bold; src: url('../fonts/BebasNeue/BebasNeue_Book.otf');}
-@font-face { font-family: Bebas Neue-thin; font-weight: bold; src: url('../fonts/BebasNeue/BebasNeue_Thin.otf');}
-@font-face { font-family: Bebas Neue-light; font-weight: bold; src: url('../fonts/BebasNeue/BebasNeue_Light.otf');}
 
 @font-face { font-family: Montserrat-Black; src: url('../fonts/montserrat/Montserrat-Black.otf');}
 @font-face { font-family: Montserrat-Bold; src: url('../fonts/montserrat/Montserrat-Bold.otf');}
@@ -2449,7 +2420,7 @@ body.mini-navbar .branding {
     color: #ffffff !important;
 }
 .darkblue-bg {
-    background-color: #ff6c3a !important;
+    background-color: #1074ae !important;
     color: #ffffff !important;
 }
 
@@ -5392,7 +5363,7 @@ input:focus{
 }
 .chooseDashboardquestion{
     font-size: 18px;
-    font-family: Heebo-Light;
+    font-family: Montserrat-Regular;
 }
 .changeButton{
     border-radius: 0px !important;

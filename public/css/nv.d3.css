@@ -283,11 +283,11 @@ svg.nvd3-svg {
 
 
 .nvd3 text {
-    font: normal 12px Heebo-Light;
+    font: normal 12px Montserrat-Regular;
 }
 
 .nvd3 .title {
-    font: bold 14px Heebo-Medium;
+    font: bold 14px Montserrat-Bold;
 }
 
 .nvd3 .nv-background {
@@ -524,7 +524,7 @@ svg.nvd3-svg {
     z-index: 10000;
     display: block;
 
-    font-family: Heebo-Thin;
+    font-family: Montserrat-Regular;
     font-size: 13px;
     text-align: left;
     pointer-events: none;
