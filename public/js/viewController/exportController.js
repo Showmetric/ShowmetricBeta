@@ -263,18 +263,31 @@ function ExportController($scope, $http, $state, $rootScope, $window,$q,$statePa
     });
 
     $scope.$on('resize', function (e) {
-        $timeout(function () {
-            var len = $scope.expPages.length;
-            for (var j = 0; j < len; j++) {
-                var widLen = $scope.expPages[j].widgets.length;
-                for (var ind = 0; ind < widLen; ind++) {
-                    for (var i = 0; i < $scope.expPages[j].widgetData[ind].chart.length; i++) {
-                        if ($scope.expPages[j].widgetData[ind].chart[i].api)
-                            $scope.expPages[j].widgetData[ind].chart[i].api.update();
+        $timeout(function(){
+            for(var pageWids in $scope.expPages) {
+                for (var i in $scope.expPages[pageWids].widgets) {
+                    if($scope.expPages[pageWids].widgets[i].widgetType!='reportParaWidget'||$scope.expPages[pageWids].widgets[i].widgetType!='reportHeadingWidget') {
+                        $timeout(resizeReportWidget(pageWids, i), 300);
                     }
                 }
             }
-        }, 800);
+            function resizeReportWidget(pageInd,k) {
+                return function () {
+                    if(document.getElementById('exportChartOptions-'+pageInd+'-'+k)!=null){
+                        var parentWidth = document.getElementById('exportChartOptions-'+pageInd+'-'+k).offsetWidth;
+                        var parentHeight = document.getElementById('exportChartOptions-'+pageInd+'-'+k).offsetHeight;
+                        for(var i=0;i<Highcharts.charts.length;i++){
+                            //console.log('parent elemt id',Highcharts.charts[i].container.parentElement.id,'reportChartRepeat-'+pageInd+'-'+k)
+                            if(Highcharts.charts[i].container.parentElement.id.includes('exportChartRepeat-'+pageInd+'-'+k)){
+                                // console.log('chart reflowing happens at',i,k,Highcharts.charts[i]);
+                                Highcharts.charts[i].setSize(parentWidth,parentHeight); // reflow the first chart..
+                                Highcharts.charts[i].reflow(); // reflow the chart..
+                            }
+                        }
+                    }
+                };
+            }
+        },10);
     });
 
 
@@ -295,7 +308,20 @@ function ExportController($scope, $http, $state, $rootScope, $window,$q,$statePa
             return ('col-sm-' + 4 + ' col-md-' + 4 + ' col-lg-' + 4);
     };
 
-    $scope.calcRowHeight = function (data,noOfItems,widgetWidth,widgetHeight,layoutHeight) {
+    $scope.calculateRowHeight = function (data,noOfItems,widgetHeight,layoutHeight) {
+        data.showComparision = false;
+        if(widgetHeight<6) {
+            if (noOfItems > 6)
+                data.showComparision = false;
+            else data.showComparision = true;
+        }
+        else{
+            if (noOfItems > 12)
+                data.showComparision = false;
+            else data.showComparision = true;
+        }
+    };
+    /* $scope.calcRowHeight = function (data,noOfItems,widgetWidth,widgetHeight,layoutHeight) {
         // var availableHeight = data.myheight;
         var fontSizeEm;
         var cols;
@@ -342,7 +368,8 @@ function ExportController($scope, $http, $state, $rootScope, $window,$q,$statePa
         if (fontSizeEm > maxSize)
             fontSizeEm = maxSize;
         return {'height': (heightPercent + '%'), 'font-size': (fontSizeEm + 'em')};
-    };
+
+    };*/
 
     $scope.calculateSummaryHeight = function(widgetHeight,noOfItems) {
         var heightPercent;
@@ -564,9 +591,37 @@ function ExportController($scope, $http, $state, $rootScope, $window,$q,$statePa
         }
         while (tempWidgetList1.length > 0);
         $scope.expPages = pages;
+        $timeout(function(){
+            var len = $scope.expPages.length;
+            for(var pageWids in $scope.expPages) {
+                for (var i in $scope.expPages[pageWids].widgets) {
+                    if($scope.expPages[pageWids].widgets[i].widgetType!='reportParaWidget'||$scope.expPages[pageWids].widgets[i].widgetType!='reportHeadingWidget') {
+                        $timeout(resizeReportWidget(pageWids, i), 300);
+                    }
+                }
+                if(pageWids==len-1)
+                    document.getElementById('submitExportButton').disabled = false;
+                // console.log('page details',Highcharts.charts, pageWids,$scope.expPages[pageWids]);
+            }
+            function resizeReportWidget(pageInd,k) {
+                return function () {
+                    if(document.getElementById('exportChartOptions-'+pageInd+'-'+k)!=null){
+                        var parentWidth = document.getElementById('exportChartOptions-'+pageInd+'-'+k).offsetWidth;
+                        var parentHeight = document.getElementById('exportChartOptions-'+pageInd+'-'+k).offsetHeight;
+                        for(var i=0;i<Highcharts.charts.length;i++){
+                            // console.log('parent elemt id',Highcharts.charts[i].container.parentElement.id,'reportChartRepeat-'+pageInd+'-'+k)
+                            if(Highcharts.charts[i].container.parentElement.id.includes('exportChartRepeat-'+pageInd+'-'+k)){
+                                //console.log('chart reflowing happens at',i,k,Highcharts.charts[i]);
+                                Highcharts.charts[i].setSize(parentWidth,parentHeight); // reflow the first chart..
+                                Highcharts.charts[i].reflow(); // reflow the chart..
+                            }
+                        }
+                    }
+                };
+            }
+        },10);
 
-
-        $timeout(function () {
+        /*$timeout(function () {
             var len = $scope.expPages.length;
             for (var j = 0; j < len; j++) {
                 var widLen = $scope.expPages[j].widgets.length;
@@ -579,7 +634,7 @@ function ExportController($scope, $http, $state, $rootScope, $window,$q,$statePa
                 if(j==len-1)
                     document.getElementById('submitExportButton').disabled = false;
             }
-        }, 600);
+        }, 600);*/
     };
 
     $scope.closeExport = function () {

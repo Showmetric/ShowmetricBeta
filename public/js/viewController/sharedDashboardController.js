@@ -11,13 +11,15 @@ function SharedDashboardController($scope,$timeout,$rootScope,$http,$window,$sta
     $scope.dashboardConfiguration = function () {
         //To set height for Window scroller in dashboard Template
         $scope.docHeight = window.innerHeight;
-        $scope.docHeight = $scope.docHeight-60;
+        $scope.docHeight = $scope.docHeight - 60;
 
         //Defining configuration parameters for dashboard layout
-        $scope.dashboard = { widgets: [], widgetData: [] };
+        $scope.dashboard = {widgets: [], widgetData: []};
         $scope.dashboard.dashboardName = '';
-        $scope.widgetsPresent = false;
+        $scope.widgetsPresent = true;
+        $scope.spinerEnable = true;
         $scope.loadedWidgetCount = 0;
+        $scope.widgetErrorCode = 0;
         $scope.startDate;
         $scope.endDate;
 
@@ -119,12 +121,24 @@ function SharedDashboardController($scope,$timeout,$rootScope,$http,$window,$sta
                     $scope.populateDashboardWidgets();
                 });
         }
-
+            $scope.setChartSize = function (index, childIndex) {
+                $timeout(callAtTimeout, 100);
+                function callAtTimeout() {
+                    if (document.getElementById('chartOptions' + index) != null) {
+                        var parentWidth = document.getElementById('chartOptions' + index).offsetWidth;
+                        var parentHeight = document.getElementById('chartOptions' + index).offsetHeight;
+                        document.getElementById('chartRepeat' + index + '-' + childIndex).style.height = parentHeight + 'px'
+                        document.getElementById('chartRepeat' + index + '-' + childIndex).style.width = parentWidth + 'px';
+                    }
+                }
+            }
 
 
         //Setting up grid configuration for widgets
         $scope.gridsterOptions = {
+            sparse: true,
             margins: [20, 20],
+            maxRows: 500,
             columns: 6,
             defaultSizeX: 2,
             defaultSizeY: 2,
@@ -148,14 +162,17 @@ function SharedDashboardController($scope,$timeout,$rootScope,$http,$window,$sta
 
         $scope.$on('gridster-resized', function(sizes, gridster) {
             for(var i=0;i<$scope.dashboard.widgets.length;i++){
-                $timeout(resizeWidget(i), 100);
+                $timeout(resizeWidget(i), 10);
             }
-            function resizeWidget(i) {
+            function resizeWidget(k) {
                 return function() {
-                    if(typeof $scope.dashboard.widgetData[i].chart != 'undefined'){
-                        for(var j=0;j<$scope.dashboard.widgetData[i].chart.length;j++){
-                            if ($scope.dashboard.widgetData[i].chart[j].api){
-                                $scope.dashboard.widgetData[i].chart[j].api.update();
+                    if (document.getElementById('chartOptions' + k) != null) {
+                        var parentWidth = document.getElementById('chartOptions' + k).offsetWidth;
+                        var parentHeight = document.getElementById('chartOptions' + k).offsetHeight;
+                        for (var i = 0; i < Highcharts.charts.length; i++) {
+                            if (Highcharts.charts[i].container.parentElement.id.includes('chartRepeat' + k)) {
+                                Highcharts.charts[i].setSize(parentWidth, parentHeight); // reflow the first chart..
+                                Highcharts.charts[i].reflow(); // reflow the chart..
                             }
                         }
                     }
@@ -178,12 +195,16 @@ function SharedDashboardController($scope,$timeout,$rootScope,$http,$window,$sta
             for(var i=0;i<$scope.dashboard.widgets.length;i++){
                 $timeout(resizeWidget(i), 100);
             }
-            function resizeWidget(i) {
+            function resizeWidget(k) {
                 return function() {
-                    if(typeof $scope.dashboard.widgetData[i].chart != 'undefined'){
-                        for(j=0;j<$scope.dashboard.widgetData[i].chart.length;j++){
-                            if ($scope.dashboard.widgetData[i].chart[j].api)
-                                $scope.dashboard.widgetData[i].chart[j].api.update();
+                    if (document.getElementById('chartOptions' + k) != null) {
+                        var parentWidth = document.getElementById('chartOptions' + k).offsetWidth;
+                        var parentHeight = document.getElementById('chartOptions' + k).offsetHeight;
+                        for (var i = 0; i < Highcharts.charts.length; i++) {
+                            if (Highcharts.charts[i].container.parentElement.id.includes('chartRepeat' + k)) {
+                                Highcharts.charts[i].setSize(parentWidth, parentHeight); // reflow the first chart..
+                                Highcharts.charts[i].reflow(); // reflow the chart..
+                            }
                         }
                     }
                 };
@@ -214,8 +235,21 @@ function SharedDashboardController($scope,$timeout,$rootScope,$http,$window,$sta
                 }
             }
         };
+        $scope.calculateColumnWidthMoz = function (noOfItems, widgetWidth, noOfCharts) {
+            if (widgetWidth == 1) {
+                return ('col-sm-' + 12 + ' col-md-' + 12 + ' col-lg-' + 12);
+            }
+            else if ((widgetWidth >= 2) && (widgetWidth <= 4)) {
+                return ('col-sm-' + 4 + ' col-md-' + 4 + ' col-lg-' + 4);
+
+            }
+            else if (widgetWidth >= 5) {
+                return ('col-sm-' + 2 + ' col-md-' + 2 + ' col-lg-' + 2);
+            }
+        };
 
         $scope.calculateRowHeight = function(data,noOfItems,widgetWidth,widgetHeight,noOfCharts) {
+                    /*
             widgetWidth = Math.floor(widgetWidth/noOfCharts);
             if(widgetWidth < 1)
                 widgetWidth = 1;
@@ -248,31 +282,21 @@ function SharedDashboardController($scope,$timeout,$rootScope,$http,$window,$sta
             }
             else
                 data.showComparision = true;
+                     */
+            data.showComparision = true;
         };
-        $scope.calculateSummaryHeightMoz = function(widgetHeight,noOfItems) {
+
+        $scope.calculateSummaryHeight = function (widgetHeight, noOfItems) {
             var heightPercent;
 
-            if(widgetHeight ==1)
+            if (noOfItems == 1 && widgetHeight == 1)
                 heightPercent = 20;
             else
-                heightPercent = 70 / widgetHeight;
+                heightPercent = 100 / widgetHeight;
             return {'height': (heightPercent + '%')};
 
         };
-        $scope.calculateColumnWidthMoz = function(noOfItems,widgetWidth,noOfCharts) {
-            if(widgetWidth==1){
-                return ('col-sm-'+12+' col-md-'+12+' col-lg-'+12);
-            }
-            else if((widgetWidth>=2)&& (widgetWidth<=4)){
-                return ('col-sm-' + 4 + ' col-md-' + 4 + ' col-lg-' + 4);
-
-            }
-            else if(widgetWidth>=5){
-                return ('col-sm-' + 2 + ' col-md-' + 2 + ' col-lg-' + 2);
-            }
-        };
-
-        $scope.calculateSummaryHeight = function(widgetHeight,noOfItems) {
+        $scope.calculateSummaryHeightMoz = function (widgetHeight, noOfItems) {
             var heightPercent;
 
             if(noOfItems==1 && widgetHeight ==1)
@@ -282,19 +306,19 @@ function SharedDashboardController($scope,$timeout,$rootScope,$http,$window,$sta
             return {'height': (heightPercent + '%')};
 
         };
-
-        $scope.calculateChartHeight = function(widgetHeight,noOfItems) {
-            var heightPercent;
-            if(noOfItems==1 && widgetHeight ==1)
-                heightPercent = 80;
-            else
-                heightPercent = 100-(100/widgetHeight);
-            return {'height':(heightPercent+'%')};
-
-
+        $scope.calculateChartHeight = function (widgetHeight, noOfItems, index) {
+            $timeout(function () {
+                var heightPercent;
+                if(noOfItems==1 && widgetHeight ==1)
+                    heightPercent = 80; 
+                else
+                    heightPercent = 100-(100/widgetHeight);
+                $scope.chartOptions = (heightPercent + '%')
+                var heightUpdate = document.getElementById("updateHeight" + index);
+                heightUpdate.style.margin = '0px';
+                heightUpdate.style.height = heightPercent + '%';
+            }, 1000)
         };
-
-
     };
 
     //To populate all the widgets in a dashboard when the dashboard is refreshed or opened or calendar date range in the dashboard header is changed
@@ -339,9 +363,12 @@ function SharedDashboardController($scope,$timeout,$rootScope,$http,$window,$sta
                             if (dashboardWidgetList.length > 0) {
                                 $scope.loadedWidgetCount = 0;
                                 $scope.widgetsPresent = true;
+                                $scope.spinerEnable = false;
                             }
-                            else
+                            else {
                                 $scope.widgetsPresent = false;
+                                $scope.spinerEnable = false;
+                            }
                             var widgetID = 0;
                             var dashboardWidgets = [];
 
@@ -371,6 +398,7 @@ function SharedDashboardController($scope,$timeout,$rootScope,$http,$window,$sta
                                     'id': dashboardWidgetList[getWidgetInfo]._id,
                                     'chart': [],
                                     'visibility': false,
+                                    'dataerror': false,
                                     'name': (typeof dashboardWidgetList[getWidgetInfo].name != 'undefined' ? dashboardWidgetList[getWidgetInfo].name : ''),
                                     'color': (typeof dashboardWidgetList[getWidgetInfo].color != 'undefined' ? dashboardWidgetList[getWidgetInfo].color : '')
                                 });
