@@ -99,7 +99,7 @@
                 </div>
             </div>
         </div>
-        <div class="grid-font" ng-if="dashboardList.length===0 || dashboardList==null "><p>You don't have access to any dashboards yet</p></div>
+        <div class="center grid-font" ng-if="dashboardList.length===0 || dashboardList==null "><p>You don't have access to any dashboards yet</p></div>
     </div>
     <!--<div class="col col-sm-12 col-md-12 col-lg-12 text-right" ng-show="dashboardList != null && gridloading === false "  style="height: 100px !important;margin:10px !important;">-->
     <!--<button class="componentBtn btn-4 btn-4b icon-arrow-left" id="reportBackButton"-->
@@ -162,7 +162,7 @@
         <div class="row reportListingGrid"  ng-class-odd="'odd'" ng-class-even="'even'" ng-repeat="report in reportList| filter: (!disableFilter || '') &&  myFilter">
             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                 <div ng-if="(report.name == null || report.name==' ')" class="col-xs-4col-sm-4 col-md-4 col-lg-4">Untitled Report</div>
-                <div ng-if="report.name != null" class="col-xs-4 col-sm-4 col-md-4 col-lg-4">{{report.name}}</div>
+                <div ng-if="report.name != null || report.name!=' '" class="col-xs-4 col-sm-4 col-md-4 col-lg-4">{{report.name}}</div>
                 <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2" style='color:red;text-style:underline' ng-if="report.isDraft == true || disableFilter!=false" ng-hide="report.isDraft != true || disableFilter==false" >Draft</div>
                 <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2" style='color:red;text-style:underline' ng-if="report.isDraft != true || disableFilter==false" ng-show="report.isDraft != true || disableFilter==false" ></div>
                 <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2"><a title="Edit this Report" ng-click="editReport(report)" ng-hide="report.dashboardDeleted == true"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Edit &nbsp; </a></div>
@@ -172,7 +172,7 @@
         </div>
     </div>
     <div class="row "  ng-if="reportList.length===0">
-        <div class="grid-font"><p>No Report Available</p></div>
+        <div class="center grid-font"><p>No Report Available</p></div>
     </div>
 
     <!--<div class="row grid-font" style="padding: 10px !important;" ng-if="reportList" ng-show="gridloading === false ">-->
