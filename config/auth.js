@@ -17,7 +17,7 @@ module.exports = {
     'aweberAuth': {
         clientID: 'AkREQGDPsoHjCN2mdF3qY4YM',
         clientSecret: 'ibqzrt5XWBUhZf6jrN65Gr9nPDLanh1mq9Yel1uK',
-        callbackURL:  'https://datapoolt.co/callback',
+        callbackURL:  'https://uat.datapoolt.co/callback',
         scope: ['onescope', 'twoscope', 'redscope', 'bluescope'],
         site:'https://api.aweber.com/1.0/',
         tokenPath:'https://auth.aweber.com/1.0/oauth/access_token',
@@ -245,7 +245,7 @@ module.exports = {
     'youTubeAuth': {
         clientID: '697605351302-cm90a20idvq2gcu3qju0oaab88ik6peg.apps.googleusercontent.com',
         clientSecret: 'DkUY5XrdcWDQM_7tEI9xNAC6',
-        callbackURL: 'https://datapoolt.co/auth/youtube/callback',
+        callbackURL: 'https://uat.datapoolt.co/auth/youtube/callback',
         site: 'https://accounts.google.com/o/',
         tokenPath: 'https://accounts.google.com/o/oauth2/token',
         authorizationPath: 'oauth2/auth',
