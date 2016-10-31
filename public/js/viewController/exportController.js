@@ -858,7 +858,7 @@ function ExportController($scope, $http, $state, $rootScope, $window,$q,$statePa
                 for(var chart=0;chart<$scope.exportObject.widgetData[n].chart.length;chart++){
                     if($scope.exportObject.widgetData[n].chart[chart].data) {
                         var formatJson = [];
-                        if ($scope.exportObject.widgetData[n].chart[chart].data[0].type == 'line' || $scope.exportObject.widgetData[n].chart[chart].data[0].type == 'bar' || $scope.exportObject.widgetData[n].chart[chart].data[0].type == 'area') {
+                        if ($scope.exportObject.widgetData[n].chart[chart].data[0].type == 'line' || $scope.exportObject.widgetData[n].chart[chart].data[0].type == 'stackcolumn' || $scope.exportObject.widgetData[n].chart[chart].data[0].type == 'bar' || $scope.exportObject.widgetData[n].chart[chart].data[0].type == 'area' || $scope.exportObject.widgetData[n].chart[chart].data[0].type == 'reachVsImpressions' || $scope.exportObject.widgetData[n].chart[chart].data[0].type == 'engagedUsersReach'|| $scope.exportObject.widgetData[n].chart[chart].data[0].type == 'column'  ) {
                             lengthOfValue = $scope.exportObject.widgetData[n].chart[0].data[0].values.length;
                             var j = 0;
                             while (j < lengthOfValue) {
