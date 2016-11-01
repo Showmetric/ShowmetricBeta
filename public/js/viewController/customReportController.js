@@ -12,6 +12,7 @@ function customReportController($scope,$timeout,$rootScope,$http,$window,$state,
     $scope.currentDate=moment(new Date()).format("YYYY-DD-MM");
     $scope.widgetDataLength = 0;
     $scope.displayDate=moment(new Date()).format("MMM Do YY");
+    $scope.displayHeader;
     $scope.reportNotSupported = false;
     $scope.exportReportPages=[];
     $scope.stepActive = 'step1';
@@ -280,6 +281,7 @@ function customReportController($scope,$timeout,$rootScope,$http,$window,$state,
         $(".navbar").css('z-index', '1');
         $(".md-overlay").css("background","rgba(0,0,0,0.5)");
         $("#reportPDFModalContent").addClass('md-show');
+        $(".pdfContentText").html('<b>Please wait for few minutes while the PDF file is being generated/b>');
         $(".loadingStatus").show();
         var exportImages=[];
         //var dashboardExpLayout = document.getElementById('gridsterItems');
@@ -496,7 +498,7 @@ function customReportController($scope,$timeout,$rootScope,$http,$window,$state,
                         $scope.reportType = response.data.type;
                         for(var widget in response.data.widgets){
                             $scope.reportWidgetsListArray.push(response.data.widgets[widget]);
-                            if(response.data.widgets[widget].widgetType!='reportParaWidget'||response.data.widgets[widget].widgetType!='reportHeadingWidget'||response.data.widgets[widget].widgetId!=undefined)
+                            if(response.data.widgets[widget].widgetType!='reportParaWidget'||response.data.widgets[widget].widgetType!='reportHeadingWidget'||response.data.widgets[widget].widgetType!='reportParaWidget'||response.data.widgets[widget].widgetId!=undefined||response.data.widgets[widget].widgetId!=null)
                                 $scope.dashboardWidgets.push(response.data.widgets[widget].widgetId);
                         }
                         $scope.reportWidgetsListArray=_.uniq($scope.reportWidgetsListArray);
@@ -1780,6 +1782,12 @@ function customReportController($scope,$timeout,$rootScope,$http,$window,$state,
                 });
             }
         );
+    };
+    $scope.changeFooterText = function (footerText) {
+        $scope.displayDate = footerText;
+    };
+    $scope.changeHeaderText = function (headerText) {
+        $scope.displayHeader = headerText;
     };
     //Swapping two items in a javascript array
     $scope.swapArrayElements = function(indexA, indexB) {

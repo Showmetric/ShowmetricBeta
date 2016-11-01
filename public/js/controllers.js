@@ -2380,12 +2380,13 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                             }
                         }
                         else if (String(widget.charts[charts].chartSubType) === "activityByTimeOfTheDay") {
+                            var daysArray=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
                             if (typeof widget.charts[charts].chartData[0] != 'undefined') {
                                 var splitArray = [];
                                 for (var k = 0; k < widget.charts[charts].chartData.length; k++) {
                                     if (typeof widget.charts[charts].chartData[k].total === 'object') {
                                         var date = widget.charts[charts].chartData[k].total.created_at;
-                                        widget.charts[charts].chartData[k].total.day = moment(date).format('dddd');
+                                        widget.charts[charts].chartData[k].total.day = daysArray[new Date(date).getDay()]
                                         splitArray.push(widget.charts[charts].chartData[k].total);
                                     }
                                 }
@@ -2458,7 +2459,23 @@ showMetricApp.service('createWidgets', function ($http, $q) {
 
                                 }
                             }
-                            widget.charts[charts].chartData = wholeTweetsArray;
+                            var groupedArray=[];
+                            var sortArray = _.groupBy(wholeTweetsArray, 'userMentionedScreenName')
+                            for (var keys in sortArray) {
+                                var engagement = 0;
+                                for (var m = 0; m < sortArray[keys].length; m++) {
+                                    engagement += sortArray[keys][m].engagement;
+                                }
+                                groupedArray.push({
+                                    userMentionedScreenName: keys,
+                                    engagement: engagement,
+                                })
+                            }
+                            groupedArray.sort(function (a, b) {
+                                return parseFloat(a.engagement) - parseFloat(b.engagement);
+                            });
+                            groupedArray.reverse();
+                            widget.charts[charts].chartData = groupedArray;
                         }
                         else if (widget.charts[charts].chartSubType == "topLinks") {
                             if (typeof widget.charts[charts].chartData[0] != 'undefined') {
@@ -3102,8 +3119,13 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                         totalImp += parseFloat(widget.charts[charts].chartData[datas].imp);
                                         totalRea += parseFloat(widget.charts[charts].chartData[datas].rea);
                                     }
-                                    else
+                                    else{
+                                        if(isNaN(widget.charts[charts].chartData[datas].y)){
+                                            widget.charts[charts].chartData[datas].y=0
+                                        }
                                         summaryValue += parseFloat(widget.charts[charts].chartData[datas].y);
+                                    }
+
                                     if (parseFloat(widget.charts[charts].chartData[datas].y) > 0)
                                         nonZeroPoints++;
                                 }

@@ -161,8 +161,8 @@
         </div>
         <div class="row reportListingGrid"  ng-class-odd="'odd'" ng-class-even="'even'" ng-repeat="report in reportList| filter: (!disableFilter || '') &&  myFilter">
             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                <div ng-if="(report.name == null || report.name==' ')" class="col-xs-4col-sm-4 col-md-4 col-lg-4">Untitled Report</div>
-                <div ng-if="report.name != null || report.name!=' '" class="col-xs-4 col-sm-4 col-md-4 col-lg-4">{{report.name}}</div>
+                <div ng-if="(report.name == null || report.name=='')" ng-show="(report.name == null || report.name=='')" class="col-xs-4col-sm-4 col-md-4 col-lg-4">Untitled Report</div>
+                <div ng-if="report.name!=''" ng-show="report.name!=''" class="col-xs-4 col-sm-4 col-md-4 col-lg-4">{{report.name}}</div>
                 <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2" style='color:red;text-style:underline' ng-if="report.isDraft == true || disableFilter!=false" ng-hide="report.isDraft != true || disableFilter==false" >Draft</div>
                 <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2" style='color:red;text-style:underline' ng-if="report.isDraft != true || disableFilter==false" ng-show="report.isDraft != true || disableFilter==false" ></div>
                 <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2"><a title="Edit this Report" ng-click="editReport(report)" ng-hide="report.dashboardDeleted == true"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Edit &nbsp; </a></div>
