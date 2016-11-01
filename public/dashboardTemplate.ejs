@@ -20,9 +20,9 @@
                                 </button>-->
                                 <!--<button  class="grey rightMargin export"  ng-click="exportModal('app.reporting.dashboard.exportModal')" ng-class="{'exportDisabled': loadedWidgetCount != dashboard.widgets.length}" ng-disabled="loadedWidgetCount != dashboard.widgets.length" title="Export"></button>
                                 <button  class="grey rightMargin delete"  ng-click="deleteDashboard()" title="Delete"></button>-->
-                                <img src="image/autoarrange.png" height="32" width="50" ng-disabled="loadedWidgetCount != dashboard.widgets.length" ng-click="(loadedWidgetCount != dashboard.widgets.length) || setAutoArrange()" title="Auto-arrange">
-                                <img src="image/export.png" height="32" width="50" ng-disabled="loadedWidgetCount != dashboard.widgets.length" ng-click="(loadedWidgetCount != dashboard.widgets.length) || exportModal('app.reporting.dashboard.exportModal')" title="Export">
-                                <img src="image/delete.png" height="32" width="50" ng-click="deleteDashboard()" title="Delete">
+                                <img src="image/autoarrange.png" height="32" width="50" ng-disabled="loadedWidgetCount != dashboard.widgets.length" ng-click="(loadedWidgetCount != dashboard.widgets.length) || setAutoArrange()" title="Auto-arrange" data-toggle="tooltip" data-placement="bottom" data-original-title="Auto-Arrange">
+                                <img src="image/exports.png" height="32" width="50" ng-disabled="loadedWidgetCount != dashboard.widgets.length" ng-click="(loadedWidgetCount != dashboard.widgets.length) || exportModal('app.reporting.dashboard.exportModal')" title="Export" data-toggle="tooltip" data-placement="bottom" data-original-title="Export">
+                                <img src="image/delete.png" height="32" width="50" ng-click="deleteDashboard()" title="Delete" data-toggle="tooltip" data-placement="bottom" data-original-title="Delete">
                             </form>
                         </div>
                     </div>
