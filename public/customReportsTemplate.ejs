@@ -20,7 +20,7 @@
                         <p>Report Builder</p>
                     </div >
                     <div class="col-xs-6 col-sm-3 col-md-3 col-lg-3 reportName" style='color:#000'>
-                        <a title="Click to rename this Report" id='reset-btn' href="#" ng-model="reportName" editable-text="customReport.reportName"   onaftersave="changeReportName()"  e-maxlength="35">
+                        <a title="Click to rename this Report" id='reset-btn' href="#" ng-model="reportName" editable-text="customReport.reportName"   onaftersave="changeReportName()"  e-maxlength="25">
                             <pre ng-style="!customReport.reportName  && {'color':'#999'}  || customReport.reportName && {'color':'#fff'}">{{customReport.reportName || 'Name your Report'}}</pre>
                             <i class="fa fa-pencil hover-icon" aria-hidden="true" style="font-size: 1.5em;margin-top: 6px;color:#000;display:none"></i>
                         </a>
@@ -49,7 +49,7 @@
                         <p>Report Builder</p>
                     </div >
                     <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 reportName" style='color:#000'>
-                        <a title="Click to rename this Report" id='reset-btn' href="#" ng-model="reportName" editable-text="customReport.reportName"   onaftersave="changeReportName()"  e-maxlength="35">
+                        <a title="Click to rename this Report" id='reset-btn' href="#" ng-model="reportName" editable-text="customReport.reportName"   onaftersave="changeReportName()"  e-maxlength="25">
                             <pre ng-style="!customReport.reportName  && {'color':'#999'}  || customReport.reportName && {'color':'#fff'}">{{customReport.reportName || 'Name your Report'}}</pre>
                             <i class="fa fa-pencil hover-icon" aria-hidden="true" style="font-size: 1.5em;margin-top: 6px;color:#000;display:none"></i>
                         </a>
@@ -1048,18 +1048,30 @@
                         <legend style="text-align: center;font-family: Montserrat-Bold;font-size:18px;color:#1074ae !important">Header</legend>
                         <div class="dashboardTemplate-items">
                             <div class="col-sm-4 col-md-4 col-lg-4" style="float: left;"><img style="max-width: 90%;max-height:40px;padding: 5px;" ng-src="{{orgLogoSrc}}" /></div>
-                            <div class="col-sm-4 col-md-4 col-lg-4 " style="float:left;"> <p style="text-align:center;color:#000;font-size:20px;font-family:Montserrat-Bold;padding:5px;" ng-style="!customReport.reportName  && {'color':'#999'}  || customReport.reportName && {'color':'#000'}">{{customReport.reportName || 'Untitled Report'}}</p></div>
+                            <!--<div class="col-sm-4 col-md-4 col-lg-4 " style="float:left;"> <p style="text-align:center;color:#000;font-size:20px;font-family:Montserrat-Bold;padding:5px;" ng-style="!customReport.reportName  && {'color':'#999'}  || customReport.reportName && {'color':'#000'}">{{customReport.reportName || 'Untitled Report'}}</p></div>-->
+                            <div class="col-sm-4 col-md-4 col-lg-4 reportName" style='color:#000'>
+                                <a title="Click to rename this Report" id='reset-btn' href="#" ng-model="displayHeader" editable-text="displayHeader"   onaftersave="changeHeaderText(displayHeader)"  e-maxlength="25">
+                                    <pre ng-style="{'color':'#fff'}">{{displayHeader|| customReport.reportName || 'Untitled Report'}}</pre>
+                                    <i class="fa fa-pencil hover-icon" aria-hidden="true" style="font-size: 1.5em;margin-top: 6px;color:#000;display:none"></i>
+                                </a>
+                            </div >
                             <div class="col-sm-4 col-md-4 col-lg-4"style="float: right;"><img class='logoImage-icons' ng-src="{{cliLogoSrc}}" style="float:right;"/></div>
                         </div>
                     </div>
                 </div>
                 <div class="row" style="max-height:40px;margin-left: 0px;margin-right:0px">
-                    <div class="col col-sm-12">
+                    <div class="col col-sm-12 col-md-12 col-lg-12">
                         <legend style="text-align: center;font-family: Montserrat-Bold;font-size:18px;color:#1074ae !important">Footer</legend>
                         <div class=dashboardTemplate-items">
-                            <div class="col-sm-4" style="float: left;"><p style="color:#000;font-size:20px;font-family:Montserrat-Light;padding:5px">1|Page</p></div>
-                            <div class="col-sm-4"style="float: left;"><p style="text-align:center;color:#000;font-size:20px;font-family:Montserrat-Light;padding:5px">{{displayDate}}</p></div>
-                            <div class="col-sm-4" style="float: right;text-align:right"><img style="max-width: 90%;max-height:40px;padding:  5px;float:right;" ng-src="{{orgLogoSrc}}"/></div>
+                            <div class="col-sm-4 col-md-4 col-lg-4" style="float: left;"><p style="color:#000;font-size:20px;font-family:Montserrat-Light;padding:5px">1|Page</p></div>
+                            <!--<div class="col-sm-4 col-md-4 col-lg-4"style="float: left;"><p style="text-align:center;color:#000;font-size:20px;font-family:Montserrat-Light;padding:5px">{{displayDate}}</p></div>-->
+                            <div class="col-sm-4 col-md-4 col-lg-4 reportName" style='color:#000'>
+                                <a title="Click to edit this footer text" id='reset-btn' href="#" ng-model="displayDate" editable-text="displayDate"   onaftersave="changeFooterText(displayDate)"  e-maxlength="25">
+                                    <pre ng-style="!displayDate  && {'color':'#999'}  || displayDate && {'color':'#fff'}">{{displayDate||'Enter Footer Text'}}</pre>
+                                    <i class="fa fa-pencil hover-icon" aria-hidden="true" style="font-size: 1.5em;margin-top: 6px;color:#000;display:none"></i>
+                                </a>
+                            </div >
+                            <div class="col-sm-4 col-md-4 col-lg-4" style="float: right;text-align:right"><img style="max-width: 90%;max-height:40px;padding:  5px;float:right;" ng-src="{{orgLogoSrc}}"/></div>
                         </div>
                     </div>
                 </div>
@@ -1068,9 +1080,9 @@
                 <div id="gridsterItemsInReport-{{pageIndex}}">
                     <div class="row  white-bg border-bottom" style="max-height:50px;padding:50px 0px 70px 0px;margin-left: 0px;margin-right:0px;">
                         <div class="col col-sm-12 col-md-12 col-lg-12">
-                            <div class="dashboardTemplate-items ">
+                            <div class="expdashboardTemplate-items">
                                 <div class="col-sm-4 col-md-4 col-lg-4" style="float: left;"><img ng-src="{{orgLogoSrc}}" style="max-width: 90%;max-height:40px;padding: 5px 0px;"/></div>
-                                <div class="col-sm-4 col-md-4 col-lg-4 " style="float:left;"> <p style="text-align:center;color:#000;font-family:Montserrat-Bold;padding:5px;font-size:30px !important" ng-style="!customReport.reportName  && {'color':'#999'}  || customReport.reportName && {'color':'#000'}">{{customReport.reportName || 'Untitled Report'}}</p></div>
+                                <div class="col-sm-4 col-md-4 col-lg-4 " style="float:left;"> <p style="text-align:center;color:#000;font-family:Montserrat-Bold;padding:5px;font-size:26px !important" >{{displayHeader||customReport.reportName || 'Untitled Report'}}</p></div><!--ng-style="(displayHeader.length>15||!customReport.reportName.length>15)  && {'font-size':'24px !important'}  || (displayHeader.length<=15||customReport.reportName.length<=15) && {'font-size':'30px !important'}"-->
                                 <div class="col-sm-4 col-md-4 col-lg-4"style="float: right;"><img ng-src="{{cliLogoSrc}}" style="max-width: 90%;max-height:40px;padding:  5px 0px;float:right;"/></div>
                             </div>
                         </div>
