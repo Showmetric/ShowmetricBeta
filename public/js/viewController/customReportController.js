@@ -281,7 +281,8 @@ function customReportController($scope,$timeout,$rootScope,$http,$window,$state,
         $(".navbar").css('z-index', '1');
         $(".md-overlay").css("background","rgba(0,0,0,0.5)");
         $("#reportPDFModalContent").addClass('md-show');
-        $(".pdfContentText").html('<b>Please wait for few minutes while the PDF file is being generated/b>');
+        $(".reportPdfHeadText").hide();
+        $(".pdfContentText").html('<b>Please wait for few minutes while the PDF file is being generated</b>');
         $(".loadingStatus").show();
         var exportImages=[];
         //var dashboardExpLayout = document.getElementById('gridsterItems');
@@ -345,7 +346,7 @@ function customReportController($scope,$timeout,$rootScope,$http,$window,$state,
                         // var newWindow = $window.open('', '_blank');
                         //console.log('pdf url',dwnldUrl);
                         // newWindow.location=dwnldUrl;
-                        document.getElementById('yourLinkID').click();
+                        //document.getElementById('yourLinkID').click();
                         // $window.open(dwnldUrl);
                         // window.saveAs(dwnldUrl, dashboardName+"_"+timestamp+".pdf");
                         // $scope.expAct = false;
