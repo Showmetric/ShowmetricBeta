@@ -496,7 +496,7 @@ function customReportController($scope,$timeout,$rootScope,$http,$window,$state,
                         $scope.reportType = response.data.type;
                         for(var widget in response.data.widgets){
                             $scope.reportWidgetsListArray.push(response.data.widgets[widget]);
-                            if(response.data.widgets[widget].widgetType!='reportParaWidget'||response.data.widgets[widget].widgetType!='reportHeadingWidget'||response.data.widgets[widget].widgetId!=undefined)
+                            if(response.data.widgets[widget].widgetType!='reportParaWidget'||response.data.widgets[widget].widgetType!='reportHeadingWidget'||response.data.widgets[widget].widgetType!='reportParaWidget'||response.data.widgets[widget].widgetId!=undefined||response.data.widgets[widget].widgetId!=null)
                                 $scope.dashboardWidgets.push(response.data.widgets[widget].widgetId);
                         }
                         $scope.reportWidgetsListArray=_.uniq($scope.reportWidgetsListArray);
