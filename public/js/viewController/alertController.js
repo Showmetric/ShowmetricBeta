@@ -1,5 +1,6 @@
 showMetricApp.controller('AlertController', AlertController)
 function AlertController($scope, $http, $q, $state, $rootScope, $window, $stateParams, generateChartColours) {
+    
     var startWidget=0;
     var isEdit = false;
     $scope.alert, $scope.metricName, $scope.currentView = 'step_one', $scope.operation;
