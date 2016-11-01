@@ -237,6 +237,26 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider, IdlePro
 angular
     .module('inspinia')
     .config(config)
-    .run(function($rootScope, $state) {
+    .run(function($rootScope, $state,$http) {
         $rootScope.$state = $state;
+        $rootScope.$on('$stateChangeStart', function(ev, to, toParams, from, fromParams) {
+            var prevState = from.name;
+            var nextState = to.name;
+            if(prevState=='app.reporting.dashboard.basicWidget' || prevState=='app.reporting.dashboard.fusionWidget'|| prevState=='app.reporting.dashboard.exportModal'|| prevState=='app.reporting.dashboard.alertModal'|| prevState=='app.reporting.chooseDashboardType'|| prevState=='app.reporting.recommendedDashboard') {
+                // pendingRequests.cancelAll();
+                if(nextState!='app.reporting.dashboard'&& nextState!='app.reporting') {
+                    $http.pendingRequests.forEach(function (request) {
+                        if (request.cancel)
+                            request.cancel.resolve();
+                    });
+                }
+            }
+            else if(nextState!='app.reporting.dashboard.basicWidget' && nextState!='app.reporting.dashboard.fusionWidget' && nextState!='app.reporting.dashboard.exportModal' && nextState!='app.reporting.dashboard.alertModal') {
+                // pendingRequests.cancelAll();
+                $http.pendingRequests.forEach(function (request) {
+                    if (request.cancel)
+                        request.cancel.resolve();
+                });
+            }
+        });
     });

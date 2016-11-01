@@ -18,6 +18,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
             'Dec'
         ];
         var deferredWidget = $q.defer();
+        var cancel = $q.defer();
         var tempWidget = JSON.parse(JSON.stringify(widget));
         if (widget.widgetType == 'customFusion') {
             var sourceWidgetList = [], dataLoadedWidgetArray = [], widgetChartsArray = [];
@@ -152,7 +153,9 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                 var data = $q.defer();
                 $http({
                     method: 'GET',
-                    url: '/api/v1/widget/' + widgetId
+                    url: '/api/v1/widget/' + widgetId,
+                    timeout: cancel.promise, // cancel promise, standard thing in $http request
+                    cancel: cancel // this is where we do our magic
                 }).then(
                     function successCallback(response) {
                         data.resolve(response.data[0]);
@@ -176,7 +179,9 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                 data: {
                     "startDate": dateRange.startDate,
                     "endDate": dateRange.endDate
-                }
+                },
+                timeout: cancel.promise, // cancel promise, standard thing in $http request
+                cancel: cancel // this is where we do our magic
             }).then(
                 function successCallback(response) {
                     var formattedCharts = [];
@@ -327,7 +332,9 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                     data: {
                         "startDate": dateRange.startDate,
                         "endDate": dateRange.endDate,
-                    }
+                    },
+                    timeout: cancel.promise, // cancel promise, standard thing in $http request
+                    cancel: cancel // this is where we do our magic
                 }
             }
             $http(dataUrl).then(
@@ -382,7 +389,9 @@ showMetricApp.service('createWidgets', function ($http, $q) {
             else {
                 $http({
                     method: 'GET',
-                    url: '/api/v1/get/metricDetails/' + chart.chartMetricId
+                    url: '/api/v1/get/metricDetails/' + chart.chartMetricId,
+                    timeout: cancel.promise, // cancel promise, standard thing in $http request
+                    cancel: cancel // this is where we do our magic
                 }).then(
                     function successCallback(response) {
                         deferred.resolve(response.data.metricsList[0]);

@@ -10,6 +10,7 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
     $scope.submitEnable={};
     $scope.messageEnable={};
     var expWid = { dashName:[], wid: [], widData: []};
+    var cancel = $q.defer();
     $scope.currentDate=moment(new Date()).format("YYYY-DD-MM");
     $scope.widgetsize=function(widgetsizeX){
         if(widgetsizeX==1){
@@ -545,7 +546,9 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
 
         $http({
             method: 'GET',
-            url: '/api/v1/dashboards/widgets/'+ $state.params.id+'?buster='+new Date()
+            url: '/api/v1/dashboards/widgets/'+ $state.params.id+'?buster='+new Date(),
+            timeout: cancel.promise,
+            cancel: cancel // cancel promise, standard thing in $http request
         })
             .then(
                 function successCallback(response) {
@@ -622,23 +625,25 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
                                 }
                                 else {
                                     $scope.loadedWidgetCount++;
-                                    if(typeof error.data.id != 'undefined') {
-                                        $("#widgetData-"+error.data.id).hide();
-                                        $("#errorWidgetData-"+error.data.id).show();
-                                        $("#errorWidgetTokenexpire-" + error.data.id).hide();
-                                        isExportOptionSet=0;
-                                    }
+                                    if(error.data!=null && typeof error.data!='undefined')
+                                        if(typeof error.data.id != 'undefined') {
+                                            $("#widgetData-"+error.data.id).hide();
+                                            $("#errorWidgetData-"+error.data.id).show();
+                                            $("#errorWidgetTokenexpire-" + error.data.id).hide();
+                                            isExportOptionSet=0;
+                                        }
                                 }
                             }
                         );
                     }
                 },
                 function errorCallback(error) {
-                    swal({
-                        title: '',
-                        text: '<span style = "sweetAlertFont">Error in populating widgets! Please refresh the dashboard again</span>',
-                        html: true
-                    });
+                    if(error.status!=-1)
+                        swal({
+                            title: '', 
+                            text: '<span style = "sweetAlertFont">Error in populating widgets! Please refresh the dashboard again</span>', 
+                            html: true
+                        });
                     isExportOptionSet=0;
                 }
             );
