@@ -198,8 +198,8 @@ svg:hover #Calendar-Icon { fill: #293846; }
 .nv-axis.nv-y2 .tick line {
     display:none;opacity: 0;
 }
-.tooltip{font-family: Montserrat-Regular; width: 140px;}
-.tooltip-inner{background-color:#2f4050 !important;border:1px solid #333 !important;color: #ffffff !important}
+.tooltip{font-family: Montserrat-Regular; width: 80px;}
+.tooltip-inner{background-color:#232c3b !important;border:1px solid #232c3b !important;color: #ffffff !important}
 .contentName{display: flex;
     align-items: center;
     justify-content: center;}
@@ -397,9 +397,9 @@ svg:hover #Calendar-Icon { fill: #293846; }
     float: left;
     text-transform: capitalize;
 }
-.reportNameEdit p{text-align:center;color:#000;font-size:20px;font-family:Montserrat-Bold;padding:5px;text-transform: capitalize;}
+.reportNameEdit p{text-align:center;color:#000;font-size:20px;font-family:Montserrat-Bold;padding:5px;text-transform: capitalize;float:left;}
 .reportName pre{
-    background-color: #1074ae !important;
+    background-color: #ff6c3a !important;
     color:#ffffff ;
     border-radius: 0px !important;
     font-size: 18px !important;
@@ -2420,7 +2420,7 @@ body.mini-navbar .branding {
     color: #ffffff !important;
 }
 .darkblue-bg {
-    background-color: #1074ae !important;
+    background-color: #232c3b !important;
     color: #ffffff !important;
 }
 
@@ -5009,6 +5009,12 @@ body.rtls.top-navigation .footer.fixed {
     color: #232c3b;
     outline-style: none;
 }
+.orange {
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    background: #ff6c3a;
+    color: #fff;
+    outline-style: none;
+}
 .darkBlue {
     border: 1px solid rgba(0, 0, 0, 0.12);
     background: #1074ae;
@@ -5410,15 +5416,15 @@ input:focus{
     /*position: relative;*/
 }
 .widgetBoxBorder{
-    border: 1px solid #eaeff3;
+    border: 1px solid #efefef !important ;
 }
 .reportListingGrid{
     height: 30px;
     font-size: 15px;
-    padding: 10px;
+    padding: 5px;
 }
 .reportListingGrid a {
-    color:#1074ae !important;
+    color:#232c3b !important;
 }
 .reportListingGrid a:hover{
     color:#232c3b !important;

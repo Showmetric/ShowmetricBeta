@@ -107,7 +107,7 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
             else {
                 storeChosenObject = [];
                 tempChosenObject=[];
-                $scope.weburl=''
+                $scope.weburl='';
                 canFinishEnable=false;
                 fbAdsComplete=false;
                 googleAdsComplete=false;
@@ -266,6 +266,10 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
                             tempReferenceList.push(referenceWidgetsData);
                         }
                     }
+                    var index = _.findIndex($scope.referenceWidgetsList, function (o) {
+                        return o.channelName == $scope.selectedTempChannelList[j].name
+                    });
+                    if(index < 0)
                     $scope.referenceWidgetsList.push({widgets:tempReferenceList,channelName:$scope.selectedTempChannelList[j].name})
                 }
             },

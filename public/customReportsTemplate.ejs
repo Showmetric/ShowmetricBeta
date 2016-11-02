@@ -14,25 +14,25 @@
 <div ng-init="customReportConfiguration()"  id="reportLayout" class="dashboardLayout">
     <div ng-if="stepActive=='step1'&& !reportNotSupported" ng-show="stepActive=='step1'&& !reportNotSupported" class="border-bottom dashboardTitle darkblue-bg">
         <div class="row" style="height:100%">
-            <div class="col col-xs-24 col-sm-12 col-md-12 col-lg-12">
+            <div class="col col-xs-24 col-sm-12 col-md-12 col-lg-12" style="background: #232c3b">
                 <div class="dashboardTemplate-items">
                     <div class="col-sm-2 col-md-2 col-lg-2 reportText-header">
                         <p>Report Builder</p>
                     </div >
                     <div class="col-xs-6 col-sm-3 col-md-3 col-lg-3 reportName" style='color:#000'>
                         <a title="Click to rename this Report" id='reset-btn' href="#" ng-model="reportName" editable-text="customReport.reportName"   onaftersave="changeReportName()"  e-maxlength="25">
-                            <pre ng-style="!customReport.reportName  && {'color':'#999'}  || customReport.reportName && {'color':'#fff'}">{{customReport.reportName || 'Name your Report'}}</pre>
-                            <i class="fa fa-pencil hover-icon" aria-hidden="true" style="font-size: 1.5em;margin-top: 6px;color:#000;display:none"></i>
+                            <pre ng-style="!customReport.reportName  && {'color':'#fff'}  || customReport.reportName && {'color':'#fff'}">{{customReport.reportName || 'Name your Report'}}</pre>
+                            <i class="fa fa-pencil hover-icon" aria-hidden="true" style="font-size: 1.5em;margin-top: 6px;color:#ff6c3a;display:none"></i>
                         </a>
                     </div >
                     <div class="col-xs-6 col-sm-3 col-md-3 col-lg-3 ">
                         <div style="width:100%" class="daterange daterange--double three"></div>
                     </div>
                     <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 text-right">
-                        <button class="white rightMargin add-text"  ng-click="updateWidgetsInDb()">
+                        <button class="orange rightMargin add-text"  ng-click="updateWidgetsInDb()">
                             <i class="fa fa-floppy-o " aria-hidden="true"></i> &nbsp;Save
                         </button>
-                        <button class="white rightMargin add-text" ng-class="{'exportDisabled': loadedWidgetCount != widgetDataLength}" ng-disabled="loadedWidgetCount != widgetDataLength"  ng-click="reportPdfPreview('step2')"><!-- ng-class="{'exportDisabled': loadedWidgetCount != customReport.widgets.length}" ng-disabled="loadedWidgetCount != customReport.widgets.length" -->
+                        <button class="orange rightMargin add-text" ng-class="{'exportDisabled': loadedWidgetCount != widgetDataLength}" ng-disabled="loadedWidgetCount != widgetDataLength"  ng-click="reportPdfPreview('step2')"><!-- ng-class="{'exportDisabled': loadedWidgetCount != customReport.widgets.length}" ng-disabled="loadedWidgetCount != customReport.widgets.length" -->
                             <i class="fa fa-arrow-right" aria-hidden="true"></i> Next
                         </button>
                         <!--<div style='width:100%' class="daterange daterange&#45;&#45;double three"></div>-->
@@ -50,15 +50,15 @@
                     </div >
                     <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 reportName" style='color:#000'>
                         <a title="Click to rename this Report" id='reset-btn' href="#" ng-model="reportName" editable-text="customReport.reportName"   onaftersave="changeReportName()"  e-maxlength="25">
-                            <pre ng-style="!customReport.reportName  && {'color':'#999'}  || customReport.reportName && {'color':'#fff'}">{{customReport.reportName || 'Name your Report'}}</pre>
-                            <i class="fa fa-pencil hover-icon" aria-hidden="true" style="font-size: 1.5em;margin-top: 6px;color:#000;display:none"></i>
+                            <pre ng-style="!customReport.reportName  && {'color':'#fff'}  || customReport.reportName && {'color':'#fff'}">{{customReport.reportName || 'Name your Report'}}</pre>
+                            <i class="fa fa-pencil hover-icon" aria-hidden="true" style="font-size: 1.5em;margin-top: 6px;color:#ff6c3a;display:none"></i>
                         </a>
                     </div >
                     <div class="col-xs-8 col-sm-4 col-md-4 col-lg-4 text-right">
-                        <button class="white rightMargin add-text"  ng-click="reportPdfPreview('step1')">
+                        <button class="orange rightMargin add-text"  ng-click="reportPdfPreview('step1')">
                             <i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp;Back
                         </button>
-                        <button class="white rightMargin add-text"  ng-click="reportPdfPreview('step3')"><!-- ng-class="{'exportDisabled': loadedWidgetCount != customReport.widgets.length}" ng-disabled="loadedWidgetCount != customReport.widgets.length" -->
+                        <button class="orange rightMargin add-text"  ng-click="reportPdfPreview('step3')"><!-- ng-class="{'exportDisabled': loadedWidgetCount != customReport.widgets.length}" ng-disabled="loadedWidgetCount != customReport.widgets.length" -->
                             <i class="fa fa-arrow-right" aria-hidden="true"></i>&nbsp;Next
                         </button>
                         <!--<div style='width:100%' class="daterange daterange&#45;&#45;double three"></div>-->
@@ -78,10 +78,10 @@
                         <p  ng-style="!customReport.reportName  && {'color':'#999'}  || customReport.reportName && {'color':'#fff'}">{{customReport.reportName || 'Name your Report'}}</p>
                     </div >
                     <div class="col-xs-8 col-sm-4 col-md-4 col-lg-4 text-right">
-                        <button class="white rightMargin add-text"  ng-click="reportPdfPreview('step2')" id="reportEditButton">
+                        <button class="orange rightMargin add-text"  ng-click="reportPdfPreview('step2')" id="reportEditButton">
                             <i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;Edit
                         </button>
-                        <button class="white rightMargin add-text"  id="reportDownloadButton" ng-click="exportReportinPDF()"><!-- ng-class="{'exportDisabled': loadedWidgetCount != customReport.widgets.length}" ng-disabled="loadedWidgetCount != customReport.widgets.length" -->
+                        <button class="orange rightMargin add-text"  id="reportDownloadButton" ng-click="exportReportinPDF()"><!-- ng-class="{'exportDisabled': loadedWidgetCount != customReport.widgets.length}" ng-disabled="loadedWidgetCount != customReport.widgets.length" -->
                             <i class="fa fa-download" aria-hidden="true"></i>&nbsp;Download
                         </button>
                         <!--<div style='width:100%' class="daterange daterange&#45;&#45;double three"></div>-->
@@ -119,10 +119,10 @@
                                 <div class="row " style="height: 100%;margin:0px;">
                                     <div class="col col-sm-12 col-md-12 col-lg-12" style="margin-top:2px">
                                         <div class="col-sm-12 col-md-12 col-lg-12 text-center">
-                                            <button class="white rightMargin add-text"  ng-click="addTextWidget('reportHeadingWidget',0,0,1)" ><!-- ng-class="{'exportDisabled': loadedWidgetCount != customReport.widgets.length}" ng-disabled="loadedWidgetCount != customReport.widgets.length" -->
+                                            <button class="orange rightMargin add-text"  ng-click="addTextWidget('reportHeadingWidget',0,0,1)" ><!-- ng-class="{'exportDisabled': loadedWidgetCount != customReport.widgets.length}" ng-disabled="loadedWidgetCount != customReport.widgets.length" -->
                                                 <i class="fa fa-header" aria-hidden="true"></i>&nbsp;Add Title
                                             </button>
-                                            <button class="white rightMargin add-text"  ng-click="addTextWidget('reportParaWidget',0,0,1)"><!-- ng-class="{'exportDisabled': loadedWidgetCount != customReport.widgets.length}" ng-disabled="loadedWidgetCount != customReport.widgets.length" -->
+                                            <button class="orange rightMargin add-text"  ng-click="addTextWidget('reportParaWidget',0,0,1)"><!-- ng-class="{'exportDisabled': loadedWidgetCount != customReport.widgets.length}" ng-disabled="loadedWidgetCount != customReport.widgets.length" -->
                                                 <i class="fa fa-paragraph" aria-hidden="true"></i>&nbsp;Add Text
                                             </button>
                                         </div >
@@ -139,12 +139,15 @@
                     <li gridster-item="widget" ng-repeat="(widgetIndex,widget) in customReport.widgets"><!--ng-if="widget.pageNumber==pages"-->
                         <div ng-if="widget.widgetType=='reportHeadingWidget'||widget.widgetType=='reportParaWidget'" style="height: 100%;width: 100%;">
                             <div class="box getBox-{{widget.id}}" style=" border: 0px !important;"  id="{{widget.id}}" >
-                                <div class="reportbox-header" id="getWidgetColor-{{widget.id}}"  style="border-bottom:0px !important;background-color: #ffffff;"> <!--ng-style="{'background-color': customReport.widgetData[widget.id].color}"-->
-                                    <div style="float: left;width: 93%;">
+                                <div class="col col-sm-12 col-md-12 col-lg-12 reportbox-header" id="getWidgetColor-{{widget.id}}"  style="border-bottom:0px !important;background-color: #ffffff;"> <!--ng-style="{'background-color': customReport.widgetData[widget.id].color}"-->
+                                    <div class='col-sm-2 col-md-2 col-lg-2 center' style="float: left;padding: 5px;">
+
+                                    </div>
+                                    <div class='col-sm-7 col-md-8 col-lg-8 center' style="float: left;padding: 0px;">
                                         <h3 ng-style="widget.sizeX!=1  && {'width':'80%'}  || widget.sizeX==1 && {'width':'50%'} ">{{widget.name}}</h3>
                                     </div>
 
-                                    <div class="reportGraph-icon">
+                                    <div class="col-sm-3 col-md-2 col-lg-2 reportGraph-icon" style="float: right;text-align:right">
                                         <a title="Push up this widget" ng-hide="widgetIndex==0"  ng-click="pushUpWidget(widget,widgetIndex)"><i class="fa fa-hand-o-up" aria-hidden="true"></i></a><!--ng-hide="widgetIndex==0||widget.sizeY>reportPagesDetails[widget.pageNumber-1].sizeLeft||(reportPagesDetails[widget.pageNumber-1].lastWigdetIndex!=undefined && widget.sizeY!=customReport.widgets[reportPagesDetails[widget.pageNumber-1].lastWigdetIndex].sizeY)"-->
                                         <a title="Pull down this widget" ng-hide="widgetIndex==customReport.widgets.length-2"  ng-click="pullDownWidget(widget,widgetIndex)"><i class="fa fa-hand-o-down" aria-hidden="true"></i></a><!--ng-hide="widgetIndex==customReport.widgets.length-2||widget.sizeY>reportPagesDetails[widget.pageNumber+1].sizeLeft||(reportPagesDetails[widget.pageNumber+1].firstWigdetIndex!=undefined&&widget.sizeY!=customReport.widgets[reportPagesDetails[widget.pageNumber+1].firstWigdetIndex].sizeY)" -->
                                         <a title="Edit text content" ng-show='widget.textAreaHide==true' ng-click="disableTextEdit(widget,false)"><i class="fa fa-pencil-square-o"></i></a>
@@ -181,10 +184,10 @@
                                     <div class="row" style="height: 100%;margin:0px;" >
                                         <div class="col col-sm-12 col-md-12 col-lg-12" style="margin-top:2px">
                                             <div class="col-sm-12 col-md-12 col-lg-12 text-center">
-                                                <button class="white rightMargin add-text"  ng-click="addTextWidget('reportHeadingWidget',widget.pageNumber+1,widgetIndex+1,widget.row+1)" ><!-- ng-class="{'exportDisabled': loadedWidgetCount != customReport.widgets.length}" ng-disabled="loadedWidgetCount != customReport.widgets.length" -->
+                                                <button class="orange rightMargin add-text"  ng-click="addTextWidget('reportHeadingWidget',widget.pageNumber+1,widgetIndex+1,widget.row+1)" ><!-- ng-class="{'exportDisabled': loadedWidgetCount != customReport.widgets.length}" ng-disabled="loadedWidgetCount != customReport.widgets.length" -->
                                                     <i class="fa fa-header" aria-hidden="true"></i>&nbsp;Add Title
                                                 </button>
-                                                <button class="white rightMargin add-text"  ng-click="addTextWidget('reportParaWidget',widget.pageNumber+1,widgetIndex+1,widget.row+1)"><!-- ng-class="{'exportDisabled': loadedWidgetCount != customReport.widgets.length}" ng-disabled="loadedWidgetCount != customReport.widgets.length" -->
+                                                <button class="orange rightMargin add-text"  ng-click="addTextWidget('reportParaWidget',widget.pageNumber+1,widgetIndex+1,widget.row+1)"><!-- ng-class="{'exportDisabled': loadedWidgetCount != customReport.widgets.length}" ng-disabled="loadedWidgetCount != customReport.widgets.length" -->
                                                     <i class="fa fa-paragraph" aria-hidden="true"></i>&nbsp;Add Text
                                                 </button>
                                             </div >
@@ -199,21 +202,25 @@
                             </div>
                         </div>
                         <div ng-if="widget.widgetType!='reportHeadingWidget'&&widget.widgetType!='reportParaWidget'&&widget.widgetType!='pageBreakWidget'" style="width: 100%;height: 100%">
-                            <div class="box getBox-{{widget.id}}" style=" border: 0px !important;"  id="{{widget.id}}">
-                                <div class="reportbox-header" id="getWidgetColor-{{widget.id}}" ref="{{customReport.widgetData[widget.id].color}}" style="border-bottom: 0px solid #e8e8e8 !important;background-color: #ffffff;"> <!--ng-style="{'background-color': customReport.widgetData[widget.id].color}"-->
-                                    <div style="float: left;width: 93%;">
-                                        <img src="image/thumbnail/{{widget.channelName}}.png" style="vertical-align: super;max-height: 31px; max-width: 50px; padding:5px"/>
+                            <div class="box widgetBoxBorder getBox-{{widget.id}}"   id="{{widget.id}}">
+                                <div class="reportbox-header col col-sm-12 col-md-12 col-lg-12" id="getWidgetColor-{{widget.id}}" ref="{{customReport.widgetData[widget.id].color}}" style="border-bottom: 1px solid #efefef !important;background-color: #ffffff;"> <!--ng-style="{'background-color': customReport.widgetData[widget.id].color}"-->
+                                    <div class="col-sm-2 col-md-2 col-lg-1" style="float: left;text-align: right;">
+                                        <img src="image/thumbnail/{{widget.channelName}}.png" style="vertical-align: super;max-height: 25px; max-width: 50px; padding:5px 0px 0px 5px"/>
+                                        <!--<h3 ng-style="widget.sizeX!=1  && {'width':'80%'}  || widget.sizeX==1 && {'width':'50%'} ">{{customReport.widgetData[widget.id].name}}</h3>-->
+                                    </div>
+                                    <div class="col-sm-7 col-md-8 col-lg-9" style="float: left;text-align: left;padding: 0px;overflow:hidden">
+                                        <!--<img src="image/thumbnail/{{widget.channelName}}.png" style="vertical-align: super;max-height: 31px; max-width: 50px; padding:5px"/>-->
                                         <h3 ng-style="widget.sizeX!=1  && {'width':'80%'}  || widget.sizeX==1 && {'width':'50%'} ">{{customReport.widgetData[widget.id].name}}</h3>
                                     </div>
 
-                                    <div class="reportGraph-icon">
+                                    <div class="col-sm-3 col-md-2 col-lg-2 reportGraph-icon" style="float: right;text-align:right">
                                         <a title="Push up this widget" ng-hide="widgetIndex==0"  ng-click="pushUpWidget(widget,widgetIndex)"><i class="fa fa-hand-o-up" aria-hidden="true"></i></a><!--ng-hide="widgetIndex==0||widget.sizeY>reportPagesDetails[widget.pageNumber-1].sizeLeft||(reportPagesDetails[widget.pageNumber-1].lastWigdetIndex!=undefined && widget.sizeY!=customReport.widgets[reportPagesDetails[widget.pageNumber-1].lastWigdetIndex].sizeY)"-->
                                         <a title="Pull down this widget" ng-hide="widgetIndex==customReport.widgets.length-2"  ng-click="pullDownWidget(widget,widgetIndex)"><i class="fa fa-hand-o-down" aria-hidden="true"></i></a><!--ng-hide="widgetIndex==customReport.widgets.length-2||widget.sizeY>reportPagesDetails[widget.pageNumber+1].sizeLeft||(reportPagesDetails[widget.pageNumber+1].firstWigdetIndex!=undefined&&widget.sizeY!=customReport.widgets[reportPagesDetails[widget.pageNumber+1].firstWigdetIndex].sizeY)" -->
                                         <a title="Remove from Report" ng-click="deleteWidgetFromReport(widget)"><i class="fa fa-trash-o" aria-hidden="true"></i></a>
                                     </div>
                                 </div>
 
-                                <div class="box-content widgetBoxBorder" style="vertical-align: middle" ng-style="{position:(isMobile?'static':'absolute')}">
+                                <div class="box-content" style="vertical-align: middle" ng-style="{position:(isMobile?'static':'absolute')}">
                                     <div ng-if="customReport.widgetData[widget.id].visibility == false" style="height:100%;">
                                         <div class="spiner-example" id="widgetData-{{widget.id}}">
                                             <div class="sk-spinner sk-spinner-double-bounce">
@@ -1006,7 +1013,7 @@
                     <div class="col col-sm-12 col-md-12 col-lg-12">
                         <div class="col-sm-6 col-md-6 col-lg-6" style="border-right:1px dotted #aeaeae">
                             <legend style="text-align: center;font-family: Montserrat-Bold;font-size:18px;color:#1074ae !important">Choose Your Logo</legend>
-                            <div class="scrollbar" id="scroller" style="height:80px!important;">
+                            <div class="scrollbar" id="scroller" style="height:200px!important;">
                                 <div class="col-sm-2 col-md-2 col-lg-2 logo-icons orgIcon" id="orgLogoIcons-default">
                                     <div style="height:15%;float:right;margin: -5px 0px 0px 0px;"></div>
                                     <img src="/userFiles/datapoolt.png" ng-click="selectedIconIndicator('org','orgLogoIcons-default');selectedOrgLogo('/userFiles/datapoolt.png')" style="max-width: 100%;height:85%;padding: 5px 5px; "/>
@@ -1025,7 +1032,7 @@
                         </div>
                         <div class="col-sm-6 col-md-6 col-lg-6">
                             <legend style="text-align: center;font-family: Montserrat-Bold;font-size:18px;color:#1074ae !important">Choose Client Logo (Optional)</legend>
-                            <div class="scrollbar" id="scroller" style="height:80px!important">
+                            <div class="scrollbar" id="scroller" style="height:200px!important">
                                 <div class="col-sm-2 col-md-2 col-lg-2 logo-icons cliIcon"  id='cliLogoIcons-default'>
                                     <div style="height:15%;float:right;margin: -5px 0px 0px 0px;"></div>
                                     <img src='/userFiles/plain-white.jpg' ng-click="selectedIconIndicator('cli','cliLogoIcons-default');selectedCliLogo('/userFiles/plain-white.jpg')" style="max-width: 100%;height:85%;padding: 5px 5px; "/>
@@ -1052,7 +1059,7 @@
                             <div class="col-sm-4 col-md-4 col-lg-4 reportName" style='color:#000'>
                                 <a title="Click to rename this Report" id='reset-btn' href="#" ng-model="displayHeader" editable-text="displayHeader"   onaftersave="changeHeaderText(displayHeader)"  e-maxlength="25">
                                     <pre ng-style="{'color':'#fff'}">{{displayHeader|| customReport.reportName || 'Untitled Report'}}</pre>
-                                    <i class="fa fa-pencil hover-icon" aria-hidden="true" style="font-size: 1.5em;margin-top: 6px;color:#000;display:none"></i>
+                                    <i class="fa fa-pencil hover-icon" aria-hidden="true" style="font-size: 1.5em;margin-top: 6px;color:#ff6c3a;display:none"></i>
                                 </a>
                             </div >
                             <div class="col-sm-4 col-md-4 col-lg-4"style="float: right;"><img class='logoImage-icons' ng-src="{{cliLogoSrc}}" style="float:right;"/></div>
@@ -1068,7 +1075,7 @@
                             <div class="col-sm-4 col-md-4 col-lg-4 reportName" style='color:#000'>
                                 <a title="Click to edit this footer text" id='reset-btn' href="#" ng-model="displayDate" editable-text="displayDate"   onaftersave="changeFooterText(displayDate)"  e-maxlength="25">
                                     <pre ng-style="!displayDate  && {'color':'#999'}  || displayDate && {'color':'#fff'}">{{displayDate||'Enter Footer Text'}}</pre>
-                                    <i class="fa fa-pencil hover-icon" aria-hidden="true" style="font-size: 1.5em;margin-top: 6px;color:#000;display:none"></i>
+                                    <i class="fa fa-pencil hover-icon" aria-hidden="true" style="font-size: 1.5em;margin-top: 6px;color:#ff6c3a;display:none"></i>
                                 </a>
                             </div >
                             <div class="col-sm-4 col-md-4 col-lg-4" style="float: right;text-align:right"><img style="max-width: 90%;max-height:40px;padding:  5px;float:right;" ng-src="{{orgLogoSrc}}"/></div>
@@ -1081,9 +1088,9 @@
                     <div class="row  white-bg border-bottom" style="max-height:50px;padding:50px 0px 70px 0px;margin-left: 0px;margin-right:0px;">
                         <div class="col col-sm-12 col-md-12 col-lg-12">
                             <div class="expdashboardTemplate-items">
-                                <div class="col-sm-4 col-md-4 col-lg-4" style="float: left;"><img ng-src="{{orgLogoSrc}}" style="max-width: 90%;max-height:40px;padding: 5px 0px;"/></div>
-                                <div class="col-sm-4 col-md-4 col-lg-4 " style="float:left;"> <p style="text-align:center;color:#000;font-family:Montserrat-Bold;padding:5px;font-size:26px !important" >{{displayHeader||customReport.reportName || 'Untitled Report'}}</p></div><!--ng-style="(displayHeader.length>15||!customReport.reportName.length>15)  && {'font-size':'24px !important'}  || (displayHeader.length<=15||customReport.reportName.length<=15) && {'font-size':'30px !important'}"-->
-                                <div class="col-sm-4 col-md-4 col-lg-4"style="float: right;"><img ng-src="{{cliLogoSrc}}" style="max-width: 90%;max-height:40px;padding:  5px 0px;float:right;"/></div>
+                                <div class="col-sm-2 col-md-2 col-lg-2" style="float: left;"><img ng-src="{{orgLogoSrc}}" style="max-width: 90%;max-height:40px;padding: 5px 0px;"/></div>
+                                <div class="col-sm-8 col-md-8 col-lg-8 " style="float:left;"> <p style="text-align:center;color:#000;font-family:Montserrat-Bold;padding:5px;font-size:26px !important" >{{displayHeader||customReport.reportName || 'Untitled Report'}}</p></div><!--ng-style="(displayHeader.length>15||!customReport.reportName.length>15)  && {'font-size':'24px !important'}  || (displayHeader.length<=15||customReport.reportName.length<=15) && {'font-size':'30px !important'}"-->
+                                <div class="col-sm-2 col-md-2 col-lg-2"style="float: right;"><img ng-src="{{cliLogoSrc}}" style="max-width: 90%;max-height:40px;padding:  5px 0px;float:right;"/></div>
                             </div>
                         </div>
                     </div>
@@ -1109,15 +1116,17 @@
                                     </div>
                                 </div>
                                 <div  ng-if="widget.widgetType!='reportHeadingWidget'&&widget.widgetType!='reportParaWidget'" style="width: 100%;height: 100%">
-                                    <div class="box getBox-{{widget.id}}" style=" border: 0px !important;"  id="{{widget.id}}">
-                                        <div class="reportbox-header" id="getWidgetColor-{{widget.id}}" ref="{{customReport.widgetData[widget.id].color}}" style="border-bottom: 0px solid #e8e8e8 !important;background-color: #ffffff;"> <!--ng-style="{'background-color': customReport.widgetData[widget.id].color}"-->
-                                            <div style="float: left;width: 93%;">
-                                                <img src="image/thumbnail/{{widget.channelName}}.png" style="vertical-align: super;max-height: 31px; max-width: 50px; padding:5px"/>
+                                    <div class="box widgetBoxBorder getBox-{{widget.id}}"  id="{{widget.id}}">
+                                        <div class="col col-sm-12 col-md-12 col-lg-12 reportbox-header" id="getWidgetColor-{{widget.id}}" ref="{{customReport.widgetData[widget.id].color}}" style="border-bottom: 1px solid #efefef !important;background-color: #ffffff;"> <!--ng-style="{'background-color': customReport.widgetData[widget.id].color}"-->
+                                            <div class='col-sm-2 col-md-2 col-lg-1' style="float: left;text-align: right">
+                                                <img src="image/thumbnail/{{widget.channelName}}.png" style="vertical-align: super;max-height: 25px; max-width: 50px; padding:5px 0px 0px 5px"/>
+                                            </div>
+                                            <div class='col-sm-10 col-md-10 col-lg-11' style="float: left;text-align: left;padding:0px;">
                                                 <h3 ng-style="widget.sizeX!=1  && {'width':'80%'}  || widget.sizeX==1 && {'width':'50%'} ">{{customReport.widgetData[widget.id].name}}</h3>
                                             </div>
                                         </div>
 
-                                        <div class="box-content widgetBoxBorder" style="vertical-align: middle" ng-style="{position:(isMobile?'static':'absolute')}">
+                                        <div class="box-content" style="vertical-align: middle" ng-style="{position:(isMobile?'static':'absolute')}">
                                             <div ng-if="customReport.widgetData[widget.id].visibility == false" style="height:100%;">
                                                 <div class="spiner-example" id="widgetData-{{widget.id}}">
                                                     <div class="sk-spinner sk-spinner-double-bounce">

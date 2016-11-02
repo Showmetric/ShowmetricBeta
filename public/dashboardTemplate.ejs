@@ -20,9 +20,9 @@
                                 </button>-->
                                 <!--<button  class="grey rightMargin export"  ng-click="exportModal('app.reporting.dashboard.exportModal')" ng-class="{'exportDisabled': loadedWidgetCount != dashboard.widgets.length}" ng-disabled="loadedWidgetCount != dashboard.widgets.length" title="Export"></button>
                                 <button  class="grey rightMargin delete"  ng-click="deleteDashboard()" title="Delete"></button>-->
-                                <img src="image/autoarrange.png" height="32" width="50" ng-disabled="loadedWidgetCount != dashboard.widgets.length" ng-click="(loadedWidgetCount != dashboard.widgets.length) || setAutoArrange()" title="Auto-arrange">
-                                <img src="image/export.png" height="32" width="50" ng-disabled="loadedWidgetCount != dashboard.widgets.length" ng-click="(loadedWidgetCount != dashboard.widgets.length) || exportModal('app.reporting.dashboard.exportModal')" title="Export">
-                                <img src="image/delete.png" height="32" width="50" ng-click="deleteDashboard()" title="Delete">
+                                <img src="image/autoarrange.png" height="32" width="50" ng-disabled="loadedWidgetCount != dashboard.widgets.length" ng-click="(loadedWidgetCount != dashboard.widgets.length) || setAutoArrange()" title="Auto-arrange" data-toggle="tooltip" data-placement="bottom" data-original-title="Auto-Arrange">
+                                <img src="image/exports.png" height="32" width="50" ng-disabled="loadedWidgetCount != dashboard.widgets.length" ng-click="(loadedWidgetCount != dashboard.widgets.length) || exportModal('app.reporting.dashboard.exportModal')" title="Export" data-toggle="tooltip" data-placement="bottom" data-original-title="Export">
+                                <img src="image/delete.png" height="32" width="50" ng-click="deleteDashboard()" title="Delete" data-toggle="tooltip" data-placement="bottom" data-original-title="Delete">
                             </form>
                         </div>
                     </div>
@@ -52,7 +52,7 @@
                             <div class="box-header" id="getWidgetColor-{{widget.id}}" ref="{{dashboard.widgetData[widgetIndex].color}}" style="background-color: #ffffff;"> <!--ng-style="{'background-color': dashboard.widgetData[widgetIndex].color}"-->
                                 <div style="float: left;width: 93%;">
                                     <img src="image/thumbnail/{{widget.channelName}}.png" style="float:left;vertical-align: super;max-height: 31px; max-width: 50px; padding:5px"/>
-                                    <h3 ng-style="widget.sizeX!=1  && {'width':'80%'}  || widget.sizeX==1 && {'width':'50%'} "><a title="Click to Rename this widget" style="float:left;border-bottom:0px!important;padding:8px!important;color:#232c3b!important" href="#" editable-text="dashboard.widgetData[widgetIndex].name" buttons="no" onaftersave="changeWidgetName(widget,dashboard.widgetData[widgetIndex].name)"  e-maxlength="23">
+                                    <h3 ng-style="widget.sizeX!=1  && {'width':'80%'}  || widget.sizeX==1 && {'width':'50%'} "><a title="Click to Rename this widget" style="float:left;border-bottom:0px!important;padding:8px!important;color:#232c3b!important" href="#" editable-text="dashboard.widgetData[widgetIndex].name" buttons="no" onaftersave="changeWidgetName(widget,dashboard.widgetData[widgetIndex].name)"  e-maxlength="35">
                                             <span>{{dashboard.widgetData[widgetIndex].name || 'Name your widget'}}</span>
                                             <!--
                                               <i class="fa fa-pencil hover-icon" aria-hidden="true" ng-style="widget.sizeX>2  &&{'margin-top': '-15px','float':'right','margin-left': '100%'} || widget.sizeX==1  &&{'margin-top': '-16px','float':'none','position': 'relative','margin-left': '5%'} || widget.sizeX==2  &&{'margin-top': '-15px','float':'none','margin-left': '125px'}" style="font-size: 1em;color:#000;display:none"></i>
