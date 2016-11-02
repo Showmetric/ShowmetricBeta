@@ -200,7 +200,7 @@ var self = module.exports = {
             }
         })
     },
-    subscriptionDetailsWithoutUser:function (req,res,done) {
+    getSubscriptionDetails:function (req,res,done) {
         subscription.findOne({code:req.query.code}, function (err, response) {
             if (err)
                 return res.status(500).json({error: 'Internal Server Error'});

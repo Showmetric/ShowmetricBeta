@@ -6,7 +6,8 @@ var getSubscriptionDetails = require('../helpers/utility');
 var moment = require('moment');
 var request = require('request');
 var nodemailer = require('nodemailer');
-var User = require('../models/user')
+var User = require('../models/user');
+var Subscription = require('../models/subscriptionType')
 
 module.exports = function (app, passport) {
     var codeValue;
@@ -110,7 +111,7 @@ module.exports = function (app, passport) {
     });
     app.post('/api/v1/signup', function (req, res, next) {
         //codeValue = req.query.code;
-        req.body.amount = subscribedAmount;
+        req.body.code = codeValue;
         passport.authenticate('local-signup', function (err, user, info) {
             newUser = user;
             if (err) return next(err);
@@ -120,45 +121,22 @@ module.exports = function (app, passport) {
                 req.orgId = newUser.orgId;
                 req.subscriptionId = newUser.subscriptionId;
                 req.validity = newUser.validity;
-                var mailOptionsSubmitter = {
-                    from: 'Datapoolt Invites <alerts@datapoolt.co>',
-                    to: newUser.email,
-                    subject: newUser.name + ', we\'ve received your request for an invite',
-                    // HTML Version
-                    html: '<p>Hi ' + newUser.name + ',</p>' +
-                    '<p> We have received your request for an invite.Click link below to activate your account</p><br><button style="background-color: #1a8bb3;border-radius: 12px;color:#fff;font-size: 24px;"><a style="text-decoration: none;color:#fff" href="' + configAuth.emailVerification.redirectLink + newUser.emailVerification.tokenId + '">Click to Activate</a></button> <p>Thanks for trying us out. Cheers!</p>'
-                };
-                var transporter = nodemailer.createTransport({
-                    service: configAuth.emailVerification.service,
-                    auth: {
-                        user: configAuth.emailVerification.username,
-                        pass: configAuth.emailVerification.password
-                    }
-                });
-                transporter.sendMail(mailOptionsSubmitter, function (error, info) {
-                    if (error) {
-                        User.remove({_id: newUser._id}, function (err, result) {
-                            if (err)
-                                return res.status(500).json({error: 'Internal server error'});
-                            else if (!result)
-                                return res.status(501).json({error: 'Not implemented'});
-                            else
-                                return done(null, false, req.flash('signupMessage', 'Failed to send email.Try to signup again'));
-                        });
-                    }
-                    else {
-                        getSubscriptionDetails.updateSubscription(req, res, function (updateDetails) {
-                            res.render('../public/signup.ejs', {message: req.flash('signupMessage', 'Please check your mail for activation link')});
-                        })
-                    }
-                });
-
+                getSubscriptionDetails.updateSubscription(req, res, function (updateDetails) {
+                    res.render('../public/signup.ejs', {message: req.flash('signupMessage', 'Please check your mail for activation link')});
+                })
             }
-            else return res.redirect('/payment?amount=' + req.body.amount);
+            else return res.redirect('/payment?code=' + req.body.code);
         })(req, res, next);
     });
     app.get('/payment', function (req, res) {
-        res.render('../public/razorPay.ejs', {amount: req.query.amount});
+        Subscription.findOne({code:req.query.code}, function (err, subscription) {
+            if (err)
+                return res.status(500).json({error: 'Internal Server Error'});
+            else if (!subscription)
+                return res.status(204).json({error: 'No record found'});
+            else
+                res.render('../public/razorPay.ejs', {amount: subscription.subscriptionCost*100});
+        })
     })
     app.post('/api/v1/savePayments', function (req, res) {
         if(newUser){
@@ -348,4 +326,7 @@ app.get('/api/v1/getSubscriptionFromDashboard/:dashboardId',function (req,res) {
         })
     })
 })
+    app.get('/confirmation',function (req,res) {
+        res.render('../public/confirmation.ejs')
+    })
 };

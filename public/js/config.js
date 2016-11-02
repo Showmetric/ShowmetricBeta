@@ -31,7 +31,7 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider, IdlePro
                 if($state.$current.name == 'app.reporting'){
                     $scope.loadingVariable = '';
                     var repeat=0;
-                    var expiryCheck = function() {
+                    $rootScope.expiryCheck = function() {
                         $http(
                             {
                                 method: 'GET',
@@ -39,6 +39,8 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider, IdlePro
                             }
                         ).then(
                             function successCallback(response) {
+                                console.log('response',response)
+                                $rootScope.subscriptionDetails = response.data.userDetails;
                                 if(repeat==0) {
                                     if (response.data.userDetails.subscriptionType === 'starterfree'||response.data.userDetails.subscriptionType === 'advancedfree'||response.data.userDetails.subscriptionType === 'premiumfree') {
                                         if (response.data.userDetails[0].lastDashboardId) {
@@ -108,8 +110,8 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider, IdlePro
                             }
                         );
                     }
-                    expiryCheck();
-                    $interval(expiryCheck,3600000);
+                    $rootScope.expiryCheck();
+                    $interval($rootScope.expiryCheck,3600000);
                 }
             }
         })

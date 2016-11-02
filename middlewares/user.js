@@ -37,17 +37,17 @@ exports.getUserDetails = function (req, res, next) {
                     else {
                         var subscriptionTypeId = result[0].subscriptionTypeId;
                         var userExpiry = result[0].subscriptionExpiresOn;
-                        subscriptionTypes.findOne({_id: subscriptionTypeId}, {code: 1}, function (err, type) {
+                        subscriptionTypes.findOne({_id: subscriptionTypeId}, function (err, type) {
                             if (err)
                                 return res.status(500).json({error: 'Internal server error'});
                             else if (!type)
                                 return res.status(204).json({error: 'No records found'});
                             else {
                                 var subscriptionType = type.code;
-                                if(configAuth.subscriptionType.starterFree===subscriptionType||configAuth.subscriptionType.advancedFree===subscriptionType||configAuth.subscriptionType.premiumFree===subscriptionType) {
+                                if(configAuth.subscriptionType.starterFree===subscriptionType) {
                                     var user = {
                                         user: userResult,
-                                        subscriptionType:subscriptionType
+                                        subscriptionType:type
                                     };
                                     req.app.result = user;
                                     next();
@@ -58,7 +58,7 @@ exports.getUserDetails = function (req, res, next) {
                                     if(expiryDate>=currentDate){
                                         var user = {
                                             user: userResult,
-                                            subscriptionType:subscriptionType,
+                                            subscriptionType:type,
                                             expiryDate:expiryDate
                                         };
                                         req.app.result = user;
@@ -67,7 +67,7 @@ exports.getUserDetails = function (req, res, next) {
                                     else{
                                         var user = {
                                             user: userResult,
-                                            subscriptionType:subscriptionType,
+                                            subscriptionType:type,
                                             statusCode: 1002
                                         };
                                         req.app.result = user;

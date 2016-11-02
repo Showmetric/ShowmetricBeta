@@ -2,7 +2,7 @@
     <nav class="navbar navbar-static-top" role="navigation">
         <div class="navbar-header topnavbar-header">
             <span minimaliza-sidebar class="menus-img menuButton"></span>
-            <button style="margin-top:7px" data-toggle="dropdown" class="btn btn-white dropdown-toggle" type="button" aria-expanded="false">Recent Dashboards <span class="caret"></span></button>
+            <button style="margin-top:7px" data-toggle="dropdown" class="btn btn-white dropdown-toggle recentDashboard" type="button" aria-expanded="false">Recent Dashboards <span class="caret"></span></button>
             <ul class="dropdown-menu">
                 <li ng-repeat="recentDashboard in recentDashboards"><a ui-sref="app.reporting.dashboard({id: recentDashboard._id})">{{recentDashboard.name || 'unnamed'}}</a></li>
                 <li class="divider"></li>
@@ -10,7 +10,7 @@
             </ul>
             <div class="topName">
                 <span class="sessionName" style="float: right;padding-right:20px;height: inherit;">
-                       <h3 style="vertical-align: middle;color: #ffffff;float: left;margin: 0px;padding: 15px 0px;height: inherit;">
+                       <h3 class="userName">
                          Welcome {{userName}}&nbsp&nbsp
                        </h3>
                     <div  style="float: right;height: inherit;padding: 15px 0px;">

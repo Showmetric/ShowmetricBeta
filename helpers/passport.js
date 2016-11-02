@@ -110,7 +110,7 @@ module.exports = function (passport) {
                                         return done(err);
                                     else {
                                         req.body.orgId = user.orgId;
-                                        req.body.code = req.body.amount ? configAuth.subscriptionCodeMapping[req.body.amount] : configAuth.subscriptionType.starterFree;
+                                        req.body.code = req.body.code;
                                         utility.getSubscriptionType(req, null, function (err, subscriptionDetails) {
                                             var newUserWithSubscription = {};
                                             newUserWithSubscription = newUser;

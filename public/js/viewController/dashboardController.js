@@ -50,14 +50,89 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
         );
     }
 
+    $scope.stateValidation = function(targetState) {
+        switch(targetState) {
+            case 'basicWidget':
+                if($state.includes('app.reporting.dashboard')){
+                    toastr.options.closeButton=true;
+                    toastr.options.positionClass = 'toast-top-right';
+                    $http(
+                        {
+                            method: 'GET',
+                            url: '/api/v1/subscriptionLimits' + '?requestType=' + 'basic'
+                        }
+                    ).then(
+                        function successCallback(response) {
+                            availableBasicWidgets = response.data.availableWidgets;
+                            if (response.data.isExpired == true)
+                                toastr.info('Please renew!');
+                            else {
+                                if (availableBasicWidgets <= 0)
+                                    toastr.info("You don't have available widgets!")
+                                else
+                                    $state.go('app.reporting.dashboard.'+targetState,{widgetType:'basic'});
+                            }
+                        },
+                        function errorCallback(error) {
+                            swal({
+                                title: "",
+                                text: "<span style='sweetAlertFont'>Something went wrong! Please try Again</span> .",
+                                html: true
+                            });
+                        }
+                    );
+                    var toStateParams = "{widgetType:'basic'}";
+
+                }
+                else
+                    toastr.info('Please perform this action from within a dashboard');
+                break;
+            case 'fusionWidget':
+                if($state.includes('app.reporting.dashboard')){
+
+                    //function to chech the subscription limits  of the user on fusion widgets
+                    toastr.options.closeButton=true;
+                    toastr.options.positionClass = 'toast-top-right';
+                    //request to get the subscription details of the user on fusion widgets
+
+                    $http(
+                        {
+                            method: 'GET',
+                            url: '/api/v1/subscriptionLimits' + '?requestType=' + 'fusion'
+                        }
+                    ).then(
+                        function successCallback(response) {
+                            availableFusionWidgets = response.data.availableWidgets;
+                            if (response.data.isExpired == true)
+                                toastr.info('Please renew !');
+                            else {
+                                if (availableFusionWidgets <= 0)
+                                    toastr.info("You don't have available  widgets to create")
+                                else
+                                    $state.go('app.reporting.dashboard.'+targetState);
+                            }
+                        },
+                        function errorCallback(error) {
+                            swal({
+                                title: "",
+                                text: "<span style='sweetAlertFont'>Something went wrong! Please try again</span> .",
+                                html: true
+                            });
+                        }
+                    );
+                }
+                else
+                    toastr.info('Please perform this action from within a dashboard');
+                break;
+        }
+    }
      // document.getElementById('dashLayout').style.visibility = "hidden";
     var isExportOptionSet = '';
     $(".navbar").css('z-index','1');
     $(".md-overlay").css('background','rgba(0,0,0,0.5)');
-
-
     //Sets up all the required parameters for the dashboard to function properly when it is initially loaded. This is called in the ng-init function of the dashboard template
     $scope.dashboardConfiguration = function () {
+        /*$rootScope.getSubscriptions();*/
         $scope.fetchDateForDashboard=function(){
             $http({
                 method: 'GET',

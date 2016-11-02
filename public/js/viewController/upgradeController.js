@@ -2,7 +2,21 @@ showMetricApp.controller('UpgradeController', UpgradeController)
 function UpgradeController($scope, $http,$state, $rootScope) {
     var options;
     var rzp1;
-
+    $scope.getSubscriptions = function() {
+        $http(
+            {
+                method: 'GET',
+                url: '/api/v1/me'
+            }
+        ).then(
+            function successCallback(response) {
+                $rootScope.subscriptionDetails = response.data.userDetails;
+                $scope.subscriptionType = $rootScope.subscriptionDetails.subscriptionType.code;
+            },
+            function errorCallback(error) {
+            }
+        );
+    }
     $scope.loadCheckoutForm = function (code) {
         var requestType = {'code': code}
         if(String(code)==='free'){
@@ -11,7 +25,9 @@ function UpgradeController($scope, $http,$state, $rootScope) {
                 url: '/api/v1/updateFreeSubscription',
                 data: requestType
             }).then(function successCallback(subscription) {
+                    $scope.subscriptionType = subscription.data.response.code;
                     $rootScope.getReportBuilder();
+                    toastr.info('Your payment is completed successfully !')
                     $state.go('app.reporting.dashboard', {id: $rootScope.recentDashboards[0]._id});
                 },
                 function errorCallback(error) {
@@ -49,6 +65,8 @@ function UpgradeController($scope, $http,$state, $rootScope) {
                                 data: jsonData
                             }).then(function successCallback(response) {
                                     $rootScope.getReportBuilder();
+                                    $scope.subscriptionType = subscription.data.response.code;
+                                    toastr.info('Your payment is completed successfully !')
                                     $state.go('app.reporting.dashboard', {id: $rootScope.recentDashboards[0]._id});
                                 },
                                 function errorCallback(error) {
@@ -80,6 +98,7 @@ function UpgradeController($scope, $http,$state, $rootScope) {
                 }
             )
         }
+
     }
 
 
