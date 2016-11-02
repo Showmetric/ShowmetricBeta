@@ -109,10 +109,10 @@ function NavigationController($scope,$state,$http,$stateParams,$rootScope) {
                                 function successCallback(response) {
                                     availableFusionWidgets = response.data.availableWidgets;
                                     if (response.data.isExpired == true)
-                                        toastr.info('your expiry date is finished');
+                                        toastr.info('Please renew !');
                                     else {
                                         if (availableFusionWidgets <= 0)
-                                            toastr.info("you dont have available  widgets to create")
+                                            toastr.info("You don't have available  widgets to create")
                                         else
                                             $state.go('app.reporting.dashboard.'+targetState);
                                     }
