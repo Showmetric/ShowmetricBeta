@@ -16,9 +16,8 @@ function NavigationController($scope,$state,$http,$stateParams,$rootScope) {
                     toastr.info('Please perform this action from within a dashboard');
                     break;
                 case 'fusionWidget':
-                    if($state.includes('app.reporting.dashboard')){
-                    $state.go('app.reporting.dashboard.'+targetState);
-                    }
+                    if($state.includes('app.reporting.dashboard'))
+                        $state.go('app.reporting.dashboard.'+targetState);
                     else
                         toastr.info('Please perform this action from within a dashboard');
                     break;
