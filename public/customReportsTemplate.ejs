@@ -139,12 +139,15 @@
                     <li gridster-item="widget" ng-repeat="(widgetIndex,widget) in customReport.widgets"><!--ng-if="widget.pageNumber==pages"-->
                         <div ng-if="widget.widgetType=='reportHeadingWidget'||widget.widgetType=='reportParaWidget'" style="height: 100%;width: 100%;">
                             <div class="box getBox-{{widget.id}}" style=" border: 0px !important;"  id="{{widget.id}}" >
-                                <div class="reportbox-header" id="getWidgetColor-{{widget.id}}"  style="border-bottom:0px !important;background-color: #ffffff;"> <!--ng-style="{'background-color': customReport.widgetData[widget.id].color}"-->
-                                    <div style="float: left;width: 93%;">
+                                <div class="col col-sm-12 col-md-12 col-lg-12 reportbox-header" id="getWidgetColor-{{widget.id}}"  style="border-bottom:0px !important;background-color: #ffffff;"> <!--ng-style="{'background-color': customReport.widgetData[widget.id].color}"-->
+                                    <div class='col-sm-2 col-md-2 col-lg-2 center' style="float: left;padding: 5px;">
+
+                                    </div>
+                                    <div class='col-sm-7 col-md-8 col-lg-8 center' style="float: left;padding: 0px;">
                                         <h3 ng-style="widget.sizeX!=1  && {'width':'80%'}  || widget.sizeX==1 && {'width':'50%'} ">{{widget.name}}</h3>
                                     </div>
 
-                                    <div class="reportGraph-icon">
+                                    <div class="col-sm-3 col-md-2 col-lg-2 reportGraph-icon" style="float: right;text-align:right">
                                         <a title="Push up this widget" ng-hide="widgetIndex==0"  ng-click="pushUpWidget(widget,widgetIndex)"><i class="fa fa-hand-o-up" aria-hidden="true"></i></a><!--ng-hide="widgetIndex==0||widget.sizeY>reportPagesDetails[widget.pageNumber-1].sizeLeft||(reportPagesDetails[widget.pageNumber-1].lastWigdetIndex!=undefined && widget.sizeY!=customReport.widgets[reportPagesDetails[widget.pageNumber-1].lastWigdetIndex].sizeY)"-->
                                         <a title="Pull down this widget" ng-hide="widgetIndex==customReport.widgets.length-2"  ng-click="pullDownWidget(widget,widgetIndex)"><i class="fa fa-hand-o-down" aria-hidden="true"></i></a><!--ng-hide="widgetIndex==customReport.widgets.length-2||widget.sizeY>reportPagesDetails[widget.pageNumber+1].sizeLeft||(reportPagesDetails[widget.pageNumber+1].firstWigdetIndex!=undefined&&widget.sizeY!=customReport.widgets[reportPagesDetails[widget.pageNumber+1].firstWigdetIndex].sizeY)" -->
                                         <a title="Edit text content" ng-show='widget.textAreaHide==true' ng-click="disableTextEdit(widget,false)"><i class="fa fa-pencil-square-o"></i></a>
@@ -199,21 +202,25 @@
                             </div>
                         </div>
                         <div ng-if="widget.widgetType!='reportHeadingWidget'&&widget.widgetType!='reportParaWidget'&&widget.widgetType!='pageBreakWidget'" style="width: 100%;height: 100%">
-                            <div class="box getBox-{{widget.id}}" style=" border: 0px !important;"  id="{{widget.id}}">
-                                <div class="reportbox-header" id="getWidgetColor-{{widget.id}}" ref="{{customReport.widgetData[widget.id].color}}" style="border-bottom: 0px solid #e8e8e8 !important;background-color: #ffffff;"> <!--ng-style="{'background-color': customReport.widgetData[widget.id].color}"-->
-                                    <div style="float: left;width: 93%;">
-                                        <img src="image/thumbnail/{{widget.channelName}}.png" style="vertical-align: super;max-height: 31px; max-width: 50px; padding:5px"/>
+                            <div class="box widgetBoxBorder getBox-{{widget.id}}"   id="{{widget.id}}">
+                                <div class="reportbox-header col col-sm-12 col-md-12 col-lg-12" id="getWidgetColor-{{widget.id}}" ref="{{customReport.widgetData[widget.id].color}}" style="border-bottom: 1px solid #efefef !important;background-color: #ffffff;"> <!--ng-style="{'background-color': customReport.widgetData[widget.id].color}"-->
+                                    <div class="col-sm-2 col-md-2 col-lg-1" style="float: left;text-align: right;">
+                                        <img src="image/thumbnail/{{widget.channelName}}.png" style="vertical-align: super;max-height: 25px; max-width: 50px; padding:5px 0px 0px 5px"/>
+                                        <!--<h3 ng-style="widget.sizeX!=1  && {'width':'80%'}  || widget.sizeX==1 && {'width':'50%'} ">{{customReport.widgetData[widget.id].name}}</h3>-->
+                                    </div>
+                                    <div class="col-sm-7 col-md-8 col-lg-9" style="float: left;text-align: left;padding: 0px;overflow:hidden">
+                                        <!--<img src="image/thumbnail/{{widget.channelName}}.png" style="vertical-align: super;max-height: 31px; max-width: 50px; padding:5px"/>-->
                                         <h3 ng-style="widget.sizeX!=1  && {'width':'80%'}  || widget.sizeX==1 && {'width':'50%'} ">{{customReport.widgetData[widget.id].name}}</h3>
                                     </div>
 
-                                    <div class="reportGraph-icon">
+                                    <div class="col-sm-3 col-md-2 col-lg-2 reportGraph-icon" style="float: right;text-align:right">
                                         <a title="Push up this widget" ng-hide="widgetIndex==0"  ng-click="pushUpWidget(widget,widgetIndex)"><i class="fa fa-hand-o-up" aria-hidden="true"></i></a><!--ng-hide="widgetIndex==0||widget.sizeY>reportPagesDetails[widget.pageNumber-1].sizeLeft||(reportPagesDetails[widget.pageNumber-1].lastWigdetIndex!=undefined && widget.sizeY!=customReport.widgets[reportPagesDetails[widget.pageNumber-1].lastWigdetIndex].sizeY)"-->
                                         <a title="Pull down this widget" ng-hide="widgetIndex==customReport.widgets.length-2"  ng-click="pullDownWidget(widget,widgetIndex)"><i class="fa fa-hand-o-down" aria-hidden="true"></i></a><!--ng-hide="widgetIndex==customReport.widgets.length-2||widget.sizeY>reportPagesDetails[widget.pageNumber+1].sizeLeft||(reportPagesDetails[widget.pageNumber+1].firstWigdetIndex!=undefined&&widget.sizeY!=customReport.widgets[reportPagesDetails[widget.pageNumber+1].firstWigdetIndex].sizeY)" -->
                                         <a title="Remove from Report" ng-click="deleteWidgetFromReport(widget)"><i class="fa fa-trash-o" aria-hidden="true"></i></a>
                                     </div>
                                 </div>
 
-                                <div class="box-content widgetBoxBorder" style="vertical-align: middle" ng-style="{position:(isMobile?'static':'absolute')}">
+                                <div class="box-content" style="vertical-align: middle" ng-style="{position:(isMobile?'static':'absolute')}">
                                     <div ng-if="customReport.widgetData[widget.id].visibility == false" style="height:100%;">
                                         <div class="spiner-example" id="widgetData-{{widget.id}}">
                                             <div class="sk-spinner sk-spinner-double-bounce">
@@ -1081,9 +1088,9 @@
                     <div class="row  white-bg border-bottom" style="max-height:50px;padding:50px 0px 70px 0px;margin-left: 0px;margin-right:0px;">
                         <div class="col col-sm-12 col-md-12 col-lg-12">
                             <div class="expdashboardTemplate-items">
-                                <div class="col-sm-4 col-md-4 col-lg-4" style="float: left;"><img ng-src="{{orgLogoSrc}}" style="max-width: 90%;max-height:40px;padding: 5px 0px;"/></div>
-                                <div class="col-sm-4 col-md-4 col-lg-4 " style="float:left;"> <p style="text-align:center;color:#000;font-family:Montserrat-Bold;padding:5px;font-size:26px !important" >{{displayHeader||customReport.reportName || 'Untitled Report'}}</p></div><!--ng-style="(displayHeader.length>15||!customReport.reportName.length>15)  && {'font-size':'24px !important'}  || (displayHeader.length<=15||customReport.reportName.length<=15) && {'font-size':'30px !important'}"-->
-                                <div class="col-sm-4 col-md-4 col-lg-4"style="float: right;"><img ng-src="{{cliLogoSrc}}" style="max-width: 90%;max-height:40px;padding:  5px 0px;float:right;"/></div>
+                                <div class="col-sm-2 col-md-2 col-lg-2" style="float: left;"><img ng-src="{{orgLogoSrc}}" style="max-width: 90%;max-height:40px;padding: 5px 0px;"/></div>
+                                <div class="col-sm-8 col-md-8 col-lg-8 " style="float:left;"> <p style="text-align:center;color:#000;font-family:Montserrat-Bold;padding:5px;font-size:26px !important" >{{displayHeader||customReport.reportName || 'Untitled Report'}}</p></div><!--ng-style="(displayHeader.length>15||!customReport.reportName.length>15)  && {'font-size':'24px !important'}  || (displayHeader.length<=15||customReport.reportName.length<=15) && {'font-size':'30px !important'}"-->
+                                <div class="col-sm-2 col-md-2 col-lg-2"style="float: right;"><img ng-src="{{cliLogoSrc}}" style="max-width: 90%;max-height:40px;padding:  5px 0px;float:right;"/></div>
                             </div>
                         </div>
                     </div>
@@ -1109,15 +1116,17 @@
                                     </div>
                                 </div>
                                 <div  ng-if="widget.widgetType!='reportHeadingWidget'&&widget.widgetType!='reportParaWidget'" style="width: 100%;height: 100%">
-                                    <div class="box getBox-{{widget.id}}" style=" border: 0px !important;"  id="{{widget.id}}">
-                                        <div class="reportbox-header" id="getWidgetColor-{{widget.id}}" ref="{{customReport.widgetData[widget.id].color}}" style="border-bottom: 0px solid #e8e8e8 !important;background-color: #ffffff;"> <!--ng-style="{'background-color': customReport.widgetData[widget.id].color}"-->
-                                            <div style="float: left;width: 93%;">
-                                                <img src="image/thumbnail/{{widget.channelName}}.png" style="vertical-align: super;max-height: 31px; max-width: 50px; padding:5px"/>
+                                    <div class="box widgetBoxBorder getBox-{{widget.id}}"  id="{{widget.id}}">
+                                        <div class="col col-sm-12 col-md-12 col-lg-12 reportbox-header" id="getWidgetColor-{{widget.id}}" ref="{{customReport.widgetData[widget.id].color}}" style="border-bottom: 1px solid #efefef !important;background-color: #ffffff;"> <!--ng-style="{'background-color': customReport.widgetData[widget.id].color}"-->
+                                            <div class='col-sm-2 col-md-2 col-lg-1' style="float: left;text-align: right">
+                                                <img src="image/thumbnail/{{widget.channelName}}.png" style="vertical-align: super;max-height: 25px; max-width: 50px; padding:5px 0px 0px 5px"/>
+                                            </div>
+                                            <div class='col-sm-10 col-md-10 col-lg-11' style="float: left;text-align: left;padding:0px;">
                                                 <h3 ng-style="widget.sizeX!=1  && {'width':'80%'}  || widget.sizeX==1 && {'width':'50%'} ">{{customReport.widgetData[widget.id].name}}</h3>
                                             </div>
                                         </div>
 
-                                        <div class="box-content widgetBoxBorder" style="vertical-align: middle" ng-style="{position:(isMobile?'static':'absolute')}">
+                                        <div class="box-content" style="vertical-align: middle" ng-style="{position:(isMobile?'static':'absolute')}">
                                             <div ng-if="customReport.widgetData[widget.id].visibility == false" style="height:100%;">
                                                 <div class="spiner-example" id="widgetData-{{widget.id}}">
                                                     <div class="sk-spinner sk-spinner-double-bounce">

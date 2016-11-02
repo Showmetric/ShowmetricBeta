@@ -521,26 +521,48 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                             }
                             else {
                                 var formattedChartData = [];
-                                for (datas in widget.charts[charts].chartData) {
-                                    var yValue = 0, xValue, endpointArray;
-                                    var total = widget.charts[charts].chartData[datas].total
-                                    if (widget.charts[charts].chartData[datas].total != null && Object.keys(widget.charts[charts].chartData[datas].total).length != 0) {
-                                        for (var keyValuePairs in widget.charts[charts].chartData[datas].total) {
-                                            if (keyValuePairs.search('/') > -1) {
-                                                endpointArray = keyValuePairs.split('/');
-                                                for (var splittedValues in endpointArray) {
-                                                    yValue += parseFloat(widget.charts[charts].chartData[datas].total[keyValuePairs]);
-                                                    xValue = keyValuePairs;
-                                                }
-                                            }
-                                            else
-                                                yValue = widget.charts[charts].chartData[datas].total[currentItem];
-                                            xValue = keyValuePairs;
+                                if(widget.charts[charts].chartSubType === 'fbTopReferringDomain'){
+                                    var splitArray=[];
+                                    for (var k = 0; k < widget.charts[charts].chartData.length; k++){
+                                        if(typeof widget.charts[charts].chartData[k].total ==='object') {
+                                            for(var keys in widget.charts[charts].chartData[k].total)
+                                                splitArray.push({domain:keys,value:widget.charts[charts].chartData[k].total[keys]});
                                         }
+                                    }
+                                    var sortdata = _.groupBy(splitArray, 'domain');
+                                    for (var key in sortdata) {
+                                        var domain = key;
+                                        var count=0;
+                                        for (var i = 0; i < sortdata[key].length; i++)
+                                            count += parseFloat(sortdata[key][i]['value']);
                                         formattedChartData.push({
-                                            x: xValue,
-                                            y: Math.round(yValue * 100) / 100
-                                        });
+                                            x: domain,
+                                            y: isNaN(count)?0:count
+                                        })
+                                    }
+                                }
+                                else{
+                                    for (datas in widget.charts[charts].chartData) {
+                                        var yValue = 0, xValue, endpointArray;
+                                        var total = widget.charts[charts].chartData[datas].total
+                                        if (widget.charts[charts].chartData[datas].total != null && Object.keys(widget.charts[charts].chartData[datas].total).length != 0) {
+                                            for (var keyValuePairs in widget.charts[charts].chartData[datas].total) {
+                                                if (keyValuePairs.search('/') > -1) {
+                                                    endpointArray = keyValuePairs.split('/');
+                                                    for (var splittedValues in endpointArray) {
+                                                        yValue += parseFloat(widget.charts[charts].chartData[datas].total[keyValuePairs]);
+                                                        xValue = keyValuePairs;
+                                                    }
+                                                }
+                                                else
+                                                    yValue = widget.charts[charts].chartData[datas].total[currentItem];
+                                                xValue = keyValuePairs;
+                                            }
+                                            formattedChartData.push({
+                                                x: xValue,
+                                                y: Math.round(yValue * 100) / 100
+                                            });
+                                        }
                                     }
                                 }
                                 formattedChartDataArray.push(formattedChartData);
@@ -3218,6 +3240,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                             'variance': percentage,
                                             'period': granularity,
                                             'summaryDisplay': Math.round(summaryValue * 100) / 100,
+                                            'chartSubType':widget.charts[charts].chartSubType,
                                         });
                                     }
                                 }
@@ -4937,6 +4960,9 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                         credits: {
                             enabled: false
                         },
+                        legend:{
+                            enabled:false
+                        },
                         exporting: {enabled: false},
                         tooltip: {
                             enabled: true,
@@ -4945,6 +4971,12 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                         xAxis: {
                             categories: dateArray,
 
+                        },
+                        tooltip: {
+                            formatter: function() {
+                                return  this.x +
+                                    ':'+'</br>'+ this.y;
+                            }
                         },
                         title: {
                             text: '',

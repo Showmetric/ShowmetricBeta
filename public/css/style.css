@@ -5416,7 +5416,7 @@ input:focus{
 /*position: relative;*/
 }
 .widgetBoxBorder{
-    border: 1px solid #eaeff3;
+    border: 1px solid #efefef !important ;
 }
 .reportListingGrid{
     height: 30px;
