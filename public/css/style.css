@@ -5446,3 +5446,25 @@ input:focus{
 .logoText-icons{color:#000;font-size:20px;font-family:Montserrat-Light;padding:10px 5px}
 .reportText-header{color:#fff;margin-top:5px;font-size:18px;font-family:Montserrat-Bold;padding:5px}
 .reportDate-select{display: block !important;}
+.upgrade-button{
+    border-radius: 0px;
+    /* border: 61px; */
+    color: #fff;
+    overflow: hidden;
+    background: #ff6c3a;
+    border: none;
+    font-family: inherit;
+    font-size: inherit;
+    cursor: pointer;
+    padding: 8px 18px;
+    display: inline-block;
+    margin: 17px 2px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 700;
+    outline: none;
+    position: relative;
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    transition: all 0.3s;
+}

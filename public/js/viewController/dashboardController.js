@@ -9,6 +9,7 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
     $scope.actionTypeEnable={};
     $scope.submitEnable={};
     $scope.messageEnable={};
+    var dateRange;
     var expWid = { dashName:[], wid: [], widData: []};
     var cancel = $q.defer();
     $scope.currentDate=moment(new Date()).format("YYYY-DD-MM");
@@ -27,6 +28,40 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
 
     //Sets up all the required parameters for the dashboard to function properly when it is initially loaded. This is called in the ng-init function of the dashboard template
     $scope.dashboardConfiguration = function () {
+        $scope.fetchDateForDashboard=function(){
+            $http({
+                method: 'GET',
+                url: '/api/v1/get/dashboards/' + $state.params.id
+            }).then(
+                function successCallback(response){
+                    if(response.status==200){
+                        dateRange = response.data.dateRange
+                        var validity = response.data.validity;
+                        //$scope.userModifyDate(dateRange)
+                    }
+                    else{
+                        dateRange = 30
+                        var validity=30
+                    }
+                }
+            )
+        };
+        //$scope.fetchDateForDashboard();
+
+        //To define the calendar in dashboard header
+        //$scope.userModifyDate=function(dateRange,validity) {
+            $scope.dashboardCalendar = new Calendar({
+                element: $('.daterange--double'),
+                earliest_date: moment(new Date()).subtract(365, 'days'),
+                latest_date: new Date(),
+                start_date: moment(new Date()).subtract(30,'days'),
+                end_date: new Date(),
+                callback: function () {
+                    var start = moment(this.start_date).format('ll'), end = moment(this.end_date).format('ll');
+                    $scope.populateDashboardWidgets();
+                }
+            });
+        //}
         //To set height for Window scroller in dashboard Template
         $scope.docHeight = window.innerHeight;
         $scope.docHeight = $scope.docHeight-110;
@@ -38,18 +73,20 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
         $scope.spinerEnable = true;
         $scope.loadedWidgetCount = 0;
         $scope.widgetErrorCode=0;
-        //To define the calendar in dashboard header
+        //get calendar range from db
+
+        /*//To define the calendar in dashboard header
             $scope.dashboardCalendar = new Calendar({
                 element: $('.daterange--double'),
-                earliest_date: moment(new Date()).subtract(365, 'days'),
+                earliest_date: moment(new Date()).subtract(dateRange, 'days'),
                 latest_date: new Date(),
-            start_date: moment(new Date()).subtract(30,'days'),
-            end_date: new Date(),
+                start_date: moment(new Date()).subtract(30,'days'),
+                end_date: new Date(),
                 callback: function () {
-                var start = moment(this.start_date).format('ll'), end = moment(this.end_date).format('ll');
-                            $scope.populateDashboardWidgets();
-                        }
-                });
+                    var start = moment(this.start_date).format('ll'), end = moment(this.end_date).format('ll');
+                    $scope.populateDashboardWidgets();
+                }
+            });*/
         $scope.setChartSize = function (index,childIndex) {
             $timeout(callAtTimeout, 100);
             function callAtTimeout() {
@@ -62,7 +99,7 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
             }
 
         }
-        
+
         //Setting up grid configuration for widgets
         $scope.gridsterOptions = {
             sparse: true,

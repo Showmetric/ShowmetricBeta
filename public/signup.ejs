@@ -68,9 +68,6 @@
 		<div class="nav-container">
 			<nav class="centered-logo top-bar">
 				<div class="container">
-				
-					
-					
 					<div class="row">
 						<div class="col-sm-12 text-center">
 							<img class="logo logo-dark" alt="Logo" src="/image/Datapoolt-Logo.png">
@@ -136,7 +133,7 @@
 									<input name="email" class="form-email" type="email" placeholder="Email Address" required>
 									<input class="form-password" pattern=".{5,14}" type="password" name="password" placeholder="Password" required title="5 to 14 characters">
 									<input class="form-email" type="text" name= "country" placeholder="Company Name" required>
-									<input class="login-btn btn-filled" type="submit" value="Sign Up">
+									<input class="login-btn btn-filled" type="submit" value="Sign Up" onclick="getPaymentOption()">
 								</form>
 							</div>
 							<b class="text-white">Already have an account?</b>
@@ -224,4 +221,32 @@
 
 	</body>
 </html>
-				
+<script>
+	function getPaymentOption(){}
+	var options = {
+		"key": "YOUR_KEY_ID",
+		"amount": "2000", // 2000 paise = INR 20
+		"name": "Merchant Name",
+		"description": "Purchase Description",
+		"image": "/your_logo.png",
+		"handler": function (response){
+			alert(response.razorpay_payment_id);
+		},
+		"prefill": {
+			"name": "Harshil Mathur",
+			"email": "harshil@razorpay.com"
+		},
+		"notes": {
+			"address": "Hello World"
+		},
+		"theme": {
+			"color": "#F37254"
+		}
+	};
+	var rzp1 = new Razorpay(options);
+
+	document.getElementById('rzp-button1').onclick = function(e){
+		rzp1.open();
+		e.preventDefault();
+	}
+</script>

@@ -612,6 +612,7 @@
                         <div class="row" ng-if="currentView === 'step_one'" ng-cloak>
                             <h5 class="model-title">Step 1 : Choose the Channels</h5>
                             <div class="col-lg-12">
+                                <div id="error"></div>
                                 <div ng-repeat="data in channelList | filter:{integrated: true}" name="{{data._id}}"
                                      class="col-lg-2 widget-icons"
                                      ng-click="storeChannel(data);"
@@ -634,6 +635,7 @@
                         <div class="row" ng-if="currentView === 'step_two'" ng-cloak>
                             <h5 class="model-title">{{selectCustomLinkHead}}</h5>
                             <div class="col-lg-12">
+                                <div id="error"></div>
                                 <div class="col-lg-12" ng-repeat="referenceWidgetsList in referenceWidgetsList">
                                     <div class="col-xs-12"><img src="image/lightbox/{{referenceWidgetsList.channelName}}.png" style="width:150px;" ng-class="{'mozImage': referenceWidgetsList.channelName=='Moz'}"/></div>
                                     <div ng-repeat="referenceWidgets in referenceWidgetsList.widgets"
@@ -685,6 +687,7 @@
                         </div>
                         <div class="row" ng-if="currentView === 'step_three'" ng-cloak>
                             <h5 class="model-title" ng-hide="headerHide==true">Step 3 : Choose the Accounts</h5>
+                            <div id="error"></div>
                             <div ng-repeat="channel in selectedChannelList track by $index" >
                                 <div ng-hide="channel.name=='Moz'">
                                     <div class="col-lg-12" style="background-color: #f3f3f4">
@@ -1126,6 +1129,7 @@
                                     </div>
                                 </div>
                                 <div ng-show="channel.name=='Moz'">
+                                    <div id="mozError"></div>
                                     <h5 class="model-title">Step 3 : Enter an URL</h5>
                                     <div class="col-lg-12" style="background-color: #f3f3f4">
                                         <div class="row" style="margin: 30px 5px 5px 5px ;">

@@ -17,6 +17,7 @@ function FusionWidgetController($scope, $http, $q, $window, $state, $rootScope, 
     $scope.fbAdObjId='';
     $scope.gaAdObjId='';
     $scope.canManage = true;
+    var availableFusionWidgets;
     $scope.fusionRefreshButton='';
     var apiResponse = 0;
 
@@ -546,25 +547,52 @@ function FusionWidgetController($scope, $http, $q, $window, $state, $rootScope, 
             "channelName": "custom"
         };
         inputParams.push(jsonData);
-        $http({
-            method: 'POST',
-            url: '/api/v1/widgets',
-            data: inputParams
-        }).then(
+        //request to get the subscription details of the user on fusion widgets
+
+        $http(
+            {
+                method: 'GET',
+                url: '/api/v1/subscriptionLimits' + '?requestType=' + 'fusion'
+            }
+        ).then(
             function successCallback(response) {
-                apiResponse = 1;
-                for(widgetObjects in response.data.widgetsList)
-                    $rootScope.$broadcast('populateWidget', response.data.widgetsList[widgetObjects]);
+                availableFusionWidgets = response.data.availableWidgets;
+                if((availableFusionWidgets>0) && (availableFusionWidgets >= inputParams.length)){
+                    $scope.ok();
+                    $http({
+                        method: 'POST',
+                        url: '/api/v1/widgets',
+                        data: inputParams
+                    }).then(
+                        function successCallback(response) {
+                            apiResponse = 1;
+                            for(widgetObjects in response.data.widgetsList)
+                                $rootScope.$broadcast('populateWidget', response.data.widgetsList[widgetObjects]);
+                        },
+                        function errorCallback(error) {
+                            apiResponse = 1;
+                            swal({
+                                title: "",
+                                text: "<span style='sweetAlertFont'>Please try again! Something is missing</span> .",
+                                html: true
+                            });
+                        }
+                    );
+                }
+                else{
+                    $('#errorInFusionWidgets').html('<div class="alert alert-danger fade in" style="width: 400px;margin-left: 212px;"><button type="button" class="close close-alert" data-dismiss="alert" aria-hidden="true">×</button>You dont have any available widgets</div>');
+                }
             },
             function errorCallback(error) {
-                apiResponse = 1;
                 swal({
                     title: "",
-                    text: "<span style='sweetAlertFont'>Please try again! Something is missing</span> .",
+                    text: "<span style='sweetAlertFont'>Something went wrong!!!!</span> .",
                     html: true
                 });
             }
         );
+
+
     };
     $scope.dropdownWidth=function(hasnoAccess,tokenExpired){
         if(hasnoAccess==true || tokenExpired==true){

@@ -294,14 +294,12 @@ module.exports = {
         apiKey:"77baa3687f263b77dbda4f97b5111b62-us13"
 
     },
-    
     'pinterest':{
         clientID        : '4838237239574020593',
         clientSecret    : '84fe4b846f68a8f896282f5b55cdd23b0d341d6fb07fcd4920bebb3c5eaff4b7',
         redirect_uri : 'https://localhost:8080/auth/pinterest/callback',
         scope:'read_public,read_relationships'
     },
-    
     'linkedIn':{
         clientID :'81rzqsz9vo6vk4',
         clientSecret :'qWo9LU2s6KJ9EnNI',
@@ -323,34 +321,28 @@ module.exports = {
         successBatchJobMessage:'success:Update channel data',
         successAlertMessage:'success:Send Alert'
     },
-    
     'batchJobsMoz':{
         accessId: 'mozscape-d79bd6e88f',
         secret: 'e093b821ca077d42fd113db646c22487',
         expires: 300
     },
-    
     pinterestMetrics:{
         boardsLeaderBoard:'boardsleaderboard',
         engagementRate:'engagementRate'
     },
-    
     linkedInMetrics:{
         endPoints:{
             followers:'followers'
         },
         highestEngagementUpdatesLinkedIn:'highestEngagementUpdatesLinkedIn'
     },
-    
     vimeoMetric:{
         vimeohighengagement:'vimeohighengagement',
         vimeoviews:'vimeoviews',
     },
-    
     facebookSite:{
         site:'https://graph.facebook.com/'
     },
-    
     instagramStaticVariables:{
         user:'user',
         likes:'likes',
@@ -359,7 +351,6 @@ module.exports = {
         recentPost:'Recent Posts',
         hashTagLeaderBoard:'hashTagLeaderBoard'
     },
-    
     mailChimpQueryVariables:{
         lists:'lists',
         listQuery:'.api.mailchimp.com/3.0/lists/',
@@ -368,7 +359,6 @@ module.exports = {
         campaign:'campaign',
         emailSend:'emailSend',
     },
-    
     aweberStatic:{
         endPoints: {
             aweberMainList: 'mainlists',
@@ -440,6 +430,30 @@ module.exports = {
     dataValidityInHours:4,
     youTubeStaticVariables:{
         videosoverview:'videosoverview'
+    },
+    subscriptionType:{
+        starterFree:'free',
+        small:'starter',
+        medium:'advanced',
+        enterprise:'premium',
+        agency:'agency'
+    },
+    limitRequestType:{
+        alert:'alert',
+        dashboards:'dashboards',
+        basic:'basic',
+        fusion:'fusion'
+    },
+    razorPayCredentials:{
+        apiKey:'rzp_test_cHlxIyQNJbANCc',
+        apiKeySecret:'DyftA4AIdVt6J5j8QbqfQlcw'
+    },
+    subscriptionCodeMapping:{
+        '195000':'starter',
+        '330000':'advanced',
+        '700000':'premium',
+        '850000':'agency',
+        '0':'free',
     }
 };
 
