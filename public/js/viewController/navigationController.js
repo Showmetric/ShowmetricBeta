@@ -86,29 +86,10 @@ function NavigationController($scope,$state,$http,$stateParams,$rootScope) {
                         ).then(
                             function successCallback(response){
                                 if(response.data.isExpired === false){
-                                    if(response.data.availableDashboards > 0){
-                                        $scope.loading=true;
-                                        $http(
-                                            {
-                                                method: 'POST',
-                                                url: '/api/v1/create/dashboards'
-                                            }
-                                        ).then(
-                                            function successCallback(response) {
-                                                $state.go('app.reporting.'+targetState);
-                                            },
-                                            function errorCallback(error) {
-                                                swal({
-                                                    title: "",
-                                                    text: "<span style='sweetAlertFont'>Something went wrong! Please try again!</span> .",
-                                                    html: true
-                                                });
-                                            }
-                                        )
-                                    }
-                                    else {
+                                    if(response.data.availableDashboards > 0)
+                                        $state.go('app.reporting.'+targetState);
+                                    else
                                         toastr.info('Dashboard limit is reached !')
-                                    }
                                 }
                                 else {
                                     toastr.info('Please renew !')
