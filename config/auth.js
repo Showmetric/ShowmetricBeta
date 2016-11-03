@@ -45,11 +45,11 @@ module.exports = {
 
 
     'twitterAuth': {
-        consumerKey: 'e7SnwcN5W8FC1y6O8IpMtl2S8',
-        consumerSecret: 'YZmgirt6IAnUPxZGWvioVWeXiMRn4E6GKsVKv5MJUO4zD6PNcy',
+        consumerKey: 'pl8qDMoLIllUfk8yOQFChrytS',
+        consumerSecret: 'muVu75iKsX4ycfeSbKoHQT8XrUs0Ug5NCnPxPKHzNzBub4q58i',
         callbackURL: 'https://app.datapoolt.co/auth/twitter/callback',
-        AccessToken: '10251882-3anABLaQc4ZaWbp6GDj21u19BUuTFQX3zVmlutnn7',
-        AccessTokenSecret:'x9H1UO0BoMtfmWhN9OWzqQVJtasSVwNzohOhYEzTuyzoR',
+        AccessToken: '3121008137-4DhnPX9p0bgtX9vwTxKyEcgMjY5scM3Unk9PMk1',
+        AccessTokenSecret:'GY6XaBIBjOGyVKpT0rDvY2z1U2dR9OLU6OLIrrZx34Aob',
         localCallingURL: '/api/auth/twitter',
         localCallbackURL: '/auth/twitter/callback',
         requestTokenURL:'https://api.twitter.com/oauth/request_token',
