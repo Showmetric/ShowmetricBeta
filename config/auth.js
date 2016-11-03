@@ -174,7 +174,8 @@ module.exports = {
         followers:'followers',
         favourites:'favourites',
         listed:'listed',
-        retweets_of_your_tweets:'retweetsOfYourTweets'
+        retweets_of_your_tweets:'retweetsOfYourTweets',
+        twitterEngagements:'twitterEngagements'
     },
 
     'googleAdwordsMetric' :{
@@ -197,7 +198,23 @@ module.exports = {
         adGroupIdEqual:"AdGroupId",
         campaignId:'CampaignId',
         CAMPAIGN_PERFORMANCE_REPORT:'CAMPAIGN_PERFORMANCE_REPORT',
+        campaignDemographicsAgeAnalysis:'AGE_RANGE_PERFORMANCE_REPORT',
+        campaignDemographicsGenderAnalysis:'GENDER_PERFORMANCE_REPORT',
+        campaignDemographicsDeviceAnalysis:'CAMPAIGN_PERFORMANCE_REPORT',
+        adgroupDemographicsAgeAnalysis:'AGE_RANGE_PERFORMANCE_REPORT',
+        adgroupDemographicsGenderAnalysis:'GENDER_PERFORMANCE_REPORT',
+        adgroupDemographicsDeviceAnalysis:'ADGROUP_PERFORMANCE_REPORT',
         campaignEqual:"CampaignId",
+        costPerConversionapper:"Cost / conv.",
+        costPerConversionchange:'costPerConversion',
+        DefaultmaxCPCapper:"Default max. CPC",
+        DefaultmaxCPCchange:'MaxCPC',
+        MaxCPVapper:"Max. CPV",
+        MaxCPVchange:"MaxCPV",
+        MaxCPMapper:"Max. CPM",
+        MaxCPMchange:"MaxCPM",
+        Totalconvvalueapper:"Total conv. value",
+        Totalconvvaluechange:"Totalconvvalue",
         id:'Id',
         idEquals:"Id",
         AD_PERFORMANCE_REPORT:'AD_PERFORMANCE_REPORT',
@@ -246,15 +263,16 @@ module.exports = {
     },
 
     apiVersions:{
+        FBVersion:'2.7',
         FBInsights:'v2.7',
         FBADs:'v2.7',
-        FBInsightsUpdated:'v2.7',
-        FBVersion:'2.7'
+        FBInsightsUpdated:'v2.7'
     },
 
     widgetType:{
         customFusion:'customFusion',
-        insights:'insights'
+        insights:'insights',
+        fbPosts:'fbPosts'
     },
 
     dataFormat:{
@@ -273,7 +291,7 @@ module.exports = {
         accessTokenUrl:"https://login.mailchimp.com/oauth2/token",
         base_uri:"https://login.mailchimp.com/oauth2/",
         metadata:"https://login.mailchimp.com/oauth2/metadata",
-        apiKey:"5b907c6f3b2f00b07270d38b709a8106-us13"
+        apiKey:"6bdce0374cf2724449d5d79454896415-us13"
 
     },
 
@@ -333,7 +351,8 @@ module.exports = {
         likes:'likes',
         comments:'comments',
         count:'count',
-        recentPost:'Recent Posts'
+        recentPost:'Recent Posts',
+        hashTagLeaderBoard:'hashTagLeaderBoard'
     },
     mailChimpQueryVariables:{
         lists:'lists',
@@ -360,6 +379,15 @@ module.exports = {
             total_clicksCampaigns:'total_clicks/campaigns',
             total_sentCampaigns:'total_sent/campaigns'
         }
+    },
+    
+    mongoCharacterRestriction:{
+        doller:'002D',
+        colon:'002C',
+        slash:'002S',
+        dot:'002E',
+        quot:'002Q',
+        question:'002T'
     },
     
     mozStatic:{
@@ -397,9 +425,14 @@ module.exports = {
     },
 
     googleAnalytics:{
-        topPages:'Top Pages by Visit'
+        topPages:'Top Pages by Visit',
+        usersByAgeGroup:'usersByAgeGroup',
+        usersByGender:'usersByGender'
     },
     
-    dataValidityInHours:4
+    dataValidityInHours:4,
+    youTubeStaticVariables:{
+        videosoverview:'videosoverview'
+    }
 };
 
