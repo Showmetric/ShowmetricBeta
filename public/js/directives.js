@@ -67,6 +67,25 @@ function sideNavigation($timeout) {
 /**
  * responsibleVideo - Directive for responsive video
  */
+
+function hcChart($timeout){
+        return {
+            restrict: 'E',
+            template: '<div></div>',
+            scope: {
+                options: '='
+            },
+            link: function (scope, element) {
+                $timeout(drawCharts, 200);
+                function drawCharts(){
+                Highcharts.chart(element[0], scope.options);
+            }
+        }
+    }
+
+
+}
+
 function responsiveVideo() {
     return {
         restrict: 'A',
@@ -189,7 +208,7 @@ function minimalizaSidebar($timeout) {
                     $('.tooltip').hide();
                     var width = document.getElementById('CustomTemplate').offsetWidth;
                     if(width<900){
-                        $('#dashboardTitleIcons').hide();
+                       // $('#dashboardTitleIcons').hide();
                     }
                     // Hide menu in order to smoothly turn on when maximize menu
                     $('#side-menu').hide();
@@ -202,7 +221,7 @@ function minimalizaSidebar($timeout) {
                                     document.getElementById('tabs-container-response-view').setAttribute('style','padding-left: 221px;');*/
                             }
                             else{
-                                $('#dashboardTitleIcons').hide()
+                                //$('#dashboardTitleIcons').hide()
 
                             }
                         }, 100);
@@ -620,4 +639,5 @@ angular
     .directive('chartHeight',chartHeight)
     .directive('sizeWatcher',sizeWatcher)
     .directive('expSizeWatcher',expSizeWatcher)
-    .directive('fileModel',fileModel);
+    .directive('hcChart',hcChart)
+    .directive('fileModel',fileModel)

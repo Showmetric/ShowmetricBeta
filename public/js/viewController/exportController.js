@@ -15,11 +15,19 @@ function ExportController($scope, $http, $state, $rootScope, $window,$q,$statePa
     $scope.exportObject = {widgets: [], widgetData: []};
     $scope.exportObject.dashboardName = '';
     $scope.windowWidth = false;
+    $scope.closedCancle=true;
 //Logos Section Code Begins
     $scope.orgLogosList = [];
     $scope.cliLogosList = [];
     $scope.orgLogoSrc = '/userFiles/datapoolt.png';
     $scope.cliLogoSrc = '/userFiles/plain-white.jpg';
+    var readyCopyUrl;
+    var readyToButtonLoad;
+    var readyToJPEGDownload;
+    var readyToExcel;
+    var buttonTrigger=false;
+    $scope.exportPDF=false;
+    $scope.exportUrl=false;
     $scope.calculateSummaryHeightMoz = function(widgetHeight,noOfItems) {
         var heightPercent;
 
@@ -30,6 +38,46 @@ function ExportController($scope, $http, $state, $rootScope, $window,$q,$statePa
         return {'height': (heightPercent + '%')};
 
     };
+
+    angular.element(document).ready(function () {
+        $('.ladda-button').addClass('icon-arrow-right');
+        Ladda.bind( '.ladda-button',{
+            callback: function( instance ){
+                $('.ladda-button').removeClass('icon-arrow-right');
+                $scope.closeExport();
+                var progress = 0;
+                if(readyToButtonLoad== false){
+                    var attr = $('.ladda-button').attr('data-style','');
+                    $('.ladda-button').addClass('icon-arrow-right');
+                }
+                else{
+                    var attr = $('.ladda-button').attr('data-style','expand-right');
+                    var interval = setInterval(function () {
+                        progress = Math.min(progress + Math.random() * 0.1, 1);
+                        instance.setProgress(progress);
+                        if (progress === 1 && readyToJPEGDownload === 1) {
+                            instance.stop();
+                            clearInterval(interval);
+                        }
+                        else if (progress === 1 && readyCopyUrl === 1) {
+                            instance.stop();
+                            clearInterval(interval);
+                            $('.ladda-button').addClass('icon-arrow-right');
+                        }
+                        else if(progress === 1 && readyToExcel===1){
+                            instance.stop();
+                            clearInterval(interval);
+                        }
+
+                    }, 50);
+
+                }
+            }
+        });
+
+
+    });
+
     $scope.calculateColumnWidthMoz = function(noOfItems,widgetWidth,noOfCharts) {
         if(widgetWidth==1){
             return ('col-sm-'+12+' col-md-'+12+' col-lg-'+12);
@@ -45,17 +93,18 @@ function ExportController($scope, $http, $state, $rootScope, $window,$q,$statePa
 
     $scope.selectedIconIndicator = function(accType,getID) {
         if(accType == 'cli'){
-        var $cols = $('.cliIcon')
+            var $cols = $('.cliIcon')
             $cols.removeClass('selectIcon');
             $('#' + getID).addClass('selectIcon');
         }
         else if(accType=='org'){
-        var $cols = $('.orgIcon');
+            var $cols = $('.orgIcon');
             $cols.removeClass('selectIcon');
             $('#' + getID).addClass('selectIcon');
 
         }
     }
+
     $scope.fetchLogosFromDB = function(acType){
         var uploadData= {
             'accType':acType
@@ -94,26 +143,26 @@ function ExportController($scope, $http, $state, $rootScope, $window,$q,$statePa
         var fileType = info.type.split('/');
         if(fileType[1]=='png'||fileType[1]=='bmp'||fileType[1]=='jpg'||fileType[1]=='jpeg')
         {
-        for(var key in uploadData)
-            fd.append(key, uploadData[key]);
-        $http.post(uploadUrl, fd, {
-            transformRequest: angular.indentity,
-            headers: { 'Content-Type': undefined }
-        }).then(
-            function successCallback(response){
-                document.getElementById('orgUploadButton').disabled = true;
+            for(var key in uploadData)
+                fd.append(key, uploadData[key]);
+            $http.post(uploadUrl, fd, {
+                transformRequest: angular.indentity,
+                headers: { 'Content-Type': undefined }
+            }).then(
+                function successCallback(response){
+                    document.getElementById('orgUploadButton').disabled = true;
                     document.getElementById('clientUploadButton').disabled = true;
-                // data.resolve(response.data.FileUrl);
-                $scope.fetchLogosFromDB(accType);
-            },
-            function errorCallback(err){
-                swal({
-                    title: '',
-                    text: '<span style="sweetAlertFont">Something went wrong! Please reload the dashboard</span>',
-                    html: true
-                });
-            }
-        );
+                    // data.resolve(response.data.FileUrl);
+                    $scope.fetchLogosFromDB(accType);
+                },
+                function errorCallback(err){
+                    swal({
+                        title: '',
+                        text: '<span style="sweetAlertFont">Something went wrong! Please reload the dashboard</span>',
+                        html: true
+                    });
+                }
+            );
         }
         else{
             swal({
@@ -125,7 +174,6 @@ function ExportController($scope, $http, $state, $rootScope, $window,$q,$statePa
         // return data.promise;;
 
     };
-
 
     $scope.removeLogo = function(imageInfo,accType) {
         var jsonData = {
@@ -139,12 +187,12 @@ function ExportController($scope, $http, $state, $rootScope, $window,$q,$statePa
         }).then(
             function successCallback(response){
                 // data.resolve(response.data.FileUrl);
-                 if(imageInfo.fileUrl == $scope.orgLogoSrc){
-                     $scope.orgLogoSrc = '/userFiles/datapoolt.png';
-                 }
+                if(imageInfo.fileUrl == $scope.orgLogoSrc){
+                    $scope.orgLogoSrc = '/userFiles/datapoolt.png';
+                }
                 else if (imageInfo.fileUrl == $scope.cliLogoSrc){
-                     $scope.cliLogoSrc = '/userFiles/plain-white.jpg';
-                 }
+                    $scope.cliLogoSrc = '/userFiles/plain-white.jpg';
+                }
                 $scope.fetchLogosFromDB(accType);
             },
             function errorCallback(err){
@@ -157,15 +205,18 @@ function ExportController($scope, $http, $state, $rootScope, $window,$q,$statePa
             }
         );
     }
+
     $scope.enableUploadbutton=function(accType){
         if(accType=='org')
             document.getElementById('orgUploadButton').disabled = false;
         else if(accType=='cli')
             document.getElementById('clientUploadButton').disabled = false;
     }
+
     $scope.selectedOrgLogo = function(imageInfo){
         $scope.orgLogoSrc = imageInfo;
     }
+
     $scope.selectedCliLogo = function(imageInfo){
         $scope.cliLogoSrc = imageInfo;
     }
@@ -174,6 +225,7 @@ function ExportController($scope, $http, $state, $rootScope, $window,$q,$statePa
     if ($rootScope.expObj != undefined) {
         var tWid = $rootScope.expObj.widgets;
         var tWidData = $rootScope.expObj.widgetData;
+        var date=$rootScope.expObj.dashoboardDate;
         $scope.exportObject.dashboardName = $rootScope.expObj.dashboardName;
         if ($scope.exportObject.dashboardName != undefined || $scope.exportObject.dashboardName != null) {
             dashboardName = $scope.exportObject.dashboardName;
@@ -185,6 +237,7 @@ function ExportController($scope, $http, $state, $rootScope, $window,$q,$statePa
             $scope.exportObject.widgetData.push(tWidData[m]);
         }
     }
+
     $scope.expgridsterOptions = {
         margins: [20, 20],
         columns: 6,
@@ -210,18 +263,31 @@ function ExportController($scope, $http, $state, $rootScope, $window,$q,$statePa
     });
 
     $scope.$on('resize', function (e) {
-        $timeout(function () {
-            var len = $scope.expPages.length;
-            for (var j = 0; j < len; j++) {
-                var widLen = $scope.expPages[j].widgets.length;
-                for (var ind = 0; ind < widLen; ind++) {
-                    for (var i = 0; i < $scope.expPages[j].widgetData[ind].chart.length; i++) {
-                        if ($scope.expPages[j].widgetData[ind].chart[i].api)
-                            $scope.expPages[j].widgetData[ind].chart[i].api.update();
+        $timeout(function(){
+            for(var pageWids in $scope.expPages) {
+                for (var i in $scope.expPages[pageWids].widgets) {
+                    if($scope.expPages[pageWids].widgets[i].widgetType!='reportParaWidget'||$scope.expPages[pageWids].widgets[i].widgetType!='reportHeadingWidget') {
+                        $timeout(resizeReportWidget(pageWids, i), 300);
                     }
                 }
             }
-        }, 800);
+            function resizeReportWidget(pageInd,k) {
+                return function () {
+                    if(document.getElementById('exportChartOptions-'+pageInd+'-'+k)!=null){
+                        var parentWidth = document.getElementById('exportChartOptions-'+pageInd+'-'+k).offsetWidth;
+                        var parentHeight = document.getElementById('exportChartOptions-'+pageInd+'-'+k).offsetHeight;
+                        for(var i=0;i<Highcharts.charts.length;i++){
+                            //console.log('parent elemt id',Highcharts.charts[i].container.parentElement.id,'reportChartRepeat-'+pageInd+'-'+k)
+                            if(Highcharts.charts[i].container.parentElement.id.includes('exportChartRepeat-'+pageInd+'-'+k)){
+                                // console.log('chart reflowing happens at',i,k,Highcharts.charts[i]);
+                                Highcharts.charts[i].setSize(parentWidth,parentHeight); // reflow the first chart..
+                                Highcharts.charts[i].reflow(); // reflow the chart..
+                            }
+                        }
+                    }
+                };
+            }
+        },10);
     });
 
 
@@ -234,63 +300,76 @@ function ExportController($scope, $http, $state, $rootScope, $window,$q,$statePa
         else if (noOfItems > 5 && noOfItems <= 9)
         {
             if(widgetWidth==1 && widgetHeight!=1)
-            return ('col-sm-' + 6 + ' col-md-' + 6 + ' col-lg-' + 6);
-        else
-            return ('col-sm-' + 4 + ' col-md-' + 4 + ' col-lg-' + 4);
+                return ('col-sm-' + 6 + ' col-md-' + 6 + ' col-lg-' + 6);
+            else
+                return ('col-sm-' + 4 + ' col-md-' + 4 + ' col-lg-' + 4);
         }
         else
             return ('col-sm-' + 4 + ' col-md-' + 4 + ' col-lg-' + 4);
     };
 
-    $scope.calcRowHeight = function (data,noOfItems,widgetWidth,widgetHeight,layoutHeight) {
-        // var availableHeight = data.myheight;
-        var fontSizeEm;
-        var cols;
-        if (noOfItems <= 2) {
-            cols = 1;
-            fontSizeEm = 1.0;
+    $scope.calculateRowHeight = function (data,noOfItems,widgetHeight,layoutHeight) {
+        data.showComparision = false;
+        if(widgetHeight<6) {
+            if (noOfItems > 6)
+                data.showComparision = false;
+            else data.showComparision = true;
         }
-        else if (noOfItems > 2 && noOfItems <= 4) {
-            cols = 2;
-            fontSizeEm = 0.85;
+        else{
+            if (noOfItems > 12)
+                data.showComparision = false;
+            else data.showComparision = true;
         }
-        else if (noOfItems > 5 && noOfItems <= 9) {
-            if (widgetWidth == 1 && widgetHeight != 1) {
-                cols = 2;
-                fontSizeEm = 0.85;
-            }
-            else {
-                cols = 3;
-                fontSizeEm = 0.7;
-            }
-        }
-        else {
-            cols = 3;
-            fontSizeEm = 0.7;
-        }
-        // console.log("No.of charts",noOfCharts,"Widget Width",widgetWidth,"No of Cols",cols);
-        if(widgetWidth === 1 || noOfItems > 15 ||widgetHeight === 1||layoutHeight>1)
-            data.showComparision = false;
-        else
-            data.showComparision = true;
-
-
-        //var cols = $window.innerWidth>=768 ? 2 : 1;
-        var rows = Math.ceil(noOfItems / cols);
-        var heightPercent = 100 / rows;
-        // var rowHeight = document.getElementById('chartRowHeight-'+widgetId).offsetHeight;
-        // var rHeight = rowHeight;
-        //  var availableHeight = Math.floor(rHeight/rows);
-        // var fontSizeEm = availableHeight / 100 * 3.5;
-
-
-        var minSize = 0.7, maxSize = 1.0;
-        if (fontSizeEm < minSize)
-            fontSizeEm = minSize;
-        if (fontSizeEm > maxSize)
-            fontSizeEm = maxSize;
-        return {'height': (heightPercent + '%'), 'font-size': (fontSizeEm + 'em')};
     };
+    /* $scope.calcRowHeight = function (data,noOfItems,widgetWidth,widgetHeight,layoutHeight) {
+     // var availableHeight = data.myheight;
+     var fontSizeEm;
+     var cols;
+     if (noOfItems <= 2) {
+     cols = 1;
+     fontSizeEm = 1.0;
+     }
+     else if (noOfItems > 2 && noOfItems <= 4) {
+     cols = 2;
+     fontSizeEm = 0.85;
+     }
+     else if (noOfItems > 5 && noOfItems <= 9) {
+     if (widgetWidth == 1 && widgetHeight != 1) {
+     cols = 2;
+     fontSizeEm = 0.85;
+     }
+     else {
+     cols = 3;
+     fontSizeEm = 0.7;
+     }
+     }
+     else {
+     cols = 3;
+     fontSizeEm = 0.7;
+     }
+     if(widgetWidth === 1 || noOfItems > 15 ||widgetHeight === 1||layoutHeight>1)
+     data.showComparision = false;
+     else
+     data.showComparision = true;
+
+
+     //var cols = $window.innerWidth>=768 ? 2 : 1;
+     var rows = Math.ceil(noOfItems / cols);
+     var heightPercent = 100 / rows;
+     // var rowHeight = document.getElementById('chartRowHeight-'+widgetId).offsetHeight;
+     // var rHeight = rowHeight;
+     //  var availableHeight = Math.floor(rHeight/rows);
+     // var fontSizeEm = availableHeight / 100 * 3.5;
+
+
+     var minSize = 0.7, maxSize = 1.0;
+     if (fontSizeEm < minSize)
+     fontSizeEm = minSize;
+     if (fontSizeEm > maxSize)
+     fontSizeEm = maxSize;
+     return {'height': (heightPercent + '%'), 'font-size': (fontSizeEm + 'em')};
+
+     };*/
 
     $scope.calculateSummaryHeight = function(widgetHeight,noOfItems) {
         var heightPercent;
@@ -306,7 +385,7 @@ function ExportController($scope, $http, $state, $rootScope, $window,$q,$statePa
             else if(noOfItems<=4&&noOfItems>1)
                 heightPercent = 30;
             else
-            heightPercent = 50;
+                heightPercent = 50;
 
         }
         else {
@@ -358,6 +437,8 @@ function ExportController($scope, $http, $state, $rootScope, $window,$q,$statePa
     var vm = this;
     $scope.pdfPrintPreview = function (opt) {
         $scope.expAct = opt;
+        $scope.exportPDF=opt;
+        $scope.exportUrl=false;
         document.getElementById('submitExportButton').disabled = opt;
     };
 
@@ -459,6 +540,7 @@ function ExportController($scope, $http, $state, $rootScope, $window,$q,$statePa
                         'visibility': false
                     });
                     pageWidgets.widgetData.push(tempWidgetDataList1[getWidgetInfo]);
+
                     for (var j = 0; j < tempWidgetList1[getWidgetInfo].sizeX; j++) {
                         pageWidgets.sizeFilled[pos + j] += tempWidgetList1[getWidgetInfo].sizeY;
                         pageWidgets.sizeLeft[pos + j] -= (pageWidgets.sizeFilled[pos + j]);
@@ -509,42 +591,77 @@ function ExportController($scope, $http, $state, $rootScope, $window,$q,$statePa
         }
         while (tempWidgetList1.length > 0);
         $scope.expPages = pages;
-
-
-        $timeout(function () {
+        $timeout(function(){
             var len = $scope.expPages.length;
-            for (var j = 0; j < len; j++) {
-                var widLen = $scope.expPages[j].widgets.length;
-                for (var ind = 0; ind < widLen; ind++) {
-                    for (var i = 0; i < $scope.expPages[j].widgetData[ind].chart.length; i++) {
-                        if ($scope.expPages[j].widgetData[ind].chart[i].api)
-                            $scope.expPages[j].widgetData[ind].chart[i].api.update();
+            for(var pageWids in $scope.expPages) {
+                for (var i in $scope.expPages[pageWids].widgets) {
+                    if($scope.expPages[pageWids].widgets[i].widgetType!='reportParaWidget'||$scope.expPages[pageWids].widgets[i].widgetType!='reportHeadingWidget') {
+                        $timeout(resizeReportWidget(pageWids, i), 300);
                     }
                 }
-                if(j==len-1)
+                if(pageWids==len-1)
                     document.getElementById('submitExportButton').disabled = false;
+                // console.log('page details',Highcharts.charts, pageWids,$scope.expPages[pageWids]);
             }
-        }, 600);
+            function resizeReportWidget(pageInd,k) {
+                return function () {
+                    if(document.getElementById('exportChartOptions-'+pageInd+'-'+k)!=null){
+                        var parentWidth = document.getElementById('exportChartOptions-'+pageInd+'-'+k).offsetWidth;
+                        var parentHeight = document.getElementById('exportChartOptions-'+pageInd+'-'+k).offsetHeight;
+                        for(var i=0;i<Highcharts.charts.length;i++){
+                            // console.log('parent elemt id',Highcharts.charts[i].container.parentElement.id,'reportChartRepeat-'+pageInd+'-'+k)
+                            if(Highcharts.charts[i].container.parentElement.id.includes('exportChartRepeat-'+pageInd+'-'+k)){
+                                //console.log('chart reflowing happens at',i,k,Highcharts.charts[i]);
+                                Highcharts.charts[i].setSize(parentWidth,parentHeight); // reflow the first chart..
+                                Highcharts.charts[i].reflow(); // reflow the chart..
+                            }
+                        }
+                    }
+                };
+            }
+        },10);
 
+        /*$timeout(function () {
+         var len = $scope.expPages.length;
+         for (var j = 0; j < len; j++) {
+         var widLen = $scope.expPages[j].widgets.length;
+         for (var ind = 0; ind < widLen; ind++) {
+         for (var i = 0; i < $scope.expPages[j].widgetData[ind].chart.length; i++) {
+         if ($scope.expPages[j].widgetData[ind].chart[i].api)
+         $scope.expPages[j].widgetData[ind].chart[i].api.update();
+         }
+         }
+         if(j==len-1)
+         document.getElementById('submitExportButton').disabled = false;
+         }
+         }, 600);*/
     };
 
     $scope.closeExport = function () {
+        $("input").attr("disable",true);
         var setJPEGOption = $("#exportOptionJpeg").prop("checked");
         var setPDFOption = $("#exportOptionPDF").prop("checked");
         var setUrlOption = $("#exportOptionUrl").prop("checked");
-        if (setJPEGOption == false && setPDFOption == false && setUrlOption == false) {
+        var setExcelOption = $("#exportOptionExcel").prop("checked");
+        if (setJPEGOption == false && setPDFOption == false && setUrlOption == false && setExcelOption== false) {
             //$(".errorExportMessage").text("* Select the option to export").show();
             //return false;
             $window.alert("* Please Select the option to export");
+            readyToButtonLoad=false;
+
         }
         else {
+            readyToButtonLoad=true;
             document.getElementById('submitExportButton').disabled = true;
             if(setPDFOption==true) {
                 $rootScope.showExport = false;
+                $scope.exportUrl=false;
+                $scope.closedCancle=false;
                 $timeout(function(){$scope.submitExport()},1800);
             }
             else {
-                $rootScope.showExport = false;
+                readyToJPEGDownload=0;
+                readyToExcel=0;
                 $scope.submitExport();
             }
 
@@ -557,6 +674,7 @@ function ExportController($scope, $http, $state, $rootScope, $window,$q,$statePa
         var setJPEGOption = $("#exportOptionJpeg").prop("checked");
         var setUrlOption = $("#exportOptionUrl").prop("checked");
         var setPDFOption = $("#exportOptionPDF").prop("checked");
+        var setExportOption = $("#exportOptionExcel").prop("checked");
         // if (setJPEGOption == false && setPDFOption == false && setUrlOption == false)
         //     $window.alert("* Please Select the option to export");
         // else
@@ -564,25 +682,27 @@ function ExportController($scope, $http, $state, $rootScope, $window,$q,$statePa
 
         if (setJPEGOption == true) {
             $(".navbar").css('z-index', '1');
-            $("#exportModalContent").removeClass('md-show');
+            /*$("#exportModalContent").removeClass('md-show');*/
             $(".md-overlay").css("background", "rgba(0,0,0,0.5)");
-            $("#exportJPEGModalContent").addClass('md-show');
+            /*$("#exportJPEGModalContent").addClass('md-show');*/
             $("#dashboardContent").removeClass('dashboardContent');
             $("#dashboardContent").addClass('dashboardContentJpeg');
-            $rootScope.closePdfModal();
-
             domtoimage.toBlob(dashboardLayout)
                 .then(
                     function (blob) {
                         $("#dashboardContent").removeClass('dashboardContentJpeg');
                         $("#dashboardContent").addClass('dashboardContent');
                         var timestamp = Number(new Date());
-                        $("#exportJPEGModalContent").removeClass('md-show');
+                        /* $("#exportJPEGModalContent").removeClass('md-show');*/
                         window.saveAs(blob, dashboardName + "_" + timestamp + ".jpeg");
                         $("#exportOptionJpeg").prop("checked", false);
+                        readyToJPEGDownload=1;
                         $scope.expAct = false;
+                        $rootScope.closePdfModal();
                     },
                     function errorCallback(error) {
+                        $("#dashboardContent").removeClass('dashboardContentJpeg');
+                        $("#dashboardContent").addClass('dashboardContent');
                         $("#exportJPEGModalContent").removeClass('md-show');
                         $(".md-overlay").css("background", "rgba(0,0,0,0.5)");
                         $("#exportPDFModalContent").addClass('md-show');
@@ -597,6 +717,7 @@ function ExportController($scope, $http, $state, $rootScope, $window,$q,$statePa
         }
 
         if (setPDFOption == true) {
+
             $(".navbar").css('z-index', '1');
             $("#exportModalContent").removeClass('md-show');
             // $(".md-overlay").css("background","rgba(0,0,0,0.5)");
@@ -605,8 +726,6 @@ function ExportController($scope, $http, $state, $rootScope, $window,$q,$statePa
             $(".exportContentText").html('<b>Please wait while the PDF file is being generated</b>');
             $(".loadingStatus").show();
             var exportImages=[];
-
-
 
             var dashboardExpLayout=[];
             var promiseExportObject = [];
@@ -619,7 +738,7 @@ function ExportController($scope, $http, $state, $rootScope, $window,$q,$statePa
                         },
                         function errorCallback(error) {
                             deferred.reject(error);
-                            console.log("Dom to image fails",error);
+
                         });
                 return deferred.promise;
             }
@@ -634,7 +753,6 @@ function ExportController($scope, $http, $state, $rootScope, $window,$q,$statePa
                         "dashboardId": $state.params.id,
                         "dashboardName": dashboardName
                     };
-
                     $http({
                         method: 'POST',
                         url: '/api/v1/createHtml5ToPdf/dashboard',
@@ -649,14 +767,18 @@ function ExportController($scope, $http, $state, $rootScope, $window,$q,$statePa
                             else
                                 domainUrl = "";
                             var dwnldUrl = String(domainUrl + response.data.Response);
-                            $rootScope.closePdfModal();
-                            $("#exportPDFModalContent").removeClass('md-show');
-                            $(".md-overlay").css("background", "rgba(0,0,0,0.5)");
-                            $("#exportPDFModalContent").addClass('md-show');
+                            $scope.closedCancle=true;
+                            $(".exportContentText").html('<p><span class="pdfHeadText">PDF has been generated successfully</span><br>' +
+                                '<span class="pdfContentText"><b><a href="' + dwnldUrl + '" download style="color: green;font-size: 20px;"  id="yourLinkID">Click here to download your PDF</a></b></span></p>');
+                            $(".preview-loading").hide();
+                            /*$rootScope.closePdfModal();
+                             $("#exportPDFModalContent").removeClass('md-show');
+                             $(".md-overlay").css("background", "rgba(0,0,0,0.5)");
+                             $("#exportPDFModalContent").addClass('md-show');
 
-                            $(".loadingStatus").hide();
-                            $(".pdfHeadText").show().text("PDF has been generated successfully");
-                            $(".pdfContentText").html('<b><br/><a href="' + dwnldUrl + '" download style="color: green;"  id="yourLinkID">Click here to download your PDF</a></b>');
+                             $(".loadingStatus").hide();
+                             $(".pdfHeadText").show().text("PDF has been generated successfully");
+                             $(".pdfContentText").html('<b><br/><a href="' + dwnldUrl + '" download style="color: green;"  id="yourLinkID">Click here to download your PDF</a></b>');*/
                             // window.saveAs(response.data.Response['blob'], dashboardName + "_" + timestamp + ".pdf");
                             // document.getElementById('yourLinkID').click();
                             // $window.open(dwnldUrl);
@@ -689,27 +811,29 @@ function ExportController($scope, $http, $state, $rootScope, $window,$q,$statePa
         }
 
         if (setUrlOption === true) {
-            $rootScope.closePdfModal();
+            /*  $rootScope.closePdfModal();*/
             $http({
                 method: 'GET',
-                url: '/api/v1/get/dashboards/' + $state.params.id
+                url: '/api/v1/get/dashboards/' + $state.params.id+'?buster='+new Date()
             }).then(
                 function successCallback(response) {
                     var reportId = response.data.reportId;
-                    var sharingDomain = window.location.hostname == 'localhost' ? "localhost:8080/reports" : "https://" + window.location.hostname + "/reports";
-                    var sharingUrl = sharingDomain + '#/' + reportId;
+                    var sharingDomain = window.location.hostname == 'localhost' ? "localhost:8080/reports" :  window.location.hostname + "/reports";
+                    $scope.sharingUrl = sharingDomain + '#/' + reportId;
                     $(".navbar").css('z-index', '1');
-                    $("#exportModalContent").removeClass('md-show');
+                    //$("#exportModalContent").removeClass('md-show');
                     $(".md-overlay").css("background", "rgba(0,0,0,0.5)");
-                    $("#exportPDFModalContent").addClass('md-show');
-                    $(".loadingStatus").hide();
-                    $(".pdfHeadText").text('');
-                    $(".pdfContentText").html('<p id="butt" style="word-wrap: break-word;"><b>Check your dashboard here : ' + '</b>' + sharingUrl + '</p>' + '<button class="btn" id="btnCopyLink" ' + 'data-clipboard-text=sharingUrl">' + '<img src="image/clippy.svg" width="13" alt="Copy to clipboard"></button>');
-                    $("#btnCopyLink").attr('data-clipboard-text', sharingUrl);
+                    /* $("#exportPDFModalContent").addClass('md-show');*/
+                    /* $(".loadingStatus").hide();
+                     $(".pdfHeadText").text('');
+                     $(".pdfContentText").html('<p id="butt" style="word-wrap: break-word;"><b>Check your dashboard here : ' + '</b>' + sharingUrl + '</p>' + '<button class="btn" id="btnCopyLink" ' + 'data-clipboard-text=sharingUrl">' + '<img src="image/clippy.svg" width="13" alt="Copy to clipboard"></button>');
+                     $("#btnCopyLink").attr('data-clipboard-text', sharingUrl);*/
+                    readyCopyUrl=1;
+                    $scope.exportUrl=true;
+                    $scope.expAct=true;
                     var clipboard = new Clipboard('.btn');
                     clipboard.on('success', function (e) {
                         e.clearSelection();
-                        swal("Copied", "", "success");
                     });
 
                 },
@@ -723,5 +847,539 @@ function ExportController($scope, $http, $state, $rootScope, $window,$q,$statePa
                 }
             );
         }
+
+        if(setExportOption=== true){
+            var finalData=[];
+            var tempArray=[];
+            var concatDate=date.startDate+'-'+date.endDate
+            var newDateFormat = concatDate.replace(/-/g, "")
+            for(var n=0;n<$scope.exportObject.widgetData.length;n++) {
+                var lengthOfValue;
+                for(var chart=0;chart<$scope.exportObject.widgetData[n].chart.length;chart++){
+                    if($scope.exportObject.widgetData[n].chart[chart].data) {
+                        var formatJson = [];
+                        if ($scope.exportObject.widgetData[n].chart[chart].data[0].type == 'line' || $scope.exportObject.widgetData[n].chart[chart].data[0].type == 'stackcolumn' || $scope.exportObject.widgetData[n].chart[chart].data[0].type == 'bar' || $scope.exportObject.widgetData[n].chart[chart].data[0].type == 'area' || $scope.exportObject.widgetData[n].chart[chart].data[0].type == 'reachVsImpressions' || $scope.exportObject.widgetData[n].chart[chart].data[0].type == 'engagedUsersReach'|| $scope.exportObject.widgetData[n].chart[chart].data[0].type == 'column'  ) {
+                            lengthOfValue = $scope.exportObject.widgetData[n].chart[0].data[0].values.length;
+                            var j = 0;
+                            while (j < lengthOfValue) {
+                                var arrangeData = {};
+                                for (var k = 0; k < $scope.exportObject.widgetData[n].chart[chart].data.length; k++) {
+                                    var noPushInArray = 0;
+                                    if ($scope.exportObject.widgetData[n].chart[chart].data[k].type == 'line' || $scope.exportObject.widgetData[n].chart[chart].data[k].type == 'stackcolumn' || $scope.exportObject.widgetData[n].chart[chart].data[k].type == 'bar' || $scope.exportObject.widgetData[n].chart[chart].data[k].type == 'area' || $scope.exportObject.widgetData[n].chart[chart].data[k].type == 'column' || $scope.exportObject.widgetData[n].chart[chart].data[k].type == 'reachVsImpressions'|| $scope.exportObject.widgetData[n].chart[chart].data[k].type == 'engagedUsersReach' ) {
+                                        if (!$scope.exportObject.widgetData[n].chart[chart].data[k].message) {
+                                            arrangeData[$scope.exportObject.widgetData[n].chart[chart].data[k].key] = $scope.exportObject.widgetData[n].chart[chart].data[k].values[j].y;
+                                            if( typeof $scope.exportObject.widgetData[n].chart[chart].data[k].values[j].x != 'object')
+                                                arrangeData.Date = $scope.exportObject.widgetData[n].chart[chart].data[k].values[j].x;
+                                            else
+                                                arrangeData.Date = moment($scope.exportObject.widgetData[n].chart[chart].data[k].values[j].x).format('YYYY-MM-DD');
+                                        }
+                                        else
+                                            noPushInArray = 1;
+                                    }
+
+                                }
+                                if (noPushInArray != 1)
+                                    formatJson.push(arrangeData)
+
+                                j++
+                            }
+                        }
+                        else if ($scope.exportObject.widgetData[n].chart[chart].data[0].type == 'percentageArea'  ) {
+                            lengthOfValue = $scope.exportObject.widgetData[n].chart[0].data[0].totalChartLength.length;
+                            console.log("$scope.exportObject.widgetData[n].chart[0].data[0].totalChartLength",$scope.exportObject.widgetData[n].chart[0].data[0].totalChartLength[0].y)
+                            var j = 0;
+                            while (j < lengthOfValue) {
+                                var arrangeData = {};
+                                for (var k = 0; k < $scope.exportObject.widgetData[n].chart[chart].data.length; k++) {
+                                    console.log("j",j)
+                                    var noPushInArray = 0;
+                                    if ($scope.exportObject.widgetData[n].chart[chart].data[k].type == 'percentageArea' ) {
+                                        if (!$scope.exportObject.widgetData[n].chart[chart].data[k].message) {
+                                            arrangeData[$scope.exportObject.widgetData[n].chart[chart].data[k].key] = $scope.exportObject.widgetData[n].chart[chart].data[k].totalChartLength[j].y['total'];
+                                            if( typeof $scope.exportObject.widgetData[n].chart[chart].data[k].totalChartLength[j].x != 'object'){
+                                                console.log("here")
+                                                arrangeData.Date = $scope.exportObject.widgetData[n].chart[chart].data[k].totalChartLength[j].x;
+                                            }else
+                                                arrangeData.Date = moment($scope.exportObject.widgetData[n].chart[chart].data[k].totalChartLength[j].x).format('YYYY-MM-DD');
+                                        }
+                                        else
+                                            noPushInArray = 1;
+                                    }
+                                }
+                                console.log("arrangeData",arrangeData)
+                                if (noPushInArray != 1)
+                                    formatJson.push(arrangeData)
+                                j++
+                            }
+                            console.log("formatJson",formatJson)
+                        }
+                        else if ($scope.exportObject.widgetData[n].chart[chart].data[0].type == 'stackbar'  ) {
+                            formatJson=[];
+                            lengthOfValue = $scope.exportObject.widgetData[n].chart[0].data[0].values[0].total.length;
+                            console.log("$scope.exportObject.widgetData[n].chart[0].data[0].totalChartLength",$scope.exportObject.widgetData[n].chart[0].data[0].values[0].total[0])
+
+
+                            for (var k = 0; k < $scope.exportObject.widgetData[n].chart[chart].data.length; k++) {
+                                var arrangeData = {};
+                                for( var keys in $scope.exportObject.widgetData[n].chart[0].data[k].values[0].total[0] ) {
+                                    console.log("j",j)
+                                    var noPushInArray = 0;
+                                    if ($scope.exportObject.widgetData[n].chart[chart].data[k].type == 'stackbar' ) {
+                                        if (!$scope.exportObject.widgetData[n].chart[chart].data[k].message) {
+                                            arrangeData[keys] = $scope.exportObject.widgetData[n].chart[0].data[k].values[0].total[0][keys];
+                                            arrangeData['Type']= $scope.exportObject.widgetData[n].chart[0].data[k].values[0].date;
+
+                                        }
+                                        else
+                                            noPushInArray = 1;
+                                    }
+                                }
+                                console.log("arrangeData",arrangeData)
+                                if (noPushInArray != 1)
+                                    formatJson.push(arrangeData)
+                            }
+                            console.log("formatJson",formatJson)
+                        }
+                        else if ($scope.exportObject.widgetData[n].chart[chart].data[0].type == 'pie' || $scope.exportObject.widgetData[n].chart[chart].data[0].type == 'fbReachByCity' || $scope.exportObject.widgetData[n].chart[chart].data[0].type == 'angularGauge' ) {
+                            console.log("$scope.exportObject.widgetData[n].chart[chart].data11",$scope.exportObject.widgetData[n].chart[chart].data)
+                            var arrangeData = {};
+                            for (var k = 0; k < $scope.exportObject.widgetData[n].chart[chart].data.length; k++) {
+                                var noPushInArray = 0;
+                                if (!$scope.exportObject.widgetData[n].chart[chart].data[k].message)
+                                    arrangeData[$scope.exportObject.widgetData[n].chart[chart].data[k].key] = $scope.exportObject.widgetData[n].chart[chart].data[k].y!== undefined ? $scope.exportObject.widgetData[n].chart[chart].data[k].y:$scope.exportObject.widgetData[n].chart[chart].data[k].summaryDisplay ;
+                                else
+                                    noPushInArray = 1
+                            }
+                            if (noPushInArray != 1)
+                                formatJson.push(arrangeData)
+                        }
+                        else if($scope.exportObject.widgetData[n].chart[chart].data[0].type =='audienceBehaviourbyDay'){
+
+                            var noPushInArray;
+                            var formatJson=[]
+                            if (!$scope.exportObject.widgetData[n].chart[chart].data[0].message) {
+                                for(var i=0;i<$scope.exportObject.widgetData[n].chart[chart].data[0].values.length;i++){
+                                    var arrangeData={}
+                                    noPushInArray=0;
+                                    for (var key in $scope.exportObject.widgetData[n].chart[chart].data[0].values[i].total) {
+                                        arrangeData[key] = $scope.exportObject.widgetData[n].chart[chart].data[0].values[i].total[key]
+                                    }
+
+                                    arrangeData.Day = $scope.exportObject.widgetData[n].chart[chart].data[0].values[i].date
+                                    console.log("arrangeData",arrangeData)
+                                    formatJson.push(arrangeData)
+                                }
+
+                            }
+
+                        }
+                        else if($scope.exportObject.widgetData[n].chart[chart].data[0].type =='twitterEngagements'){
+
+                            var noPushInArray;
+                            var formatJson=[]
+                            if (!$scope.exportObject.widgetData[n].chart[chart].data[0].message) {
+                                for(var i=0;i<$scope.exportObject.widgetData[n].chart[chart].data[0].values.length;i++){
+                                    var arrangeData={}
+                                    noPushInArray=0;
+                                    for (var key in $scope.exportObject.widgetData[n].chart[chart].data[0].values[i]) {
+                                        arrangeData[key] = $scope.exportObject.widgetData[n].chart[chart].data[0].values[i][key]
+                                    }
+                                    console.log("arrangeData",arrangeData)
+                                    formatJson.push(arrangeData)
+                                }
+
+                            }
+
+                        }
+                        else if(
+                            $scope.exportObject.widgetData[n].chart[chart].data[0].type =='pageContentEfficiency' ||$scope.exportObject.widgetData[n].chart[chart].data[0].type =='visitorAcquisitionEfficiency'||
+                            $scope.exportObject.widgetData[n].chart[chart].data[0].type =='pageTechnicalEfficiency' || $scope.exportObject.widgetData[n].chart[chart].data[0].type =='topReferringSites'||
+                            $scope.exportObject.widgetData[n].chart[chart].data[0].type =='gaSocialMediaOverview'|| $scope.exportObject.widgetData[n].chart[chart].data[0].type =='socialContributionToSiteTraffic'
+                        ){
+                            var noPushInArray;
+                            var formatJson=[]
+                            if (!$scope.exportObject.widgetData[n].chart[chart].data[0].message) {
+                                for(var i=0;i<$scope.exportObject.widgetData[n].chart[chart].data[0].values.length;i++){
+                                    var arrangeData={}
+                                    noPushInArray=0;
+                                    for (var key in $scope.exportObject.widgetData[n].chart[chart].data[0].values[i]) {console.log("$scope.exportObject.widgetData[n].chart[chart].data[0].values[i][key]",typeof ($scope.exportObject.widgetData[n].chart[chart].data[0].values[i][key]))
+                                        if(typeof $scope.exportObject.widgetData[n].chart[chart].data[0].values[i][key] === 'string'){
+                                            var string=$scope.exportObject.widgetData[n].chart[chart].data[0].values[i][key]
+                                            $scope.exportObject.widgetData[n].chart[chart].data[0].values[i][key]=string.split(',').join("")
+                                            console.log("$scope.exportObject.widgetData[n].chart[chart].data[0].values[i][key]",$scope.exportObject.widgetData[n].chart[chart].data[0].values[i][key])
+                                        }
+
+                                        arrangeData[key] = $scope.exportObject.widgetData[n].chart[chart].data[0].values[i][key]
+                                    }
+                                    formatJson.push(arrangeData)
+                                }
+
+                            }
+
+                        }
+                        else if(
+                            $scope.exportObject.widgetData[n].chart[chart].options.chart.type=='gaVisitorAcquisitionEfficiencyAnalysisTable'||$scope.exportObject.widgetData[n].chart[chart].options.chart.type=='gaPageTechnicalEfficiencyTable'||$scope.exportObject.widgetData[n].chart[chart].options.chart.type=='gaPageContentEfficiencyTable'
+                            ||$scope.exportObject.widgetData[n].chart[chart].options.chart.type=='topReferringSitesTable'
+                            ||$scope.exportObject.widgetData[n].chart[chart].options.chart.type=='topLinks'
+                            ||$scope.exportObject.widgetData[n].chart[chart].options.chart.type=='engagementByUsersTalkedAbout'
+                            ||$scope.exportObject.widgetData[n].chart[chart].options.chart.type=='hashTag'
+                            ||$scope.exportObject.widgetData[n].chart[chart].options.chart.type=='instagramHashtagLeaderBoard'
+                            ||$scope.exportObject.widgetData[n].chart[chart].options.chart.type=='campaignOverview'
+                            ||$scope.exportObject.widgetData[n].chart[chart].options.chart.type=='adgroupOverview'
+                            ||$scope.exportObject.widgetData[n].chart[chart].options.chart.type=='campaignOverViewbyAge'
+                            ||$scope.exportObject.widgetData[n].chart[chart].options.chart.type=='adOverview'
+                            ||$scope.exportObject.widgetData[n].chart[chart].options.chart.type=='youtubeVideosOverview'
+                        ){
+                            var noPushInArray;
+                            var formatJson=[]
+                            if (!$scope.exportObject.widgetData[n].chart[chart].data[0].message) {
+                                for(var i=0;i<$scope.exportObject.widgetData[n].chart[chart].data.length;i++){
+                                    var arrangeData={}
+                                    noPushInArray=0;
+                                    for (var key in $scope.exportObject.widgetData[n].chart[chart].data[i]) {
+                                        if(typeof $scope.exportObject.widgetData[n].chart[chart].data[i][key] === 'string'){
+                                            var string=$scope.exportObject.widgetData[n].chart[chart].data[i][key]
+                                            $scope.exportObject.widgetData[n].chart[chart].data[i][key]=string.split(',').join("")
+                                        }
+                                        if(key != '$$hashKey')
+                                            arrangeData[key] = $scope.exportObject.widgetData[n].chart[chart].data[i][key]
+                                    }
+                                    formatJson.push(arrangeData)
+                                }
+
+                            }
+
+                        }
+                        else if ($scope.exportObject.widgetData[n].chart[chart].options.chart.type == 'highEngagementTweets') {
+                            lengthOfValue = $scope.exportObject.widgetData[n].chart[0].data.length;
+                            for (var k = 0; k < $scope.exportObject.widgetData[n].chart[chart].data.length; k++) {
+                                var noPushInArray = 0;
+                                if (!$scope.exportObject.widgetData[n].chart[chart].data[k].message) {
+                                    var arrangeData =
+                                    {
+                                        Date: $scope.exportObject.widgetData[n].chart[chart].data[k].date,
+                                        Post: $scope.exportObject.widgetData[n].chart[chart].data[k].postComment.replace(/\r?\n|\r/g, "").trim(),
+                                        Likes: $scope.exportObject.widgetData[n].chart[chart].data[k].likes,
+                                        ReTweet: $scope.exportObject.widgetData[n].chart[chart].data[k].reTweet,
+                                    }
+                                }
+                                else
+                                    noPushInArray = 1;
+
+                                if (noPushInArray != 1)
+                                    formatJson.push(arrangeData)
+                            }
+
+                        }
+                        else if ($scope.exportObject.widgetData[n].chart[chart].options.chart.type == 'instagramPosts') {
+                            for (var k = 0; k < $scope.exportObject.widgetData[n].chart[chart].data.length; k++) {
+                                var noPushInArray = 0;
+                                if (!$scope.exportObject.widgetData[n].chart[chart].data[k].message) {
+                                    var arrangeData =
+                                    {
+                                        Date: $scope.exportObject.widgetData[n].chart[chart].data[k].date,
+                                        Post: $scope.exportObject.widgetData[n].chart[chart].data[k].postComment.replace(/\r?\n|\r/g, ""),
+                                        Likes: $scope.exportObject.widgetData[n].chart[chart].data[k].likes,
+                                        Comments: $scope.exportObject.widgetData[n].chart[chart].data[k].comments
+                                    }
+                                }
+                                else
+                                    noPushInArray = 1;
+
+                                if (noPushInArray != 1)
+                                    formatJson.push(arrangeData)
+                            }
+                        }
+                        else if ($scope.exportObject.widgetData[n].chart[chart].options.chart.type == 'highestEngagementLinkedIn') {
+                            for (var k = 0; k < $scope.exportObject.widgetData[n].chart[chart].data.length; k++) {
+                                var noPushInArray = 0;
+                                if (!$scope.exportObject.widgetData[n].chart[chart].data[k].message) {
+                                    var arrangeData =
+                                    {
+                                        Date: $scope.exportObject.widgetData[n].chart[chart].data[k].date,
+                                        Post: $scope.exportObject.widgetData[n].chart[chart].data[k].postComment.replace(/\r?\n|\r/g, ""),
+                                        Likes: $scope.exportObject.widgetData[n].chart[chart].data[k].likes,
+                                        Comments: $scope.exportObject.widgetData[n].chart[chart].data[k].comments,
+                                        Impression: $scope.exportObject.widgetData[n].chart[chart].data[k].impressions,
+                                        Clicks: $scope.exportObject.widgetData[n].chart[chart].data[k].clicks,
+                                        Shares: $scope.exportObject.widgetData[n].chart[chart].data[k].shares
+                                    }
+                                }
+                                else
+                                    noPushInArray = 1;
+
+                                if (noPushInArray != 1)
+                                    formatJson.push(arrangeData)
+                            }
+                        }
+                        else if ($scope.exportObject.widgetData[n].chart[chart].options.chart.type == 'pinterestEngagementRate') {
+                            for (var k = 0; k < $scope.exportObject.widgetData[n].chart[chart].data.length; k++) {
+                                var noPushInArray = 0;
+                                if (!$scope.exportObject.widgetData[n].chart[chart].data[k].message) {
+                                    var arrangeData =
+                                    {
+                                        Date: $scope.exportObject.widgetData[n].chart[chart].data[k].date,
+                                        Post: $scope.exportObject.widgetData[n].chart[chart].data[k].postComment.replace(/\r?\n|\r/g, ""),
+                                        Likes: $scope.exportObject.widgetData[n].chart[chart].data[k].likes,
+                                        Comments: $scope.exportObject.widgetData[n].chart[chart].data[k].comments,
+                                        Repins: $scope.exportObject.widgetData[n].chart[chart].data[k].repins,
+                                    }
+                                }
+                                else
+                                    noPushInArray = 1;
+
+                                if (noPushInArray != 1)
+                                    formatJson.push(arrangeData)
+                            }
+                        }
+                        else if ($scope.exportObject.widgetData[n].chart[chart].options.chart.type == 'pinterestLeaderboard') {
+                            for (var k = 0; k < $scope.exportObject.widgetData[n].chart[chart].data.length; k++) {
+                                var noPushInArray = 0;
+                                if (!$scope.exportObject.widgetData[n].chart[chart].data[k].message) {
+                                    var arrangeData =
+                                    {
+                                        Date: $scope.exportObject.widgetData[n].chart[chart].data[k].date,
+                                        Post: $scope.exportObject.widgetData[n].chart[chart].data[k].postComment.replace(/\r?\n|\r/g, ""),
+                                        Collaborators: $scope.exportObject.widgetData[n].chart[chart].data[k].collaborators,
+                                        Pins: $scope.exportObject.widgetData[n].chart[chart].data[k].pins,
+                                        Followers: $scope.exportObject.widgetData[n].chart[chart].data[k].followers,
+                                    }
+                                }
+                                else
+                                    noPushInArray = 1;
+
+                                if (noPushInArray != 1)
+                                    formatJson.push(arrangeData)
+                            }
+                        }
+                        else if ($scope.exportObject.widgetData[n].chart[chart].options.chart.type == 'vimeoTopVideos') {
+                            for (var k = 0; k < $scope.exportObject.widgetData[n].chart[chart].data.length; k++) {
+                                var noPushInArray = 0;
+                                if (!$scope.exportObject.widgetData[n].chart[chart].data[k].message) {
+                                    var arrangeData =
+                                    {
+                                        Date: $scope.exportObject.widgetData[n].chart[chart].data[k].date,
+                                        Post: $scope.exportObject.widgetData[n].chart[chart].data[k].title.replace(/\r?\n|\r/g, ""),
+                                        Comment: $scope.exportObject.widgetData[n].chart[chart].data[k].Comment,
+                                        likes: $scope.exportObject.widgetData[n].chart[chart].data[k].likes,
+                                        Views: $scope.exportObject.widgetData[n].chart[chart].data[k].views,
+                                    }
+                                }
+                                else
+                                    noPushInArray = 1;
+
+                                if (noPushInArray != 1)
+                                    formatJson.push(arrangeData)
+                            }
+                        }
+                        else if ($scope.exportObject.widgetData[n].chart[chart].options.chart.type == 'gaTopPagesByVisit') {
+                            for (var k = 0; k < $scope.exportObject.widgetData[n].chart[chart].data.length; k++) {
+                                var noPushInArray = 0;
+                                if (!$scope.exportObject.widgetData[n].chart[chart].data[k].message) {
+                                    var arrangeData =
+                                    {
+                                        PageTitle: $scope.exportObject.widgetData[n].chart[chart].data[k].pageTitle.replace(/\r?\n|\r/g, ""),
+                                        PagePath: $scope.exportObject.widgetData[n].chart[chart].data[k].pagePath,
+                                        PageViews: $scope.exportObject.widgetData[n].chart[chart].data[k].pageviews,
+                                        AvgTimeOnpage: $scope.exportObject.widgetData[n].chart[chart].data[k].avgTimeOnpage,
+                                        BouncesRate: $scope.exportObject.widgetData[n].chart[chart].data[k].bouncesRate
+                                    }
+                                }
+                                else
+                                    noPushInArray = 1;
+
+                                if (noPushInArray != 1)
+                                    formatJson.push(arrangeData)
+                            }
+                        }
+                        else if ($scope.exportObject.widgetData[n].chart[chart].options.chart.type == 'mozoverview') {
+                            var noPushInArray = 0;
+                            if (!$scope.exportObject.widgetData[n].chart[chart].data[k].message) {
+                                var arrangeData =
+                                {
+                                    'Moz Rank': $scope.exportObject.widgetData[n].chart[chart].displayData.mozRankURL,
+                                    'External Links': $scope.exportObject.widgetData[n].chart[chart].displayData.externalEquityLinks,
+                                    'Domain Authority': $scope.exportObject.widgetData[n].chart[chart].displayData.domainageAuthority,
+                                    'Page Authority': $scope.exportObject.widgetData[n].chart[chart].displayData.pageAuthority,
+                                    'Back Links ': $scope.exportObject.widgetData[n].chart[chart].displayData.links
+                                }
+                            }
+                            else
+                                noPushInArray = 1;
+
+                            if (noPushInArray != 1)
+                                formatJson.push(arrangeData)
+
+                        }
+                        finalData.push({data: formatJson, title: $scope.exportObject.widgetData[n].name});
+                    }
+                }
+
+            }
+
+            /*var data=[
+             [{"Vehicle":"BMW","Date":"30, Jul 2013 09:24 AM","Location":"Hauz Khas, Enclave, New Delhi, Delhi, India","Speed":42},
+             {"Vehicle":"Honda CBR","Date":"30, Jul 2013 12:00 AM","Location":"Military Road, West Bengal 734013,  India","Speed":0},
+             {"Vehicle":"Supra","Date":"30, Jul 2013 07:53 AM","Location":"Sec-45, St. Angel's School, Gurgaon, Haryana, India","Speed":58},
+             {"Vehicle":"Land Cruiser","Date":"30, Jul 2013 09:35 AM","Location":"DLF Phase I, Marble Market, Gurgaon, Haryana, India","Speed":83},
+             {"Vehicle":"Suzuki Swift","Date":"30, Jul 2013 12:02 AM","Location":"Behind Central Bank RO, Ram Krishna Rd by-lane, Siliguri, West Bengal, India","Speed":0}
+             ],
+             [{"Vehicle":"BMW","Date":"30, Jul 2013 09:24 AM","Location":"Hauz Khas, Enclave, New Delhi, Delhi, India","Speed":42},
+             {"Vehicle":"Honda CBR","Date":"30, Jul 2013 12:00 AM","Location":"Military Road, West Bengal 734013,  India","Speed":0},
+             {"Vehicle":"Supra","Date":"30, Jul 2013 07:53 AM","Location":"Sec-45, St. Angel's School, Gurgaon, Haryana, India","Speed":58},
+             {"Vehicle":"Land Cruiser","Date":"30, Jul 2013 09:35 AM","Location":"DLF Phase I, Marble Market, Gurgaon, Haryana, India","Speed":83},
+             {"Vehicle":"Suzuki Swift","Date":"30, Jul 2013 12:02 AM","Location":"Behind Central Bank RO, Ram Krishna Rd by-lane, Siliguri, West Bengal, India","Speed":0}
+             ]
+             ];*/
+            for(var i=0;i<finalData.length;i++){
+                tempArray.push(JSONToCSVConvertor(finalData[i].data, finalData[i].title, true));
+            }
+            $q.all(tempArray).then(function(tempArray){
+                var excel ='data:text/csv;charset=utf-8,'+escape(tempArray);
+                var link = document.createElement("a");
+                link.href = excel;
+                var fileName = "Report_"+newDateFormat;
+                //this will remove the blank-spaces from the title and replace it with an underscore
+                //fileName += ReportTitle.replace(/ /g,"_");
+                //set the visibility hidden so it will not effect on your web-layout
+                link.style = "visibility:hidden";
+                link.download = fileName + ".csv";
+
+                //this part will append the anchor tag and remove it after automatic click
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                readyToExcel=1;
+                $rootScope.closePdfModal();
+            }, function errCallback(error) {
+                $("#exportPDFModalContent").removeClass('md-show');
+                $(".md-overlay").css("background", "rgba(0,0,0,0.5)");
+                $("#exportPDFModalContent").addClass('md-show');
+                $(".loadingStatus").hide();
+                $(".pdfHeadText").show().text("Oh!!").css({"font-style": 'normal', "color": "red"});
+                $(".pdfContentText").html('<b>Something went wrong. Please try again</b>');
+                $scope.expAct = false;
+                $rootScope.closePdfModal();
+            });
+            //JSONToCSVConvertor(data, "Vehicle Report", true);
+
+            function JSONToCSVConvertor(JSONData, ReportTitle, ShowLabel) {
+                var deferred=$q.defer();
+                //If JSONData is not an object then JSON.parse will parse the JSON string in an Object
+                var arrData = typeof JSONData != 'object' ? JSON.parse(JSONData) : JSONData;
+                var keyArray=[]
+                for (var index in arrData[0]) {
+                    keyArray.push(index)
+                }
+                function sortObj(obj, type, caseSensitive) {
+                    var temp_array = [];
+                    for (var key in obj) {
+                        if (obj.hasOwnProperty(key)) {
+                            temp_array.push(key);
+                        }
+                    }
+                    if (typeof type === 'function') {
+                        temp_array.sort(type);
+                    }
+                    else if (type === 'value') {
+                        temp_array.sort(function(a,b) {
+                            var x = obj[a];
+                            var y = obj[b];
+                            if (!caseSensitive) {
+                                x = (x['toLowerCase'] ? x.toLowerCase() : x);
+                                y = (y['toLowerCase'] ? y.toLowerCase() : y);
+                            }
+                            return ((x > y) ? -1 : ((x < y) ? 1 : 0));
+                        }).reverse();
+                    } else {
+                        temp_array.sort().reverse();
+                    }
+                    var temp_obj = {};
+                    console.log('objobj')
+                    for (var i=0; i<temp_array.length; i++) {
+                        temp_obj[temp_array[i]] = obj[temp_array[i]];
+                    }
+                    return temp_obj;
+                };
+                var k=keyArray.indexOf("Date")
+                if(k !== -1){
+                    if(k !== 0){
+                        var samplearray=[];
+                        for (var i = 0; i < arrData.length; i++) {
+                            var  obj=sortObj(arrData[i])
+                            samplearray.push(obj)
+                        }
+                        arrData=samplearray;
+                    }
+                }
+                //If JSONData is not an object then JSON.parse will parse the JSON string in an Object
+                // var arrData = typeof JSONData != 'object' ? JSON.parse(JSONData) : JSONData;
+                var CSV = '';
+                //Set Report title in first row or line
+                CSV='\r\n';
+                CSV += ReportTitle + '\r\n\n';
+
+                //This condition will generate the Label/Header
+                if (ShowLabel) {
+                    var row = "";
+
+                    //This loop will extract the label from 1st index of on array
+                    for (var index in arrData[0]) {
+                        //Now convert each value to string and comma-seprated
+                        row += '="'+index +'"'+ ',';
+                    }
+
+                    row = row.slice(0, -1);
+                    //append Label row with line break
+                    CSV += row + '\r\n';
+                }
+
+                //1st loop is to extract each row
+                for (var i = 0; i < arrData.length; i++) {
+                    var row = "";
+                    //2nd loop will extract each column and convert it in string comma-seprated
+                    for (var index in arrData[i]) {
+                        row += '="' + arrData[i][index] + '",';
+                    }
+
+                    row.slice(0, row.length - 1);
+
+                    //add a line break after each row
+                    CSV += row + '\r\n';
+                }
+
+                if (CSV == '') {
+                    alert("Invalid data");
+                    return;
+                }
+
+                //Generate a file name
+
+
+                //Initialize file format you want csv or xls
+                var uri = CSV;
+                deferred.resolve(uri);
+                return deferred.promise;
+                // Now the little tricky part.
+                // you can use either>> window.open(uri);
+                // but this will not work in some browsers
+                // or you will not get the correct file extension
+
+                /*!//this trick will generate a temp <a /> tag
+                 var link = document.createElement("a");
+                 link.href = uri;
+
+                 //set the visibility hidden so it will not effect on your web-layout
+                 link.style = "visibility:hidden";
+                 link.download = fileName + ".csv";
+
+                 //this part will append the anchor tag and remove it after automatic click
+                 document.body.appendChild(link);
+                 link.click();
+                 document.body.removeChild(link);*/
+            }
+        }
     };
+
+
 }

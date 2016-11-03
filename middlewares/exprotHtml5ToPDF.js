@@ -149,14 +149,16 @@ exports.createHtml5ToPdf = function (req, res, next) {
     }
     else{
         doc = new PDFDocument({size: 'A4',
-            layout: 'landscape', margin: 10});
+            layout: 'landscape', margin: 18});
         // stream = doc.pipe(blobStream());
       //  doc.image('images/test.jpeg',{scale: 0.80})
-        doc.image(req.body.dashboardLayout[0],{scale: 0.67});
+        //   doc.image(req.body.dashboardLayout[0],{scale: 0.67});
+        doc.image(req.body.dashboardLayout[0],{width: 800,height:560});
         if(req.body.dashboardLayout.length>0){
             for(var ind=1;ind<requestLength;ind++){
                 doc.addPage();
-                doc.image(req.body.dashboardLayout[ind],{scale: 0.67});
+                // doc.image(req.body.dashboardLayout[ind],{scale: 0.67});
+                doc.image(req.body.dashboardLayout[ind],{width: 800,height:560});
             }
         }
 
@@ -195,6 +197,46 @@ exports.createHtml5ToPdf = function (req, res, next) {
         // url = stream.toBlobURL('application/pdf');
         // return iframe.src = url;
         // });
+    }
+
+};
+exports.createHtml5ToPdfReport = function (req, res, next) {
+    var requestLength = req.body.dashboardLayout.length;
+    var timestamp = Number(new Date());
+    var getName = "";
+
+    if(req.body.dashboardName==undefined || req.body.dashboardName=="undefined" || req.body.dashboardName==""){
+        getName = "No_Name";
+    }
+    else{
+        getName = req.body.dashboardName;
+    }
+    //document.getElementById("demo").innerHTML = getName;
+    options= { paperFormat:"A4", paperOrientation:"landscape",renderDelay:60000,template:'htmlbootstrap'};
+
+    var outputPath = "public/ReportPDF/"+getName+"_"+timestamp+".pdf";
+
+    if(req.body.dashboardLayout==undefined || req.body.dashboardLayout==null){
+        req.app.result = {'status': '302','Response': 'Error in creating PDF'};
+        next();
+    }
+    else{
+        doc = new PDFDocument({size: 'A4',
+            layout: 'portrait', margin: 18});
+        doc.image(req.body.dashboardLayout[0],{width: 560,height:800});
+        if(req.body.dashboardLayout.length>0){
+            for(var ind=1;ind<requestLength;ind++){
+                doc.addPage();
+                // doc.image(req.body.dashboardLayout[ind],{scale: 0.67});
+                doc.image(req.body.dashboardLayout[ind],{width: 560,height:800});
+            }
+        }
+
+        doc.end();
+        doc.pipe(fs.createWriteStream(outputPath));
+        req.app.result = {'status': '200','Response': '/ReportPDF/'+getName+'_'+timestamp+'.pdf'};
+        next();
+
     }
 
 };

@@ -1,4 +1,4 @@
-<nav class="navbar-default navbar-static-side navbarFixed" role="navigation" ng-controller="NavigationController">
+<nav class="navbar-default navbar-static-side navbarFixed" ng-style="{'height':navbarHeight+'px'}" role="navigation" ng-controller="NavigationController">
     <div class="sidebar-collapse">
         <!--List to be displayed in the sidebar when the 'dashboardReporting' state is active-->
         <ul side-navigation class="nav metismenu" id="side-menu" ng-class="{active: $state.includes('reporting')}">
@@ -7,56 +7,78 @@
                     <a href="{{siteUrl}}" target="_blank"><img alt="Datapoolt" src="image/logo.png"/></a>
                 </div>
                 <div class="logo-element">
-                    <a href="{{siteUrl}}" target="_blank"><img class="dataimage" alt="Datapoolt" src="image/logo.png"/></a>
+                    <a href="{{siteUrl}}" target="_blank"><img class="dataimage" alt="Datapoolt" src="image/logo-small.png"/></a>
                 </div>
             </li>
             <li class="sideBar-wrapper">
-                <a ng-click="createNewDashboard()">
-                    <i class="icon icon-edit navigation-menu-icon"></i>
-                    <span class="nav-label"> Add Empty Dashboard</span>
+                <a ng-click="stateValidation('chooseDashboardType')">
+                    <img src="image/BlankDashboard.png" class ="sidebar-icons" height="32" width="32">
+                    <!--<i class="icon icon-edit navigation-menu-icon"></i>-->
+                    <span class="nav-label"> Blank Dashboard</span>
                 </a>
-                <div class="tooltip">Add Empty Dashboard</div>
+                <div class="tooltip">Blank Dashboard</div>
             </li>
             <li  class="sideBar-wrapper">
                 <a ng-click="stateValidation('recommendedDashboard')">
-                        <div class="sidebaricon">
-                    <i class="icon icon-browser navigation-menu-icon"></i>
-                        </div>
-                        <span class="sidebarword nav-label">
-                            Add Recommended Dashboard
-                        </span>
-                    <div class="tooltip">Add Empty Dashboard</div>
+                    <img src="image/dashboardtemplate.png"  class ="sidebar-icons" height="32" width="32">
+                    <!--<i class="icon icon-browser navigation-menu-icon" style="font-size: 13px !important;"></i>-->
+                    <span class="nav-label" style="padding-left: 13px;">Dashboard Templates</span>
+                    <div class="tooltip">Dashboard Templates</div>
                 </a>
             </li>
+            <!--
+                        <li class="sideBar-wrapper">
+                            <a ui-sref="app.reporting.dashboards">
+                                <i class="icon icon-grid navigation-menu-icon"></i>
+                                <span class="nav-label"> All Dashboards</span>
+                                <div class="tooltip">All Dashboards</div>
+                            </a>
+                        </li>
+            -->
+            <!--
+                        <li class="sideBar-wrapper">
+                            <a ng-click="stateValidation('basicWidget')">
+                                <img src="image/Widget.png" class ="sidebar-icons" height="32" width="32">
+                                &lt;!&ndash;<i class="icon icon-presentation navigation-menu-icon"></i>&ndash;&gt;
+                                <span class="nav-label"> Add Widgets</span>
+                                <div class="tooltip">Add Widgets</div>
+                            </a>
+                        </li>
+                        <li class="sideBar-wrapper">
+                            <a ng-click="stateValidation('fusionWidget')">
+                                <img src="image/fusion.png" class ="sidebar-icons" height="32" width="32">
+                                &lt;!&ndash;<i class="icon icon-expand navigation-menu-icon"></i>&ndash;&gt;
+                                <span class="nav-label"> Fusions</span>
+                                <div class="tooltip">Fusions</div>
+                            </a>
+                        </li>
+            -->
             <li class="sideBar-wrapper">
-                <a ui-sref="app.reporting.dashboards">
-                    <i class="icon icon-grid navigation-menu-icon"></i>
-                    <span class="nav-label"> Grid View</span>
-                    <div class="tooltip">Grid View</div>
+                <a ui-sref="app.reporting.buildReports">
+                    <img src="image/reportBuilder.png" class ="sidebar-icons" height="32" width="32">
+                    <!--<i class="icon icon-grid navigation-menu-icon"></i>-->
+                    <span class="nav-label">Reports</span>
+                    <div class="tooltip">Create Customized Reports from your Dashboards</div>
+                </a>
                 </a>
             </li>
-
-            <li class="sideBar-wrapper">
-                <a ng-click="stateValidation('basicWidget')">
-                    <i class="icon icon-presentation navigation-menu-icon"></i>
-                    <span class="nav-label"> Add Widgets</span>
-                    <div class="tooltip">Add Widgets</div>
-                </a>
-            </li>
-            <li class="sideBar-wrapper">
-                <a ng-click="stateValidation('fusionWidget')">
-                    <i class="icon icon-expand navigation-menu-icon"></i>
-                    <span class="nav-label"> Fusions</span>
-                    <div class="tooltip">Fusions</div>
-                </a>
-            </li>
-            <li class="sideBar-wrapper"><!--class="md-trigger md-setperspective md-effect-19 addRemoveModalContent" data-modal="addRemoveModalContent"-->
-                <a ng-click="stateValidation('insights')">
-                    <i class="icon icon-megaphone navigation-menu-icon"></i>
-                    <span class="nav-label"> Insights</span>
-                    <div class="tooltip">Insights</div>
-                </a>
-            </li>
+            <!--
+                        <li class="sideBar-wrapper">&lt;!&ndash;class="md-trigger md-setperspective md-effect-19 addRemoveModalContent" data-modal="addRemoveModalContent"&ndash;&gt;
+                            <a ng-click="stateValidation('insights')">
+                                <i class="icon icon-megaphone navigation-menu-icon"></i>
+                                <span class="nav-label"> Insights</span>
+                                <div class="tooltip">Insights</div>
+                            </a>
+                        </li>
+            -->
+            <!--<li class="sideBar-wrapper">&lt;!&ndash;class="md-trigger md-setperspective md-effect-19 addRemoveModalContent" data-modal="addRemoveModalContent"&ndash;&gt;-->
+            <!--<a ui-sref="app.reporting.buildReports">-->
+            <!--&lt;!&ndash;<i class="icon icon-grid navigation-menu-icon"></i>&ndash;&gt;-->
+            <!--<i class="fa fa-file-text fa-4x" aria-hidden="true"></i>-->
+            <!--<span class="nav-label">Build Reports</span>-->
+            <!--<div class="tooltip">Create Customized Reports from your Dashboards</div>-->
+            <!--</a>-->
+            <!--</li>-->
         </ul>
         <!--
                 &lt;!&ndash;List to be displayed in the sidebar when the 'adReporting' state is active&ndash;&gt;
@@ -80,10 +102,18 @@
     $( document ).ready(function() {
         var minibar = $("#page-top").hasClass("mini-navbar");
         $('.tooltip').hide();
+
+        $('.side-menu').hover(function(){
+            $('.navbar-static-side').slide('slide', {
+                direction: 'right'
+            }, 2000);
+        })
     });
     $('.tooltip').click(function() {
         $('.tooltip').hide();
     });
+
+
 
 
 

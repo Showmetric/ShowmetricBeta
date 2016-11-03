@@ -77,7 +77,7 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider, IdlePro
                     ]);
                 }
             },
-            onEnter: function ($stateParams,$http,$state) {
+            onEnter: function ($stateParams,$http,$state,$rootScope) {
                 var dashboardId = $stateParams.id? $stateParams.id : $state.params.id;
                 if(typeof dashboardId != 'undefined') {
                     $http(
@@ -87,6 +87,7 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider, IdlePro
                         }
                     ).then(
                         function successCallback(response){
+                            $rootScope.fetchRecentDashboards();
                         },
                         function errorCallback (error){
                         }
@@ -104,13 +105,24 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider, IdlePro
                 }
             }
         })
-        .state('app.reporting.dashboard.listProfile', {
+        .state('app.reporting.listProfile', {
             url: "",
             views: {
-                'lightbox@app.reporting.dashboard': {
+                'main@app': {
                     templateUrl: "profileList.ejs",
                     controller: 'LightBoxController'
                 }
+            },
+            onEnter: function ($http,$state,$rootScope){
+                $rootScope.$on('$stateChangeSuccess', function(ev, to, toParams, from, fromParams) {
+                    var previousState = from.name;
+                    if(previousState=='app.changePassword')
+                        $rootScope.previousProfileState=previousState;
+                    if(previousState=='app.reporting.dashboards')
+                        $rootScope.previousProfileState=previousState;
+                    if(previousState=='app.reporting.dashboard')
+                        $rootScope.previousProfileState=previousState;
+                });
             }
         })
 
@@ -120,6 +132,15 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider, IdlePro
             views: {
                 'lightbox@app.reporting.dashboard': {
                     templateUrl: "fusionWidget.ejs",
+                    controller: 'LightBoxController'
+                }
+            }
+        })
+        .state('app.reporting.chooseDashboardType', {
+            url: "/choosedashboard/",
+            views: {
+                'main@app': {
+                    templateUrl: "chooseDashbordType.ejs",
                     controller: 'LightBoxController'
                 }
             }
@@ -175,10 +196,10 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider, IdlePro
             }
         })
 
-        .state('app.reporting.dashboard.recommendedDashboard', {
+        .state('app.reporting.recommendedDashboard', {
             url: "",
             views: {
-                'lightbox@app.reporting.dashboard': {
+                'main@app': {
                     templateUrl: "recommendedDashboard.ejs",
                     controller: 'LightBoxController'
                 }
@@ -186,11 +207,20 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider, IdlePro
         })
 
         .state('app.reporting.dashboards', {
-            url: "/gridView",
+            url: "/gridView/",
             views: {
                 'main@app': {
                     templateUrl: "gridView.ejs",
                     controller: 'GridviewController'
+                }
+            }
+        })
+        .state('app.reporting.buildReports', {
+            url: "/buildReports",
+            views: {
+                'main@app': {
+                    templateUrl: "buildReport.ejs",
+                    controller: 'buildReportController'
                 }
             }
         })
@@ -207,6 +237,26 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider, IdlePro
 angular
     .module('inspinia')
     .config(config)
-    .run(function($rootScope, $state) {
+    .run(function($rootScope, $state,$http) {
         $rootScope.$state = $state;
+        $rootScope.$on('$stateChangeStart', function(ev, to, toParams, from, fromParams) {
+            var prevState = from.name;
+            var nextState = to.name;
+            if(prevState=='app.reporting.dashboard.basicWidget' || prevState=='app.reporting.dashboard.fusionWidget'|| prevState=='app.reporting.dashboard.exportModal'|| prevState=='app.reporting.dashboard.alertModal'|| prevState=='app.reporting.chooseDashboardType'|| prevState=='app.reporting.recommendedDashboard') {
+                // pendingRequests.cancelAll();
+                if(nextState!='app.reporting.dashboard'&& nextState!='app.reporting') {
+                    $http.pendingRequests.forEach(function (request) {
+                        if (request.cancel)
+                            request.cancel.resolve();
+                    });
+                }
+            }
+            else if(nextState!='app.reporting.dashboard.basicWidget' && nextState!='app.reporting.dashboard.fusionWidget' && nextState!='app.reporting.dashboard.exportModal' && nextState!='app.reporting.dashboard.alertModal') {
+                // pendingRequests.cancelAll();
+                $http.pendingRequests.forEach(function (request) {
+                    if (request.cancel)
+                        request.cancel.resolve();
+                });
+            }
+        });
     });

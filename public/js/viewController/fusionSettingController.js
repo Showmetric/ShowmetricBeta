@@ -35,11 +35,18 @@ function FusionSettingsController($scope, $uibModalInstance, widget, $http, $sta
         else {
             $http({
                 method: 'GET',
-                url: '/api/v1/dashboards/widgets/' + $state.params.id
+                url: '/api/v1/dashboards/widgets/' + $state.params.id+'?buster='+new Date()
             }).then(
                 function successCallback(response) {
+                    var widgetArry=[]
+                    for(var i=0;i<response.data.widgetsList.length;i++){
+                        if(response.data.widgetsList[i].isFusion === true){
+                            widgetArry.push(response.data.widgetsList[i])
+                        }
+                    }
+
                     var widgetsList;
-                    widgetsList = response.data.widgetsList;
+                    widgetsList = widgetArry;
                     widgetsList.forEach(function (value, key) {
                         if(value._id != $scope.widget.id && value.widgetType != 'customFusion' && value.visibility != false) {
                             $scope.widgetsList.push({

@@ -4,7 +4,8 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="modal-header">
-                        <button type="button" class="close" ng-click="closeBasicWidgetModal(currentModalView)" aria-hidden="true">&times;</button>
+                        <button type="button" class="overlayCloseButton"  style="right:0px !important" ng-click="closeBasicWidgetModal(currentModalView)" aria-hidden="true">
+                            <i class="fa fa-times fa-lg" aria-hidden="true"></i></button>
                         <h3 class="model-title">Alert for this Widget</h3>
                     </div>
                 </div>
@@ -21,29 +22,29 @@
                                     <div class="ibox-content" style="padding: 0px">
                                         <table class="table table-hover">
                                             <thead>
-                                                <tr>
-                                                    <th>AlertName</th>
-                                                    <th>MetricName</th>
-                                                    <th>Email</th>
-                                                    <th>Operation</th>
-                                                    <th>threshold</th>
-                                                    <th>Delete</th>
-                                                    <th>Edit</th>
-                                                </tr>
+                                            <tr>
+                                                <th>AlertName</th>
+                                                <th>MetricName</th>
+                                                <th>Email</th>
+                                                <th>Operation</th>
+                                                <th>threshold</th>
+                                                <th>Delete</th>
+                                                <th>Edit</th>
+                                            </tr>
                                             </thead>
                                             <tbody>
-                                                <tr ng-repeat="alerts in  widgetAlerts" ng-cloak>
-                                                    <td>{{alerts.name}}</td>
-                                                    <td ng-cloak ng-if="alerts.endPoint">{{alertMetrics[$index].name}} - {{alerts.endPoint}}</td>
-                                                    <td ng-cloak ng-if="!alerts.endPoint">{{alertMetrics[$index].name}}</td>
-                                                    <td>{{alerts.mailingId.email}}</td>
-                                                    <td ng-if="alerts.operation.lt == true">Less than</td>
-                                                    <td ng-if="alerts.operation.gt == true">Greater than</td>
-                                                    <td ng-if="alerts.operation.gt == true">{{alerts.threshold.gt}}</td>
-                                                    <td ng-if="alerts.operation.lt == true">{{alerts.threshold.lt}}</td>
-                                                    <td><a ng-click="deleteAlert(alerts)"><i class="fa fa-minus" aria-hidden="true"></i></a></td>
-                                                    <td><a ng-click="editAlert(alerts,alertMetrics[$index])"><i class="fa fa-pencil" aria-hidden="true"></i></a></td>
-                                                </tr>
+                                            <tr ng-repeat="alerts in  widgetAlerts" ng-cloak>
+                                                <td>{{alerts.name}}</td>
+                                                <td ng-cloak ng-if="alerts.endPoint">{{alertMetrics[$index].name}} - {{alerts.endPoint}}</td>
+                                                <td ng-cloak ng-if="!alerts.endPoint">{{alertMetrics[$index].name}}</td>
+                                                <td>{{alerts.mailingId.email}}</td>
+                                                <td ng-if="alerts.operation.lt == true">Less than</td>
+                                                <td ng-if="alerts.operation.gt == true">Greater than</td>
+                                                <td ng-if="alerts.operation.gt == true">{{alerts.threshold.gt}}</td>
+                                                <td ng-if="alerts.operation.lt == true">{{alerts.threshold.lt}}</td>
+                                                <td><a ng-click="deleteAlert(alerts)"><i class="fa fa-minus" aria-hidden="true"></i></a></td>
+                                                <td><a ng-click="editAlert(alerts,alertMetrics[$index])"><i class="fa fa-pencil" aria-hidden="true"></i></a></td>
+                                            </tr>
                                             </tbody>
                                         </table>
                                     </div>
@@ -66,10 +67,10 @@
                                                                 <input class="form-control m-b choose-text" placeholder="Enter a name" type="text" name="input" ng-model="name" required/>
                                                             </div>
                                                             <div class="col-sm-6">
-                                                                <select class="form-control m-b choose-text" ng-model="metric" id="metricOptions" required>
+                                                                <select class="form-control m-b choose-text" ng-model="inAlertMetric" id="metricOptions" required>
                                                                     <!--ng-options="metrics as metrics.name for metrics in metricDetails[0].metrics" required >-->
                                                                     <option value="">Select a Metric</option>
-                                                                    <option ng-repeat="metrics in widgetMetrics | orderBy:'$index':true" ng-selected="metrics.name === inAlertMetric" value="{{[metrics.id,metrics.endPoints]}}">{{metrics.name}}</option>
+                                                                    <option ng-repeat="metrics in widgetMetrics | orderBy:'$index':true" ng-selected="inAlertMetric === metrics.name" >{{metrics.name}}</option>
                                                                 </select>
                                                             </div>
                                                         </div>
@@ -82,7 +83,7 @@
                                                                 </select>
                                                             </div>
                                                             <div class="col-sm-4">
-                                                                <input class="form-control m-b choose-text" placeholder="Enter a threshold value" type="number" name="input" ng-model="threshold" ng-pattern="/^[0-9]{1,7}$/" required/>
+                                                                <input class="form-control m-b choose-text" placeholder="Enter a threshold value" type="number" name="input" min="0" ng-model="threshold" ng-pattern="/^[0-9]{1,7}$/" required/>
                                                             </div>
                                                             <div class="col-sm-4">
                                                                 <select class="form-control m-b choose-text" ng-model="interval" required>
@@ -112,8 +113,14 @@
             <div class="modal-footer">
                 <div class="row">
                     <div class="col-lg-12 text-right">
-                        <button class="btn btn-primary button-mode" id="basicWidgetBackButton1" ng-show="currentView === 'step_two'" ng-click="changeViewsInAlertModal('step_one')">Previous</button>
-                        <button class="btn btn-primary button-mode" id="" ng-hide="currentView === 'step_one'" ng-click="saveAlert();" ng-disabled="alertForm.$invalid">Submit</button>
+                        <button class="componentBtn btn-4 btn-4b icon-arrow-left" id="basicWidgetBackButton1" ng-show="currentView === 'step_two'" ng-click="changeViewsInAlertModal('step_one')">Previous</button>
+                        <!--<button class="btn btn-primary button-mode" id="" ng-hide="currentView === 'step_one'" ng-click="saveAlert();" ng-disabled="alertForm.$invalid">Submit</button>-->
+                        <button class="ladda-button  componentBtn btn-4 btn-4a " data-style="expand-right" id="basicWidgetFinishButton"
+                                ng-disabled="alertForm.$invalid">
+                            <span class="ladda-label">Submit</span>
+                            <span class="ladda-spinner"></span>
+                            <div class="ladda-progress"  style="width:72px;"></div>
+                        </button>
                     </div>
                 </div>
             </div>

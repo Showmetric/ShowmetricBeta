@@ -6,6 +6,9 @@ module.exports = function (app) {
     app.post('/api/v1/createHtml5ToPdf/dashboard',exprotHtml5ToPDF.createHtml5ToPdf, function (req, res, next) {
         res.json(req.app.result);
     });
+    app.post('/api/v1/createHtml5ToPdf/report',exprotHtml5ToPDF.createHtml5ToPdfReport, function (req, res, next) {
+        res.json(req.app.result);
+    });
     app.post('/api/v1/createLogoToPdf/createFolder',exprotHtml5ToPDF.createLogoToPdf, function (req, res, next) {
 
         res.json(req.app.result);

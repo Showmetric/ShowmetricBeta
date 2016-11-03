@@ -19,6 +19,7 @@ var bodyParser = require('body-parser');
 var session = require('express-session');
 var mongoStore = require('connect-mongo')(session);
 var moment = require('moment');
+var forever = require('forever-monitor');
 var configDB = require('./config/database.js');
 //Load the auth file
 var configAuth = require('./config/auth');
@@ -186,6 +187,7 @@ require('./controllers/exportHtml5ToPDF')(app);
 require('./controllers/alert')(app);
 require('./controllers/bgFetchUpdation')(app);
 require('./controllers/youTubeAuth')(app);
+require('./controllers/reports')(app);
 
 router.use(function (req, res, next) {
     req.app = {};
@@ -193,6 +195,18 @@ router.use(function (req, res, next) {
 });
 
 // launch ======================================================================
+/*var child = new (forever.Monitor)('batchJobs.js', {
+    max: 3,
+    silent: true,
+    logFile: '/batchLog',
+});
+
+child.on('exit', function () {
+    console.log('your-filename.js has exited after 3 restarts');
+});
+
+child.start();*/
+
 app.listen(port);
 /*https.createServer({
     key: fs.readFileSync('./key.pem', 'utf8'),

@@ -6,8 +6,6 @@ module.exports = function (app) {
 // load the auth variables
     var configAuth = require('../config/auth');
     var FB = require('fb');
-
-    //set FB API call version
     FB.options({version: configAuth.apiVersions.FBADs});
 
     var oauth2 = require('simple-oauth2')({

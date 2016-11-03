@@ -1,10 +1,11 @@
 showMetricApp.controller('AlertController', AlertController)
 function AlertController($scope, $http, $q, $state, $rootScope, $window, $stateParams, generateChartColours) {
-
+    var startWidget=0;
     var isEdit = false;
     $scope.alert, $scope.metricName, $scope.currentView = 'step_one', $scope.operation;
     $scope.widgetAlerts = [];
     $scope.alertMetrics = [];
+    $scope.inAlertMetric='';
     var storeMetricDetails = [], widgetMetricDetails = [];
 
     $scope.changeViewsInAlertModal = function (obj) {
@@ -53,13 +54,17 @@ function AlertController($scope, $http, $q, $state, $rootScope, $window, $stateP
     $scope.fetchWidgetAlerts = function () {
         $http({
             method: 'GET',
-            url: '/api/v1/get/alerts/' + $rootScope.selectedWidget.id
+            url: '/api/v1/get/alerts/' + $rootScope.selectedWidget.id+'?buster='+new Date()
         }).then(
             function successCallback(response) {
+                widgetMetricDetails=[];
                 if(response.status == '200') {
+                    widgetMetricDetails.length=0;
                     $scope.widgetAlerts = response.data;
-                    for (var i = 0; i < $scope.widgetAlerts.length; i++)
+                    for (var i = 0; i < $scope.widgetAlerts.length; i++){
                         widgetMetricDetails.push($scope.getMetricDetails($scope.widgetAlerts[i].metricId, i));
+                    }
+
                     $q.all(widgetMetricDetails).then(
                         function successCallback(widgetMetricDetails) {
                             for(var alerts in $scope.widgetAlerts) {
@@ -89,7 +94,7 @@ function AlertController($scope, $http, $q, $state, $rootScope, $window, $stateP
         var deferred = $q.defer();
         $http({
             method: 'GET',
-            url: '/api/v1/get/metricDetails/' + metricId
+            url: '/api/v1/get/metricDetails/' + metricId+'?buster='+new Date()
         }).then(
             function successCallback(metric) {
                 deferred.resolve({
@@ -103,7 +108,25 @@ function AlertController($scope, $http, $q, $state, $rootScope, $window, $stateP
         );
         return deferred.promise;
     };
-
+    angular.element(document).ready(function () {
+        $(' .ladda-button').addClass('icon-arrow-right');
+        Ladda.bind('.ladda-button',{
+            callback: function( instance ){
+                $('.ladda-button').removeClass('icon-arrow-right');
+                $scope.saveAlert();
+                var progress = 0;
+                var interval = setInterval( function(){
+                    progress = Math.min( progress + Math.random() * 0.1, 1 );
+                    instance.setProgress( progress );
+                    if( progress === 1 && startWidget===1 ){
+                        instance.stop();
+                        clearInterval( interval );
+                        $scope.changeViewsInAlertModal('step_one');
+                    }
+                }, 50 );
+            }
+        });
+    });
     $scope.alertFunction = function () {
         if (isEdit == true)
             var widgetId = $scope.alert.widgetId;
@@ -111,7 +134,7 @@ function AlertController($scope, $http, $q, $state, $rootScope, $window, $stateP
             var widgetId = $rootScope.selectedWidget.id;
         $http({
             method: 'GET',
-            url: '/api/v1/widget/' + widgetId
+            url: '/api/v1/widget/' + widgetId+'?buster='+new Date()
         }).then(
             function successCallback(response) {
                 $scope.widgetDetails = response.data[0];
@@ -165,10 +188,12 @@ function AlertController($scope, $http, $q, $state, $rootScope, $window, $stateP
     };
 
     $scope.saveAlert = function () {
+        var k = $scope.widgetMetrics.map(function(e) { return e.name; }).indexOf($scope.inAlertMetric);
+        $scope.metric=[$scope.widgetMetrics[k].id,$scope.widgetMetrics[k].endPoints];
         var objectId;
         var widgetDetail = $scope.widgetDetails.charts;
         for (var k = 0; k < widgetDetail.length; k++) {
-            var parsedData = JSON.parse($scope.metric);
+            var parsedData = $scope.metric;
             if (widgetDetail[k].metrics[0].metricId === parsedData[0])
                 objectId = widgetDetail[k].metrics[0].objectId;
         }
@@ -221,7 +246,7 @@ function AlertController($scope, $http, $q, $state, $rootScope, $window, $stateP
                     data: updatedData
                 }).then(
                     function successCallback(alert) {
-                        $scope.changeViewsInAlertModal('step_one');
+                        startWidget=1
                     },
                     function errorCallback(error) {
                         $scope.$parent.closeBasicWidgetModal('');
