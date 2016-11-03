@@ -259,7 +259,7 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
             }).then(
                 function successCallback(response) {
                     if(response.status == '200')
-                        //console.log(response);
+                        console.log(response);
                 },
                 function errorCallback(error) {
                     swal({
