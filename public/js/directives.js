@@ -208,7 +208,7 @@ function minimalizaSidebar($timeout) {
                     $('.tooltip').hide();
                     var width = document.getElementById('CustomTemplate').offsetWidth;
                     if(width<900){
-                        $('#dashboardTitleIcons').hide();
+                       // $('#dashboardTitleIcons').hide();
                     }
                     // Hide menu in order to smoothly turn on when maximize menu
                     $('#side-menu').hide();
@@ -221,7 +221,7 @@ function minimalizaSidebar($timeout) {
                                     document.getElementById('tabs-container-response-view').setAttribute('style','padding-left: 221px;');*/
                             }
                             else{
-                                $('#dashboardTitleIcons').hide()
+                                //$('#dashboardTitleIcons').hide()
 
                             }
                         }, 100);

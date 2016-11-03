@@ -652,11 +652,11 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                 var yValue = 0, endpointArray;
                                 if (widget.charts[charts].chartData[datas].total != null && Object.keys(widget.charts[charts].chartData[datas].total.length != 0)) {
                                     for (var keyValuePairs in widget.charts[charts].chartData[datas].total) {
-                                        typeof (widget.charts[charts].chartData[datas].total['social/Yes']) != 'undefined' ? Number(widget.charts[charts].chartData[datas].total['social/Yes']) : 0;
+                                        widget.charts[charts].chartData[datas].total['social/Yes']=  typeof (widget.charts[charts].chartData[datas].total['social/Yes']) != 'undefined' ? Number(widget.charts[charts].chartData[datas].total['social/Yes']) : 0;
                                         if (keyValuePairs.search('/') > -1) {
                                             endpointArray = keyValuePairs.split('/');
                                             if (endpointArray[1] == 'Yes') {
-                                                widget.charts[charts].chartData[datas].total['social/Yes'] = Number(widget.charts[charts].chartData[datas].total[keyValuePairs]);
+                                                widget.charts[charts].chartData[datas].total['social/Yes'] += Number(widget.charts[charts].chartData[datas].total[keyValuePairs]);
                                                 widget.charts[charts].chartData[datas].total[keyValuePairs] = 0;
                                             }
                                         }
@@ -759,11 +759,11 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                 var yValue = 0, endpointArray;
                                 if (widget.charts[charts].chartData[datas].total != null && Object.keys(widget.charts[charts].chartData[datas].total.length != 0)) {
                                     for (var keyValuePairs in widget.charts[charts].chartData[datas].total) {
-                                        typeof (widget.charts[charts].chartData[datas].total['social/Yes']) != 'undefined' ? Number(widget.charts[charts].chartData[datas].total['social/Yes']) : 0;
+                                        widget.charts[charts].chartData[datas].total['social/Yes']= typeof (widget.charts[charts].chartData[datas].total['social/Yes']) != 'undefined' ? Number(widget.charts[charts].chartData[datas].total['social/Yes']) : 0;
                                         if (keyValuePairs.search('/') > -1) {
                                             endpointArray = keyValuePairs.split('/');
                                             if (endpointArray[1] == 'Yes') {
-                                                widget.charts[charts].chartData[datas].total['social/Yes'] = Number(widget.charts[charts].chartData[datas].total[keyValuePairs]);
+                                                widget.charts[charts].chartData[datas].total['social/Yes'] += Number(widget.charts[charts].chartData[datas].total[keyValuePairs]);
                                                 widget.charts[charts].chartData[datas].total[keyValuePairs] = 0;
                                             }
                                         }

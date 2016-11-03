@@ -11,18 +11,15 @@
                             </a>
                         </div >
                         <div class="col-sm-4">
-                            <div style="width:100%" class="daterange daterange--double three"></div>
+                            <div style="width:100%" class="daterange daterange--double two"></div>
                         </div>
-                        <div class="col-sm-3 pull-right dashboardTitleIcons" id="dashboardTitleIcons" >
+                        <div class="col-sm-3 pull-right dashboardTitleIcons" style="padding-right: 5px !important"  id="dashboardTitleIcons" >
                             <form class="dashboardIcons autoarrange-export-delete">
-                                <!--<button class="grey rightMargin auto-arrange"  ng-click="setAutoArrange()" ng-class="{'arrangeDisabled': loadedWidgetCount != dashboard.widgets.length}" ng-disabled="loadedWidgetCount != dashboard.widgets.length">
-                                    Auto-arrange
-                                </button>-->
-                                <!--<button  class="grey rightMargin export"  ng-click="exportModal('app.reporting.dashboard.exportModal')" ng-class="{'exportDisabled': loadedWidgetCount != dashboard.widgets.length}" ng-disabled="loadedWidgetCount != dashboard.widgets.length" title="Export"></button>
-                                <button  class="grey rightMargin delete"  ng-click="deleteDashboard()" title="Delete"></button>-->
-                                <img src="image/autoarrange.png" height="32" width="50" ng-disabled="loadedWidgetCount != dashboard.widgets.length" ng-click="(loadedWidgetCount != dashboard.widgets.length) || setAutoArrange()" title="Auto-arrange" data-toggle="tooltip" data-placement="bottom" data-original-title="Auto-Arrange">
-                                <img src="image/exports.png" height="32" width="50" ng-disabled="loadedWidgetCount != dashboard.widgets.length" ng-click="(loadedWidgetCount != dashboard.widgets.length) || exportModal('app.reporting.dashboard.exportModal')" title="Export" data-toggle="tooltip" data-placement="bottom" data-original-title="Export">
-                                <img src="image/delete.png" height="32" width="50" ng-click="deleteDashboard()" title="Delete" data-toggle="tooltip" data-placement="bottom" data-original-title="Delete">
+                                <img src="image/Widget.png" height="25" width="43"  title="Add Widgets" ng-click="stateValidation('basicWidget')" title="Add Widgets" data-toggle="tooltip" data-placement="bottom" data-original-title="Add Widgets">
+                                <img src="image/fusion.png" height="25" width="43"  title="Fusions" ng-click="stateValidation('fusionWidget')" title="Add Fusions" data-toggle="tooltip" data-placement="bottom" data-original-title="Add Fusions">
+                                <img ng-hide="isMobile==true" src="image/autoarrange.png" height="25" width="43" ng-disabled="loadedWidgetCount != dashboard.widgets.length" ng-click="(loadedWidgetCount != dashboard.widgets.length) || setAutoArrange()" title="Auto-arrange" data-toggle="tooltip" data-placement="bottom" data-original-title="Auto-Arrange">
+                                <img ng-hide="isMobile==true" src="image/exports.png" height="25" width="43" ng-disabled="loadedWidgetCount != dashboard.widgets.length" ng-click="(loadedWidgetCount != dashboard.widgets.length) || exportModal('app.reporting.dashboard.exportModal')" title="Export" data-toggle="tooltip" data-placement="bottom" data-original-title="Export">
+                                <img src="image/delete.png" height="25" width="43" ng-click="deleteDashboard()" title="Delete Dashboard" data-toggle="tooltip" data-placement="bottom" data-original-title="Delete Dashboard">
                             </form>
                         </div>
                     </div>
@@ -30,7 +27,8 @@
             </div>
         </div>
         <div class="parallel-dashboard greyish-bg" ng-style="{'height': docHeight+'px'}" ng-if="widgetsPresent == false">
-            <a ui-sref="app.reporting.dashboard.basicWidget({widgetType:'basic'})"><div class="white-bg empty-dashboard"><span>Add your first widget</span></div></a>
+            <!--<a ui-sref="app.reporting.dashboard.basicWidget({widgetType:'basic'})"><div class="white-bg empty-dashboard"><span>Add your first widget</span></div></a>-->
+            <a ng-click="basicwidget()"><div class="white-bg empty-dashboard"><span>Add your first widget</span></div></a>
         </div>
         <div id="dashboardContent"  ng-style="{'height': docHeight+'px'}" class="greyish-bg dashboardContent" ng-if="widgetsPresent == true" >
             <div class="spiner-mobile-example" ng-if="loadedWidgetCount != dashboard.widgets.length">
