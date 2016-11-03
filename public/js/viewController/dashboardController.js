@@ -17,7 +17,10 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
             return {float:"left"}
         }
     };
-
+//function to check the subscription limits on basic widgets
+    $scope.basicwidget = function (){
+        $state.go("app.reporting.dashboard.basicWidget", {widgetType: 'basic'});
+    };
 
     $scope.stateValidation = function(targetState) {
         switch(targetState) {
@@ -30,7 +33,7 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
                 else toastr.info('Please perform this action from within a dashboard');
                 break;
         }
-    }
+    };
     // document.getElementById('dashLayout').style.visibility = "hidden";
     var isExportOptionSet = '';
     $(".navbar").css('z-index','1');
