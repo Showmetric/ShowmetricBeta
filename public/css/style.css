@@ -5264,7 +5264,7 @@ button.overlayCloseButton {
     height: 30px;
     border-radius: 30px;
     z-index: 999;
-    background:#232c3b;
+    background:#ff6c3a;
     box-shadow: inset 0px 0px 1px 1px rgba(255, 255, 255, 0.1);
     color: #ffffff;
     border: 2px #ffffff;
