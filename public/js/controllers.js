@@ -1307,8 +1307,14 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                     groupedArray = groupedArray.concat(sampleArray)
                                 }
                                 var formattedChartDataArray = [];
-                                if (String(widget.charts[charts].chartName) == 'Time spent on site from various sources')
+                                if (String(widget.charts[charts].chartName) == 'Time spent on site from various sources') {
+                                    for(var k=0;k<groupedArray.length;k++){
+                                        if(groupedArray[k]['hasSocialSourceReferral'] === 'Yes'){
+                                            groupedArray[k]['medium']='social'
+                                        }
+                                    }
                                     var sortdata = _.groupBy(groupedArray, 'medium')
+                                }
                                 else
                                     var sortdata = _.groupBy(groupedArray, 'socialNetwork')
                                 for (var key in sortdata) {

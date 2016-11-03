@@ -19,6 +19,18 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
     };
 
 
+    $scope.stateValidation = function(targetState) {
+        switch(targetState) {
+            case 'basicWidget':
+                if($state.includes('app.reporting.dashboard')) $state.go('app.reporting.dashboard.'+targetState,{widgetType:'basic'});
+                else toastr.info('Please perform this action from within a dashboard');
+                break;
+            case 'fusionWidget':
+                if($state.includes('app.reporting.dashboard')) $state.go('app.reporting.dashboard.'+targetState);
+                else toastr.info('Please perform this action from within a dashboard');
+                break;
+        }
+    }
     // document.getElementById('dashLayout').style.visibility = "hidden";
     var isExportOptionSet = '';
     $(".navbar").css('z-index','1');
