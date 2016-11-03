@@ -886,18 +886,15 @@ function ExportController($scope, $http, $state, $rootScope, $window,$q,$statePa
                         }
                         else if ($scope.exportObject.widgetData[n].chart[chart].data[0].type == 'percentageArea'  ) {
                             lengthOfValue = $scope.exportObject.widgetData[n].chart[0].data[0].totalChartLength.length;
-                            console.log("$scope.exportObject.widgetData[n].chart[0].data[0].totalChartLength",$scope.exportObject.widgetData[n].chart[0].data[0].totalChartLength[0].y)
                             var j = 0;
                             while (j < lengthOfValue) {
                                 var arrangeData = {};
                                 for (var k = 0; k < $scope.exportObject.widgetData[n].chart[chart].data.length; k++) {
-                                    console.log("j",j)
                                     var noPushInArray = 0;
                                     if ($scope.exportObject.widgetData[n].chart[chart].data[k].type == 'percentageArea' ) {
                                         if (!$scope.exportObject.widgetData[n].chart[chart].data[k].message) {
                                             arrangeData[$scope.exportObject.widgetData[n].chart[chart].data[k].key] = $scope.exportObject.widgetData[n].chart[chart].data[k].totalChartLength[j].y['total'];
                                             if( typeof $scope.exportObject.widgetData[n].chart[chart].data[k].totalChartLength[j].x != 'object'){
-                                                console.log("here")
                                                 arrangeData.Date = $scope.exportObject.widgetData[n].chart[chart].data[k].totalChartLength[j].x;
                                             }else
                                                 arrangeData.Date = moment($scope.exportObject.widgetData[n].chart[chart].data[k].totalChartLength[j].x).format('YYYY-MM-DD');
@@ -906,23 +903,19 @@ function ExportController($scope, $http, $state, $rootScope, $window,$q,$statePa
                                             noPushInArray = 1;
                                     }
                                 }
-                                console.log("arrangeData",arrangeData)
                                 if (noPushInArray != 1)
                                     formatJson.push(arrangeData)
                                 j++
                             }
-                            console.log("formatJson",formatJson)
                         }
                         else if ($scope.exportObject.widgetData[n].chart[chart].data[0].type == 'stackbar'  ) {
                             formatJson=[];
                             lengthOfValue = $scope.exportObject.widgetData[n].chart[0].data[0].values[0].total.length;
-                            console.log("$scope.exportObject.widgetData[n].chart[0].data[0].totalChartLength",$scope.exportObject.widgetData[n].chart[0].data[0].values[0].total[0])
 
 
                             for (var k = 0; k < $scope.exportObject.widgetData[n].chart[chart].data.length; k++) {
                                 var arrangeData = {};
                                 for( var keys in $scope.exportObject.widgetData[n].chart[0].data[k].values[0].total[0] ) {
-                                    console.log("j",j)
                                     var noPushInArray = 0;
                                     if ($scope.exportObject.widgetData[n].chart[chart].data[k].type == 'stackbar' ) {
                                         if (!$scope.exportObject.widgetData[n].chart[chart].data[k].message) {
@@ -934,14 +927,11 @@ function ExportController($scope, $http, $state, $rootScope, $window,$q,$statePa
                                             noPushInArray = 1;
                                     }
                                 }
-                                console.log("arrangeData",arrangeData)
                                 if (noPushInArray != 1)
                                     formatJson.push(arrangeData)
                             }
-                            console.log("formatJson",formatJson)
                         }
                         else if ($scope.exportObject.widgetData[n].chart[chart].data[0].type == 'pie' || $scope.exportObject.widgetData[n].chart[chart].data[0].type == 'fbReachByCity' || $scope.exportObject.widgetData[n].chart[chart].data[0].type == 'angularGauge' ) {
-                            console.log("$scope.exportObject.widgetData[n].chart[chart].data11",$scope.exportObject.widgetData[n].chart[chart].data)
                             var arrangeData = {};
                             for (var k = 0; k < $scope.exportObject.widgetData[n].chart[chart].data.length; k++) {
                                 var noPushInArray = 0;
@@ -966,7 +956,6 @@ function ExportController($scope, $http, $state, $rootScope, $window,$q,$statePa
                                     }
 
                                     arrangeData.Day = $scope.exportObject.widgetData[n].chart[chart].data[0].values[i].date
-                                    console.log("arrangeData",arrangeData)
                                     formatJson.push(arrangeData)
                                 }
 
@@ -984,7 +973,6 @@ function ExportController($scope, $http, $state, $rootScope, $window,$q,$statePa
                                     for (var key in $scope.exportObject.widgetData[n].chart[chart].data[0].values[i]) {
                                         arrangeData[key] = $scope.exportObject.widgetData[n].chart[chart].data[0].values[i][key]
                                     }
-                                    console.log("arrangeData",arrangeData)
                                     formatJson.push(arrangeData)
                                 }
 
@@ -1002,11 +990,10 @@ function ExportController($scope, $http, $state, $rootScope, $window,$q,$statePa
                                 for(var i=0;i<$scope.exportObject.widgetData[n].chart[chart].data[0].values.length;i++){
                                     var arrangeData={}
                                     noPushInArray=0;
-                                    for (var key in $scope.exportObject.widgetData[n].chart[chart].data[0].values[i]) {console.log("$scope.exportObject.widgetData[n].chart[chart].data[0].values[i][key]",typeof ($scope.exportObject.widgetData[n].chart[chart].data[0].values[i][key]))
+                                    for (var key in $scope.exportObject.widgetData[n].chart[chart].data[0].values[i]) {
                                         if(typeof $scope.exportObject.widgetData[n].chart[chart].data[0].values[i][key] === 'string'){
                                             var string=$scope.exportObject.widgetData[n].chart[chart].data[0].values[i][key]
                                             $scope.exportObject.widgetData[n].chart[chart].data[0].values[i][key]=string.split(',').join("")
-                                            console.log("$scope.exportObject.widgetData[n].chart[chart].data[0].values[i][key]",$scope.exportObject.widgetData[n].chart[chart].data[0].values[i][key])
                                         }
 
                                         arrangeData[key] = $scope.exportObject.widgetData[n].chart[chart].data[0].values[i][key]
@@ -1295,7 +1282,6 @@ function ExportController($scope, $http, $state, $rootScope, $window,$q,$statePa
                         temp_array.sort().reverse();
                     }
                     var temp_obj = {};
-                    console.log('objobj')
                     for (var i=0; i<temp_array.length; i++) {
                         temp_obj[temp_array[i]] = obj[temp_array[i]];
                     }

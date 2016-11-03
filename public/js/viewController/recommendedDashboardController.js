@@ -8,6 +8,7 @@ function RecommendedDashboardController($scope, $http, $window, $q, $state, $roo
     $scope.profileList = [];
     $scope.objectList = [];
     $scope.tempList = [];
+    $scope.recommendeDashboardName;
     $scope.metricList = {};
     $scope.referenceWidgetsList = [];
     $scope.storedObjects = {};
@@ -21,15 +22,41 @@ function RecommendedDashboardController($scope, $http, $window, $q, $state, $roo
     $scope.canManage = true;
     $scope.recommendedRefreshButton='';
     $scope.tokenExpired=[];
+    var progressStart=0;
+
+    angular.element(document).ready(function () {
+        $('.ladda-button').addClass('icon-arrow-right');
+        Ladda.bind( '.ladda-button',{
+            callback: function( instance ){
+                $scope.createRecommendedDashboard();
+                $('.ladda-button').removeClass('icon-arrow-right');
+                var progress = 0;
+                var interval = setInterval( function(){
+                    progress = Math.min( progress + Math.random() * 0.1, 1 );
+                    instance.setProgress( progress );
+                    if( progress === 1 && progressStart===1){
+                        instance.stop();
+                        clearInterval( interval );
+                        $scope.ok();
+                    }
+                }, 50 );
+            }
+        });
+
+
+    });
+    
+    $scope.dropdownWidth=function(hasnoAccess,tokenExpired){
+        if(hasnoAccess==true || tokenExpired==true){
+            return ('col-sm-'+10+' col-md-'+10+' col-lg-'+10+' col-xs-10');
+        }
+    }
+
     $scope.changeViewsInBasicWidget = function (obj) {
         $scope.currentView = obj;
         if ($scope.currentView === 'step_one') {
-            document.getElementById('basicWidgetBackButton1').disabled = true;
             $scope.clearReferenceWidget();
             $scope.listOfRecommendedDashboard();
-        }
-        else if ($scope.currentView === 'step_two') {
-            document.getElementById('basicWidgetBackButton1').disabled = true;
         }
     };
 
@@ -43,7 +70,7 @@ function RecommendedDashboardController($scope, $http, $window, $q, $state, $roo
     $scope.listOfRecommendedDashboard = function () {
         $http({
             method: 'GET',
-            url: 'api/get/recommendDashboard'
+            url: 'api/get/recommendDashboard'+'?buster='+new Date()
         }).then(function successCallback(response) {
             $scope.wholeDataDetail = response.data;
 
@@ -58,7 +85,22 @@ function RecommendedDashboardController($scope, $http, $window, $q, $state, $roo
             });
         });
     };
-
+    $scope.closeRecommendedDashboardModal=function(){
+        changeState().then(
+            function () {
+                $state.go('app.reporting.dashboard',{id:$rootScope.stateDashboard._id});
+            }
+        )
+    }
+    function changeState(){
+        var deferred = $q.defer();
+        CloseModal();
+        function CloseModal(){
+            $scope.ok();
+            deferred.resolve("open")
+        }
+        return deferred.promise;
+    }
     $scope.getProfileForChosenChannel = function (dashboards) {
         $scope.fullOfDashboard = dashboards;
         $scope.getChannelList = dashboards.channels;
@@ -84,7 +126,7 @@ function RecommendedDashboardController($scope, $http, $window, $q, $state, $roo
         var deferred = $q.defer();
         $http({
             method: 'GET',
-            url: '/api/v1/get/profiles/' + profileId
+            url: '/api/v1/get/profiles/' + profileId+'?buster='+new Date()
         }).then(
             function successCallback(response) {
                 deferred.resolve({
@@ -92,7 +134,7 @@ function RecommendedDashboardController($scope, $http, $window, $q, $state, $roo
                 });
                 $scope.objectList = [];
                 $http({
-                    method: 'GET', url: '/api/v1/get/objectType/' + profileId
+                    method: 'GET', url: '/api/v1/get/objectType/' + profileId+'?buster='+new Date()
                 }).then(
                     function successCallback(response) {
                         $scope.objectTypeList=response.data.objectType;
@@ -164,7 +206,7 @@ function RecommendedDashboardController($scope, $http, $window, $q, $state, $roo
                 $scope.tokenExpired[index] = true;
             $http({
                 method: 'GET',
-                url: '/api/v1/get/objects/' + profileObj._id
+                url: '/api/v1/get/objects/' + profileObj._id+'?buster='+new Date()
             }).then(
                 function successCallback(response) {
                     if ($scope.getChannelList[index].name === 'FacebookAds'){
@@ -355,7 +397,7 @@ function RecommendedDashboardController($scope, $http, $window, $q, $state, $roo
             }
             $http({
                 method: 'GET',
-                url: '/api/v1/channel/profiles/objectsList/' + this.profileOptionsModel[index]._id + '?objectType=' + $scope.objectType
+                url: '/api/v1/channel/profiles/objectsList/' + this.profileOptionsModel[index]._id + '?objectType=' + $scope.objectType+'&buster='+new Date()
             }).then(
                 function successCallback(response) {
                     $scope.objectList[index] = response.data;
@@ -387,7 +429,7 @@ function RecommendedDashboardController($scope, $http, $window, $q, $state, $roo
     $scope.createRecommendedDashboard = function () {
         var matchingMetric = [];
         var jsonData = {
-            name: $scope.fullOfDashboard.dashboard.name
+            name: $scope.recommendeDashboardName
         };
         $http({
             method: 'POST',
@@ -398,8 +440,8 @@ function RecommendedDashboardController($scope, $http, $window, $q, $state, $roo
 
                 var inputParams = [];
                 var dashboardId = response.data;
-
-
+                //progressStart=1;
+                $scope.ok();
                 for (var widget = 0; widget < $scope.referenceWidgetsList.length; widget++) {
                     for (var chart = 0; chart < $scope.referenceWidgetsList[widget].charts.length; chart++) {
                         for (var j = 0; j < $scope.storedUserChosenValues.length; j++) {
@@ -451,9 +493,10 @@ function RecommendedDashboardController($scope, $http, $window, $q, $state, $roo
                     data: inputParams
                 }).then(
                     function successCallback(response) {
-                        $state.transitionTo('app.reporting.dashboard', {id: dashboardId});
+                        $state.go('app.reporting.dashboard', {id: dashboardId});
                     },
                     function errorCallback(error) {
+                        progressStart=1;
                         swal({
                             title: "",
                             text: "<span style='sweetAlertFont'>Something went wrong! Please reopen recommended dashboards link</span>",
@@ -463,6 +506,7 @@ function RecommendedDashboardController($scope, $http, $window, $q, $state, $roo
                 );
             },
             function errorCallback(error) {
+                progressStart=1;
                 swal({
                     title: "",
                     text: "<span style='sweetAlertFont'>Please try again! Something is missing</span>",

@@ -3,7 +3,7 @@ module.exports = {
     'facebookAuth': {
         clientID: '1716895671912901', // your App ID
         clientSecret: 'e5f9e0828dc78c548ddbc3ac9e3658fd', // your App Secret
-        callbackURL: 'https://datapoolt.co/auth/facebook/callback',
+        callbackURL: 'https://app.datapoolt.co/auth/facebook/callback',
         scope: 'manage_pages,read_insights',
         profileFields: ["emails", "displayName"],
         site:'https://www.facebook.com/dialog/',
@@ -17,7 +17,7 @@ module.exports = {
     'aweberAuth': {
         clientID: 'AkREQGDPsoHjCN2mdF3qY4YM',
         clientSecret: 'ibqzrt5XWBUhZf6jrN65Gr9nPDLanh1mq9Yel1uK',
-        callbackURL:  'https://datapoolt.co/callback',
+        callbackURL:  'https://app.datapoolt.co/callback',
         scope: ['onescope', 'twoscope', 'redscope', 'bluescope'],
         site:'https://api.aweber.com/1.0/',
         tokenPath:'https://auth.aweber.com/1.0/oauth/access_token',
@@ -34,7 +34,7 @@ module.exports = {
         site: 'https://api.vimeo.com',
         tokenPath: '/oauth/access_token',
         authorizationPath: '/oauth/authorize',
-        redirect_uri:'/auth/vimeo/callback/',
+        redirect_uri:'https://app.datapoolt.co/auth/vimeo/callback/',
         scope: 'public',
         state: '3(#0/!~',
         localCallingURL: '/api/auth/vimeo',
@@ -47,7 +47,7 @@ module.exports = {
     'twitterAuth': {
         consumerKey: 'e7SnwcN5W8FC1y6O8IpMtl2S8',
         consumerSecret: 'YZmgirt6IAnUPxZGWvioVWeXiMRn4E6GKsVKv5MJUO4zD6PNcy',
-        callbackURL: 'https://datapoolt.co/auth/twitter/callback',
+        callbackURL: 'https://app.datapoolt.co/auth/twitter/callback',
         AccessToken: '10251882-3anABLaQc4ZaWbp6GDj21u19BUuTFQX3zVmlutnn7',
         AccessTokenSecret:'x9H1UO0BoMtfmWhN9OWzqQVJtasSVwNzohOhYEzTuyzoR',
         localCallingURL: '/api/auth/twitter',
@@ -62,7 +62,7 @@ module.exports = {
     'googleAuth': {
         clientID: '697605351302-cm90a20idvq2gcu3qju0oaab88ik6peg.apps.googleusercontent.com',
         clientSecret: 'DkUY5XrdcWDQM_7tEI9xNAC6',
-        callbackURL: 'https://datapoolt.co/auth/google/callback',
+        callbackURL: 'https://app.datapoolt.co/auth/google/callback',
         localCallingURL: '/api/v1/auth/google',
         localCallbackURL: '/auth/google/callback',
         site: 'https://accounts.google.com/o/',
@@ -79,7 +79,7 @@ module.exports = {
     'googleAdwordsAuth':{
         clientID: '870217049857-gm1938i5vr53l4og5m5fmp1fjprbe7af.apps.googleusercontent.com',
         clientSecret: '1ZtXnW143hAuBAmZtj0i-rzC',
-        callbackURL: 'https://datapoolt.co/auth/adwords/callback',
+        callbackURL: 'https://app.datapoolt.co/auth/adwords/callback',
         scope:'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/adwords',
         state: '5$55#',
         managerClientId:'374-579-6439',
@@ -97,7 +97,7 @@ module.exports = {
     'instagramAuth': {
         clientID: '222690d755ba41d0a0defad5e19eceaf',
         clientSecret: '51856a68d3b14b9f85d755bc615986e8',
-        callbackURL: 'https://datapoolt.co/auth/instagram/callback',
+        callbackURL: 'https://app.datapoolt.co/auth/instagram/callback',
         scope : ['basic'],
         authorizationUrl:'https://api.instagram.com/oauth/authorize',
         accessTokenUrl:'https://api.instagram.com/oauth/access_token',
@@ -112,7 +112,7 @@ module.exports = {
         site            : 'https://www.facebook.com/dialog/',
         tokenPath       : 'https://graph.facebook.com/oauth/access_token',
         authorizationPath: 'oauth',
-        redirect_uri : 'https://datapoolt.co/auth/facebookads/callback',
+        redirect_uri : 'https://app.datapoolt.co/auth/facebookads/callback',
         scope : 'email,manage_pages,read_insights,ads_read,ads_management',
         state : '4234#',
         localCallingURL: '/api/auth/facebookads',
@@ -228,7 +228,7 @@ module.exports = {
     'youTubeAuth': {
         clientID: '697605351302-cm90a20idvq2gcu3qju0oaab88ik6peg.apps.googleusercontent.com',
         clientSecret: 'DkUY5XrdcWDQM_7tEI9xNAC6',
-        callbackURL: 'https://datapoolt.co/auth/youtube/callback',
+        callbackURL: 'https://app.datapoolt.co/auth/youtube/callback',
         site: 'https://accounts.google.com/o/',
         tokenPath: 'https://accounts.google.com/o/oauth2/token',
         authorizationPath: 'oauth2/auth',
@@ -268,7 +268,7 @@ module.exports = {
     'mailChimp':{
         clientID        : '236023092083',
         clientSecret    : '2aa7fd91868924efd542767bc65b2ec9',
-        redirect_uri : 'https://datapoolt.co/auth/mailchimp/callback/',
+        redirect_uri : 'https://app.datapoolt.co/auth/mailchimp/callback/',
         authorizationUrl:"https://login.mailchimp.com/oauth2/authorize",
         accessTokenUrl:"https://login.mailchimp.com/oauth2/token",
         base_uri:"https://login.mailchimp.com/oauth2/",
@@ -280,14 +280,14 @@ module.exports = {
     'pinterest':{
         clientID        : '4850584692457482509',
         clientSecret    : '93dbedd44181a79569f40c90bd9c6d1eb04c80ec8016444c84bb53c0901f3092',
-        redirect_uri : 'https://datapoolt.co/auth/pinterest/callback',
+        redirect_uri : 'https://app.datapoolt.co/auth/pinterest/callback',
         scope:'read_public,read_relationships'
     },
 
     'linkedIn':{
         clientID :'81665zttd0yozd',
         clientSecret :'KUlhe3rR1ZoV3V2o',
-        redirect_uri:'https://datapoolt.co/auth/linkedin/callback',
+        redirect_uri:'https://app.datapoolt.co/auth/linkedin/callback',
         scope : [["r_basicprofile","r_emailaddress","rw_company_admin"]],
         tokenPath:'https://www.linkedin.com/oauth/v2/accessToken',
         site:'https://www.linkedin.com/oauth/',
@@ -384,11 +384,11 @@ module.exports = {
         service:'Zoho',
         username: 'alerts@datapoolt.co',
         password: 'DaTaPoOlT',
-        redirectLink:'https://datapoolt.co/api/v1/emailVerification?token=',
+        redirectLink:'https://app.datapoolt.co/api/v1/emailVerification?token=',
         verified:'verified',
         alreadyVerified:'alreadyVerified',
         mailResend:'mailResend',
-        redirectVerifyUserToken:'https://datapoolt.co/verifyUserToken?token=',
+        redirectVerifyUserToken:'https://app.datapoolt.co/verifyUserToken?token=',
         inValid:'Invalid'
     },
 

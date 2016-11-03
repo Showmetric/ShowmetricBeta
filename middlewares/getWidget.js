@@ -39,10 +39,8 @@ exports.widgets = function (req, res, next) {
 
     }
     else if (String(req.params.dashboardId) === String(null)) {
-        console.log('else if')
         req.reportId = req.query.reportId;
         getDashboards.getDashboardDetailsFromReportId(req,res,function (err,dashboardDetails) {
-            console.log('dashboard',req.app.result)
             req.app.result = dashboardDetails
             next();
         });
@@ -217,10 +215,8 @@ exports.deleteTextWidgets = function (req, res, next) {
                             else if (!widget)
                                 return res.status(501).json({error: 'Not implemented'});
                             else {
-                                console.log("Text widgets deleted successfully");
-                                    req.app.result = req.params.widgetId;
-                                    next();
-
+                                req.app.result = req.params.widgetId;
+                                next();
                             }
                         })
                     }

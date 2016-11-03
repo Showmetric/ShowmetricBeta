@@ -17,8 +17,23 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
             return {float:"left"}
         }
     };
+//function to check the subscription limits on basic widgets
+    $scope.basicwidget = function (){
+        $state.go("app.reporting.dashboard.basicWidget", {widgetType: 'basic'});
+    };
 
-
+    $scope.stateValidation = function(targetState) {
+        switch(targetState) {
+            case 'basicWidget':
+                if($state.includes('app.reporting.dashboard')) $state.go('app.reporting.dashboard.'+targetState,{widgetType:'basic'});
+                else toastr.info('Please perform this action from within a dashboard');
+                break;
+            case 'fusionWidget':
+                if($state.includes('app.reporting.dashboard')) $state.go('app.reporting.dashboard.'+targetState);
+                else toastr.info('Please perform this action from within a dashboard');
+                break;
+        }
+    };
     // document.getElementById('dashLayout').style.visibility = "hidden";
     var isExportOptionSet = '';
     $(".navbar").css('z-index','1');
@@ -244,7 +259,7 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
             }).then(
                 function successCallback(response) {
                     if(response.status == '200')
-                        console.log(response);
+                        //console.log(response);
                 },
                 function errorCallback(error) {
                     swal({
