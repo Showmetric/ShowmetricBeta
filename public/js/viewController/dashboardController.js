@@ -274,7 +274,7 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
                                         $scope.dashboard.widgetData[ind].chart[i].data[j].myheight = elemHeight;
                                         }
                                     }
-                                else{
+ /*                               else{
                                     var getWigetId='#getWidgetColor-' + widget.id
                                     var listed = $('#chartTable-'+widget.id).width();
                                     if (listed <= 350){
@@ -299,7 +299,7 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
 
                                     }
                                 }
-                            }
+ */                           }
                             var ind = $scope.dashboard.widgets.indexOf(widget);
                             if(document.getElementById('chartOptions'+ind)!=null){
                                 var parentWidth = document.getElementById('chartOptions'+ind).offsetWidth;
@@ -461,10 +461,17 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
                                         $("#errorWidgetData-"+$scope.dashboard.widgetData[i].id).hide();
                                         $("#errorWidgetTokenexpire-" + $scope.dashboard.widgetData[i].id).show()
                                     }
-                                    else{
-                                        $("#widgetData-"+$scope.dashboard.widgetData[i].id).hide();
-                                        $("#errorWidgetData-"+$scope.dashboard.widgetData[i].id).show();
-                                        $("#errorWidgetTokenexpire-" + $scope.dashboard.widgetData[i].id).hide()
+                                    else {
+                                        if($scope.loadedWidgetCount != $scope.dashboard.widgets.length){
+                                            $("#widgetData-"+$scope.dashboard.widgetData[i].id).hide();
+                                            $("#errorWidgetData-"+$scope.dashboard.widgetData[i].id).hide();
+                                            $("#errorWidgetTokenexpire-" + $scope.dashboard.widgetData[i].id).hide()
+                                        } 
+                                        else {
+                                            $("#widgetData-"+$scope.dashboard.widgetData[i].id).hide();
+                                            $("#errorWidgetData-"+$scope.dashboard.widgetData[i].id).show();
+                                            $("#errorWidgetTokenexpire-" + $scope.dashboard.widgetData[i].id).hide()
+                                        }
                                     }
 
                                 }
@@ -657,8 +664,14 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
             url: '/api/v1/widget/'+ widgetId + '?meta=' +meta.meta+'&buster='+new Date()
         };
         $http(dataUrl).then(
-            function successCallback() {
-                $rootScope.populateDashboardWidgets();
+            function successCallback(response) {
+                var m = $scope.dashboard.widgets.map(function(e) { return e.id; }).indexOf(widgetId);
+                $scope.dashboard.widgets.splice(m,1)
+                $scope.dashboard.widgetData.splice(m,1)
+                $rootScope.$broadcast('populateWidget', response.data);
+
+                // console.log("response",response)
+                // $rootScope.populateDashboardWidgets();
             },
             function errorCallback() {
                 swal({
@@ -793,6 +806,13 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
 
     //To catch a request for a new widget creation and create the dashboard in the frontend
     $scope.$on('populateWidget', function(e,widget){
+        if(widget.widgetType === 'customFusion'){
+            for(var i=0;i<widget.widgets.length;i++){
+                var m = $scope.dashboard.widgets.map(function(e) { return e.id; }).indexOf(widget.widgets[i].widgetId);
+                $scope.dashboard.widgets.splice(m,1)
+                $scope.dashboard.widgetData.splice(m,1)
+            }
+        }
         var inputWidget = [];
         inputWidget.push(createWidgets.widgetHandler(widget,{
             'startDate': moment($scope.dashboardCalendar.start_date).format('YYYY-MM-DD'),
@@ -889,7 +909,13 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
                         $scope.widgetsPresent = false;
                 }
                 else {
-                    $rootScope.populateDashboardWidgets();
+                    for(var items in $scope.dashboard.widgetData) {
+                        if($scope.dashboard.widgetData[items].id == widgetId)
+                            $scope.dashboard.widgetData.splice(items,1);
+                    }
+                    for (var widgetObjects in response.data.widgetsList) {
+                        $rootScope.$broadcast('populateWidget', response.data.widgetsList[widgetObjects]);
+                    }
                 }
             },
             function errorCallback(error){

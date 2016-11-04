@@ -106,7 +106,7 @@ function FusionSettingsController($scope, $uibModalInstance, widget, $http, $sta
                 data: inputParams
             }).then(
                 function successCallback(response) {
-                    $rootScope.populateDashboardWidgets();
+                    $rootScope.$broadcast('populateWidget', response.data.widgetsList[0]);
                     $scope.dismiss();
                 },
                 function errorCallback(error) {

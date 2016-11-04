@@ -39,10 +39,8 @@ exports.widgets = function (req, res, next) {
 
     }
     else if (String(req.params.dashboardId) === String(null)) {
-        console.log('else if')
         req.reportId = req.query.reportId;
         getDashboards.getDashboardDetailsFromReportId(req,res,function (err,dashboardDetails) {
-            console.log('dashboard',req.app.result)
             req.app.result = dashboardDetails
             next();
         });
@@ -73,14 +71,25 @@ exports.widgetDetails = function (req, res, next) {
                             updated: new Date(),
                             meta:req.query.meta
                         }
-                    },{upsert: true},  function (err,widget) {
+                    },{upsert: true},  function (err,widget,widgetDetail) {
                         if (err)
                             return res.status(500).json({error: 'Internal server error'})
                         else if (!widget)
                             return res.status(204).json({error: 'No records found'})
                         else{
-                            req.app.result = widget;
+                            widgetsList.findOne({_id: req.params.widgetId},function(err,widgetDetail){
+                                if (err)
+                                    return res.status(500).json({error: 'Internal server error'});
+                                else if (!widgetDetail)
+                                    return res.status(501).json({error: 'Not implemented'});
+                                else{
+                                    req.app.result = widgetDetail;
                             next();
+                                }
+                            })
+
+                            
+                          
                         }
                     });
                 }
@@ -153,10 +162,23 @@ exports.deleteWidgets = function (req, res, next) {
 
                                         //Doing the bulk update
                                         bulk.execute(function (err, response) {
-                                            req.app.result = req.params.widgetId;
-                                            next();
+                                            var widgetIds=[];
+                                            for(var i=0;i<widgetDetail.widgets.length;i++){
+                                                widgetIds.push(widgetDetail.widgets[i].widgetId)
+                                            }
+                                            widgetsList.find({_id: {$in: widgetIds}}, function (err, widgetDetails) {
+                                                if (err)
+                                                    return res.status(500).json({error: 'Internal server error'});
+                                                else if (!widgetDetails)
+                                                    return res.status(204).json({error: 'No records found'});
+                                                else {
+                                                    req.app.result = widgetDetails;
+                                                    next();
+                                                }
+                                            })
+
                                         });
-                                    }
+                                    } 
                                     else {
                                         req.app.result = req.params.widgetId;
                                         next();
@@ -217,7 +239,6 @@ exports.deleteTextWidgets = function (req, res, next) {
                             else if (!widget)
                                 return res.status(501).json({error: 'Not implemented'});
                             else {
-                                console.log("Text widgets deleted successfully");
                                     req.app.result = req.params.widgetId;
                                     next();
 
@@ -237,7 +258,6 @@ exports.saveTextWidgets = function (req, res, next) {
                 if (err)
                     return res.status(500).json({error: 'Internal server error'});
                 else {
-                    console.log("text widgets",result.storeAllWidgets)
                     req.app.result = result.storeAllWidgets;
                     next();
                 }
