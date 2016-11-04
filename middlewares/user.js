@@ -2,6 +2,7 @@ var user = require('../models/user');
 var profile = require('../models/profiles');
 var organizations = require('../models/organizations');
 var subscriptionTypes=require('../models/subscriptionType');
+var payments=require('../models/payments');
 var dashboard=require('../models/dashboards')
 var exports = module.exports = {};
 var bcrypt = require('bcrypt-nodejs');
@@ -10,6 +11,7 @@ var randomString = require("randomstring");
 // to send mail
 var configAuth = require('./../config/auth');
 var  utility= require('../helpers/utility');
+var _ = require('lodash');
 /**
  Function to get the user's details such as organization id,name ..
  @params 1.req contains the facebook user details i.e. username,token,email etc
@@ -264,4 +266,32 @@ exports.emailVerification=function(req,res,next){
     else{
         return res.status(500).json({error: 'Internal server error'});
     }
+};
+
+exports.getPaymentDetails = function (req,res,next) {
+    payments.find({'orgId':req.user.orgId},function (err,paymentDetails) {
+        if (err)
+            return res.status(500).json({error: 'Internal server error'});
+        else if (!paymentDetails)
+            return res.status(204).json({error: 'No records found'});
+        else {
+            subscriptionTypes.find(function (err, type) {
+                if (err)
+                    return res.status(500).json({error: 'Internal server error'});
+                else if (!type)
+                    return res.status(204).json({error: 'No records found'});
+                else {
+                    var subscriptionDetails=[]
+                    for(var i=0;i<paymentDetails.length;i++){
+                        var subsciptionType = _.findIndex(type, function (o) {
+                            return o._id == paymentDetails[i].subscriptionTypeId;
+                        });
+                        paymentDetails[i].subscriptionTypeId=type[subsciptionType].name;
+                    }
+                    req.app.result = paymentDetails;
+                    next();
+                }
+            });
+        }
+    });
 };

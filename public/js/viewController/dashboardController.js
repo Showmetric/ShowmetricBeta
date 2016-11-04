@@ -132,32 +132,32 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
     $(".md-overlay").css('background','rgba(0,0,0,0.5)');
     //Sets up all the required parameters for the dashboard to function properly when it is initially loaded. This is called in the ng-init function of the dashboard template
     $scope.dashboardConfiguration = function () {
-        /*$rootScope.getSubscriptions();*/
+
         $scope.fetchDateForDashboard=function(){
             $http({
                 method: 'GET',
-                url: '/api/v1/get/dashboards/' + $state.params.id
+                url: '/api/v1/getSubscriptionFromDashboard/'+ $state.params.id
             }).then(
                 function successCallback(response){
                     if(response.status==200){
-                        dateRange = response.data.dateRange
-                        var validity = response.data.validity;
-                        //$scope.userModifyDate(dateRange)
+                       dateRange=response.data.response.limits.dateRange;
+                        $scope.userModifyDate(dateRange)
                     }
                     else{
-                        dateRange = 30
-                        var validity=30
+                        $scope.userModifyDate(365)
                     }
                 }
             )
         };
-        //$scope.fetchDateForDashboard();
+
+        $scope.fetchDateForDashboard();
 
         //To define the calendar in dashboard header
-        //$scope.userModifyDate=function(dateRange,validity) {
+        $scope.userModifyDate=function(dateRange) {
             $scope.dashboardCalendar = new Calendar({
                 element: $('.daterange--double'),
-                earliest_date: moment(new Date()).subtract(365, 'days'),
+                earliest_date: moment(new Date()).subtract(dateRange, 'days'),
+                latest_date: new Date(),
                 latest_date: new Date(),
                 start_date: moment(new Date()).subtract(30,'days'),
                 end_date: new Date(),
@@ -166,7 +166,59 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
                     $scope.populateDashboardWidgets();
                 }
             });
-        //}
+            $scope.fetchDashboardName();
+        }
+
+        //To fetch the name of the dashboard from database and display it when the dashboard is loaded
+        $scope.fetchDashboardName = function () {
+            $http({
+                method: 'GET',
+                url: '/api/v1/get/dashboards/'+ $state.params.id+'?buster='+new Date()
+            }).then(
+                function successCallback(response) {
+                    if(response.status == '200'){
+                        $scope.dashboard.dashboardName =  response.data.name;
+                        $rootScope.populateDashboardWidgets();
+                    }
+                    else
+                        $scope.dashboard.dashboardName =  null;
+                },
+                function errorCallback(error) {
+                    $scope.dashboard.dashboardName = null;
+                    swal({
+                        title: '',
+                        text: '<span style="sweetAlertFont">Something went wrong! Please reload the dashboard</span>',
+                        html: true
+                    });
+                }
+            );
+        };
+
+        //To change the name of the dashboard to user entered value
+        $scope.changeDashboardName = function () {
+            var jsonData = {
+                dashboardId: $state.params.id,
+                name: $scope.dashboard.dashboardName
+            };
+            $http({
+                method: 'POST',
+                url: '/api/v1/create/dashboards',
+                data: jsonData
+            }).then(
+                function successCallback(response) {
+                    if(response.status == '200')
+                        $rootScope.fetchRecentDashboards();
+                },
+                function errorCallback(error) {
+                    swal({
+                        title: "",
+                        text: "<span style='sweetAlertFont'>Error in changing the name! Please try again</span> .",
+                        html: true
+                    });
+                }
+            );
+        };
+
         //To set height for Window scroller in dashboard Template
         $scope.docHeight = window.innerHeight;
         $scope.docHeight = $scope.docHeight-110;
@@ -318,57 +370,6 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
             }
         };
 
-        //To fetch the name of the dashboard from database and display it when the dashboard is loaded
-        $scope.fetchDashboardName = function () {
-            $http({
-                method: 'GET',
-                url: '/api/v1/get/dashboards/'+ $state.params.id+'?buster='+new Date()
-            }).then(
-                function successCallback(response) {
-                    if(response.status == '200'){
-                        $scope.dashboard.dashboardName =  response.data.name;
-                        $rootScope.populateDashboardWidgets();
-                    }
-                    else
-                        $scope.dashboard.dashboardName =  null;
-                },
-                function errorCallback(error) {
-                    $scope.dashboard.dashboardName = null;
-                    swal({
-                        title: '',
-                        text: '<span style="sweetAlertFont">Something went wrong! Please reload the dashboard</span>',
-                        html: true
-                    });
-                }
-            );
-        };
-
-        $scope.fetchDashboardName();
-
-        //To change the name of the dashboard to user entered value
-        $scope.changeDashboardName = function () {
-            var jsonData = {
-                dashboardId: $state.params.id,
-                name: $scope.dashboard.dashboardName
-            };
-            $http({
-                method: 'POST',
-                url: '/api/v1/create/dashboards',
-                data: jsonData
-            }).then(
-                function successCallback(response) {
-                    if(response.status == '200')
-                        $rootScope.fetchRecentDashboards();
-                },
-                function errorCallback(error) {
-                    swal({
-                        title: "",
-                        text: "<span style='sweetAlertFont'>Error in changing the name! Please try again</span> .",
-                        html: true
-                    });
-                }
-            );
-        };
 
         $scope.changeWidgetName = function (widgetInfo,widgetdata) {
             var inputParams = [];
@@ -466,7 +467,7 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
                                             $("#widgetData-"+$scope.dashboard.widgetData[i].id).hide();
                                             $("#errorWidgetData-"+$scope.dashboard.widgetData[i].id).hide();
                                             $("#errorWidgetTokenexpire-" + $scope.dashboard.widgetData[i].id).hide()
-                                        } 
+                                        }
                                         else {
                                             $("#widgetData-"+$scope.dashboard.widgetData[i].id).hide();
                                             $("#errorWidgetData-"+$scope.dashboard.widgetData[i].id).show();
@@ -669,8 +670,6 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
                 $scope.dashboard.widgets.splice(m,1)
                 $scope.dashboard.widgetData.splice(m,1)
                 $rootScope.$broadcast('populateWidget', response.data);
-
-                // console.log("response",response)
                 // $rootScope.populateDashboardWidgets();
             },
             function errorCallback() {

@@ -9,7 +9,8 @@
 </div>
 <div class="wrapper wrapper-content gridAlign greyish-bg" ng-controller="AccountManagementController"
      ng-init="getSubscriptions()" ng-style="{'height': docHeight+'px'}">
-    <div clas="row">
+    <div style="height:auto;">
+       <div clas="row">
         <div class="form-group">
             <span class="col-sm-4 myaccount-text">Your current plan is</span>
             <span class="myaccount-text-style" style="text-transform: uppercase" >{{subscriptionType}}</span>
@@ -31,6 +32,27 @@
                 </button>
             </div>
         </div>
+    </div>
+    </div>
+    <div style="float: right;"><h2 style="text-align: center;padding-top: 15px;">Transaction History</h2>
+       <table  class="table table-striped">
+            <thead>
+            <tr style="padding:2px 5px;width:100%">
+                <th style="padding:5px 5px;width:5%;text-align:center;">Date</th>
+                <th style="padding:5px 5px;width:20%;text-align:center;">Invoice number</th>
+                <th style="padding:5px 5px;width:6%;text-align:center;">Amount paid</th>
+                <th style="padding:5px 5px;width:6%;text-align:center;">Subcription plan</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr style="padding:2px 5px;width:100%" ng-repeat="data in paymentDetails | limitTo: limitScroll">
+                <td style="padding:5px 5px;width:5%;text-align:left;">{{data.paidOn}}</td>
+                <td style="padding:5px 5px;width:20%;text-align:center;">{{data.invoiceNumber}}</td>
+                <td style="padding:5px 5px;width:5%;text-align:center;">{{data.amount}}</td>
+                <td style="padding:5px 5px;width:5%;text-align:center;">{{data.subscriptionTypeId}}</td>
+            </tr>
+            </tbody>
+        </table>
     </div>
 </div>
 <script type="text/javascript">

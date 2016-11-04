@@ -206,19 +206,24 @@ module.exports = function (app, passport) {
                 }
             }, function (error, response, body) {
                 var body = JSON.parse(body);
-                req.orgId = req.body.orgId;
-                req.subscriptionId = req.body.subscriptionId;
-                req.validity = req.body.subscription.validity;
-                req.orderId = body.order_id;
-                req.amount = body.amount;
-                req.currency = body.currency;
-                req.paidOn = moment.unix(body.created_at).format("YYYY-MM-DD HH:mm:ss");
-                req.status = body.status;
-                req.email = body.email;
-                req.contact = body.contact;
-                getSubscriptionDetails.updateSubscription(req, res, function (updateDetails) {
-                    res.json(updateDetails)
-                })
+                if(response.statusCode===200){
+                    req.orgId = req.body.orgId;
+                    req.subscriptionId = req.body.subscriptionId;
+                    req.validity = req.body.subscription.validity;
+                    req.orderId = body.order_id;
+                    req.amount = body.amount;
+                    req.currency = body.currency;
+                    req.paidOn = moment.unix(body.created_at).format("YYYY-MM-DD HH:mm:ss");
+                    req.status = body.status;
+                    req.email = body.email;
+                    req.contact = body.contact;
+                    req.paymentId = body.id;
+                    getSubscriptionDetails.updateSubscription(req, res, function (updateDetails) {
+                        res.json({error:200,data:updateDetails});
+                    })
+                }
+                else res.json({error:response.statusCode})
+
             });
         }
         else res.status(402).json({error: 'Authentication required to perform this action'});
@@ -323,10 +328,14 @@ app.get('/api/v1/getSubscriptionFromDashboard/:dashboardId',function (req,res) {
     getSubscriptionDetails.getDashboardDetail(req,res,function (err,dashboard) {
         req.body.orgId = dashboard.orgId;
         getSubscriptionDetails.getSubscriptionType(req,res,function (err,subscription) {
+            res.json(subscription);
         })
     })
 })
     app.get('/confirmation',function (req,res) {
         res.render('../public/confirmation.ejs')
+    })
+    app.get('/api/v1/getPaymentDetails/',userDetails.getPaymentDetails,function (req, res){
+        res.json({paymentDetails:req.app.result});
     })
 };

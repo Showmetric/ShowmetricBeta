@@ -15,7 +15,6 @@ function AccountManagementController($scope, $http, $location,$window) {
             }
         ).then(
             function successCallback(response) {
-                console.log('response',response)
                 $scope.subscriptionType = response.data.response.code;
                 $scope.validity = moment(response.data.orgDetails.subscriptionExpiresOn).format('LL');
             },
@@ -23,4 +22,24 @@ function AccountManagementController($scope, $http, $location,$window) {
             }
         );
     }
+
+    $scope.transactionDetails = function(){
+        $http(
+            {
+                method: 'GET',
+                url: '/api/v1/getPaymentDetails/'
+            }
+        ).then(
+            function successCallback(response) {
+                if(response.status==204)
+                    $scope.paymentDetails='no data'
+                else
+                    $scope.paymentDetails=response.data.paymentDetails;
+            },
+            function errorCallback(error) {
+
+            }
+        );
+    }
+    $scope.transactionDetails();
 }

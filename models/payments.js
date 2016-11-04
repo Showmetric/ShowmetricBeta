@@ -3,6 +3,7 @@ var mongoose = require('mongoose');
 // define the collection for our organization model
 var paymentSchema = mongoose.Schema({
     orgId:String,
+    paymentId:String,
     invoiceNumber: String,
     amount:Number,
     contact:String,

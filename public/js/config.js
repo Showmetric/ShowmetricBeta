@@ -122,7 +122,12 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider, IdlePro
                     //templateUrl: "dashboardTemplate.ejs",
                     controller: 'UpgradeController'
                 }
-            }
+            },
+            resolve: {
+                loadPlugin: function ($ocLazyLoad) {
+                    return $ocLazyLoad.load('css/upgrade.css');
+                }
+            },
         })
         .state('app.reporting.dashboard', {
             url: "/dashboard/:id",
@@ -184,11 +189,7 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider, IdlePro
             onEnter: function ($http,$state,$rootScope){
                 $rootScope.$on('$stateChangeSuccess', function(ev, to, toParams, from, fromParams) {
                     var previousState = from.name;
-                    if(previousState=='app.changePassword')
-                        $rootScope.previousProfileState=previousState;
-                    if(previousState=='app.reporting.dashboards')
-                        $rootScope.previousProfileState=previousState;
-                    if(previousState=='app.reporting.dashboard')
+                    if(previousState=='app.changePassword' || previousState=='app.reporting.upgrade' || previousState=='app.reporting.dashboards' || previousState=='app.accountManagement' || previousState=='app.reporting.dashboard' || previousState=='app.reporting.buildReports')
                         $rootScope.previousProfileState=previousState;
                 });
             }
@@ -300,7 +301,7 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider, IdlePro
                 }
             }
         })
-        .state('app.accountManagement', {
+        .state('app.reporting.accountManagement', {
                 url: "/accountManagement",
             views: {
                 'main@app': {

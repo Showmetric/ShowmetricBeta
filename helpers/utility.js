@@ -211,7 +211,7 @@ var self = module.exports = {
         })
     },
     updateSubscription:function (req,res,done) {
-        var validity  = new Date();
+        var validity  = req.body.expDate?(new Date(req.body.expDate)):new Date();
         validity.setDate(validity.getDate() + req.validity);
         organization.update({'_id': req.orgId},{$set: {updated: new Date(),subscriptionTypeId:req.subscriptionId,subscriptionExpiresOn:validity}},function (err,user) {
             if (err)
@@ -220,7 +220,7 @@ var self = module.exports = {
                 return res.status(501).json({error: 'Not implemented'})
             else{
                 //var result = {'status': '200', 'orgId': req.orgId};
-                if (req.code!=configAuth.subscriptionType.advancedFree||req.code!=configAuth.subscriptionType.starterFree||req.code!=configAuth.subscriptionType.premiumFree){
+                if (req.code!=configAuth.subscriptionType.starterFree){
                     self.storePayment(req, res, function (err,storedDetail) {
                         done(null,storedDetail);
                     });
@@ -233,8 +233,9 @@ var self = module.exports = {
     storePayment:function(req,res,done){
         var paymentObject = new Payment();
         paymentObject.orgId = req.orgId;
+        paymentObject.paymentId = req.paymentId;
         paymentObject.invoiceNumber = req.orderId;
-        paymentObject.amount = req.amount;
+        paymentObject.amount = req.amount/100;
         paymentObject.currency = req.currency;
         paymentObject.paidOn = req.paidOn;
         paymentObject.subscriptionTypeId = req.subscriptionId;
