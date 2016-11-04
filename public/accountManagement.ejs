@@ -1,0 +1,55 @@
+<script src="/js/modernizr.custom.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+<script src="/js/hideShowPassword.min.js"></script>
+<script src="js/sweetAlert/sweetalert.min.js"></script>
+<link rel="stylesheet" type="text/css" href="css/sweetAlert/sweetalert.css">
+
+<div class="modal-header white-bg grid-header grid-font">
+    <p>My Account</p>
+</div>
+<div class="wrapper wrapper-content gridAlign greyish-bg" ng-controller="AccountManagementController"
+     ng-init="getSubscriptions()" ng-style="{'height': docHeight+'px'}">
+    <div clas="row">
+        <div class="form-group">
+            <span class="col-sm-4 myaccount-text">Your current plan is</span>
+            <span class="myaccount-text-style" style="text-transform: uppercase" >{{subscriptionType}}</span>
+        </div>
+        <div class="form-group">
+            <span class="col-sm-4 myaccount-text">Plan validity</span>
+            <span class="myaccount-text-style">{{validity}}</span>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-4"></div>
+            <div class="col-sm-2 center-768 myaccount-upgrade">
+                <button type="submit" style="background: #ff6c3a;border: 2px solid #ff6c3a;" id="btn-submit" class="btn btn-primary changePassword"
+                        ui-sref="app.reporting.upgrade">Upgrade
+                </button>
+            </div>
+            <div class="col-sm-3 myaccount-upgrade center-768">
+                <button type="submit" style="background: #ff6c3a;border: 2px solid #ff6c3a;" id="btn-submit" class="btn btn-primary changePassword"
+                        ui-sref="app.changePassword">Change Password
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#newPassword,#retypePassword").keyup(function () {
+            if (($("#newPassword").val() == $("#retypePassword").val()) && ($("#newPassword").val() != "") && ($("#retypePassword").val() != "")) {
+                $("#pwmatch").removeClass("glyphicon-remove");
+                $("#pwmatch").addClass("glyphicon-ok");
+                $("#pwmatch").css("color", "#00A41E");
+                $("#password-res").html("Password Match");
+
+            }
+            else {
+                $("#pwmatch").removeClass("glyphicon-ok");
+                $("#pwmatch").addClass("glyphicon-remove");
+                $("#pwmatch").css("color", "#FF0004");
+                $("#password-res").html("Password Mismatch");
+
+            }
+        });
+    });
+</script>

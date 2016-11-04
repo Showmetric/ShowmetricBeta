@@ -39,7 +39,6 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider, IdlePro
                             }
                         ).then(
                             function successCallback(response) {
-                                console.log('response',response)
                                 $rootScope.subscriptionDetails = response.data.userDetails;
                                 if(repeat==0) {
                                     if (response.data.userDetails.subscriptionType === 'starterfree'||response.data.userDetails.subscriptionType === 'advancedfree'||response.data.userDetails.subscriptionType === 'premiumfree') {
@@ -293,7 +292,6 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider, IdlePro
                 }
             }
         })
-
         .state('app.changePassword', {
             url: "/changePassword",
             views: {
@@ -301,7 +299,16 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider, IdlePro
                     templateUrl: "changePassword.ejs"
                 }
             }
+        })
+        .state('app.accountManagement', {
+                url: "/accountManagement",
+            views: {
+                'main@app': {
+                    templateUrl: "accountManagement.ejs"
+                }
+            }
         });
+
 }
 angular
     .module('inspinia')

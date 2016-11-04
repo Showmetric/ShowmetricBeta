@@ -1,168 +1,160 @@
+<div class="wpb_column vc_column_container vc_col-sm-12" style="background-color: #EAEFF3 !important;" ng-controller="UpgradeController" ng-init="getSubscriptions()">
+    <div class="vc_column-inner ">
+        <div class="wpb_wrapper">
+            <div class="heading typography-block clearfix  text-center wow fadeInDown h-dark vc_custom_1477242207130 animated"
+                 style="visibility: visible; width:95%;animation-name: fadeInDown;"><h2>Simple, Affordable Pricing Plans for
+                    everyone</h2>
+                <div style='float: right'>
+                    <span style="font-size: 16px;">Your current plan is :</span>
+                    <span style="font-size: 16px;color: #ff6c3a;text-transform: capitalize"><b>{{subscriptionType}}</b></span>
+                </div>
+            </div>
 
-<div class="vc_column-inner ">
-    <div class="wpb_wrapper" ng-controller="UpgradeController" ng-init="getSubscriptions()">
-        <div class="heading typography-block clearfix width-50 col-sm-offset-3 text-center wow fadeIn
-        Down h-dark vc_custom_1477242207130 animated" style="visibility: visible;
-        animation-name: fadeInDown;"><h2 style="margin-right: 369px">Simple, Affordable Pricing Plans for everyone</h2>
-            <span style="margin-left: 408px;font-size: 16px;">Your current plan is :</span>
-            <span style="margin-left: 9px;font-size: 16px;color: #ff6c3a;text-transform: capitalize">{{subscriptionType}}</span>
-        </div>
-        <div class="container">
-            <div class="row  exclass5">
-                <div class="col-sm-3">
-                    <div class="vc_column-inner ">
-                        <div class="wpb_wrapper">
-                            <div class="price-entry wow fadeInLeft animated"
-                                 style="visibility: visible; animation-name: fadeInLeft;">
-                                <img class="icon img-circle"
-                                     src="http://wp.datapoolt.co/wp-content/uploads/2015/06/icon-47.png" alt="Plan"
-                                     pagespeed_url_hash="34435059"
-                                     >
-                                <div class="entry">
-                                    <div class="top">
-                                        <div class="cell-view"><h3 class="title"><br>Starter Plan</h3>
-                                            <div class="text">Most preferred for small brands and startups</div>
-                                        </div>
-                                    </div>
-                                    <div class="middle">
-                                        <div><b>3</b> Dashboards<br></div>
-                                        <div><b>25</b> Metrics<br></div>
-                                        <div><b>5</b> Fusions<br></div>
-                                        <div><b>5</b> Alerts<br></div>
-                                        <div><b>30 day</b> data window<br></div>
-                                        <div>Unlimited Accounts<br></div>
-                                        <div>Unlimited PNG exports<br></div>
-                                        <div>Unlimited Raw Data Exports</div>
-                                    </div>
-                                    <div class="bottom">
-                                        <div class="cell-view">
-                                            <div class="price"><b>1950</b><span>/month</span></div>
-                                            <div class="clear"></div>
-                                            <button class="upgrade-button"
-                                                    id="rzp-button1" ng-click="loadCheckoutForm('starter');clickPayButton(e);">
-                                                Upgrade
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-3">
-                    <div class="vc_column-inner ">
-                        <div class="wpb_wrapper">
-                            <div class="price-entry wow fadeInUp animated"
-                                 style="visibility: visible; animation-name: fadeInUp;"><img class="icon img-circle"
-                                                                                             src="http://wp.datapoolt.co/wp-content/uploads/2015/06/icon-48.png"
-                                                                                             alt="Plan"
-                                                                                             pagespeed_url_hash="328934980">
-                                <div class="entry">
-                                    <div class="top">
-                                        <div class="cell-view"><h3 class="title"><br>Advanced Plan</h3>
-                                            <div class="text">Most preferred by established brands</div>
-                                        </div>
-                                    </div>
-                                    <div class="middle">
-                                        <div><b>10</b> Dashboards<br></div>
-                                        <div><b>100</b> Metrics<br></div>
-                                        <div><b>20</b> Fusions per month<br></div>
-                                        <div><b>20</b> Alerts per month<br></div>
-                                        <div><b>6 month</b> data window<br></div>
-                                        <div>Unlimited Accounts<br></div>
-                                        <div>Unlimited PNG exports<br></div>
-                                        <div>Unlimited Raw Data Exports</div>
-                                    </div>
-                                    <div class="bottom">
-                                        <div class="cell-view">
-                                            <div class="price"><b>3300</b><span>/month</span></div>
-                                            <div class="clear"></div>
-                                            <button class="upgrade-button"
-                                                    id="rzp-button1" ng-click="loadCheckoutForm('advanced');clickPayButton(e);">
-                                                Upgrade
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-3">
-                    <div class="vc_column-inner ">
-                        <div class="wpb_wrapper">
-                            <div class="price-entry wow fadeInRight animated"
-                                 style="visibility: visible; animation-name: fadeInRight;">
-                                <img class="icon img-circle"
-                                     src="http://wp.datapoolt.co/wp-content/uploads/2015/06/icon-49.png"
-                                     alt="Plan" pagespeed_url_hash="623434901">
-                                <div class="entry">
-                                    <div class="top">
-                                        <div class="cell-view"><h3 class="title"><br>Premium Plan</h3>
-                                            <div class="text">Most preferred by large organizations</div>
-                                        </div>
-                                    </div>
-                                    <div class="middle">
-                                        <div><b>25</b> Dashboards<br></div>
-                                        <div><b>Unlimited</b> Metrics<br></div>
-                                        <div><b>Unlimited</b> Fusions<br></div>
-                                        <div><b>Unlimited</b> Alerts<br></div>
-                                        <div><b>12 months</b> data window<br></div>
-                                        <div>Unlimited Accounts<br></div>
-                                        <div>Unlimited PNG exports<br></div>
-                                        <div>Unlimited Raw Data Exports</div>
-                                    </div>
-                                    <div class="bottom">
-                                        <div class="cell-view">
-                                            <div class="price"><b>7000</b><span>/month</span></div>
-                                            <div class="clear"></div>
-                                            <button  class="upgrade-button"
-                                                     id="rzp-button1" ng-click="loadCheckoutForm('premium');clickPayButton(e);">
-                                                Upgrade
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-                <div class="col-sm-3">
-                    <div class="vc_column-inner ">
-                        <div class="wpb_wrapper">
-                            <div class="price-entry wow animated" style="visibility: visible;">
-                                <img class="icon img-circle"
-                                     src="http://wp.datapoolt.co/wp-content/uploads/2015/06/icon-63.png"
-                                     alt="Plan" pagespeed_url_hash="623434901" height="80" widgth="80">
-                                <div class="entry">
-                                    <div class="top">
-                                        <div class="cell-view"><h3 class="title"><br>Agency plan</h3>
-                                            <div class="text">Most preferred by agencies</div>
-                                        </div>
-                                    </div>
-                                    <div class="middle">
-                                        <div><b>Unlimited</b> Dashboards<br></div>
-                                        <div><b>Unlimited</b> Metrics<br></div>
-                                        <div><b>Unlimited</b> Fusions<br></div>
-                                        <div><b>Unlimited</b> Alerts<br></div>
-                                        <div><b>12 month</b> data window<br></div>
-                                        <div>White labeled reports<br></div>
-                                        <div>Report Builder<br></div>
-                                        <div>Multiple Users<br></div>
-                                        <div>Unlimited Accounts<br></div>
-                                        <div>Unlimited PNG exports<br></div>
-                                        <div>Unlimited Raw Data Exports</div>
-                                    </div>
-                                    <div class="bottom">
-                                        <div class="cell-view">
-                                            <div class="price">Starts from <b>8500</b>/month. <span></span>
+            <div class="container">
+                <div class="row  exclass5">
+                    <div class="wpb_column vc_column_container vc_col-sm-3">
+                        <div class="vc_column-inner ">
+                            <div class="wpb_wrapper">
+                                <div class="price-entry wow fadeInLeft animated"
+                                     style="visibility: visible; animation-name: fadeInLeft;"><img
+                                            class="icon img-circle"
+                                            src="http://wp.datapoolt.co/wp-content/uploads/2015/06/icon-47.png"
+                                            alt="Plan"
+                                            data-pin-nopin="true">
+                                    <div class="entry">
+                                        <div class="top">
+                                            <div class="cell-view"><h3 class="title"><br>Starter Plan</h3>
+                                                <div class="text">Most preferred for small brands and startups</div>
                                             </div>
-                                            <div class="clear"></div>
-                                            <button  class="upgrade-button"
-                                                     id="rzp-button1" ng-click="loadCheckoutForm('agency');clickPayButton(e);">
-                                                Upgrade
-                                            </button>
+                                        </div>
+                                        <div class="middle">
+                                            <div><b>3</b> Dashboards<br></div>
+                                            <div><b>25</b> Metrics<br></div>
+                                            <div><b>5</b> Fusions<br></div>
+                                            <div><b>5</b> Alerts<br></div>
+                                            <div><b>30 day</b> data window<br></div>
+                                            <div>Unlimited Accounts<br></div>
+                                            <div>Unlimited PNG exports<br></div>
+                                            <div>Unlimited Raw Data Exports</div>
+                                        </div>
+                                        <div class="bottom">
+                                            <div class="cell-view">
+                                                <div class="price"><b>&#x20b9;1950</b> per month <span></span> </div>
+                                                <div class="clear"></div>
+                                                <a class="button" class="upgrade-button"
+                                                   id="rzp-button1" ng-click="loadCheckoutForm('starter');clickPayButton(e);">UPGRADE</a></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="wpb_column vc_column_container vc_col-sm-3">
+                        <div class="vc_column-inner ">
+                            <div class="wpb_wrapper">
+                                <div class="price-entry wow fadeInUp animated"
+                                     style="visibility: visible; animation-name: fadeInUp;"><img class="icon img-circle"
+                                                                                                 src="http://wp.datapoolt.co/wp-content/uploads/2015/06/icon-48.png"
+                                                                                                 alt="Plan"
+
+                                                                                                 data-pin-nopin="true">
+                                    <div class="entry">
+                                        <div class="top">
+                                            <div class="cell-view"><h3 class="title"><br>Advanced Plan</h3>
+                                                <div class="text">Most preferred by established brands</div>
+                                            </div>
+                                        </div>
+                                        <div class="middle">
+                                            <div><b>10</b> Dashboards<br></div>
+                                            <div><b>100</b> Metrics<br></div>
+                                            <div><b>20</b> Fusions per month<br></div>
+                                            <div><b>20</b> Alerts per month<br></div>
+                                            <div><b>6 month</b> data window<br></div>
+                                            <div>Unlimited Accounts<br></div>
+                                            <div>Unlimited PNG exports<br></div>
+                                            <div>Unlimited Raw Data Exports</div>
+                                        </div>
+                                        <div class="bottom">
+                                            <div class="cell-view">
+                                                <div class="price"><b>&#x20b9;3300</b>/month <span></span></div>
+                                                <div class="clear"></div>
+                                                <a class="button"  class="upgrade-button"
+                                                   id="rzp-button1" ng-click="loadCheckoutForm('advanced');clickPayButton(e);">UPGRADE</a></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="wpb_column vc_column_container vc_col-sm-3">
+                        <div class="vc_column-inner ">
+                            <div class="wpb_wrapper">
+                                <div class="price-entry wow fadeInRight animated"
+                                     style="visibility: visible; animation-name: fadeInRight;"><img
+                                            class="icon img-circle"
+                                            src="http://wp.datapoolt.co/wp-content/uploads/2015/06/icon-49.png"
+                                            alt="Plan" >
+                                    <div class="entry">
+                                        <div class="top">
+                                            <div class="cell-view"><h3 class="title"><br>Premium Plan</h3>
+                                                <div class="text">Most preferred by large organizations</div>
+                                            </div>
+                                        </div>
+                                        <div class="middle">
+                                            <div><b>25</b> Dashboards<br></div>
+                                            <div><b>Unlimited</b> Metrics<br></div>
+                                            <div><b>Unlimited</b> Fusions<br></div>
+                                            <div><b>Unlimited</b> Alerts<br></div>
+                                            <div><b>12 months</b> data window<br></div>
+                                            <div>Unlimited Accounts<br></div>
+                                            <div>Unlimited PNG exports<br></div>
+                                            <div>Unlimited Raw Data Exports</div>
+                                        </div>
+                                        <div class="bottom">
+                                            <div class="cell-view">
+                                                <div class="price"><b>&#x20b9;7000</b>/month <span></span></div>
+                                                <div class="clear"></div>
+                                                <a class="button" class="upgrade-button"
+                                                   id="rzp-button1" ng-click="loadCheckoutForm('premium');clickPayButton(e);">UPGRADE</a></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="wpb_column vc_column_container vc_col-sm-3">
+                        <div class="vc_column-inner ">
+                            <div class="wpb_wrapper">
+                                <div class="price-entry wow animated" style="visibility: visible;"><img
+                                            class="icon img-circle"
+                                            src="http://wp.datapoolt.co/wp-content/uploads/2015/06/icon-63.png"
+                                            alt="Plan" >
+                                    <div class="entry">
+                                        <div class="top">
+                                            <div class="cell-view"><h3 class="title"><br>Agency plan</h3>
+                                                <div class="text">Most preferred by agencies</div>
+                                            </div>
+                                        </div>
+                                        <div class="middle">
+                                            <div><b>Unlimited</b> Dashboards<br></div>
+                                            <div><b>Unlimited</b> Metrics<br></div>
+                                            <div><b>Unlimited</b> Fusions<br></div>
+                                            <div><b>Unlimited</b> Alerts<br></div>
+                                            <div><b>12 month</b> data window<br></div>
+                                            <div>White labeled reports<br></div>
+                                            <div>Report Builder<br></div>
+                                            <div>Multiple Users<br></div>
+                                            <div>Unlimited Accounts<br></div>
+                                            <div>Unlimited PNG exports<br></div>
+                                            <div>Unlimited Raw Data Exports</div>
+                                        </div>
+                                        <div class="bottom">
+                                            <div class="cell-view">
+                                                <div class="price">Starts from <b>&#x20b9;8500</b> per month. <span></span>
+                                                </div>
+                                                <div class="clear"></div>
+                                                <a class="button"  class="upgrade-button"
+                                                   id="rzp-button1" ng-click="loadCheckoutForm('agency');clickPayButton(e);">UPGRADE</a></div>
                                         </div>
                                     </div>
                                 </div>

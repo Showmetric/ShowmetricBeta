@@ -5510,4 +5510,35 @@ input:focus{
     -moz-transition: all 0.3s;
     transition: all 0.3s;
 }
-
+.myaccount-upgrade{
+    margin-top: 7px;
+}
+.myaccount-text{
+    text-align: right;
+    font-size: 16px;
+}
+.myaccount-text-style{
+    font-size: 16px;color: #ff6c3a;
+}
+.form-blockdiv{
+    position: relative;
+    margin-top: 25px;
+    margin-bottom: 90px;
+    padding-top: 100px;
+    padding-bottom: 30px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    -webkit-box-shadow: 1px 1px rgba(0,0,0,.05);
+    box-shadow: 1px 1px rgba(0,0,0,.05);
+}
+.login-button :hover {
+    background-color: #ff6c3a;
+    color: white;
+}
+#field-entry a{
+    margin-bottom: 19px;
+}
+#field-entry a:hover{
+    background-color: #ff6c3a;
+}
