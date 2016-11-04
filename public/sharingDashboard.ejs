@@ -786,16 +786,14 @@
                                                                 <table class="table table-striped">
                                                                     <thead>
                                                                     <tr style="padding:2px 5px;width:100%">
-                                                                        <th style="padding:5px 5px;width:40%;text-align:center;">Tweets</th>
                                                                         <th style="padding:5px 5px;width:12%;text-align:center;">User Mentioned </th>
                                                                         <th style="padding:5px 5px;width:12%;text-align:center;">Engagement</th>
 
                                                                     </tr>
                                                                     </thead>
                                                                     <tbody>
-                                                                    <tr style="padding:2px 5px;width:100%" ng-repeat="data in chart.data | limitTo: limitScroll" ng-if="data.tweet">
+                                                                    <tr style="padding:2px 5px;width:100%" ng-repeat="data in chart.data | limitTo: limitScroll" ng-if="data.userMentionedScreenName">
                                                                         {{data}}
-                                                                        <td style="padding:5px 5px;width:55%;text-align:left;"><a style="color: #232c3b;" href="{{data.url}}" target="_blank">{{data.tweet}}<br></a></td>
                                                                         <td style="padding:5px 5px;width:12%;text-align:center;">{{data.userMentionedScreenName}}</td>
                                                                         <td style="padding:5px 5px;width:12%;text-align:center;">{{data.engagement}}</td>
                                                                     </tr>
