@@ -360,8 +360,10 @@ div#content-wrapper > div > .row {margin-left: 0; margin-right: 0;}
 	.row-view{display: table-row;}
 	.cell-view{display: table-cell; vertical-align: middle; height: inherit;}
 	/*buttons*/
-	.button, .woocommerce a.button, .woocommerce button.button, .woocommerce #review_form #respond .form-submit input, .woocommerce .cart .button, .woocommerce .cart input.button, button.button, input.button, .woocommerce button.button, .woocommerce input.button, #bridge input[type="submit"], a.btn.btn-primary{line-height: 15px; -webkit-border-radius: 5px; border-radius: 5px; background-color: #ff6c3a; -webkit-box-shadow: 1px 1px 2px rgba(0,0,0,.2), inset 0 -2px #fd845b; box-shadow: 1px 1px 2px rgba(0,0,0,.2), inset 0 -2px #fd845b; border: solid 1px #ff6c3a; display: inline-block; padding: 16px 20px; font-size: 11px; color: #fff; font-family: 'bold', sans-serif, Arial; text-transform: uppercase; text-align: center; position: relative;}
 	.button:hover, .woocommerce a.button:hover, .woocommerce #review_form #respond .form-submit input:hover, button.button:hover, .woocommerce .cart .button:hover, .woocommerce input.button:hover, #bridge input[type="submit"]:hover, a.btn.btn-primary:hover {text-decoration: none; color: #fff; }
+	.button, .woocommerce a.button, .woocommerce button.button, .woocommerce #review_form #respond .form-submit input, .woocommerce .cart .button, .woocommerce .cart input.button, button.button, input.button, .woocommerce button.button, .woocommerce input.button, #bridge input[type="submit"], a.btn.btn-primary{line-height: 15px; -webkit-border-radius: 5px; border-radius: 5px; background-color: #ff6c3a; -webkit-box-shadow: 1px 1px 2px rgba(0,0,0,.2), inset 0 -2px #fd845b; box-shadow: 1px 1px 2px rgba(0,0,0,.2), inset 0 -2px #fd845b; border: solid 1px #ff6c3a; display: inline-block; padding: 16px 20px; font-size: 11px; color: #fff; font-family: 'bold', sans-serif, Arial; text-transform: uppercase; text-align: center; position: relative;}
+	.button:hover, .woocommerce a.button:hover, .woocommerce #review_form #respond .form-submit input:hover, button.button:hover, .woocommerce .cart .button:hover, .woocommerce input.button:hover, #bridge input[type="submit"]:hover, a.btn.btn-primary:hover {text-decoration: none; color: #fff;-webkit-box-shadow: 1px 1px 2px rgba(0,0,0,.2), inset 0 -40px #fd845b  !important;
+		box-shadow: 1px 1px 2px rgba(0,0,0,.2), inset 0 -40px #fd845b !important; }
 	.button .icon, .woocommerce a.button .icon{width: 25px; display: inline-block; height: 8px; position: relative;}
 	.button .glyphicon, .woocommerce a.button .glyphicon{font-size: 20px; position: absolute; left: 0; top: 50%; transform: translateY(-50%); -moz-transform: translateY(-50%); -webkit-transform: translateY(-50%); -ms-transform: translateY(-50%);}
 	#content-wrapper .button.type-1{background-color: #232c3b; -webkit-box-shadow: 1px 1px 2px rgba(0,0,0,.2), inset 0 -2px #3d485a; box-shadow: 1px 1px 2px rgba(0,0,0,.2), inset 0 -2px #3d485a; border: solid 1px #232c3b; color: #fff;}
@@ -1286,7 +1288,7 @@ td {
 	.alert-success{background-color: #7db42e; -webkit-box-shadow: 1px 1px 2px rgba(0,0,0,.2), inset 0 -2px #9bd24d; box-shadow: 1px 1px 2px rgba(0,0,0,.2), inset 0 -2px #9bd24d; border: solid 1px #7db42e;}
 	.alert-info{background-color: #f5f5f5; -webkit-box-shadow: 1px 1px 2px rgba(0,0,0,.2), inset 0 -2px #fff; box-shadow: 1px 1px 2px rgba(0,0,0,.2), inset 0 -2px #fff; border: solid 1px #f5f5f5; color: #6a7483;}
 	.alert-warning{background-color: #ff6c3a; -webkit-box-shadow: 1px 1px 2px rgba(0,0,0,.2), inset 0 -2px #fd845b; box-shadow: 1px 1px 2px rgba(0,0,0,.2), inset 0 -2px #fd845b; border: solid 1px #ff6c3a;}
-	.alert-danger{background-color: #ebccd1; -webkit-box-shadow: 1px 1px 2px rgba(0,0,0,.2), inset 0 -2px #ebccd1;color:#ebccd1; box-shadow: 1px 1px 2px rgba(0,0,0,.2), inset 0 -2px #ff6262; border: solid 1px #ebccd1;}
+	.alert-danger{background-color: #ebccd1; -webkit-box-shadow: 1px 1px 2px rgba(0,0,0,.2), inset 0 -2px #ebccd1;color:#ff6262; box-shadow: 1px 1px 2px rgba(0,0,0,.2), inset 0 -2px #ebccd1; border: solid 1px #ebccd1;}
 	button.close{opacity: 1!important; color: #fff!important; text-shadow: none;}
 	.alert-info button.close{color: #6a7483!important;}
 	.highlight{color: #fff; display: inline; padding: 0 5px;}
@@ -2416,3 +2418,4 @@ BOX SIZE STYLES
 	 border: none;
 	 /* opacity: 0; */
 }
+

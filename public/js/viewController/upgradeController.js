@@ -1,8 +1,8 @@
 showMetricApp.controller('UpgradeController', UpgradeController)
-function UpgradeController($scope, $http,$state, $rootScope) {
-    var options;
+function UpgradeController($scope, $http, $state, $rootScope) {
+
     var rzp1;
-    $scope.getSubscriptions = function() {
+    $scope.getSubscriptions = function () {
         $http(
             {
                 method: 'GET',
@@ -19,7 +19,7 @@ function UpgradeController($scope, $http,$state, $rootScope) {
     }
     $scope.loadCheckoutForm = function (code) {
         var requestType = {'code': code}
-        if(String(code)==='free'){
+        if (String(code) === 'free') {
             $http({
                 method: 'POST',
                 url: '/api/v1/updateFreeSubscription',
@@ -39,25 +39,26 @@ function UpgradeController($scope, $http,$state, $rootScope) {
                 }
             )
         }
-        else{
+        else {
             $http({
                 method: 'POST',
                 url: '/api/v1/updateUserSubscription',
                 data: requestType
             }).then(function successCallback(subscription) {
-                    options = {
+                    var cost = subscription.data.response.subscriptionCost;
+                    var options = {
                         "key": subscription.data.apiKey,
-                        "amount": subscription.data.response.subscriptionCost*100, // 2000 paise = INR 20
+                        "amount": cost * 100, // 2000 paise = INR 20
                         "name": "Datapoolt",
                         "description": "Purchase Description",
                         "image": "image/Datapoolt-Logo.png",
                         "handler": function (paymentResponse) {
                             var jsonData = {
                                 "paymentId": paymentResponse.razorpay_payment_id,
-                                "amount": subscription.data.response.subscriptionCost*100, // 2000 paise = INR 20
+                                "amount": subscription.data.response.subscriptionCost * 100, // 2000 paise = INR 20
                                 "orgId": subscription.data.orgDetails._id,
                                 "subscriptionId": subscription.data.response._id,
-                                "subscription":subscription.data.response
+                                "subscription": subscription.data.response
                             }
                             $http({
                                 method: 'POST',
@@ -84,10 +85,7 @@ function UpgradeController($scope, $http,$state, $rootScope) {
                     };
                     $scope.showCheckoutForm = true;
                     rzp1 = new Razorpay(options);
-                    $scope.clickPayButton = function () {
-                        rzp1.open();
-                        //e.preventDefault();
-                    }
+                    rzp1.open();
                 },
                 function errorCallback(error) {
                     swal({

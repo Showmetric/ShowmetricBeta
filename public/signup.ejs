@@ -154,7 +154,7 @@
 										<input  type="text" name= "country" placeholder="Company Name" required>
 									</div>
 									<div class="signupButton">
-										<input type="submit" class="button" value="Sign Up" onclick="getPaymentOption()">
+										<input type="submit" class="button" value="Sign Up">
 									</div>
 									<div col col-lg-6 col-md-6 col-sm-6 col-xs-12 style="padding-top: 25px;text-align:center;">
 										<b >Already have an account?</b>
@@ -250,32 +250,3 @@
 
 </body>
 </html>
-<script>
-	function getPaymentOption(){}
-	var options = {
-		"key": "YOUR_KEY_ID",
-		"amount": "2000", // 2000 paise = INR 20
-		"name": "Merchant Name",
-		"description": "Purchase Description",
-		"image": "/your_logo.png",
-		"handler": function (response){
-			alert(response.razorpay_payment_id);
-		},
-		"prefill": {
-			"name": "Harshil Mathur",
-			"email": "harshil@razorpay.com"
-		},
-		"notes": {
-			"address": "Hello World"
-		},
-		"theme": {
-			"color": "#F37254"
-		}
-	};
-	var rzp1 = new Razorpay(options);
-
-	document.getElementById('rzp-button1').onclick = function(e){
-		rzp1.open();
-		e.preventDefault();
-	}
-</script>

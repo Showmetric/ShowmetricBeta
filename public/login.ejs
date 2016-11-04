@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <!--[if lt IE 7]>
 <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
@@ -21,13 +22,15 @@
     <link href="/css/bootstrap.min.css" rel="stylesheet" type="text/css" media="all"/>
     <link href="/css/theme-blues.css" rel="stylesheet" type="text/css" media="all"/>
     <link href="/css/custom.css" rel="stylesheet" type="text/css" media="all"/>
+    <link href="/css/signUp/bootstrap.min.css" rel="stylesheet" type="text/css" media="all"/>
+    <link href="/css/signUp/style.css" rel="stylesheet" type="text/css" media="all"/>
     <!--[if gte IE 9]>
     <link rel="stylesheet" type="text/css" href="/css/ie9.css"/>
     <![endif]-->
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,400,300,600,700%7CRaleway:700'
           rel='stylesheet' type='text/css'>
 
-    <style>
+  <!--  <style>
         @media (max-width: 770px) {
             .has-dropdown:hover .menuTree {
                 font-style: italic !important;
@@ -134,11 +137,11 @@
             -webkit-box-shadow: 1px 1px 2px rgba(0,0,0,.2);
             box-shadow: 1px 1px 2px rgba(0,0,0,.2);
         }
-    </style>
+    </style>-->
 
     <script src="/js/jquery/jquery-2.1.1.min.js"></script>
-    <script src="/js/modernizr.custom.js"></script>
-    <script src="/js/modernizr-2.6.2-respond-1.1.0.min.js"></script>
+  <<!--!&#45;&#45;  <script src="/js/modernizr.custom.js"></script>
+    <script src="/js/modernizr-2.6.2-respond-1.1.0.min.js"></script>&ndash;&gt;-->
     <script src="/js/hideShowPassword.min.js"></script>
     <script>
         $(function () {
@@ -280,7 +283,10 @@
                                        href="/pricing"><span
                                                 class="glyphicon glyphicon-chevron-right"
                                                 style="margin-left: 45px;"></span>Register Now</a><br>
-                                    <input class="login-button" id="login" type="submit" style="background: #ff6c3a;border: 2px solid #ff6c3a;border-radius: 8px;margin-top:20px;color: #fff;margin-left: 200px;" value="Login">
+                                    <div class="signupButton">
+                                        <input type="submit" class="button" value="Login">
+                                    </div>
+                                   <!-- <input class="login-button" id="login" type="submit" value="Login">-->
                                 </form>
                             </div>
                         </div>
