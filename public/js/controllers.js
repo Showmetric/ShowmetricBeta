@@ -1243,12 +1243,15 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                         var topPages = {};
                         if (typeof widget.charts[charts].chartData[0] != 'undefined') {
                             if (typeof(widget.charts[charts].chartData[0].total) === 'object') {
-                                var groupedArray = []
+                                var groupedArray = [];
                                 for (var k = 0; k < widget.charts[charts].chartData.length; k++) {
-                                    var sampleArray = $.map(widget.charts[charts].chartData[k].total, function (value, index) {
-                                        return [value];
-                                    });
-                                    groupedArray = groupedArray.concat(sampleArray)
+                                    var checkValidObject=$.isEmptyObject( widget.charts[charts].chartData[k].total)
+                                    if(checkValidObject != true) {
+                                        var sampleArray = $.map(widget.charts[charts].chartData[k].total, function (value, index) {
+                                            return [value];
+                                        });
+                                        groupedArray = groupedArray.concat(sampleArray)
+                                    }
                                 }
                                 var pageTitle = 'pageTitle';
 
@@ -1289,8 +1292,14 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                 });
                                 formattedChartDataArray.reverse();
                                 var finalChartArray = [];
-                                for (var i = 0; i < 10; i++)
-                                    finalChartArray.push(formattedChartDataArray[i]);
+                                if(formattedChartDataArray.length>10) {
+                                    for (var i = 0; i < 10; i++)
+                                        finalChartArray.push(formattedChartDataArray[i]);
+                                }
+                                else {
+                                    for (var i = 0; i < formattedChartDataArray.length; i++)
+                                        finalChartArray.push(formattedChartDataArray[i]);
+                                }
                                 widget.charts[charts].chartData = finalChartArray;
                             }
                         }
@@ -1353,10 +1362,13 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                             if (typeof(widget.charts[charts].chartData[0].total) === 'object') {
                                 var groupedArray = []
                                 for (var k = 0; k < widget.charts[charts].chartData.length; k++) {
-                                    var sampleArray = $.map(widget.charts[charts].chartData[k].total, function (value, index) {
-                                        return [value];
-                                    });
-                                    groupedArray = groupedArray.concat(sampleArray)
+                                    var checkValidObject=$.isEmptyObject( widget.charts[charts].chartData[k].total)
+                                    if(checkValidObject != true) {
+                                        var sampleArray = $.map(widget.charts[charts].chartData[k].total, function (value, index) {
+                                            return [value];
+                                        });
+                                        groupedArray = groupedArray.concat(sampleArray)
+                                    }
                                 }
                                 var pageTitle = 'pageTitle';
 
@@ -1400,8 +1412,15 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                 });
                                 formattedChartDataArray.reverse();
                                 var finalChartArray = [];
-                                for (var i = 0; i < 10; i++)
-                                    finalChartArray.push(formattedChartDataArray[i]);
+                                if(formattedChartDataArray.length>10) {
+                                    for (var i = 0; i < 10; i++)
+                                        finalChartArray.push(formattedChartDataArray[i]);
+                                }
+                                else {
+                                    for (var i = 0; i < formattedChartDataArray.length; i++)
+                                        finalChartArray.push(formattedChartDataArray[i]);
+                                }
+
                                 widget.charts[charts].chartData = finalChartArray;
                             }
                         }
@@ -1412,10 +1431,14 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                             if (typeof(widget.charts[charts].chartData[0].total) === 'object') {
                                 var groupedArray = []
                                 for (var k = 0; k < widget.charts[charts].chartData.length; k++) {
-                                    var sampleArray = $.map(widget.charts[charts].chartData[k].total, function (value, index) {
-                                        return [value];
-                                    });
-                                    groupedArray = groupedArray.concat(sampleArray)
+                                    var checkValidObject=$.isEmptyObject( widget.charts[charts].chartData[k].total)
+                                    if(checkValidObject != true) {
+                                        var sampleArray = $.map(widget.charts[charts].chartData[k].total, function (value, index) {
+                                            return [value];
+                                        });
+                                        groupedArray = groupedArray.concat(sampleArray)
+                                    }
+
                                 }
                                 var formattedChartDataArray = []
                                 var sortdata = _.groupBy(groupedArray, 'sourceMedium')
@@ -1449,8 +1472,16 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                 });
                                 formattedChartDataArray.reverse();
                                 var finalChartArray = [];
-                                for (var i = 0; i < 10; i++)
-                                    finalChartArray.push(formattedChartDataArray[i]);
+                                if(formattedChartDataArray.length>10) {
+                                    for (var i = 0; i < 10; i++)
+                                        finalChartArray.push(formattedChartDataArray[i]);
+
+                                }
+                                else {
+                                    for (var i = 0; i < formattedChartDataArray.length; i++)
+                                        finalChartArray.push(formattedChartDataArray[i]);
+                                }
+
                                 widget.charts[charts].chartData = finalChartArray;
                             }
                         }
@@ -1460,10 +1491,13 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                             if (typeof(widget.charts[charts].chartData[0].total) === 'object') {
                                 var groupedArray = []
                                 for (var k = 0; k < widget.charts[charts].chartData.length; k++) {
-                                    var sampleArray = $.map(widget.charts[charts].chartData[k].total, function (value, index) {
-                                        return [value];
-                                    });
-                                    groupedArray = groupedArray.concat(sampleArray)
+                                    var checkValidObject=$.isEmptyObject( widget.charts[charts].chartData[k].total)
+                                    if(checkValidObject != true) {
+                                        var sampleArray = $.map(widget.charts[charts].chartData[k].total, function (value, index) {
+                                            return [value];
+                                        });
+                                        groupedArray = groupedArray.concat(sampleArray)
+                                    }
                                 }
                                 var formattedChartDataArray = []
                                 var sortdata = _.groupBy(groupedArray, 'source')
@@ -1494,8 +1528,14 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                 if (String(widget.charts[charts].chartName) == 'Top referring sites(Table)')
                                     finalChartArray = formattedChartDataArray;
                                 else {
-                                    for (var i = 0; i < 10; i++)
-                                        finalChartArray.push(formattedChartDataArray[i]);
+                                    if(formattedChartDataArray.length>10) {
+                                        for (var i = 0; i < 10; i++)
+                                            finalChartArray.push(formattedChartDataArray[i]);
+                                    }
+                                    else {
+                                        for (var i = 0; i < formattedChartDataArray.length; i++)
+                                            finalChartArray.push(formattedChartDataArray[i]);
+                                    }
                                 }
                                 widget.charts[charts].chartData = finalChartArray;
                             }
