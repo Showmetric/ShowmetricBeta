@@ -591,6 +591,10 @@ function customReportController($scope,$timeout,$rootScope,$http,$window,$state,
                 end_date: endDate,
                 callback: function () {
                     storeDateInDb(this.start_date, this.end_date);
+                    $http.pendingRequests.forEach(function (request) {
+                        if (request.cancel)
+                            request.cancel.resolve();
+                    });
                 }
             });
             $scope.populateReportWidgets();
@@ -974,6 +978,8 @@ function customReportController($scope,$timeout,$rootScope,$http,$window,$state,
         $http({
             method: 'POST',
             url: '/api/v1/get/reportWidgets/',
+            timeout:cancel.promise,
+            cancel:cancel,
             data: jsonData
         })
             .then(

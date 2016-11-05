@@ -19,7 +19,7 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
             return {float:"left"}
         }
     };
-//function to check the subscription limits on basic widgets
+    //function to check the subscription limits on basic widgets
     $scope.basicwidget= function (){
         toastr.options.positionClass = 'toast-top-right';
         $http(
@@ -48,7 +48,7 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
                 });
             }
         );
-    }
+    };
 
     $scope.stateValidation = function(targetState) {
         switch(targetState) {
@@ -125,31 +125,30 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
                     toastr.info('Please perform this action from within a dashboard');
                 break;
         }
-    }
-     // document.getElementById('dashLayout').style.visibility = "hidden";
+    };
     var isExportOptionSet = '';
     $(".navbar").css('z-index','1');
     $(".md-overlay").css('background','rgba(0,0,0,0.5)');
+
+
     //Sets up all the required parameters for the dashboard to function properly when it is initially loaded. This is called in the ng-init function of the dashboard template
-    $scope.dashboardConfiguration = function () {
-
+    $scope.dashboardConfiguration = function () {;
         $scope.fetchDateForDashboard=function(){
-            $http({
-                method: 'GET',
-                url: '/api/v1/getSubscriptionFromDashboard/'+ $state.params.id
-            }).then(
-                function successCallback(response){
-                    if(response.status==200){
-                       dateRange=response.data.response.limits.dateRange;
-                        $scope.userModifyDate(dateRange)
-                    }
-                    else{
-                        $scope.userModifyDate(365)
-                    }
+        $http({
+            method: 'GET',
+            url: '/api/v1/getSubscriptionFromDashboard/'+ $state.params.id
+        }).then(
+            function successCallback(response){
+                if(response.status==200){
+                   dateRange=response.data.response.limits.dateRange;
+                    $scope.userModifyDate(dateRange)
                 }
-            )
-        };
-
+                else{
+                    $scope.userModifyDate(365)
+                }
+            }
+        )
+    };
         $scope.fetchDateForDashboard();
 
         //To define the calendar in dashboard header
@@ -163,7 +162,11 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
                 end_date: new Date(),
                 callback: function () {
                     var start = moment(this.start_date).format('ll'), end = moment(this.end_date).format('ll');
-                    $scope.populateDashboardWidgets();
+                    $http.pendingRequests.forEach(function (request) {
+                        if (request.cancel)
+                            request.cancel.resolve();
+                    });
+                    $scope.populateDashboardWidgets()
                 }
             });
             $scope.fetchDashboardName();

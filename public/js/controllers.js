@@ -451,35 +451,35 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                             var dividendKeyWord='Cost'
                             var divisorKeyWord='Conversions'
                         }
-                            for (var i = 0; i < widget.charts[charts].chartData.length; i++) {
-                                var dividend=0;
-                                var divisor=0;
-                                if (typeof widget.charts[charts].chartData[i].total[0] == 'object') {
-                                    if(dividendKeyWord ==='Cost')
+                        for (var i = 0; i < widget.charts[charts].chartData.length; i++) {
+                            var dividend=0;
+                            var divisor=0;
+                            if (typeof widget.charts[charts].chartData[i].total[0] == 'object') {
+                                if(dividendKeyWord ==='Cost')
                                     dividend=parseFloat(widget.charts[charts].chartData[i].total[0][dividendKeyWord]/1000000).toFixed(2);
-                                    else
+                                else
                                     dividend=parseFloat(widget.charts[charts].chartData[i].total[0][dividendKeyWord])
-                                    divisor=parseFloat(widget.charts[charts].chartData[i].total[0][divisorKeyWord])
-                             }
-                                if (dividend  === 0 )
-                                    var yvalue  = dividend ;
-                                else{
-                                    if(chartType == "costPerThosuandImpressions")
-                                        var yvalue   = (dividend  / divisor  * 1000).toFixed(2);
-                                    else if(chartType == "clickThroughRate" ||chartType == "clickThroughRate" || chartType == "costPerConversion" )
-                                        var yvalue   = (dividend  / divisor * 100).toFixed(2)==='Infinity'?0:(dividend  / divisor * 100).toFixed(2)
-                                    else var yvalue   = (dividend  / divisor).toFixed(2);
-                                }
-
-                                changeArray.push({
-                                    x: moment(widget.charts[charts].chartData[i].date),
-                                    y: yvalue,
-                                    dividend: dividend,
-                                    divisor: divisor
-                                })
+                                divisor=parseFloat(widget.charts[charts].chartData[i].total[0][divisorKeyWord])
                             }
-                        widget.charts[charts].chartData = changeArray;
+                            if (dividend  === 0 )
+                                var yvalue  = dividend ;
+                            else{
+                                if(chartType == "costPerThosuandImpressions")
+                                    var yvalue   = (dividend  / divisor  * 1000).toFixed(2);
+                                else if(chartType == "clickThroughRate" ||chartType == "clickThroughRate" || chartType == "costPerConversion" )
+                                    var yvalue   = (dividend  / divisor * 100).toFixed(2)==='Infinity'?0:(dividend  / divisor * 100).toFixed(2)
+                                else var yvalue   = (dividend  / divisor).toFixed(2);
+                            }
+
+                            changeArray.push({
+                                x: moment(widget.charts[charts].chartData[i].date),
+                                y: yvalue,
+                                dividend: dividend,
+                                divisor: divisor
+                            })
                         }
+                        widget.charts[charts].chartData = changeArray;
+                    }
                     else if (chartType == "line" || chartType == "area" || chartType == "bar" || chartType == "column" || chartType == "stackcolumn" || chartType == "mozoverview" || chartType == 'negativeBar' ) {
                         if (typeof widget.charts[charts].chartData[0].total == 'object') {
                             var chartCode = widget.charts[charts].chartCode;
