@@ -143,7 +143,7 @@ var self = module.exports = {
     },
     widgetsList: function (req, res, done) {
         if (req.query.requestType !== configAuth.limitRequestType.alert) {
-            var query = {dashboardId: {$in: req.dashboards}, widgetType: req.query.requestType}
+            var query = {dashboardId: {$in: req.dashboards}, widgetType: req.query.requestType,visibility:true  }
         }
         else {
             var query = {dashboardId: {$in: req.dashboards}}

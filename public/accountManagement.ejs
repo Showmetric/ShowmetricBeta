@@ -11,15 +11,37 @@
      ng-init="getSubscriptions()" ng-style="{'height': docHeight+'px'}">
     <div style="height:auto;">
        <div clas="row">
-        <div class="form-group">
-            <span class="col-sm-4 myaccount-text">Your current plan is</span>
-            <span class="myaccount-text-style" style="text-transform: uppercase" >{{subscriptionType}}</span>
-        </div>
-        <div class="form-group">
-            <span class="col-sm-4 myaccount-text">Plan validity</span>
-            <span class="myaccount-text-style">{{validity}}</span>
-        </div>
-        <div class="form-group">
+           <div style="float: right;"><h2 style="text-align: center;padding-top: 15px;">Account Details</h2>
+               <table  class="table table-striped">
+                   <tbody>
+                   <tr style="padding:2px 5px;width:100%">
+                       <td style="padding:5px 5px;width:5%;text-align:left;">Current plan</td>
+                       <td style="padding:5px 5px;width:20%;text-align:center;text-transform: uppercase">{{subscriptionType}}</td>
+                   </tr>
+                   <tr style="padding:2px 5px;width:100%">
+                       <td style="padding:5px 5px;width:5%;text-align:left;">Plan Validity</td>
+                       <td style="padding:5px 5px;width:20%;text-align:center;">{{validity}}</td>
+                   </tr>
+                   <tr style="padding:2px 5px;width:100%">
+                       <td style="padding:5px 5px;width:5%;text-align:left;">Available Dashboards</td>
+                       <td style="padding:5px 5px;width:20%;text-align:center;">{{availableDashboards}}</td>
+                   </tr>
+                   <tr style="padding:2px 5px;width:100%">
+                       <td style="padding:5px 5px;width:5%;text-align:left;">Available Widgets</td>
+                       <td style="padding:5px 5px;width:20%;text-align:center;">{{availableWidgets}}</td>
+                   </tr>
+                   <tr style="padding:2px 5px;width:100%">
+                       <td style="padding:5px 5px;width:5%;text-align:left;">Available Fusions</td>
+                       <td style="padding:5px 5px;width:20%;text-align:center;">{{availableFusions}}</td>
+                   </tr>
+                   <tr style="padding:2px 5px;width:100%">
+                       <td style="padding:5px 5px;width:5%;text-align:left;">Available Alerts</td>
+                       <td style="padding:5px 5px;width:20%;text-align:center;">{{availableAlerts}}</td>
+                   </tr>
+                   </tbody>
+               </table>
+           </div>
+           <div class="form-group">
             <div class="col-sm-4"></div>
             <div class="col-sm-2 center-768 myaccount-upgrade">
                 <button type="submit" style="background: #ff6c3a;border: 2px solid #ff6c3a;" id="btn-submit" class="btn btn-primary changePassword"
@@ -32,7 +54,7 @@
                 </button>
             </div>
         </div>
-    </div>
+       </div>
     </div>
     <div style="float: right;"><h2 style="text-align: center;padding-top: 15px;">Transaction History</h2>
        <table  class="table table-striped">
