@@ -1,12 +1,6 @@
-<style>
-    body
-    {
-        overflow-y: scroll;
-    }
-</style>
 <div class="wpb_column vc_column_container vc_col-sm-12" style="background-color: #EAEFF3 !important;" ng-controller="UpgradeController" ng-init="getSubscriptions()">
     <div class="vc_column-inner ">
-        <div class="wpb_wrapper">
+        <div class="wpb_wrapper"  style="overflow-y: scroll; height: 600px;">
             <div class="heading typography-block clearfix  text-center wow fadeInDown h-dark vc_custom_1477242207130 animated"
                  style="visibility: visible; width:95%;animation-name: fadeInDown;"><h2>Simple, Affordable Pricing Plans for
                     everyone</h2>
@@ -47,8 +41,11 @@
                                             <div class="cell-view">
                                                 <div class="price"><b>&#x20b9;1950</b> per month <span></span> </div>
                                                 <div class="clear"></div>
-                                                <button class="upgrade-button" id="enableStarter" ng-click="loadCheckoutForm('starter');" >
+                                                <button class="upgrade-button startedButton_starter" id="enableStarter" ng-click="loadCheckoutForm('starter');" disabled="disabled" >
                                                     UPGRADE
+                                                </button>
+                                                <button class="upgrade-button RenewalButton_starter"  style="display: none"  ng-click="loadCheckoutForm('starter');" >
+                                                    RENEWAL
                                                 </button>
                                                 <!--<a class="button" class="upgrade-button"
                                                    id="enableStarter" disabled="disabled" ng-click="loadCheckoutForm('starter');">UPGRADE</a>-->
@@ -86,8 +83,11 @@
                                                 <div class="clear"></div>
                                                 <!--<a class="button"  class="upgrade-button"
                                                    id="enableAdvanced" disabled="disabled" ng-click="loadCheckoutForm('advanced');">UPGRADE</a>-->
-                                                <button class="upgrade-button" id="enableAdvanced" ng-click="loadCheckoutForm('advanced');" >
+                                                <button class="upgrade-button startedButton_advanced" id="enableAdvanced" ng-click="loadCheckoutForm('advanced');" >
                                                     UPGRADE
+                                                </button>
+                                                <button class="upgrade-button RenewalButton_advanced"  style="display: none"  ng-click="loadCheckoutForm('advanced');" >
+                                                    RENEWAL
                                                 </button>
                                             </div>
                                         </div>
@@ -126,8 +126,11 @@
                                                 <div class="clear"></div>
                                                 <!--<a class="button" class="upgrade-button"
                                                    id="enablePremium" disabled="disabled" ng-click="loadCheckoutForm('premium');">UPGRADE</a>-->
-                                                <button class="upgrade-button" id="enablePremium" ng-click="loadCheckoutForm('premium');" >
+                                                <button class="upgrade-button startedButton_premium" id="enablePremium" ng-click="loadCheckoutForm('premium');" >
                                                     UPGRADE
+                                                </button>
+                                                <button class="upgrade-button RenewalButton_premium"  style="display: none"  ng-click="loadCheckoutForm('premium');" >
+                                                    RENEWAL
                                                 </button>
                                             </div>
                                         </div>
@@ -169,8 +172,11 @@
                                                 <div class="clear"></div>
                                                 <!--<a class="button"  class="upgrade-button"
                                                    id="enableAgency" disabled="disabled" ng-click="loadCheckoutForm('agency');">UPGRADE</a>-->
-                                                <button class="upgrade-button" id="enableAgency" ng-click="loadCheckoutForm('agency');" >
+                                                <button class="upgrade-button startedButton_agency" id="enableAgency" ng-click="loadCheckoutForm('agency');" >
                                                     UPGRADE
+                                                </button>
+                                                <button class="upgrade-button RenewalButton_agency"  style="display: none"  ng-click="loadCheckoutForm('agency');" >
+                                                    RENEWAL
                                                 </button>
                                             </div>
                                         </div>

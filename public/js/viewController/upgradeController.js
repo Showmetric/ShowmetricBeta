@@ -37,6 +37,14 @@ function UpgradeController($scope, $http, $state, $rootScope) {
             if (codeMapping.premium >= code) document.getElementById('enablePremium').disabled = false;
             if (codeMapping.agency >= code) document.getElementById('enableAgency').disabled = false;
 
+            if(codeMapping[olderSubscription.data.response.code]=== code ){
+                $('.startedButton_'+olderSubscription.data.response.code).hide();
+                $('.RenewalButton_'+olderSubscription.data.response.code).show();
+            }
+            else{
+                $('.startedButton_'+olderSubscription.data.response.code).show();
+                $('.RenewalButton_'+olderSubscription.data.response.code).hide();
+            }
         }, function errorCallback() {
             swal({
                 title: "",
@@ -48,90 +56,90 @@ function UpgradeController($scope, $http, $state, $rootScope) {
 
     $scope.loadCheckoutForm = function (code) {
         var requestType = {'code': code}
-            var jsonData = {};
-            var calculateDaysDifference;
-            var oneDaysAmount;
-            $http({
-                method: 'POST',
-                url: '/api/v1/updateUserSubscription',
-                data: requestType
-            }).then(function successCallback(subscription) {
-                    oneDaysAmount = subscriptionDetails.data.response.subscriptionCost / 30;
-                    if (subscriptionDetails.data.response.code === subscription.data.response.code) {
-                        jsonData['expDate'] = subscriptionDetails.data.orgDetails.subscriptionExpiresOn;
-                        if(moment(subscriptionDetails.data.orgDetails.subscriptionExpiresOn).diff(moment(new Date()), 'days')<=15)
-                            var canAllowedToUpgrade = true
-                        else var canAllowedToUpgrade = false;
-                        var finalSubscriptionAmount = subscription.data.response.subscriptionCost;
-                    }
-                    else {
+        var jsonData = {};
+        var calculateDaysDifference;
+        var oneDaysAmount;
+        $http({
+            method: 'POST',
+            url: '/api/v1/updateUserSubscription',
+            data: requestType
+        }).then(function successCallback(subscription) {
+                oneDaysAmount = subscriptionDetails.data.response.subscriptionCost / 30;
+                if (subscriptionDetails.data.response.code === subscription.data.response.code) {
+                    jsonData['expDate'] = subscriptionDetails.data.orgDetails.subscriptionExpiresOn;
+                    if(moment(subscriptionDetails.data.orgDetails.subscriptionExpiresOn).diff(moment(new Date()), 'days')<=15)
                         var canAllowedToUpgrade = true
-                        if (moment(subscriptionDetails.data.orgDetails.subscriptionExpiresOn).format('YYYY-MM-DD') >= moment(new Date()).format('YYYY-MM-DD')) {
-                            if (moment(subscriptionDetails.data.orgDetails.subscriptionExpiresOn).format('YYYY-MM-DD') === moment(new Date()).format('YYYY-MM-DD')) {
-                                calculateDaysDifference = 1;
-                            }
-                            else {
-                                calculateDaysDifference = moment(subscriptionDetails.data.orgDetails.subscriptionExpiresOn).diff(moment(new Date()), 'days')
-                            }
-                            var finalSubscriptionAmount = (subscription.data.response.subscriptionCost - (oneDaysAmount * calculateDaysDifference)).toFixed(2);
-                        }
-                    }
-                    if(canAllowedToUpgrade){
-                        var options = {
-                            "key": subscription.data.apiKey,
-                            "amount": finalSubscriptionAmount * 100, // 2000 paise = INR 20
-                            "name": "Datapoolt",
-                            "description": "Purchase Description",
-                            "image": "image/Datapoolt-Logo.png",
-                            "handler": function (paymentResponse) {
-                                jsonData["paymentId"] = paymentResponse.razorpay_payment_id,
-                                    jsonData["amount"] = finalSubscriptionAmount * 100, // 2000 paise = INR 20
-                                    jsonData["orgId"] = subscription.data.orgDetails._id,
-                                    jsonData["subscriptionId"] = subscription.data.response._id,
-                                    jsonData["subscription"] = subscription.data.response
-                                $http({
-                                    method: 'POST',
-                                    url: '/api/v1/payment/capture',
-                                    data: jsonData
-                                }).then(function successCallback(response) {
-                                        if(response.data.error===200){
-                                            $rootScope.getReportBuilder();
-                                            $scope.subscriptionType = subscription.data.response.code;
-                                            toastr.info('Your payment is completed successfully !')
-                                            $state.go('app.reporting.accountManagement');
-                                        }
-                                        else{
-                                            toastr.info('Your payment is failed.Please try again.')
-                                            $state.go('app.reporting.accountManagement');
-                                        }
-                                    },
-                                    function errorCallback(error) {
-                                        swal({
-                                            title: "",
-                                            text: "<span style='sweetAlertFont'>Something went wrong! Please try again!</span> .",
-                                            html: true
-                                        });
-                                    }
-                                )
-                            },
-                            "theme": {
-                                "color": "#232c3b"
-                            }
-                        };
-                        $scope.showCheckoutForm = true;
-                        rzp1 = new Razorpay(options);
-                        rzp1.open();
-                    }
-                    else toastr.info("You can't renew the subscription prior to 15 days of current subscription's expiration date");
-                },
-                function errorCallback(error) {
-                    swal({
-                        title: "",
-                        text: "<span style='sweetAlertFont'>Something went wrong! Please try again!</span> .",
-                        html: true
-                    });
+                    else var canAllowedToUpgrade = false;
+                    var finalSubscriptionAmount = subscription.data.response.subscriptionCost;
                 }
-            )
+                else {
+                    var canAllowedToUpgrade = true
+                    if (moment(subscriptionDetails.data.orgDetails.subscriptionExpiresOn).format('YYYY-MM-DD') >= moment(new Date()).format('YYYY-MM-DD')) {
+                        if (moment(subscriptionDetails.data.orgDetails.subscriptionExpiresOn).format('YYYY-MM-DD') === moment(new Date()).format('YYYY-MM-DD')) {
+                            calculateDaysDifference = 1;
+                        }
+                        else {
+                            calculateDaysDifference = moment(subscriptionDetails.data.orgDetails.subscriptionExpiresOn).diff(moment(new Date()), 'days')
+                        }
+                        var finalSubscriptionAmount = (subscription.data.response.subscriptionCost - (oneDaysAmount * calculateDaysDifference)).toFixed(2);
+                    }
+                }
+                if(canAllowedToUpgrade){
+                    var options = {
+                        "key": subscription.data.apiKey,
+                        "amount": finalSubscriptionAmount * 100, // 2000 paise = INR 20
+                        "name": "Datapoolt",
+                        "description": "Purchase Description",
+                        "image": "image/Datapoolt-Logo.png",
+                        "handler": function (paymentResponse) {
+                            jsonData["paymentId"] = paymentResponse.razorpay_payment_id,
+                                jsonData["amount"] = finalSubscriptionAmount * 100, // 2000 paise = INR 20
+                                jsonData["orgId"] = subscription.data.orgDetails._id,
+                                jsonData["subscriptionId"] = subscription.data.response._id,
+                                jsonData["subscription"] = subscription.data.response
+                            $http({
+                                method: 'POST',
+                                url: '/api/v1/payment/capture',
+                                data: jsonData
+                            }).then(function successCallback(response) {
+                                    if(response.data.error===200){
+                                        $rootScope.getReportBuilder();
+                                        $scope.subscriptionType = subscription.data.response.code;
+                                        toastr.info('Your payment is completed successfully !')
+                                        $state.go('app.reporting.accountManagement');
+                                    }
+                                    else{
+                                        toastr.info('Your payment is failed.Please try again.')
+                                        $state.go('app.reporting.accountManagement');
+                                    }
+                                },
+                                function errorCallback(error) {
+                                    swal({
+                                        title: "",
+                                        text: "<span style='sweetAlertFont'>Something went wrong! Please try again!</span> .",
+                                        html: true
+                                    });
+                                }
+                            )
+                        },
+                        "theme": {
+                            "color": "#232c3b"
+                        }
+                    };
+                    $scope.showCheckoutForm = true;
+                    rzp1 = new Razorpay(options);
+                    rzp1.open();
+                }
+                else toastr.info("You can't renew the subscription prior to 15 days of current subscription's expiration date");
+            },
+            function errorCallback(error) {
+                swal({
+                    title: "",
+                    text: "<span style='sweetAlertFont'>Something went wrong! Please try again!</span> .",
+                    html: true
+                });
+            }
+        )
 
     }
 

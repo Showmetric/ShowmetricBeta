@@ -61,18 +61,14 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
                 var interval = setInterval( function(){
                     progress = Math.min( progress + Math.random() * 0.1, 1 );
                     instance.setProgress( progress );
-
                     if( progress === 1 && startWidget===1 ){
                         instance.stop();
                         clearInterval( interval );
                         $scope.ok();
-
                     }
                 }, 50 );
             }
         });
-
-
     });
 
     $scope.changeViewsInBasicWidget = function (obj) {
@@ -2154,8 +2150,10 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
                 $scope.showCustomContent = true;
                 $scope.selectCustomLinkHead = "Step 2 : Choose your Metrics";
             }
-            if ($scope.selectedTempChannelList.length<=availableBasicWidgets)
-                document.getElementById('basicWidgetNextButton1').disabled = false;
+            if ($scope.selectedTempChannelList.length<=availableBasicWidgets   ){
+                if($scope.selectedTempChannelList.length >0)
+                    document.getElementById('basicWidgetNextButton1').disabled = false;
+            }
             else {
                 $('#error').html('<div class="alert alert-danger fade in" style="width: 400px;margin-left: 212px;"><button type="button" class="close close-alert" data-dismiss="alert" aria-hidden="true">×</button>You dont have any available widgets</div>');
                 document.getElementById('basicWidgetNextButton1').disabled = true;
@@ -2200,8 +2198,12 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
                                 $scope.channelList[i].isSelected = 0;
                         }
                     }
-                    if ($scope.selectedTempChannelList.length<=availableBasicWidgets) {
+                    if ($scope.selectedTempChannelList.length<=availableBasicWidgets  ) {
+                        if($scope.selectedTempChannelList.length ===0)
+                            document.getElementById('basicWidgetNextButton1').disabled = true;
+                        else
                             document.getElementById('basicWidgetNextButton1').disabled = false;
+
                     }
                     else {
                         $('#error').html('<div class="alert alert-danger fade in" style="width: 400px;margin-left: 212px;"><button type="button" class="close close-alert" data-dismiss="alert" aria-hidden="true">×</button>You dont have any available widgets</div>');
@@ -2300,6 +2302,7 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
                         }
                     }
                 }
+                document.getElementById('basicWidgetNextButton2').disabled = false;
             }
             else {
                 $('#error').html('<div class="alert alert-danger fade in" style="width: 400px;margin-left: 212px;"><button type="button" class="close close-alert" data-dismiss="alert" aria-hidden="true">×</button>You dont have any available widgets</div>');
