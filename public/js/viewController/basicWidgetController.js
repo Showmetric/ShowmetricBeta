@@ -763,11 +763,11 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
             var adGroupPresent=false;
             var accountPresent=false;
             for (var getData in getReferenceWidgetsArr) {
-                if(getReferenceWidgetsArr[getData].name == "Account's campaigns performance (Account level only)")
+                if(getReferenceWidgetsArr[getData].name == "Adwords campaigns overview (Account level)")
                     accountPresent=true;
-                if(getReferenceWidgetsArr[getData].name == "Campaign's Adgroup performance (Campaign level only)" || getReferenceWidgetsArr[getData].name == "Campaign Demographics - Age Analysis (Campaign Level only)" || getReferenceWidgetsArr[getData].name == "Campaign Demographics - Gender Analysis (Campaign Level only)"|| getReferenceWidgetsArr[getData].name == "Campaign Demographics - Device Analysis (Campaign Level only)")
+                if(getReferenceWidgetsArr[getData].name == "Adgroups overview (Campaign level)" || getReferenceWidgetsArr[getData].name == "Age Demographics (Campaign Level)" || getReferenceWidgetsArr[getData].name == "Gender Demographics (Campaign Level)"|| getReferenceWidgetsArr[getData].name == "Device Demographics (Campaign Level)")
                     campaignPresent=true;
-                if(getReferenceWidgetsArr[getData].name == "Adgroup's Ad performance (Adgroup level only)"|| getReferenceWidgetsArr[getData].name == "Adgroup Demographics - Age Analysis (Adgroup Level only)"|| getReferenceWidgetsArr[getData].name == "Adgroup Demographics - Gender Analysis (Adgroup Level only)"|| getReferenceWidgetsArr[getData].name == "Adgroup Demographics - Device Analysis (Adgroup Level only)")
+                if(getReferenceWidgetsArr[getData].name == "Ads overview (Adgroup level)"|| getReferenceWidgetsArr[getData].name == "Age Demographics (Adgroup Level)"|| getReferenceWidgetsArr[getData].name == "Gender Demographics (Adgroup Level)"|| getReferenceWidgetsArr[getData].name == "Device Demographics (Adgroup Level)")
                     adGroupPresent=true;
             }
             if(campaignPresent==false && adGroupPresent==false && accountPresent==false){
@@ -2239,22 +2239,22 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
                 canProcess=1;
             else{
                 for (var getData in getReferenceWidgetsArr){
-                    if(getReferenceWidgetsArr[getData].name == "Account's campaigns performance (Account level only)")
+                    if(getReferenceWidgetsArr[getData].name == "Adwords campaigns overview (Account level)")
                         accountLevel=true;
-                    else if(getReferenceWidgetsArr[getData].name == "Campaign's Adgroup performance (Campaign level only)" || getReferenceWidgetsArr[getData].name == "Campaign Demographics - Age Analysis (Campaign Level only)" || getReferenceWidgetsArr[getData].name == "Campaign Demographics - Gender Analysis (Campaign Level only)"|| getReferenceWidgetsArr[getData].name == "Campaign Demographics - Device Analysis (Campaign Level only)")
+                    else if(getReferenceWidgetsArr[getData].name == "Adgroups overview (Campaign level)" || getReferenceWidgetsArr[getData].name == "Age Demographics (Campaign Level)" || getReferenceWidgetsArr[getData].name == "Gender Demographics (Campaign Level)"|| getReferenceWidgetsArr[getData].name == "Device Demographics (Campaign Level)")
                         campaignLevel=true;
-                    else if(getReferenceWidgetsArr[getData].name == "Adgroup's Ad performance (Adgroup level only)"|| getReferenceWidgetsArr[getData].name == "Adgroup Demographics - Age Analysis (Adgroup Level only)"|| getReferenceWidgetsArr[getData].name == "Adgroup Demographics - Gender Analysis (Adgroup Level only)"|| getReferenceWidgetsArr[getData].name == "Adgroup Demographics - Device Analysis (Adgroup Level only)")
+                    else if(getReferenceWidgetsArr[getData].name == "Ads overview (Adgroup level)"|| getReferenceWidgetsArr[getData].name == "Age Demographics (Adgroup Level)"|| getReferenceWidgetsArr[getData].name == "Gender Demographics (Adgroup Level)"|| getReferenceWidgetsArr[getData].name == "Device Demographics (Adgroup Level)")
                         adgroupLevel=true;
                 }
-                if(accountLevel==true && ($scope.storedReferenceWidget.name == "Campaign's Adgroup performance (Campaign level only)" || $scope.storedReferenceWidget.name == "Campaign Demographics - Age Analysis (Campaign Level only)" || $scope.storedReferenceWidget.name == "Campaign Demographics - Gender Analysis (Campaign Level only)"|| $scope.storedReferenceWidget.name == "Campaign Demographics - Device Analysis (Campaign Level only)" || $scope.storedReferenceWidget.name == "Adgroup's Ad performance (Adgroup level only)" || $scope.storedReferenceWidget.name == "Adgroup Demographics - Age Analysis (Adgroup Level only)" || $scope.storedReferenceWidget.name == "Adgroup Demographics - Gender Analysis (Adgroup Level only)"|| $scope.storedReferenceWidget.name == "Adgroup Demographics - Device Analysis (Adgroup Level only)")){
+                if(accountLevel==true && ($scope.storedReferenceWidget.name == "Adgroups overview (Campaign level)" || $scope.storedReferenceWidget.name == "Age Demographics (Campaign Level)" || $scope.storedReferenceWidget.name == "Gender Demographics (Campaign Level)"|| $scope.storedReferenceWidget.name == "Device Demographics (Campaign Level)" || $scope.storedReferenceWidget.name == "Ads overview (Adgroup level)" || $scope.storedReferenceWidget.name == "Age Demographics (Adgroup Level)" || $scope.storedReferenceWidget.name == "Gender Demographics (Adgroup Level)"|| $scope.storedReferenceWidget.name == "Device Demographics (Adgroup Level)")){
                     canProcess=0;
                     $scope.metricMessage=true;
                 }
-                else if(campaignLevel==true && ($scope.storedReferenceWidget.name == "Account's campaigns performance (Account level only)" || $scope.storedReferenceWidget.name == "Adgroup's Ad performance (Adgroup level only)" || $scope.storedReferenceWidget.name == "Adgroup Demographics - Age Analysis (Adgroup Level only)" || $scope.storedReferenceWidget.name == "Adgroup Demographics - Gender Analysis (Adgroup Level only)"|| $scope.storedReferenceWidget.name == "Adgroup Demographics - Device Analysis (Adgroup Level only)")){
+                else if(campaignLevel==true && ($scope.storedReferenceWidget.name == "Adwords campaigns overview (Account level)" || $scope.storedReferenceWidget.name == "Ads overview (Adgroup level)" || $scope.storedReferenceWidget.name == "Age Demographics (Adgroup Level)" || $scope.storedReferenceWidget.name == "Gender Demographics (Adgroup Level)"|| $scope.storedReferenceWidget.name == "Device Demographics (Adgroup Level)")){
                     canProcess=0;
                     $scope.metricMessage=true;
                 }
-                else if(adgroupLevel==true && ($scope.storedReferenceWidget.name == "Account's campaigns performance (Account level only)" || $scope.storedReferenceWidget.name == "Campaign's Adgroup performance (Campaign level only)" || $scope.storedReferenceWidget.name == "Campaign Demographics - Age Analysis (Campaign Level only)" || $scope.storedReferenceWidget.name == "Campaign Demographics - Gender Analysis (Campaign Level only)"|| $scope.storedReferenceWidget.name == "Campaign Demographics - Device Analysis (Campaign Level only)")){
+                else if(adgroupLevel==true && ($scope.storedReferenceWidget.name == "Adwords campaigns overview (Account level)" || $scope.storedReferenceWidget.name == "Adgroups overview (Campaign level)" || $scope.storedReferenceWidget.name == "Age Demographics (Campaign Level)" || $scope.storedReferenceWidget.name == "Gender Demographics (Campaign Level)"|| $scope.storedReferenceWidget.name == "Device Demographics (Campaign Level)")){
                     canProcess=0;
                     $scope.metricMessage=true;
                 }
