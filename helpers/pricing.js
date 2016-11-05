@@ -14,7 +14,7 @@ exports.checkUserSubscriptionLimit = function (req, res, done) {
                         if (req.query.requestType == config.limitRequestType.alert) {
                             req.widgets = response;
                             limits.alertsList(req, res, function (err, response) {
-                                if (String(maxLimits.alerts) === 'unlimited') var availablealerts = 1000000;
+                                if (String(maxLimits.alerts) === 'unlimited') var availableAlerts = 1000000;
                                 else var availableAlerts = maxLimits.alerts - response.length;
                                 req.app.result = {
                                     availablealerts: availableAlerts,
@@ -42,7 +42,7 @@ exports.checkUserSubscriptionLimit = function (req, res, done) {
                     })
                 }
                 else {
-                    if (String(maxLimits.alerts) === 'unlimited') var availableDashboards = 1000000;
+                    if (String(maxLimits.dashboards) === 'unlimited') var availableDashboards = 1000000;
                     else var availableDashboards = maxLimits.dashboards - response.length;
                     req.app.result = {
                         availableDashboards: availableDashboards,
