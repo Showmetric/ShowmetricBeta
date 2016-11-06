@@ -1,6 +1,7 @@
 showMetricApp.controller('UpgradeController', UpgradeController)
 function UpgradeController($scope, $http, $state, $rootScope) {
     var codeMapping = {
+        free:0,
         starter: 1,
         advanced: 2,
         premium: 3,
@@ -32,10 +33,10 @@ function UpgradeController($scope, $http, $state, $rootScope) {
             document.getElementById('enableAdvanced').disabled = true;
             document.getElementById('enablePremium').disabled = true;
             document.getElementById('enableAgency').disabled = true;
-            if (codeMapping.starter >= code) document.getElementById('enableStarter').disabled = false;
-            if (codeMapping.advanced >= code) document.getElementById('enableAdvanced').disabled = false;
-            if (codeMapping.premium >= code) document.getElementById('enablePremium').disabled = false;
-            if (codeMapping.agency >= code) document.getElementById('enableAgency').disabled = false;
+            if (codeMapping.free >= code&&codeMapping.starter >= code) document.getElementById('enableStarter').disabled = false;
+            if (codeMapping.free >= code&&codeMapping.advanced >= code) document.getElementById('enableAdvanced').disabled = false;
+            if (codeMapping.free >= code&&codeMapping.premium >= code) document.getElementById('enablePremium').disabled = false;
+            if (codeMapping.free >= code&&codeMapping.agency >= code) document.getElementById('enableAgency').disabled = false;
 
             if(codeMapping[olderSubscription.data.response.code]=== code ){
                 $('.startedButton_'+olderSubscription.data.response.code).hide();

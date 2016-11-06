@@ -113,7 +113,7 @@ function AccountManagementController($scope, $http, $location,$window) {
             $scope.availableFusions='Unlimited';
             $scope.availableAlerts='Unlimited';
         }
-        if(subscriptionType=='starter' || subscriptionType=='advanced'){
+        if(subscriptionType=='starter' || subscriptionType=='advanced' ||subscriptionType=='free'){
             getDashboardCount();
             getWidgetCount();
             getFusionCount();
