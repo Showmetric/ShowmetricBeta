@@ -151,7 +151,9 @@ module.exports = function (app, passport) {
                             });
                         }
                         else {
-                            res.render('../public/signup.ejs', {message: req.flash('signupMessage', 'Please check your mail for activation link')});
+                           // res.render('../public/signup.ejs', {message: req.flash('signupMessage', 'Please check your mail for activation link')});
+                           //  res.render('../public/confirmation.ejs');
+                             res.redirect('/confirmation')
                         }
                     });
                 })
@@ -159,6 +161,9 @@ module.exports = function (app, passport) {
             else return res.redirect('/payment?code=' + req.body.code);
         })(req, res, next);
     });
+    app.get('/confirmation',function (req,res) {
+        res.render('../public/confirmation.ejs');
+    })
     app.get('/payment', function (req, res) {
         Subscription.findOne({code:req.query.code}, function (err, subscription) {
             if (err)

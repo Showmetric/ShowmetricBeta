@@ -2155,7 +2155,7 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
                     document.getElementById('basicWidgetNextButton1').disabled = false;
             }
             else {
-                $('#error').html('<div class="alert alert-danger fade in" style="width: 400px;margin-left: 212px;"><button type="button" class="close close-alert" data-dismiss="alert" aria-hidden="true">×</button>You dont have any available widgets</div>');
+                $('#error').html('<div class="alert alert-danger fade in"  style="width: 400px;margin-left: 212px;"><button type="button" class="close close-alert" data-dismiss="alert" aria-hidden="true">×</button>You dont have any available widgets</div>');
                 document.getElementById('basicWidgetNextButton1').disabled = true;
             }
         }
@@ -2203,10 +2203,9 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
                             document.getElementById('basicWidgetNextButton1').disabled = true;
                         else
                             document.getElementById('basicWidgetNextButton1').disabled = false;
-
                     }
                     else {
-                        $('#error').html('<div class="alert alert-danger fade in" style="width: 400px;margin-left: 212px;"><button type="button" class="close close-alert" data-dismiss="alert" aria-hidden="true">×</button>You dont have any available widgets</div>');
+                        $('#error').html('<div class="alert alert-danger fade in"   style="width: 400px;margin-left: 212px;"><button type="button" class="close close-alert" data-dismiss="alert" aria-hidden="true">×</button>You dont have any available widgets</div>');
                         document.getElementById('basicWidgetNextButton1').disabled = true;
                     }
                 }
@@ -2275,6 +2274,7 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
                     $("#metricNames-" + this.referenceWidgets._id).removeClass("getMetricName");
                     $("#getCheck-" + this.referenceWidgets._id).hide();
                     IsAlreadyExist = 1;
+                    $('.alert-danger').remove()
                 }
             }
             if (IsAlreadyExist != 1) {
@@ -2284,6 +2284,7 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
                 $("#metricNames-" + this.referenceWidgets._id).addClass("getMetricName");
                 $("#getCheck-" + this.referenceWidgets._id).show();
                 document.getElementById('basicWidgetNextButton2').disabled = false;
+
             }
         }
         if (getReferenceWidgetsArr == "" || getReferenceWidgetsArr == "[]" || getReferenceWidgetsArr == null) {

@@ -47,8 +47,8 @@ var self = module.exports = {
     },
     checkUserAccess: function (req, res, done) {
         User.findOne({
-            _id: req.user._id,
-            dashboards: {$elemMatch: {dashboardId: req.dashboardId}}
+            _id: req.user._id
+            // dashboards: {$elemMatch: {dashboardId: req.dashboardId}}
         }, function (err, user) {
             if (err)
                 return res.status(500).json({error: 'Internal Server Error'});
@@ -143,7 +143,7 @@ var self = module.exports = {
     },
     widgetsList: function (req, res, done) {
         if (req.query.requestType !== configAuth.limitRequestType.alert) {
-            var query = {dashboardId: {$in: req.dashboards}, widgetType: req.query.requestType,visibility:true  }
+            var query = {dashboardId: {$in: req.dashboards}, widgetType: req.query.requestType }
         }
         else {
             var query = {dashboardId: {$in: req.dashboards}}
