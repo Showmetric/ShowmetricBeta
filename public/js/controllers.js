@@ -290,19 +290,21 @@ showMetricApp.service('createWidgets', function ($http, $q) {
             updatedCharts.then(
                 function successCallback(updatedCharts) {
                     widget.charts = updatedCharts;
-                    var metricDetails = [];
-                    for (var charts in widget.charts)
-                        metricDetails.push(fetchMetricDetails(widget.charts[charts]));
-                    $q.all(metricDetails).then(
-                        function successCallback(metricDetails) {
-                            for (charts in widget.charts)
-                                widget.charts[charts].metricDetails = metricDetails[charts];
-                            deferred.resolve(widget);
-                        },
-                        function errorCallback(error) {
-                            deferred.reject(error);
-                        }
-                    );
+                    deferred.resolve(widget);
+                    // var metricDetails = [];
+                    // for (var charts in widget.charts)
+                    //     metricDetails.push(fetchMetricDetails(widget.charts[charts]));
+                    // $q.all(metricDetails).then(
+                    //     function successCallback(metricDetails) {
+                    //         for (charts in widget.charts)
+                    //             widget.charts[charts].metricDetails = metricDetails[charts];
+                    //         console.log('GetRegularWidgetElemnts after metric fetch resolved',widget,widget.charts[charts].metricDetails);
+                    //         deferred.resolve(widget);
+                    //     },
+                    //     function errorCallback(error) {
+                    //         deferred.reject(error);
+                    //     }
+                    // );
                 },
                 function errorCallback(error) {
                     deferred.reject(error);
@@ -350,6 +352,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                     chartColour: widget.charts[chartObjects].metrics[0].color,
                                     chartOptions: widget.charts[chartObjects].metrics[0].chartOptions,
                                     chartMetricId: response.data[datas].metricId,
+                                    metricDetails:response.data[datas].metricDetails,
                                     chartObjectId: response.data[datas].objectId,
                                     chartObjectTypeId: widget.charts[chartObjects].metrics[0].objectTypeId,
                                     chartObjectName: widget.charts[chartObjects].objectName,

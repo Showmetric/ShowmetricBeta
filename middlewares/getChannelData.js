@@ -219,7 +219,7 @@ exports.getChannelData = function (req, res, next) {
     }
 
     function getEachData(results, callback) {
-        var wholeData = {}
+        var wholeData = {};
         Data.findOne({
             'objectId': results.metrics[0].objectId,
             'metricId': results.metrics[0].metricId
@@ -1965,6 +1965,7 @@ exports.getChannelData = function (req, res, next) {
                     wholeData = {
                         "data": results.store_final_data[0].data,
                         "metricId": results.store_final_data[0].metricId,
+                        "metricDetails":metric[k],
                         "objectId": results.store_final_data[0].queryResults.object[0]._id
                     }
                     next(null, wholeData)
@@ -1973,6 +1974,7 @@ exports.getChannelData = function (req, res, next) {
                     wholeData = {
                         "data": results.store_final_data[0].data,
                         "metricId": results.store_final_data[0].metricId,
+                        "metricDetails":metric[k],
                         "objectId": results.store_final_data[0].queryResults.object[0]._id
                     }
                     next(null, wholeData)
@@ -1981,6 +1983,7 @@ exports.getChannelData = function (req, res, next) {
                     wholeData = {
                         "data": results.store_final_data[0].apiResponse,
                         "metricId": results.store_final_data[0].metricId,
+                        "metricDetails":metric[k],
                         "objectId": results.store_final_data[0].queryResults.object[0]._id
                     };
                     next(null, wholeData);
@@ -1989,6 +1992,7 @@ exports.getChannelData = function (req, res, next) {
                     wholeData = {
                         "data": results.store_final_data[0].apiResponse,
                         "metricId": results.store_final_data[0].metricId,
+                        "metricDetails":metric[k],
                         "objectId": results.store_final_data[0].queryResults.object[0]._id
                     };
                     next(null, wholeData);
@@ -1997,6 +2001,7 @@ exports.getChannelData = function (req, res, next) {
                     wholeData = {
                         "data": results.store_final_data[0].apiResponse,
                         "metricId": results.store_final_data[0].metricId,
+                        "metricDetails":metric[k],
                         "objectId": results.store_final_data[0].queryResults.object[0]._id
                     };
                     next(null, wholeData);
@@ -2006,6 +2011,7 @@ exports.getChannelData = function (req, res, next) {
                     wholeData = {
                         "data": results.store_final_data[0].apiResponse,
                         "metricId": results.store_final_data[0].metricId,
+                        "metricDetails":metric[k],
                         "objectId": results.store_final_data[0].queryResults.object[0]._id
                     };
                     next(null, wholeData);
@@ -2014,6 +2020,7 @@ exports.getChannelData = function (req, res, next) {
                     wholeData = {
                         "data": results.store_final_data[0].data,
                         "metricId": results.store_final_data[0].metricId,
+                        "metricDetails":metric[k],
                         "objectId": results.store_final_data[0].queryResults.object[0]._id
                     };
                     next(null, wholeData);
@@ -2059,6 +2066,7 @@ exports.getChannelData = function (req, res, next) {
                             else if (!response.length) {
                                 finalDataArray.push({
                                     metricId: widget[k].metrics[0].metricId,
+                                    metricDetails:metric[k],
                                     objectId: widget[k].metrics[0].objectId,
                                     data: response
                                 })
@@ -2087,12 +2095,16 @@ exports.getChannelData = function (req, res, next) {
                                     finalDataArray.push({
                                         data: storeTotal,
                                         metricId: response[0].metricId,
+                                        metricDetails:metric[k],
                                         objectId: response[0].objectId,
                                         updated: response[0].updated,
                                         created: response[0].created
                                     })
                                 }
-                                else finalDataArray = response
+                                else {
+                                    response[0].metricDetails = metric[k];
+                                    finalDataArray = response
+                                }
                                 next(null, finalDataArray[0]);
                             }
                         })
