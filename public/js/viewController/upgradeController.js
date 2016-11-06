@@ -33,10 +33,18 @@ function UpgradeController($scope, $http, $state, $rootScope) {
             document.getElementById('enableAdvanced').disabled = true;
             document.getElementById('enablePremium').disabled = true;
             document.getElementById('enableAgency').disabled = true;
-            if (codeMapping.free >= code&&codeMapping.starter >= code) document.getElementById('enableStarter').disabled = false;
-            if (codeMapping.free >= code&&codeMapping.advanced >= code) document.getElementById('enableAdvanced').disabled = false;
-            if (codeMapping.free >= code&&codeMapping.premium >= code) document.getElementById('enablePremium').disabled = false;
-            if (codeMapping.free >= code&&codeMapping.agency >= code) document.getElementById('enableAgency').disabled = false;
+            if(String(code)==='free'){
+                document.getElementById('enableStarter').disabled = false;
+                document.getElementById('enableAdvanced').disabled = false;
+                document.getElementById('enablePremium').disabled = false;
+                document.getElementById('enableAgency').disabled = false;
+            }
+            else{
+                if (codeMapping.starter >= code) document.getElementById('enableStarter').disabled = false;
+                if (codeMapping.advanced >= code) document.getElementById('enableAdvanced').disabled = false;
+                if (codeMapping.premium >= code) document.getElementById('enablePremium').disabled = false;
+                if (codeMapping.agency >= code) document.getElementById('enableAgency').disabled = false;
+            }
 
             if(codeMapping[olderSubscription.data.response.code]=== code ){
                 $('.startedButton_'+olderSubscription.data.response.code).hide();
