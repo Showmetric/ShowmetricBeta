@@ -37,7 +37,7 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
                         $state.go("app.reporting.dashboard.basicWidget", {widgetType: 'basic'});
 
                     else
-                        toastr.info("you dont have available  widgets to create")
+                        toastr.info("You have reached your Widgets limit. Please upgrade to enjoy more Widgets")
                 }
             },
             function errorCallback(error) {
@@ -68,7 +68,7 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
                                 toastr.info('Please renew!');
                             else {
                                 if (availableBasicWidgets <= 0)
-                                    toastr.info("You don't have available widgets!")
+                                    toastr.info("You have reached your Widgets limit. Please upgrade to enjoy more Widgets")
                                 else
                                     $state.go('app.reporting.dashboard.'+targetState,{widgetType:'basic'});
                             }
@@ -107,7 +107,7 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
                                 toastr.info('Please renew !');
                             else {
                                 if (availableFusionWidgets <= 0)
-                                    toastr.info("You don't have available  widgets to create")
+                                    toastr.info("You have reached your Fusions limit. Please upgrade to enjoy more Fusions")
                                 else
                                     $state.go('app.reporting.dashboard.'+targetState);
                             }

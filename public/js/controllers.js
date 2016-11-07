@@ -2349,14 +2349,19 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                     }
                     else if (chartType === "stackbar") {
                         if (typeof(widget.charts[charts].chartData[0].total) === 'object') {
-                            var data = [{"(none)": 0, "organic": 0, 'paid': 0, "others": 0, "social": 0, "ppc": 0}];
+                            var data = [{"(none)": 0, "organic": 0, 'paid': 0, "others": 0, "social": 0, "ppc": 0,"referral":0}];
                             for (var k = 0; k < widget.charts[charts].chartData.length; k++) {
                                 for (keys in widget.charts[charts].chartData[k].total) {
-                                    if (keys != '(none)' && keys != 'organic' && keys != 'ppc' && keys != 'social') {
-                                        data[0] ['others'] += parseFloat(widget.charts[charts].chartData[k].total[keys])
-                                    } else {
-                                        data[0] [keys] += parseFloat(widget.charts[charts].chartData[k].total[keys]);
-                                    }
+                                    var keysArray=keys.split('/')
+                                        if (keysArray[0] != '(none)' && keysArray[0]  != 'organic' && keysArray[0]  != 'ppc' && keysArray[0]  != 'social' && keysArray[0]  != 'referral') {
+                                            data[0] ['others'] += parseFloat(widget.charts[charts].chartData[k].total[keys])
+                                        } else {
+                                            if(keysArray[0]  ==='referral' && keysArray[1] != 'undefined' && keysArray[1] ==='Yes' )
+                                                data[0] ['social'] += parseFloat(widget.charts[charts].chartData[k].total[keys]);
+                                            else
+                                            data[0] [keysArray[0]] += parseFloat(widget.charts[charts].chartData[k].total[keys]);
+                                        }
+
                                 }
                             }
                             var series = [];
@@ -6807,7 +6812,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
             setLayoutOptions();
             if (widget.widgetType == 'custom') chartName = "Custom Data";
             else chartName = (typeof widget.name != 'undefined' ? widget.name : '');
-            if(finalChartData[0].data[0].displaySummary != undefined && finalChartData[0].data[0].displaySummary === false ){
+            if(typeof finalChartData[0].data[0] != 'undefined' && finalChartData[0].data[0].displaySummary != 'undefined' && finalChartData[0].data[0].displaySummary === false ){
                 var modifiedWidget = {
                     'showSummary': false,
                     'name': chartName,
@@ -6819,7 +6824,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                     'layoutOptionsY': individualGraphHeightDivider
                 };
             }
-           else if (typeof finalChartData[0].data[0].key != 'undefined') {
+           else if (typeof finalChartData[0].data[0] != 'undefined' && typeof finalChartData[0].data[0].key != 'undefined') {
                 var modifiedWidget = {
                     'name': chartName,
                     'visibility': true,

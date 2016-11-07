@@ -40,27 +40,18 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider, IdlePro
                         ).then(
                             function successCallback(response) {
                                 $rootScope.subscriptionDetails = response.data.userDetails;
+                                console.log('response.data.userDetails',response.data.userDetails,repeat)
                                 if(repeat==0) {
-                                    if (response.data.userDetails.subscriptionType === 'starterfree'||response.data.userDetails.subscriptionType === 'advancedfree'||response.data.userDetails.subscriptionType === 'premiumfree') {
-                                        if (response.data.userDetails[0].lastDashboardId) {
-                                            $scope.loadingVariable = '';
-                                            if (response.data.userDetails[0].lastDashboardId != 'undefined')
-                                                $state.go('.dashboard', {id: response.data.userDetails[0].lastDashboardId});
-                                            else
-                                                $scope.createNewDashboard();
-                                        }
-                                        else {
-                                            $scope.createNewDashboard();
-                                        }
-                                    }
-                                    else {
+                                    console.log('statusif',$state)
                                         if (response.data.userDetails.statusCode === 1002) {
+                                            console.log('if')
                                             $rootScope.isExpired = true;
                                             $state.go('.upgrade');
                                         }
                                         else {
+                                            console.log('else')
                                             $rootScope.isExpired = false;
-                                            var expiryDate = moment(response.data.userDetails.expiryDate);
+                                            var expiryDate = moment(response.data.userDetails.organization[0].subscriptionExpiresOn);
                                             var currentDate = moment(new Date).format("YYYY-MM-DD");
                                             currentDate = moment(currentDate);
                                             var diffDays = expiryDate.diff(currentDate, 'days');
@@ -94,10 +85,10 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider, IdlePro
                                             }
 
                                         }
-                                    }
                                     repeat++;
                                 }
                                 else {
+                                    console.log('statuselse')
                                     if (response.data.userDetails.statusCode === 1002) {
                                         $rootScope.isExpired = true;
                                         $state.go('app.reporting.upgrade');

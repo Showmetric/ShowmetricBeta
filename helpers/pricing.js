@@ -18,7 +18,7 @@ exports.checkUserSubscriptionLimit = function (req, res, done) {
                                 else var availableAlerts = maxLimits.alerts - response.length;
                                 req.app.result = {
                                     availablealerts: availableAlerts,
-                                    isExpired: moment(subscriptionResponse.orgDetails.subscriptionExpiresOn).format('YYYY-MM-DD') <= moment(new Date()).format('YYYY-MM-DD')
+                                    isExpired: moment(subscriptionResponse.orgDetails.subscriptionExpiresOn).format('YYYY-MM-DD') < moment(new Date()).format('YYYY-MM-DD')
                                 }
                                 done(null, req.app.result)
                             })
@@ -35,7 +35,7 @@ exports.checkUserSubscriptionLimit = function (req, res, done) {
                             }
                             req.app.result = {
                                 availableWidgets: availableWidgets,
-                                isExpired: moment(subscriptionResponse.orgDetails.subscriptionExpiresOn).format('YYYY-MM-DD') <= moment(new Date()).format('YYYY-MM-DD')
+                                isExpired: moment(subscriptionResponse.orgDetails.subscriptionExpiresOn).format('YYYY-MM-DD') < moment(new Date()).format('YYYY-MM-DD')
                             }
                             done(null, req.app.result)
                         }
@@ -46,7 +46,7 @@ exports.checkUserSubscriptionLimit = function (req, res, done) {
                     else var availableDashboards = maxLimits.dashboards - response.length;
                     req.app.result = {
                         availableDashboards: availableDashboards,
-                        isExpired: moment(subscriptionResponse.orgDetails.subscriptionExpiresOn).format('YYYY-MM-DD') <= moment(new Date()).format('YYYY-MM-DD')
+                        isExpired: moment(subscriptionResponse.orgDetails.subscriptionExpiresOn).format('YYYY-MM-DD') < moment(new Date()).format('YYYY-MM-DD')
                     }
                     done(null, req.app.result)
                 }

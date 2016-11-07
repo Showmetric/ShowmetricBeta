@@ -59,7 +59,7 @@ function NavigationController($scope,$state,$http,$stateParams,$rootScope) {
                                         $state.go('app.reporting.'+targetState);
                                     }
                                     else{
-                                        toastr.info('Dashboard limit is reached !')
+                                        toastr.info('You have reached your Dashboards limit. Please upgrade to create more Dashboards')
                                     }
                                 }
                                 else{
@@ -89,7 +89,7 @@ function NavigationController($scope,$state,$http,$stateParams,$rootScope) {
                                     if(response.data.availableDashboards > 0)
                                         $state.go('app.reporting.'+targetState);
                                     else
-                                        toastr.info('Dashboard limit is reached !')
+                                        toastr.info('You have reached your Dashboards limit. Please upgrade to create more Dashboards')
                                 }
                                 else {
                                     toastr.info('Please renew !')
@@ -124,7 +124,7 @@ function NavigationController($scope,$state,$http,$stateParams,$rootScope) {
                         $state.go('app.reporting.dashboard.recommendedDashboard');
                     }
                     else{
-                        toastr.info('Dashboard limit is reached !')
+                        toastr.info('You have reached your Dashboards limit. Please upgrade to create more Dashboards')
                     }
                 }
                 else{

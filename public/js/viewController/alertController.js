@@ -33,7 +33,7 @@ function AlertController($scope, $http, $q, $state, $rootScope, $window, $stateP
                 method: 'GET',
                 url: '/api/v1/subscriptionLimits'+'?requestType='+'alert'
             }).then(function successCallback(response){
-                    if (isExpire === false){
+                    if (response.data.isExpired === false){
                         if(response.data.availablealerts > 0){
                             if (isEdit == true) {
                                 $scope.name = $scope.alert.name;
@@ -58,7 +58,7 @@ function AlertController($scope, $http, $q, $state, $rootScope, $window, $stateP
                             }
                         }
                         else
-                            $('.alertError').html('<div class="alert alert-danger fade in" style="width: 400px;margin-left: 212px;"><button type="button" class="close close-alert" data-dismiss="alert" aria-hidden="true">×</button>Alert limit is reached!</div>');
+                            $('.alertError').html('<div class="alert alert-warning fade in" style="width: 400px;margin-left: 212px;"><button type="button" class="close close-alert" data-dismiss="alert" aria-hidden="true">×</button>Alert limit is reached!</div>');
                     }
                     else
                         $('.alertError').html('<div class="alert alert-danger fade in" style="width: 400px;margin-left: 212px;"><button type="button" class="close close-alert" data-dismiss="alert" aria-hidden="true">×</button>subscription is expire</div>');

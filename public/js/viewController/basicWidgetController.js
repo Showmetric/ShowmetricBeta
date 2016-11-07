@@ -75,20 +75,7 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
         $scope.currentView = obj;
         $rootScope.currentModalView = obj;
         if ($scope.currentView === 'step_one') {
-            $scope.listChannels();
-            $scope.clearReferenceWidget();
-            $scope.selectedChannelList=[];
-            $scope.customMessageEnable=false;
-            $scope.metricMessage=false;
-            storeChosenObject = [];
-            $scope.fbObjectTypeList={};
-            $scope.canManageClients = true;
-            document.getElementById('basicWidgetFinishButton').disabled = true;
-            $("#basicWidgetNextButton1").show();
-            $('#basicWidgetBackButton').hide();
-            $('#basicWidgetBackButton2').hide();
-            $("#basicWidgetNextButton2").hide();
-            //request to get the subscription details of the user on basic widgets
+                       //request to get the subscription details of the user on basic widgets
             $http(
                 {
                     method: 'GET',
@@ -97,6 +84,19 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
             ).then(
                 function successCallback(response) {
                     availableBasicWidgets = response.data.availableWidgets;
+                    $scope.listChannels();
+                    $scope.clearReferenceWidget();
+                    $scope.selectedChannelList=[];
+                    $scope.customMessageEnable=false;
+                    $scope.metricMessage=false;
+                    storeChosenObject = [];
+                    $scope.fbObjectTypeList={};
+                    $scope.canManageClients = true;
+                    document.getElementById('basicWidgetFinishButton').disabled = true;
+                    $("#basicWidgetNextButton1").show();
+                    $('#basicWidgetBackButton').hide();
+                    $('#basicWidgetBackButton2').hide();
+                    $("#basicWidgetNextButton2").hide();
                 },
                 function errorCallback(error) {
                     swal({
@@ -2117,7 +2117,7 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
                     );
                 }
                 else {
-                    $('#error').html('<div class="alert alert-danger fade in" style="width: 400px;margin-left: 212px;"><button type="button" class="close close-alert" data-dismiss="alert" aria-hidden="true">×</button>You dont have any available widgets</div>');
+                    $('#error').html('<div class="alert alert-danger fade in" style="width: 400px;margin-left: 212px;"><button type="button" class="close close-alert" data-dismiss="alert" aria-hidden="true">×</button>You have reached your Widgets limit. Please upgrade to enjoy more Widgets</div>');
                     document.getElementById('basicWidgetFinishButton').disabled = true;
                 }
             },
@@ -2155,7 +2155,7 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
                     document.getElementById('basicWidgetNextButton1').disabled = false;
             }
             else {
-                $('#error').html('<div class="alert alert-danger fade in"  style="width: 400px;margin-left: 212px;"><button type="button" class="close close-alert" data-dismiss="alert" aria-hidden="true">×</button>You dont have any available widgets</div>');
+                $('#error').html('<div class="alert alert-danger fade in"  style="width: 400px;margin-left: 212px;"><button type="button" class="close close-alert" data-dismiss="alert" aria-hidden="true">×</button>You have reached your Widgets limit. Please upgrade to enjoy more Widgets</div>');
                 document.getElementById('basicWidgetNextButton1').disabled = true;
             }
         }

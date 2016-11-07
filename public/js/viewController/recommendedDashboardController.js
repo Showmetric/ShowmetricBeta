@@ -134,7 +134,7 @@ function RecommendedDashboardController($scope, $http, $window, $q, $state, $roo
                     $('#error').html('<div class="alert alert-danger fade in" style="width: 400px;margin-left: 212px;"><button type="button" class="close close-alert" data-dismiss="alert" aria-hidden="true">×</button>You dont have any available widgets</div>');
                 }
                 else {
-                    changeViewsInBasicWidget('step_two');
+                    $scope.changeViewsInBasicWidget('step_two');
                     //if($rootScope.isExpired === false){
                     $scope.fullOfDashboard = dashboards;
                     $scope.getChannelList = dashboards.channels;
@@ -480,98 +480,115 @@ function RecommendedDashboardController($scope, $http, $window, $q, $state, $roo
 
     $scope.createRecommendedDashboard = function () {
         var matchingMetric = [];
-        if ($scope.referenceWidgetsList.length <= $scope.widgetCount) {
-            var jsonData = {
-                name: $scope.recommendeDashboardName
-            };
-            $http({
-                method: 'POST',
-                url: '/api/v1/create/dashboards',
-                data: jsonData
-            }).then(
-                function successCallback(response) {
-
-                    var inputParams = [];
-                    var dashboardId = response.data;
-                    //progressStart=1;
-                    $scope.ok();
-                    for (var widget = 0; widget < $scope.referenceWidgetsList.length; widget++) {
-                        for (var chart = 0; chart < $scope.referenceWidgetsList[widget].charts.length; chart++) {
-                            for (var j = 0; j < $scope.storedUserChosenValues.length; j++) {
-                                if ($scope.referenceWidgetsList[widget].charts[chart].channelId === $scope.storedUserChosenValues[j].profile.channelId) {
-                                    matchingMetric = [];
-                                    for (var m = 0; m < $scope.referenceWidgetsList[widget].charts[chart].metrics.length; m++) {
-                                        if ($scope.referenceWidgetsList[widget].charts[chart].metrics[m].objectTypeId === $scope.storedUserChosenValues[j].object.objectTypeId) {
-                                            matchingMetric.push($scope.referenceWidgetsList[widget].charts[chart].metrics[m]);
-                                            matchingMetric[0].objectId = $scope.storedUserChosenValues[j].object._id;
-                                        }
-                                    }
-                                    for (var n = 0; n < $scope.getChannelList.length; n++) {
-                                        var widgetName, channelName;
-                                        if ($scope.storedUserChosenValues[j].profile.channelId === $scope.getChannelList[n]._id) {
-                                            var widgetColor = generateChartColours.fetchWidgetColor($scope.getChannelList[n].name);
-                                            if ($scope.getChannelList[n].name === 'Twitter' || $scope.getChannelList[n].name === 'Instagram' || $scope.storedChannelName === 'Google Analytics')
-                                                widgetName = $scope.referenceWidgetsList[widget].name + ' - ' + $scope.storedUserChosenValues[j].profile.name;
-                                            else
-                                                widgetName = $scope.referenceWidgetsList[widget].name + ' - ' + $scope.storedUserChosenValues[j].object.name;
-                                            channelName = $scope.getChannelList[n].name;
-                                        }
-
-                                    }
-                                }
-                            }
-                            $scope.referenceWidgetsList[widget].charts[chart].metrics = matchingMetric;
-                        }
-
-                        var jsonData = {
-                            "dashboardId": response.data,
-                            "widgetType": $scope.referenceWidgetsList[widget].widgetType,
-                            "name": widgetName,
-                            "description": $scope.referenceWidgetsList[widget].description,
-                            "charts": $scope.referenceWidgetsList[widget].charts,
-                            "order": $scope.referenceWidgetsList[widget].order,
-                            "offset": $scope.referenceWidgetsList[widget].offset,
-                            "size": $scope.referenceWidgetsList[widget].size,
-                            "minSize": $scope.referenceWidgetsList[widget].minSize,
-                            "maxSize": $scope.referenceWidgetsList[widget].maxSize,
-                            "isAlert": $scope.referenceWidgetsList[widget].isAlert,
-                            "color": widgetColor,
-                            "channelName": channelName
-                        };
-                        inputParams.push(jsonData);
-                    }
+        $http(
+            {
+                method: 'GET',
+                url: '/api/v1/subscriptionLimits' + '?requestType=' + 'basic'
+            }
+        ).then(
+            function successCallback(response) {
+                $scope.widgetCount = response.data.availableWidgets;
+                if ($scope.referenceWidgetsList.length <= $scope.widgetCount) {
+                    var jsonData = {
+                        name: $scope.recommendeDashboardName
+                    };
                     $http({
                         method: 'POST',
-                        url: '/api/v1/widgets',
-                        data: inputParams
+                        url: '/api/v1/create/dashboards',
+                        data: jsonData
                     }).then(
                         function successCallback(response) {
-                            $state.go('app.reporting.dashboard', {id: dashboardId});
+
+                            var inputParams = [];
+                            var dashboardId = response.data;
+                            //progressStart=1;
+                            $scope.ok();
+                            for (var widget = 0; widget < $scope.referenceWidgetsList.length; widget++) {
+                                for (var chart = 0; chart < $scope.referenceWidgetsList[widget].charts.length; chart++) {
+                                    for (var j = 0; j < $scope.storedUserChosenValues.length; j++) {
+                                        if ($scope.referenceWidgetsList[widget].charts[chart].channelId === $scope.storedUserChosenValues[j].profile.channelId) {
+                                            matchingMetric = [];
+                                            for (var m = 0; m < $scope.referenceWidgetsList[widget].charts[chart].metrics.length; m++) {
+                                                if ($scope.referenceWidgetsList[widget].charts[chart].metrics[m].objectTypeId === $scope.storedUserChosenValues[j].object.objectTypeId) {
+                                                    matchingMetric.push($scope.referenceWidgetsList[widget].charts[chart].metrics[m]);
+                                                    matchingMetric[0].objectId = $scope.storedUserChosenValues[j].object._id;
+                                                }
+                                            }
+                                            for (var n = 0; n < $scope.getChannelList.length; n++) {
+                                                var widgetName, channelName;
+                                                if ($scope.storedUserChosenValues[j].profile.channelId === $scope.getChannelList[n]._id) {
+                                                    var widgetColor = generateChartColours.fetchWidgetColor($scope.getChannelList[n].name);
+                                                    if ($scope.getChannelList[n].name === 'Twitter' || $scope.getChannelList[n].name === 'Instagram' || $scope.storedChannelName === 'Google Analytics')
+                                                        widgetName = $scope.referenceWidgetsList[widget].name + ' - ' + $scope.storedUserChosenValues[j].profile.name;
+                                                    else
+                                                        widgetName = $scope.referenceWidgetsList[widget].name + ' - ' + $scope.storedUserChosenValues[j].object.name;
+                                                    channelName = $scope.getChannelList[n].name;
+                                                }
+
+                                            }
+                                        }
+                                    }
+                                    $scope.referenceWidgetsList[widget].charts[chart].metrics = matchingMetric;
+                                }
+
+                                var jsonData = {
+                                    "dashboardId": response.data,
+                                    "widgetType": $scope.referenceWidgetsList[widget].widgetType,
+                                    "name": widgetName,
+                                    "description": $scope.referenceWidgetsList[widget].description,
+                                    "charts": $scope.referenceWidgetsList[widget].charts,
+                                    "order": $scope.referenceWidgetsList[widget].order,
+                                    "offset": $scope.referenceWidgetsList[widget].offset,
+                                    "size": $scope.referenceWidgetsList[widget].size,
+                                    "minSize": $scope.referenceWidgetsList[widget].minSize,
+                                    "maxSize": $scope.referenceWidgetsList[widget].maxSize,
+                                    "isAlert": $scope.referenceWidgetsList[widget].isAlert,
+                                    "color": widgetColor,
+                                    "channelName": channelName
+                                };
+                                inputParams.push(jsonData);
+                            }
+                            $http({
+                                method: 'POST',
+                                url: '/api/v1/widgets',
+                                data: inputParams
+                            }).then(
+                                function successCallback(response) {
+                                    $state.go('app.reporting.dashboard', {id: dashboardId});
+                                },
+                                function errorCallback(error) {
+                                    progressStart = 1;
+                                    swal({
+                                        title: "",
+                                        text: "<span style='sweetAlertFont'>Something went wrong! Please reopen recommended dashboards link</span>",
+                                        html: true
+                                    });
+                                }
+                            );
                         },
                         function errorCallback(error) {
                             progressStart = 1;
                             swal({
                                 title: "",
-                                text: "<span style='sweetAlertFont'>Something went wrong! Please reopen recommended dashboards link</span>",
+                                text: "<span style='sweetAlertFont'>Please try again! Something is missing</span>",
                                 html: true
                             });
                         }
                     );
-                },
-                function errorCallback(error) {
-                    progressStart = 1;
-                    swal({
-                        title: "",
-                        text: "<span style='sweetAlertFont'>Please try again! Something is missing</span>",
-                        html: true
-                    });
                 }
-            );
-        }
-        else {
-            $('#error').html('<div class="alert alert-danger fade in" style="width: 400px;margin-left: 212px;"><button type="button" class="close close-alert" data-dismiss="alert" aria-hidden="true">×</button>You dont have any available widgets</div>');
-            document.getElementById('basicWidgetFinishButton').disabled = true;
-        }
+                else {
+                    $('#errorInFinish').html('<div class="alert alert-danger fade in" style="width: 400px;margin-left: 212px;"><button type="button" class="close close-alert" data-dismiss="alert" aria-hidden="true">×</button>You dont have any available widgets</div>');
+                    document.getElementById('basicWidgetFinishButton').disabled = true;
+                }
+            },
+            function errorCallback(error) {
+                swal({
+                    title: "",
+                    text: "<span style='sweetAlertFont'>Something went wrong! Please reopen recommended dashboards link</span> .",
+                    html: true
+                });
+            })
+
 
     };
 }

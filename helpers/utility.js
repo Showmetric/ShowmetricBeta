@@ -179,7 +179,8 @@ var self = module.exports = {
             })
     },
     getSubscriptionType: function (req, res, done) {
-        if(req.body.orgId) var user = {_id:req.body.orgId};
+        /*console.log(req.body.orgId,req.user.orgId)*/
+        if(req.body.orgId && req.body.orgId !='undefined') var user = {_id:req.body.orgId};
         else var user = {_id: req.user.orgId}
         organization.findOne(user, function (err, subscriptionType) {
             if (err)
@@ -342,13 +343,18 @@ var self = module.exports = {
     },
     getDashboardDetail:function(req,res,done){
         var dashboardId = req.params.dashboardId;
-        Dashboard.findOne({'_id': dashboardId}, function (err, dashboardDetails) {
-            if (err)
-                return res.status(500).json({error: 'Internal server error'});
-            else if (!dashboardDetails)
-                return res.status(204).json({error: 'No records found'});
-            else done(null,dashboardDetails);
-        })
+        if(dashboardId !='undefined') {
+            Dashboard.findOne({'_id': dashboardId}, function (err, dashboardDetails) {
+                if (err)
+                    return res.status(500).json({error: 'Internal server error'});
+                else if (!dashboardDetails)
+                    return res.status(204).json({error: 'No records found'});
+                else done(null, dashboardDetails);
+            })
+        }
+        else{
+            done(null, []);
+        }
     }
 };
 

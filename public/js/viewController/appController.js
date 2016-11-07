@@ -20,7 +20,7 @@ function AppController($http,$state,$scope,$rootScope) {
                     if (response.data.userDetails.statusCode === 1002) {
                         $rootScope.isExpired = true;
                         $scope.userName = response.data.userDetails.user[0].name;
-                        $state.go('app.reporting.upgrade');
+                      $state.go('app.reporting.upgrade');
                     }
                     else {
                         $rootScope.isExpired = false;
