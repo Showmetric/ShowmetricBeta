@@ -1,6 +1,6 @@
 showMetricApp.controller('AlertController', AlertController)
 function AlertController($scope, $http, $q, $state, $rootScope, $window, $stateParams, generateChartColours) {
-    
+
     var startWidget=0;
     var isEdit = false;
     $scope.alert, $scope.metricName, $scope.currentView = 'step_one', $scope.operation;
@@ -8,6 +8,31 @@ function AlertController($scope, $http, $q, $state, $rootScope, $window, $stateP
     $scope.alertMetrics = [];
     $scope.inAlertMetric='';
     var storeMetricDetails = [], widgetMetricDetails = [];
+    $scope.needToChangeView = function(){
+        var isExpire=false;
+        $http({
+            method: 'GET',
+            url: '/api/v1/subscriptionLimits'+'?requestType='+'alert'
+        }).then(function successCallback(response){
+                if (response.data.isExpired === false){
+                    if(response.data.availablealerts > 0){
+                        $scope.changeViewsInAlertModal('step_two');
+                    }
+                    else
+                        $('.alertError').html('<div class="alert alert-danger fade in" style="width: 400px;margin-left: 212px;"><button type="button" class="close close-alert" data-dismiss="alert" aria-hidden="true">×</button>Alert limit is reached!</div>');
+                }
+                else
+                    $('.alertError').html('<div class="alert alert-danger fade in" style="width: 400px;margin-left: 212px;"><button type="button" class="close close-alert" data-dismiss="alert" aria-hidden="true">×</button>subscription is expire</div>');
+            },
+            function errorCallback(error){
+                swal({
+                    title: "",
+                    text: "<span style='sweetAlertFont'>Something went wrong! Please try again!</span> .",
+                    html: true
+                });
+            }
+        )
+    }
 
     $scope.changeViewsInAlertModal = function (obj) {
         $scope.currentView = obj;
@@ -28,51 +53,31 @@ function AlertController($scope, $http, $q, $state, $rootScope, $window, $stateP
             $scope.fetchWidgetAlerts();
         }
         else if ($scope.currentView === 'step_two') {
-            var isExpire=false;
-            $http({
-                method: 'GET',
-                url: '/api/v1/subscriptionLimits'+'?requestType='+'alert'
-            }).then(function successCallback(response){
-                    if (response.data.isExpired === false){
-                        if(response.data.availablealerts > 0){
-                            if (isEdit == true) {
-                                $scope.name = $scope.alert.name;
-                                $scope.interval = $scope.alert.interval;
-                                $scope.email = $scope.alert.mailingId.email;
-                                if(typeof $scope.alert.operation.gt != 'undefined') {
-                                    if($scope.alert.operation.gt === true) {
-                                        $scope.operation = 'gt';
-                                        $scope.threshold = $scope.alert.threshold.gt;
-                                    }
-                                }
-                                else {
-                                    $scope.operation = 'lt';
-                                    $scope.threshold = $scope.alert.threshold.lt;
-                                }
-                            }
-                            else {
-                                $scope.metricDetails = [];
-                                $scope.alertMetrics = [];
-                                $scope.widgetMetrics = [];
-                                $scope.alertFunction();
-                            }
-                        }
-                        else
-                            $('.alertError').html('<div class="alert alert-warning fade in" style="width: 400px;margin-left: 212px;"><button type="button" class="close close-alert" data-dismiss="alert" aria-hidden="true">×</button>Alert limit is reached!</div>');
+            if (isEdit == true) {
+                $scope.name = $scope.alert.name;
+                $scope.interval = $scope.alert.interval;
+                $scope.email = $scope.alert.mailingId.email;
+                if (typeof $scope.alert.operation.gt != 'undefined') {
+                    if ($scope.alert.operation.gt === true) {
+                        $scope.operation = 'gt';
+                        $scope.threshold = $scope.alert.threshold.gt;
                     }
-                    else
-                        $('.alertError').html('<div class="alert alert-danger fade in" style="width: 400px;margin-left: 212px;"><button type="button" class="close close-alert" data-dismiss="alert" aria-hidden="true">×</button>subscription is expire</div>');
-                },
-                function errorCallback(error){
-                    swal({
-                        title: "",
-                        text: "<span style='sweetAlertFont'>Something went wrong! Please try again!</span> .",
-                        html: true
-                    });
                 }
-            )
+                else {
+                    $scope.operation = 'lt';
+                    $scope.threshold = $scope.alert.threshold.lt;
+                }
+            }
+            else {
+                $scope.metricDetails = [];
+                $scope.alertMetrics = [];
+                $scope.widgetMetrics = [];
+                $scope.alertFunction();
+            }
+
         }
-    };
+
+};
 
     $scope.fetchWidgetAlerts = function () {
         $http({
@@ -275,6 +280,7 @@ function AlertController($scope, $http, $q, $state, $rootScope, $window, $stateP
                                     data: updatedData
                                 }).then(
                                     function successCallback(alert) {
+                                        $scope.fetchWidgetAlerts()
                                         startWidget=1
                                     },
                                     function errorCallback(error) {

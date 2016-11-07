@@ -3929,108 +3929,111 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                         });
                     }
                     else if (chartType == "percentageArea") {
-                        var groupData = _.groupBy(widget.charts[charts].chartData, 'y.socialNetwork')
-                        var summaryColor = 0;
-                        for (var key in groupData) {
-                            var summaryValue = 0;
-                            var nonZeroPoints = 0;
-                            var n = groupData[key].length;
-                            var currentWeek = 0;
-                            var pastWeek = 0;
-                            var granularity;
-                            if (widget.charts[charts].chartData.length >= 14) {
-                                var count = 0;
-                                for (var i = n - 1; i >= 0; i--) {
-                                    if (count === 0 || count < 7)
-                                        currentWeek += parseFloat(groupData[key][i].y.total);
-                                    else if (count >= 7 && count < 14)
-                                        pastWeek += parseFloat(groupData[key][i].y.total);
-                                    count++;
-                                }
-                                granularity = 'WK';
-                            }
-
-                            else {
-                                if (widget.charts[charts].chartData.length > 0) {
-                                    var lenthOfData = groupData[key].length;
-                                    var lastIndex = _.last(groupData[key]);
-                                    if (typeof lastIndex.x != 'string') {
-                                        var subtractDate = moment(lastIndex.x).subtract(1, "days").format('YYYY-DD-MM');
-                                        currentWeek = parseFloat(lastIndex.y);
-                                    }
-                                    else {
-                                        currentWeek = parseFloat(groupData[key][lenthOfData - 1].y.total);
-                                    }
-
+                        if(typeof widget.charts[charts].chartData[0].y != 'undefined') {
+                            var groupData = _.groupBy(widget.charts[charts].chartData, 'y.socialNetwork')
+                            var summaryColor = 0;
+                            for (var key in groupData) {
+                                var summaryValue = 0;
+                                var nonZeroPoints = 0;
+                                var n = groupData[key].length;
+                                var currentWeek = 0;
+                                var pastWeek = 0;
+                                var granularity;
+                                if (widget.charts[charts].chartData.length >= 14) {
+                                    var count = 0;
                                     for (var i = n - 1; i >= 0; i--) {
+                                        if ((count === 0 || count < 7) && typeof groupData[key][i].y != 'undefined')
+                                            currentWeek += parseFloat(groupData[key][i].y.total);
+                                        else if ((count >= 7 && count < 14) && typeof groupData[key][i].y != 'undefined')
+                                            pastWeek += parseFloat(groupData[key][i].y.total);
+                                        count++;
+                                    }
+                                    granularity = 'WK';
+                                }
+
+                                else {
+                                    if (widget.charts[charts].chartData.length > 0) {
+                                        var lenthOfData = groupData[key].length;
+                                        var lastIndex = _.last(groupData[key]);
                                         if (typeof lastIndex.x != 'string') {
-                                            var dateFormatChange = moment(groupData[key][i].x).format('YYYY-DD-MM');
-                                            if (subtractDate === dateFormatChange)
-                                                pastWeek = parseFloat(groupData[key][i].y);
+                                            var subtractDate = moment(lastIndex.x).subtract(1, "days").format('YYYY-DD-MM');
+                                            currentWeek = parseFloat(lastIndex.y);
                                         }
                                         else {
-                                            pastWeek = parseFloat(groupData[key][lenthOfData - 2].y.total);
+                                            currentWeek = parseFloat(groupData[key][lenthOfData - 1].y.total);
                                         }
+
+                                        for (var i = n - 1; i >= 0; i--) {
+                                            if (typeof lastIndex.x != 'string') {
+                                                var dateFormatChange = moment(groupData[key][i].x).format('YYYY-DD-MM');
+                                                if (subtractDate === dateFormatChange)
+                                                    pastWeek = parseFloat(groupData[key][i].y);
+                                            }
+                                            else {
+                                                pastWeek = parseFloat(groupData[key][lenthOfData - 2].y.total);
+                                            }
+                                        }
+                                        granularity = 'Day';
                                     }
-                                    granularity = 'Day';
                                 }
-                            }
-                            var comparingData, minus, percentage;
-                            if (currentWeek > pastWeek) {
-                                comparingData = 'up';
-                                minus = currentWeek - pastWeek;
-                                if (pastWeek > 0)
-                                    percentage = parseFloat(minus / pastWeek * 100).toFixed(2);
-                                else
-                                    percentage = currentWeek;
-                            }
-                            else if (currentWeek < pastWeek) {
-                                comparingData = 'down';
-                                minus = pastWeek - currentWeek;
-                                if (pastWeek > 0)
-                                    percentage = parseFloat(minus / pastWeek * 100).toFixed(2);
-                                else
-                                    percentage = 0;
-                            }
-                            else {
-                                var minus = pastWeek - currentWeek;
-                                var percentage = 0;
-                            }
-                            for (var datas in groupData[key]) {
-                                summaryValue += parseFloat(groupData[key][datas].y.total);
-                                if (parseFloat(groupData[key][datas].y.total != 0))
-                                    nonZeroPoints++;
-                                if (typeof widget.charts[charts].metricDetails.objectTypes[0].meta.summaryType != 'undefined') {
-                                    if (widget.charts[charts].metricDetails.objectTypes[0].meta.summaryType == 'avg') {
-                                        if (nonZeroPoints == 0 && summaryValue == 0) summaryValue = 0;
-                                        else summaryValue = parseFloat(summaryValue / nonZeroPoints).toFixed(2);
-                                    }
-                                    else if (widget.charts[charts].metricDetails.objectTypes[0].meta.summaryType == 'snapshot') {
-                                        var latestDate = '';
-                                        for (var data in groupData[items]) {
-                                            if (latestDate < moment(groupData[key][data].x)) {
-                                                latestDate = moment(groupData[key][data].x);
-                                                summaryValue = groupData[key][data].y.total;
+                                var comparingData, minus, percentage;
+                                if (currentWeek > pastWeek) {
+                                    comparingData = 'up';
+                                    minus = currentWeek - pastWeek;
+                                    if (pastWeek > 0)
+                                        percentage = parseFloat(minus / pastWeek * 100).toFixed(2);
+                                    else
+                                        percentage = currentWeek;
+                                }
+                                else if (currentWeek < pastWeek) {
+                                    comparingData = 'down';
+                                    minus = pastWeek - currentWeek;
+                                    if (pastWeek > 0)
+                                        percentage = parseFloat(minus / pastWeek * 100).toFixed(2);
+                                    else
+                                        percentage = 0;
+                                }
+                                else {
+                                    var minus = pastWeek - currentWeek;
+                                    var percentage = 0;
+                                }
+                                for (var datas in groupData[key]) {
+                                    if (typeof groupData[key][datas].y != 'undefined')
+                                        summaryValue += parseFloat(groupData[key][datas].y.total);
+                                    if (typeof groupData[key][datas].y != 'undefined' && parseFloat(groupData[key][datas].y.total != 0))
+                                        nonZeroPoints++;
+                                    if (typeof widget.charts[charts].metricDetails.objectTypes[0].meta.summaryType != 'undefined') {
+                                        if (widget.charts[charts].metricDetails.objectTypes[0].meta.summaryType == 'avg') {
+                                            if (nonZeroPoints == 0 && summaryValue == 0) summaryValue = 0;
+                                            else summaryValue = parseFloat(summaryValue / nonZeroPoints).toFixed(2);
+                                        }
+                                        else if (widget.charts[charts].metricDetails.objectTypes[0].meta.summaryType == 'snapshot') {
+                                            var latestDate = '';
+                                            for (var data in groupData[items]) {
+                                                if (latestDate < moment(groupData[key][data].x)) {
+                                                    latestDate = moment(groupData[key][data].x);
+                                                    summaryValue = groupData[key][data].y.total;
+                                                }
                                             }
                                         }
                                     }
                                 }
-                            }
-                            widgetCharts.push({
-                                'type': widget.charts[charts].chartType,
-                                'metricCode': widget.charts[charts].metricCode,
-                                'metricName': widget.charts[charts].metricName,
-                                'key': key,
-                                'values': groupData[key],
-                                'color': typeof widget.charts[charts].chartColour != 'undefined' ? (typeof widget.charts[charts].chartColour[summaryColor] != 'undefined' ? widget.charts[charts].chartColour[summaryColor] : '') : '',  //color - optional: choose your own line color.
-                                'arrow': comparingData,
-                                'totalChartLength': widget.charts[charts].chartData,
-                                'variance': percentage,
-                                'period': granularity,
-                                'summaryDisplay': Math.round(summaryValue * 100) / 100,
-                            });
-                            summaryColor++;
+                                widgetCharts.push({
+                                    'type': widget.charts[charts].chartType,
+                                    'metricCode': widget.charts[charts].metricCode,
+                                    'metricName': widget.charts[charts].metricName,
+                                    'key': key,
+                                    'values': groupData[key],
+                                    'color': typeof widget.charts[charts].chartColour != 'undefined' ? (typeof widget.charts[charts].chartColour[summaryColor] != 'undefined' ? widget.charts[charts].chartColour[summaryColor] : '') : '',  //color - optional: choose your own line color.
+                                    'arrow': comparingData,
+                                    'totalChartLength': widget.charts[charts].chartData,
+                                    'variance': percentage,
+                                    'period': granularity,
+                                    'summaryDisplay': Math.round(summaryValue * 100) / 100,
+                                });
+                                summaryColor++;
 
+                            }
                         }
                     }
                     else if (chartType === 'youtubeVideosOverview'){
@@ -4577,26 +4580,44 @@ showMetricApp.service('createWidgets', function ($http, $q) {
 
             if (widget.widgetType == 'customFusion') {
                 for (var charts in widgetCharts) {
-                    if (widgetCharts[charts].type == 'line' || widgetCharts[charts].type == 'area' || widgetCharts[charts].type == 'bar' || widgetCharts[charts].type == 'column') finalCharts.lineCharts.push(widgetCharts[charts]);
+                    if (widgetCharts[charts].type == 'line' || widgetCharts[charts].type == 'area' || widgetCharts[charts].type == 'reachVsImpressions' || widgetCharts[charts].type == 'engagedUsersReach' || (widgetCharts[charts].type == 'costPerActionType' && (widget.meta != undefined))) finalCharts.lineCharts.push(widgetCharts[charts]);
+                    else if (widgetCharts[charts].type == 'bar' || widgetCharts[charts].type == 'column' || widgetCharts[charts].type == "stackcolumn") finalCharts.barCharts.push(widgetCharts[charts]);
                     else if (widgetCharts[charts].type == 'pie') finalCharts.pieCharts.push(widgetCharts[charts]);
                     else if (widgetCharts[charts].type == 'instagramPosts') finalCharts.instagramPosts.push(widgetCharts[charts]);
                     else if (widgetCharts[charts].type == 'highEngagementTweets') finalCharts.highEngagementTweets.push(widgetCharts[charts]);
                     else if (widgetCharts[charts].type == 'highestEngagementLinkedIn') finalCharts.highestEngagementLinkedIn.push(widgetCharts[charts]);
                     else if (widgetCharts[charts].type == 'gaTopPagesByVisit') finalCharts.gaTopPagesByVisit.push(widgetCharts[charts]);
+                    else if (widgetCharts[charts].type == 'campaignOverViewbyAge') finalCharts.campaignOverViewbyAge.push(widgetCharts[charts]);
+                    else if (widgetCharts[charts].type == 'pageContentEfficiency') finalCharts.pageContentEfficiency.push(widgetCharts[charts]);
+                    else if (widgetCharts[charts].type == 'pageTechnicalEfficiency') finalCharts.pageTechnicalEfficiency.push(widgetCharts[charts]);
+                    else if (widgetCharts[charts].type == 'visitorAcquisitionEfficiency') finalCharts.visitorAcquisitionEfficiency.push(widgetCharts[charts]);
+                    else if (widgetCharts[charts].type == 'gaPageContentEfficiencyTable') finalCharts.gaPageContentEfficiencyTable.push(widgetCharts[charts]);
+                    else if (widgetCharts[charts].type == 'gaPageTechnicalEfficiencyTable') finalCharts.gaPageTechnicalEfficiencyTable.push(widgetCharts[charts]);
+                    else if (widgetCharts[charts].type == 'topReferringSites') finalCharts.topReferringSites.push(widgetCharts[charts]);
+                    else if (widgetCharts[charts].type == 'topReferringSitesTable') finalCharts.topReferringSitesTable.push(widgetCharts[charts]);
+                    else if (widgetCharts[charts].type == 'gaSocialMediaOverview') finalCharts.gaSocialMediaOverview.push(widgetCharts[charts]);
+                    else if (widgetCharts[charts].type == 'gaVisitorAcquisitionEfficiencyAnalysisTable') finalCharts.gaVisitorAcquisitionEfficiencyAnalysisTable.push(widgetCharts[charts]);
                     else if (widgetCharts[charts].type == 'fbReachByCity') finalCharts.fbReachByCity.push(widgetCharts[charts]);
                     else if (widgetCharts[charts].type == 'fbReachByAge') finalCharts.fbReachByAge.push(widgetCharts[charts]);
                     else if (widgetCharts[charts].type == 'pinterestEngagementRate') finalCharts.pinterestEngagementRate.push(widgetCharts[charts]);
                     else if (widgetCharts[charts].type == 'pinterestLeaderboard')finalCharts.pinterestLeaderboard.push(widgetCharts[charts]);
+                    else if (widgetCharts[charts].type == 'audienceBehaviourbyDay' || widgetCharts[charts].type === 'socialContributionToSiteTraffic')finalCharts.multicharts.push(widgetCharts[charts]);
                     else if (widgetCharts[charts].type == 'vimeoTopVideos') finalCharts.vimeoTopVideos.push(widgetCharts[charts]);
-                    else if (widgetCharts[charts].type == 'twitterEngagements') finalCharts.twitterEngagements.push(widgetCharts[charts]);
-                    else if (widgetCharts[charts].type == 'youtubeVideosOverview') finalCharts.youtubeVideosOverview.push(widgetCharts[charts]);
-                    else if (widgetCharts[charts].type == 'angularGauge') finalCharts.angularGauge.push(widgetCharts[charts]);
+                    else if (widgetCharts[charts].type == 'campaignOverview') finalCharts.campaignOverview.push(widgetCharts[charts]);
+                    else if (widgetCharts[charts].type == 'adgroupOverview') finalCharts.adgroupOverview.push(widgetCharts[charts]);
+                    else if (widgetCharts[charts].type == 'adOverview') finalCharts.adOverview.push(widgetCharts[charts]);
+                    else if (widgetCharts[charts].type == 'percentageArea') finalCharts.percentageArea.push(widgetCharts[charts]);
+                    else if (widgetCharts[charts].type == 'costPerActionType' && !widget.meta) finalCharts.costPerActionType.push(widgetCharts[charts]);
                     else if (widgetCharts[charts].type == 'mozoverview') {
                         for (var i = 0; i < widgetCharts[charts].values.length; i++)
                             widgetCharts[charts].values[i].x = moment(widgetCharts[charts].values[i].x).format("YYYY-DD-MM");
                         finalCharts.mozoverview.push(widgetCharts[charts]);
                     }
+                    else if (widgetCharts[charts].type == 'angularGauge') finalCharts.angularGauge.push(widgetCharts[charts]);
+                    else if (widgetCharts[charts].type == 'stackbar')finalCharts.stackbar.push(widgetCharts[charts]);
                     else if (widgetCharts[charts].type == 'instagramHashtagLeaderBoard') finalCharts.instagramHashtagLeaderBoard.push(widgetCharts[charts]);
+                    else if (widgetCharts[charts].type == 'twitterEngagements')finalCharts.twitterEngagements.push(widgetCharts[charts]);
+                    else if (widgetCharts[charts].type == 'youtubeVideosOverview')finalCharts.youtubeVideosOverview.push(widgetCharts[charts]);
                 }
             }
             else {
@@ -5451,7 +5472,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                             for (var n = 0; n < uniqueDate[key].length; n++) {
                                 for (var i = 0; i < finalCharts.percentageArea[charts].totalChartLength.length; i++) {
                                     var boolean = (moment(uniqueDate[key][n].x).format('YYYY-DD-MM') == moment(finalCharts.percentageArea[charts].totalChartLength[i].x).format('YYYY-DD-MM'));
-                                    if (boolean === true) {
+                                    if (boolean === true && typeof uniqueDate[key][n].y !='undefined') {
                                         toolTip[i].y = parseInt(uniqueDate[key][n].y.total)
                                     }
                                 }
@@ -5812,9 +5833,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                 }
             }
             if (finalCharts.gaTopPagesByVisit.length > 0) {
-
                 if (finalCharts.gaTopPagesByVisit[0].values.length > 0) {
-
                     chartsCount++;
                     finalChartData.push({
                         'options': graphOptions.gaTopPagesByVisit,
@@ -5836,9 +5855,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
 
             }
             if (finalCharts.campaignOverview.length > 0) {
-
                 if (finalCharts.campaignOverview[0].values.length > 0) {
-
                     chartsCount++;
                     finalChartData.push({
                         'options': graphOptions.campaignOverview,
@@ -5849,9 +5866,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
 
             }
             if (finalCharts.adgroupOverview.length > 0) {
-
                 if (finalCharts.adgroupOverview[0].values.length > 0) {
-
                     chartsCount++;
                     finalChartData.push({
                         'options': graphOptions.adgroupOverview,
@@ -5862,9 +5877,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
 
             }
             if (finalCharts.adOverview.length > 0) {
-
                 if (finalCharts.adOverview[0].values.length > 0) {
-
                     chartsCount++;
                     finalChartData.push({
                         'options': graphOptions.adOverview,
@@ -5876,7 +5889,6 @@ showMetricApp.service('createWidgets', function ($http, $q) {
             }
             if (finalCharts.gaPageContentEfficiencyTable.length > 0) {
                 if (finalCharts.gaPageContentEfficiencyTable[0].values.length > 0) {
-
                     chartsCount++;
                     finalChartData.push({
                         'options': graphOptions.gaPageContentEfficiencyTable,
@@ -5897,7 +5909,6 @@ showMetricApp.service('createWidgets', function ($http, $q) {
             }
             if (finalCharts.gaPageTechnicalEfficiencyTable.length > 0) {
                 if (finalCharts.gaPageTechnicalEfficiencyTable[0].values.length > 0) {
-
                     chartsCount++;
                     finalChartData.push({
                         'options': graphOptions.gaPageTechnicalEfficiencyTable,
@@ -5908,7 +5919,6 @@ showMetricApp.service('createWidgets', function ($http, $q) {
             }
             if (finalCharts.gaVisitorAcquisitionEfficiencyAnalysisTable.length > 0) {
                 if (finalCharts.gaVisitorAcquisitionEfficiencyAnalysisTable[0].values.length > 0) {
-
                     chartsCount++;
                     finalChartData.push({
                         'options': graphOptions.gaVisitorAcquisitionEfficiencyAnalysisTable,
@@ -6658,7 +6668,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                             'chartOptions': chartOptions
                         });
                     }
-                    else if (finalCharts.twitterEngagements[charts].chartSubType == 'commentsAndLikes') {
+                    else if (finalCharts.twitterEngagements[0].values.length>0 && finalCharts.twitterEngagements[charts].chartSubType == 'commentsAndLikes') {
                         var chartSeriesArray = [];
                         var categoriesArray = [];
                         for (var charts in finalCharts.twitterEngagements) {
@@ -6738,7 +6748,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                             'chartOptions': chartOptions
                         });
                     }
-                    else if (finalCharts.twitterEngagements[charts].chartSubType === 'topLinks' || finalCharts.twitterEngagements[charts].chartSubType === 'hashTag') {
+                    else if (finalCharts.twitterEngagements[0].values.length>0 && (finalCharts.twitterEngagements[charts].chartSubType === 'topLinks' || finalCharts.twitterEngagements[charts].chartSubType === 'hashTag')) {
                         var chart = {
                             chart: {
                                 type: finalCharts.twitterEngagements[charts].chartSubType
@@ -6751,7 +6761,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                         });
 
                     }
-                    else if (finalCharts.twitterEngagements[charts].chartSubType === 'engagementByUsersTalkedAbout' || finalCharts.twitterEngagements[charts].chartSubType === 'hashTag') {
+                    else if (finalCharts.twitterEngagements[0].values.length>0 && (finalCharts.twitterEngagements[charts].chartSubType === 'engagementByUsersTalkedAbout' || finalCharts.twitterEngagements[charts].chartSubType === 'hashTag')) {
                         var chart = {
                             chart: {
                                 type: finalCharts.twitterEngagements[charts].chartSubType
@@ -6774,6 +6784,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                 type: finalCharts.youtubeVideosOverview[charts].type
                             }
                         }
+                        if(finalCharts.youtubeVideosOverview[0].values.length>0)
                         finalChartData.push({
                             'options': chart,
                             'data': finalCharts.youtubeVideosOverview[0].values

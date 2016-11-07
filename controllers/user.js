@@ -16,7 +16,7 @@ module.exports = function (app, passport) {
     // HOME PAGE (with login links)
     app.get('/', function (req, res) {
         if (req.user) res.redirect('profile');
-        else res.render('../public/home.ejs'); // load the index.ejs file
+        else res.redirect('https://datapoolt.co'); // load the index.ejs file
     });
 
 
@@ -116,7 +116,7 @@ module.exports = function (app, passport) {
             newUser = user;
             if (err) return next(err);
             // Redirect if it fails
-            if (!user) return res.render('../public/signup.ejs', {message: req.flash('signupMessage', 'The email is already taken.')});
+            if (!user) return res.render('../public/signup.ejs', {message: 'The email is already taken.'});
             if (codeValue === configAuth.subscriptionType.starterFree || codeValue === undefined) {
                 req.orgId = newUser.orgId;
                 req.subscriptionId = newUser.subscriptionId;
@@ -146,15 +146,12 @@ module.exports = function (app, passport) {
                                 else if (!result)
                                     return res.status(501).json({error: 'Not implemented'});
                                 else
-                                    res.render('../public/signup.ejs', {message: req.flash('signupMessage','Failed to send email.Try to signup again')});
+                                    res.render('../public/signup.ejs', {message: 'Failed to send email.Try to signup again'});
 
                             });
                         }
-                        else {
-                           // res.render('../public/signup.ejs', {message: req.flash('signupMessage', 'Please check your mail for activation link')});
-                           //  res.render('../public/confirmation.ejs');
+                        else
                              res.redirect('/confirmation')
-                        }
                     });
                 })
             }
@@ -183,53 +180,65 @@ module.exports = function (app, passport) {
                     amount: req.body.amount / 100
                 }
             }, function (error, response, body) {
-                var body = JSON.parse(body);
-                req.orgId = newUser.orgId;
-                req.subscriptionId = newUser.subscriptionId;
-                req.validity = newUser.validity;
-                req.orderId = body.order_id;
-                req.amount = body.amount;
-                req.currency = body.currency;
-                req.paidOn = moment.unix(body.created_at).format("YYYY-MM-DD HH:mm:ss");
-                req.status = body.status;
-                req.email = body.email;
-                req.contact = body.contact;
-                var mailOptionsSubmitter = {
-                    from: 'Datapoolt Invites <alerts@datapoolt.co>',
-                    to: newUser.email,
-                    subject: newUser.name + ', we\'ve received your request for an invite',
-                    // HTML Version
-                    html: '<p>Hi ' + newUser.name + ',</p>' +
-                    '<p> We have received your request for an invite.Click link below to activate your account</p><br><button style="background-color: #1a8bb3;border-radius: 12px;color:#fff;font-size: 24px;"><a style="text-decoration: none;color:#fff" href="' + configAuth.emailVerification.redirectLink + newUser.emailVerification.tokenId + '">Click to Activate</a></button> <p>Thanks for trying us out. Cheers!</p>'
-                };
-                var transporter = nodemailer.createTransport({
-                    service: configAuth.emailVerification.service,
-                    auth: {
-                        user: configAuth.emailVerification.username,
-                        pass: configAuth.emailVerification.password
-                    }
-                });
-                transporter.sendMail(mailOptionsSubmitter, function (error, info) {
-                    if (error) {
-                        User.remove({_id: newUser._id}, function (err, result) {
-                            if (err)
-                                return res.status(500).json({error: 'Internal server error'});
-                            else if (!result)
-                                return res.status(501).json({error: 'Not implemented'});
-                            else
-                                res.render('../public/signup.ejs', {message: req.flash('signupMessage','Failed to send email.Try to signup again')});
-                        });
-                    }
-                    else {
-                        getSubscriptionDetails.updateSubscription(req, res, function (updateDetails) {
-                            res.render('../public/signup.ejs', {message: req.flash('signupMessage', 'Please check your mail for activation link')});
-                        })
-                    }
-                });
-
+                if(response.statusCode===200){
+                    var body = JSON.parse(body);
+                    req.orgId = newUser.orgId;
+                    req.subscriptionId = newUser.subscriptionId;
+                    req.validity = newUser.validity;
+                    req.orderId = body.order_id;
+                    req.amount = body.amount;
+                    req.currency = body.currency;
+                    req.paidOn = moment.unix(body.created_at).format("YYYY-MM-DD HH:mm:ss");
+                    req.status = body.status;
+                    req.email = body.email;
+                    req.contact = body.contact;
+                    var mailOptionsSubmitter = {
+                        from: 'Datapoolt Invites <alerts@datapoolt.co>',
+                        to: newUser.email,
+                        subject: newUser.name + ', we\'ve received your request for an invite',
+                        // HTML Version
+                        html: '<p>Hi ' + newUser.name + ',</p>' +
+                        '<p> We have received your request for an invite.Click link below to activate your account</p><br><button style="background-color: #1a8bb3;border-radius: 12px;color:#fff;font-size: 24px;"><a style="text-decoration: none;color:#fff" href="' + configAuth.emailVerification.redirectLink + newUser.emailVerification.tokenId + '">Click to Activate</a></button> <p>Thanks for trying us out. Cheers!</p>'
+                    };
+                    var transporter = nodemailer.createTransport({
+                        service: configAuth.emailVerification.service,
+                        auth: {
+                            user: configAuth.emailVerification.username,
+                            pass: configAuth.emailVerification.password
+                        }
+                    });
+                    transporter.sendMail(mailOptionsSubmitter, function (error, info) {
+                        if (error) {
+                            User.remove({_id: newUser._id}, function (err, result) {
+                                if (err)
+                                    return res.status(500).json({error: 'Internal server error'});
+                                else if (!result)
+                                    return res.status(501).json({error: 'Not implemented'});
+                                else
+                                    res.render('../public/signup.ejs', {message: 'Failed to send email.Try to signup again'});
+                            });
+                        }
+                        else {
+                            getSubscriptionDetails.updateSubscription(req, res, function (updateDetails) {
+                                res.redirect('/confirmation');
+                            })
+                        }
+                    });
+                }
+                else{
+                    User.remove({_id: newUser._id}, function (err, result) {
+                        if (err)
+                            return res.status(500).json({error: 'Internal server error'});
+                        else if (!result)
+                            return res.status(501).json({error: 'Not implemented'});
+                        else
+                            res.render('../public/signup.ejs', {message: 'Failed to send email.Try to signup again'});
+                    });
+                    res.render('../public/signup.ejs', {message:  'Payment is failed!'});
+                }
             });
         }
-        else res.render('../public/signup.ejs', {message: req.flash('signupMessage', 'Please check your mail for activation link')});
+        else res.render('../public/signup.ejs', {message:  'Please check your mail for activation link'});
     })
     //capture the payment details
     app.post('/api/v1/payment/capture', function (req, res) {

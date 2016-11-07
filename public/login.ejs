@@ -494,7 +494,7 @@
                             <div class="row alink">
                                 <div class="block-header">
                                     <% if (message.length > 0) { %>
-                                    <div class="alert alert-danger" style="line-height: 10px;width: 519px;margin-left: 31px;"><%= message %></div>
+                                    <div class="alert alert-danger" ><%= message %></div>
                                     <% } %>
                                     <h2 class="title" >Login Form</h2>
                                 </div>
@@ -634,44 +634,11 @@
     }
 </script>
 
-<!--For intercom messenger-->
-<script>
-    window.intercomSettings = {
-        app_id: "uiizfwfc"
-    };
+<script type="text/javascript">
+    var $zoho= $zoho || {salesiq:{values:{},ready:function(){}}};var d=document;s=d.createElement("script");s.type="text/javascript";
+    s.defer=true;s.src="https://salesiq.zoho.com/datapoolt/float.ls?embedname=datapoolt";
+    t=d.getElementsByTagName("script")[0];t.parentNode.insertBefore(s,t);
 </script>
-<script>(function () {
-        var w = window;
-        var ic = w.Intercom;
-        if (typeof ic === "function") {
-            ic('reattach_activator');
-            ic('update', intercomSettings);
-        } else {
-            var d = document;
-            var i = function () {
-                i.c(arguments)
-            };
-            i.q = [];
-            i.c = function (args) {
-                i.q.push(args)
-            };
-            w.Intercom = i;
-            function l() {
-                var s = d.createElement('script');
-                s.type = 'text/javascript';
-                s.async = true;
-                s.src = 'https://widget.intercom.io/widget/uiizfwfc';
-                var x = d.getElementsByTagName('script')[0];
-                x.parentNode.insertBefore(s, x);
-            }
-
-            if (w.attachEvent) {
-                w.attachEvent('onload', l);
-            } else {
-                w.addEventListener('load', l, false);
-            }
-        }
-    })()</script>
 
 </body>
 </html>

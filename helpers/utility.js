@@ -61,7 +61,7 @@ var self = module.exports = {
     checkUserReportAccess: function (req, res, done) {
         User.findOne({
             _id: req.user._id,
-            dashboards: {$elemMatch: {dashboardId: {$in: req.dashboards}}}
+            // dashboards: {$elemMatch: {dashboardId: {$in: req.dashboards}}}
         }, function (err, user) {
             if (err)
                 return res.status(500).json({error: 'Internal Server Error'});

@@ -161,7 +161,7 @@
                                 <div id="error"></div>
                                 <div style="padding:2px;align-content: center;margin:0% 41%"><p style="padding:5px;font-family: Heebo-Medium;">Available Widgets : {{widgetCount}}</P></div>
                                 <div ng-repeat="dashboards in recommendDashboard" class="col-lg-2 widget-icons showReferenceWidgets" data-toggle="tooltip" data-placement="bottom" title="" data-original-title={{dashboards.dashboard.description}}  ng-click="getProfileForChosenChannel(dashboards);">
-                                    <p style="padding:2px;font-family: Heebo-Medium; ">{{dashboards.referenceWidgets.length}} widgets</p>
+                                    <p style="padding:2px;font-family: Heebo-Medium;line-height: 0.5px; ">{{dashboards.referenceWidgets.length}} widgets</p>
                                     <p class="metricNames" style="margin-top:5px !important;">{{dashboards.dashboard.name}}</p>
                                     <img ng-repeat="channels in dashboards.channels" src="image/thumbnail/{{channels.name}}.png" class="img-thumbnail" style="max-width:30%;max-height:35%; margin: 0px 5px 0px 0px;"/>
                                 </div>

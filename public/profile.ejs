@@ -136,67 +136,11 @@
 
 <script type="text/javascript" src="/js/sha256.js"></script>
 
-<!--For Intercom Messenger-->
-<script>
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', '/api/v1/me', true);
-    xhr.send();
-    xhr.addEventListener("readystatechange", processRequest, false);
-    function processRequest(e) {
-        if (xhr.readyState == 4 && xhr.status == 200) {
-            var response = JSON.parse(xhr.responseText);
-            var loggedInUserName = response.userDetails.user[0].name;
-            var loggedInUserEmail = response.userDetails.user[0].email;
-            var loggedInUserCreatedTime = response.userDetails.user[0].created;
-
-            var shaObj = new jsSHA("SHA-256", "TEXT");
-            shaObj.setHMACKey("Lij2mu0RJIcMM24D_osGz3Qc5M1MMTfL2v8JvVF9", "TEXT");
-            shaObj.update(loggedInUserEmail);
-            var hmac = shaObj.getHMAC("HEX");
-
-
-            window.intercomSettings = {
-                app_id: "uiizfwfc",
-                name: loggedInUserName, // Full name
-                email: loggedInUserEmail, // Email address
-                created_at: Math.floor(moment.utc(loggedInUserCreatedTime).valueOf() / 1000),
-                user_hash: hmac
-            };
-        }
-    }
+<script type="text/javascript">
+    var $zoho= $zoho || {salesiq:{values:{},ready:function(){}}};var d=document;s=d.createElement("script");s.type="text/javascript";
+    s.defer=true;s.src="https://salesiq.zoho.com/datapoolt/float.ls?embedname=datapoolt";
+    t=d.getElementsByTagName("script")[0];t.parentNode.insertBefore(s,t);
 </script>
-<script>(function () {
-        var w = window;
-        var ic = w.Intercom;
-        if (typeof ic === "function") {
-            ic('reattach_activator');
-            ic('update', intercomSettings);
-        } else {
-            var d = document;
-            var i = function () {
-                i.c(arguments)
-            };
-            i.q = [];
-            i.c = function (args) {
-                i.q.push(args)
-            };
-            w.Intercom = i;
-            function l() {
-                var s = d.createElement('script');
-                s.type = 'text/javascript';
-                s.async = true;
-                s.src = 'https://widget.intercom.io/widget/uiizfwfc';
-                var x = d.getElementsByTagName('script')[0];
-                x.parentNode.insertBefore(s, x);
-            }
-
-            if (w.attachEvent) {
-                w.attachEvent('onload', l);
-            } else {
-                w.addEventListener('load', l, false);
-            }
-        }
-    })()</script>
 
 </body>
 </html>
