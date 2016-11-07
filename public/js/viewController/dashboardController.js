@@ -271,7 +271,7 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
             minSizeX: 1,
             minSizeY: 1,
             swapping: true,
-            float: true,
+            floating: true,
             pushing: true,
             width: 'auto',
             colWidth:'auto',
@@ -690,7 +690,6 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
 
         $(".navbar").css('z-index','1');
         $(".md-overlay").css("background","rgba(0,0,0,0.5)");
-
         isExportOptionSet=0;
 
         $scope.dashboard.widgets = [];
@@ -728,13 +727,14 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
                     }
                     var widgetID=0;
                     var dashboardWidgets = [];
+                    var rowNeutral =0;
                     for(var getWidgetInfo in dashboardWidgetList){
                         dashboardWidgets.push(createWidgets.widgetHandler(dashboardWidgetList[getWidgetInfo],{
                             'startDate': moment($scope.dashboardCalendar.start_date).format('YYYY-MM-DD'),
                             'endDate': moment($scope.dashboardCalendar.end_date).format('YYYY-MM-DD')
                         }));
                         $scope.dashboard.widgets.push({
-                            'row': (typeof dashboardWidgetList[getWidgetInfo].row != 'undefined'? dashboardWidgetList[getWidgetInfo].row : 0),
+                            'row': (typeof dashboardWidgetList[getWidgetInfo].row != 'undefined'? dashboardWidgetList[getWidgetInfo].row : rowNeutral),
                             'col': (typeof dashboardWidgetList[getWidgetInfo].col != 'undefined'? dashboardWidgetList[getWidgetInfo].col : 0),
                             'sizeY': (typeof dashboardWidgetList[getWidgetInfo].size != 'undefined'? dashboardWidgetList[getWidgetInfo].size.h : 2),
                             'sizeX': (typeof dashboardWidgetList[getWidgetInfo].size != 'undefined'? dashboardWidgetList[getWidgetInfo].size.w : 2),
@@ -758,6 +758,8 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
                             'name': (typeof dashboardWidgetList[getWidgetInfo].name != 'undefined'? dashboardWidgetList[getWidgetInfo].name : ''),
                             'color': (typeof dashboardWidgetList[getWidgetInfo].color != 'undefined'? dashboardWidgetList[getWidgetInfo].color : '')
                         });
+                        var sizeY=(typeof dashboardWidgetList[getWidgetInfo].size != 'undefined'? dashboardWidgetList[getWidgetInfo].size.h : 2);
+                        rowNeutral+=sizeY;
                         dashboardWidgets[getWidgetInfo].then(
                             function successCallback(dashboardWidgets) {
                                 var widgetIndex = $scope.dashboard.widgets.map(function(el) {return el.id;}).indexOf(dashboardWidgets.id);

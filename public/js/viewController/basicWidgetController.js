@@ -2095,6 +2095,14 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
                             }).then(
                                 function successCallback(response) {
                                     startWidget=1;
+                                    var rowNeutral =0;
+                                    var colNeutral=0;
+                                    for (var widgetObjects in response.data.widgetsList) {
+                                        var sizeY=(typeof response.data.widgetsList[widgetObjects].size != 'undefined'? response.data.widgetsList[widgetObjects].size.h : 2);
+                                        var sizeX=(typeof response.data.widgetsList[widgetObjects].size != 'undefined'? response.data.widgetsList[widgetObjects].size.w : 2);
+                                        rowNeutral+=sizeY;
+                                        response.data.widgetsList[widgetObjects].row = rowNeutral;
+                                    }
                                     for (var widgetObjects in response.data.widgetsList) {
                                         $rootScope.$broadcast('populateWidget', response.data.widgetsList[widgetObjects]);
                                     }
