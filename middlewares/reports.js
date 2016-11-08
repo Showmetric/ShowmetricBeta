@@ -19,7 +19,6 @@ exports.getReportList = function (req, res, next) {
         return res.status(401).json({error: 'Authentication required to perform this action'})
     }
     else {
-
         reportList.find({userId: req.user._id}, function (err, UserCollection) {
             if (err)
                 return res.status(500).json({error: 'Internal server error'});
@@ -27,7 +26,6 @@ exports.getReportList = function (req, res, next) {
                 return res.status(204).json({error: 'No records found'});
             else {
                 req.app.result = UserCollection;
-                console.log('reports',req.app.result)
                 next();
             }
         });
@@ -46,8 +44,8 @@ exports.getReportList = function (req, res, next) {
 };
 
 /**
- * To get the dashboard details based on dashboard id
- * @param req contains the dashboard id
+ * To get the report details based on report id
+ * @param req contains the report id
  */
 exports.getReportDetails = function (req, res, next) {
     if (req.user && req.query.reportId===undefined && req.query.customReportId===undefined && String(req.params.reportId) !== String(null)) {
@@ -66,24 +64,19 @@ exports.getReportDetails = function (req, res, next) {
                         var _id = new mongoose.Schema.ObjectId(reportId).path;
                         var updated = new Date();
                         var updateData = {};
-                            updateData.dashboardDeleted = true;
-                            updateData.updated = updated;
-                            updateData.isDraft = false;
+                        updateData.dashboardDeleted = true;
+                        updateData.updated = updated;
+                        updateData.isDraft = false;
                         // update the report data
                         reportList.update({_id: _id}, {
                             $set: updateData
                         }, {upsert: true}, function (err, response) {
-                            if (err){
-                                console.log("Updating Widgets List in  Report Failed")
-                                return res.status(500).json({error: 'Internal server error'})
-                            }
-                            else if (response == 0) {
-                                console.log("Updating Widgets List in  Report Failed")
-                                return res.status(501).json({error: 'Dashboard Deleted Not Updated in Reports Collection'})
-                            }
-                            else {
+                            if (err)
+                                return res.status(500).json({error: 'Internal server error'});
+                            else if (response == 0)
+                                return res.status(501).json({error: 'Dashboard Deleted Not Updated in Reports Collection'});
+                            else
                                 return res.status(211).json({error: 'Dashboard linked with this report is missing'});
-                            }
                         });
                     }
                     else {
@@ -117,17 +110,13 @@ exports.getReportDetails = function (req, res, next) {
                         reportList.update({_id: _id}, {
                             $set: updateData
                         }, {upsert: true}, function (err, response) {
-                            if (err){
-                                console.log("Updating Widgets List in  Report Failed")
-                                return res.status(500).json({error: 'Internal server error'})
-                            }
-                            else if (response == 0) {
-                                console.log("Updating Widgets List in  Report Failed")
-                                return res.status(501).json({error: 'Not Updated in Reports Collection'})
-                            }
-                            else {
+                            if (err)
+                                return res.status(500).json({error: 'Internal server error'});
+                            else if (response == 0)
+                                return res.status(501).json({error: 'Not Updated in Reports Collection'});
+
+                            else
                                 return res.status(211).json({error: 'Dashboard linked with this report is missing'});
-                            }
                         });
                     }
                     else {
@@ -146,7 +135,6 @@ exports.getReportDetails = function (req, res, next) {
             else if (!reportDetails)
                 return res.status(204).json({error: 'No records found'});
             else {
-                console.log("Report Details fetched from custom report ID",reportDetails)
                 var dashboards = reportDetails.dashboards;
                 var reportId = reportDetails._id;
                 dashboardList.find({_id:  {$in: dashboards}}, function (err, dashboardDetails) {
@@ -163,17 +151,12 @@ exports.getReportDetails = function (req, res, next) {
                         reportList.update({_id: _id}, {
                             $set: updateData
                         }, {upsert: true}, function (err, response) {
-                            if (err){
-                                console.log("Updating Widgets List in  Report Failed")
-                                return res.status(500).json({error: 'Internal server error'})
-                            }
-                            else if (response == 0) {
-                                console.log("Updating Widgets List in  Report Failed")
-                                return res.status(501).json({error: 'Not Updated in Reports Collection'})
-                            }
-                            else {
+                            if (err)
+                                return res.status(500).json({error: 'Internal server error'});
+                            else if (response == 0)
+                                return res.status(501).json({error: 'Not Updated in Reports Collection'});
+                            else
                                 return res.status(211).json({error: 'Dashboard linked with this report is missing'});
-                            }
                         });
                     }
                     else {
@@ -189,7 +172,7 @@ exports.getReportDetails = function (req, res, next) {
 };
 
 /**
- * To store the dashboard details in database
+ * To store the report details in database
  * @param req - user details
  * @param res
  * @param next - callback
@@ -218,49 +201,48 @@ exports.storeReports = function (req, res, next) {
             createReport.type='fresh';
             createReport.dashboardDeleted=false;
             createReport.widgets = [];
-                req.dashboards = req.body.dashboards;
-                userPermission.checkUserReportAccess(req, res, function (err, response) {
-                    Widget.find({dashboardId:  {$in: req.body.dashboards}}, function (err, widget) {
-                        if (err)
-                            return res.status(500).json({error: 'Internal server error'});
-                        else if (!widget.length)
-                            createReport.save(function (err, report) {
-                                if (err)
-                                    return res.status(500).json({error: 'Internal server error'});
-                                else if (!report)
-                                    return res.status(204).json({error: 'No records found'});
-                                else {
-                                        req.app.result = report._id;
-                                        next();
-                                    }
-                            });
-                        else {
-                            for(var widgetId in widget){
-                                createReport.widgets[widgetId] = {
-                                    widgetId:widget[widgetId]._id,
-                                    dashboardId:widget[widgetId].dashboardId,
-                                    name: widget[widgetId].name,
-                                    sizeY : widget[widgetId].size.h,
-                                    widgetType:widget[widgetId].widgetType,
-                                    row:widget[widgetId].row,
-                                    col:widget[widgetId].col,
-                                    pageNumber : null
-                                }
+            req.dashboards = req.body.dashboards;
+            userPermission.checkUserReportAccess(req, res, function (err, response) {
+                Widget.find({dashboardId:  {$in: req.body.dashboards}}, function (err, widget) {
+                    if (err)
+                        return res.status(500).json({error: 'Internal server error'});
+                    else if (!widget.length)
+                        createReport.save(function (err, report) {
+                            if (err)
+                                return res.status(500).json({error: 'Internal server error'});
+                            else if (!report)
+                                return res.status(204).json({error: 'No records found'});
+                            else {
+                                req.app.result = report._id;
+                                next();
                             }
-                            console.log('saved report widgets',createReport)
-                            createReport.save(function (err, report) {
-                                if (err)
-                                    return res.status(500).json({error: 'Internal server error'});
-                                else if (!report)
-                                    return res.status(204).json({error: 'No records found'});
-                                else {
-                                    req.app.result = report.customReportId;
-                                    next();
-                                }
-                            });
+                        });
+                    else {
+                        for(var widgetId in widget){
+                            createReport.widgets[widgetId] = {
+                                widgetId:widget[widgetId]._id,
+                                dashboardId:widget[widgetId].dashboardId,
+                                name: widget[widgetId].name,
+                                sizeY : widget[widgetId].size.h,
+                                widgetType:widget[widgetId].widgetType,
+                                row:widget[widgetId].row,
+                                col:widget[widgetId].col,
+                                pageNumber : null
+                            }
                         }
-                    })
+                        createReport.save(function (err, report) {
+                            if (err)
+                                return res.status(500).json({error: 'Internal server error'});
+                            else if (!report)
+                                return res.status(204).json({error: 'No records found'});
+                            else {
+                                req.app.result = report.customReportId;
+                                next();
+                            }
+                        });
+                    }
                 })
+            })
         }
 
         //To update already existing database
@@ -305,14 +287,10 @@ exports.storeReports = function (req, res, next) {
             reportList.update({_id: _id}, {
                 $set: updateData
             }, {upsert: true}, function (err, response) {
-                if (err){
-                    console.log("Updating Widgets List in  Report Failed")
-                    return res.status(500).json({error: 'Internal server error'})
-                }
-                else if (response == 0) {
-                    console.log("Updating Widgets List in  Report Failed")
-                    return res.status(501).json({error: 'Not Updated in Reports Collection'})
-                }
+                if (err)
+                    return res.status(500).json({error: 'Internal server error'});
+                else if (response == 0)
+                    return res.status(501).json({error: 'Not Updated in Reports Collection'});
                 else {
                     req.app.result = _id;
                     next();
@@ -359,7 +337,7 @@ exports.removeReportFromUser = function (req, res, next) {
     else return res.status(401).json({error: 'Authentication required to perform this action'});
 };
 
-//To get dashboard details based on reportid
+//To get report details based on reportid
 exports.getReportWidgetDetails = function (req, res, next) {
     Widget.find({_id:  {$in: req.body.widgets}}, function (err, widget) {
         if (err)
@@ -367,7 +345,6 @@ exports.getReportWidgetDetails = function (req, res, next) {
         else if (!widget.length)
             return res.status(206).json({error: 'No records found in dashboard Widget'});
         else {
-            console.log("Widget in Reports",widget)
             req.app.result = widget;
             next();
         }

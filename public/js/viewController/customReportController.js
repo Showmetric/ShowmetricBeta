@@ -343,14 +343,6 @@ function customReportController($scope,$timeout,$rootScope,$http,$window,$state,
                         $(".reportPdfHeadText").show().text("PDF has been generated successfully");
 
                         $(".pdfContentText").html('<b><br/><a href="' + dwnldUrl + '" download style="color: green;"  id="yourLinkID">Click here to download your PDF</a></b>');
-                        // window.saveAs(response.data.Response['blob'], dashboardName + "_" + timestamp + ".pdf");
-                        // var newWindow = $window.open('', '_blank');
-                        //console.log('pdf url',dwnldUrl);
-                        // newWindow.location=dwnldUrl;
-                        //document.getElementById('yourLinkID').click();
-                        // $window.open(dwnldUrl);
-                        // window.saveAs(dwnldUrl, dashboardName+"_"+timestamp+".pdf");
-                        // $scope.expAct = false;
                         var jsonData = {
                             reportId: $scope.reportId,
                             pdfLink: dwnldUrl
@@ -362,7 +354,6 @@ function customReportController($scope,$timeout,$rootScope,$http,$window,$state,
                         }).then(
                             function successCallback(response) {
                                 if(response.status == '200')
-                                //console.log('PDF Link Updated in Db');
                                     $("#reportDownloadButton").disabled =false;
                                 $("#reportDownloadButton").removeClass("exportDisabled");
                                 $("#reportEditButton").disabled =false;
@@ -373,11 +364,6 @@ function customReportController($scope,$timeout,$rootScope,$http,$window,$state,
                                 $("#reportDownloadButton").removeClass("exportDisabled");
                                 $("#reportEditButton").disabled =false;
                                 $("#reportEditButton").removeClass("exportDisabled");
-                                // swal({
-                                //     title: "",
-                                //     text: "<span style='sweetAlertFont'>Error in changing the name! Please try again</span> .",
-                                //     html: true
-                                // });
                             }
                         );
                     },
@@ -485,28 +471,6 @@ function customReportController($scope,$timeout,$rootScope,$http,$window,$state,
 
         }
 
-        /* $scope.fetchDateForDashboard=function(){
-         var dahboardId='undefined'
-         $http({
-         method: 'GET',
-         url: '/api/v1/getSubscriptionFromDashboard/'+ dahboardId
-         }).then(
-         function successCallback(response){
-         console.log('response',response)
-         if(response.status==200){
-         console.log('response',response)
-         dateRange=response.data.response.limits.dateRange;
-         $scope.userModifyDate(dateRange)
-         }
-         else{
-         $scope.userModifyDate(365)
-         }
-         }
-         )
-         };
-
-         $scope.fetchDateForDashboard();*/
-
         $scope.fetchReportDetails = function () {
             var dateRange;
             var dahboardId='undefined'
@@ -541,7 +505,6 @@ function customReportController($scope,$timeout,$rootScope,$http,$window,$state,
                         }
                         $scope.reportWidgetsListArray=_.uniq($scope.reportWidgetsListArray);
                         $scope.dashboardWidgets=_.uniq($scope.dashboardWidgets);
-                        // console.log("Response in fetch reports",response,$scope.customReport,$scope.reportWidgetsListArray,$scope.dashboardWidgets);
                         var diffWithStartDate = dayDiff(response.data.startDate, new Date());
                         var diffWithEndDate = dayDiff(response.data.endDate, new Date());
                         var changeInDb = true;
@@ -620,7 +583,6 @@ function customReportController($scope,$timeout,$rootScope,$http,$window,$state,
 
         //To define the calendar in dashboard header
         $scope.userModifyDate = function (startDate, endDate ,dateRange) {
-            console.log('dateRange',dateRange)
             $scope.dashboardCalendar = new Calendar({
                 element: $('.daterange--double'),
                 earliest_date: moment(new Date()).subtract(dateRange, 'days'),
@@ -801,7 +763,6 @@ function customReportController($scope,$timeout,$rootScope,$http,$window,$state,
                             $timeout(resizeReportWidget(pageWids, i), 800);
                         }
                     }
-                    //console.log('page details',Highcharts.charts, pageWids,$scope.exportReportPages[pageWids]);
                 }
                 function resizeReportWidget(pageInd,k) {
                     return function () {
@@ -809,9 +770,7 @@ function customReportController($scope,$timeout,$rootScope,$http,$window,$state,
                             var parentWidth = document.getElementById('reportChartOptions-'+pageInd+'-'+k).offsetWidth;
                             var parentHeight = document.getElementById('reportChartOptions-'+pageInd+'-'+k).offsetHeight;
                             for(var i=0;i<Highcharts.charts.length;i++){
-                                //console.log('parent elemt id',Highcharts.charts[i].container.parentElement.id,'reportChartRepeat-'+pageInd+'-'+k)
                                 if(Highcharts.charts[i].container.parentElement.id.includes('reportChartRepeat-'+pageInd+'-'+k)){
-                                    // console.log('chart reflowing happens at',i,k,Highcharts.charts[i]);
                                     Highcharts.charts[i].setSize(parentWidth,parentHeight); // reflow the first chart..
                                     Highcharts.charts[i].reflow(); // reflow the chart..
                                 }
@@ -1011,8 +970,6 @@ function customReportController($scope,$timeout,$rootScope,$http,$window,$state,
             widgets: $scope.dashboardWidgets
         };
 
-
-        // console.log("Json data in populate reports",jsonData)
         $http({
             method: 'POST',
             url: '/api/v1/get/reportWidgets/',
@@ -1124,7 +1081,6 @@ function customReportController($scope,$timeout,$rootScope,$http,$window,$state,
                                         var widgetIndex = customReportWidgetList.map(function (el) {
                                             return el._id;
                                         }).indexOf(widgetsInReport[getWidgetInfo].widgetId);
-                                        //console.log("widget Index find", widgetIndex, customReportWidgetList, widgetsInReport[getWidgetInfo].widgetId)
                                         if (widgetIndex != -1) {
                                             var widgetID = widgetsInReport[getWidgetInfo].widgetId;
                                             customReportWidgets[widgetID] = createWidgets.widgetHandler(customReportWidgetList[widgetIndex], {
@@ -1693,9 +1649,7 @@ function customReportController($scope,$timeout,$rootScope,$http,$window,$state,
                         $scope.populateReportWidgets();
                     });
                 // $scope.arrangingWidgetsinReport(newWidget,pageNumber,rowNeutral);
-                // console.log("Widgets arrange function finished");
                 // $scope.customReport.widgets.splice(rowNeutral, 0, newWidget);
-                // console.log("text widget added in",rowNeutral,newWidget);
             },
             function errorCallback (error){
                 swal({
@@ -1755,7 +1709,6 @@ function customReportController($scope,$timeout,$rootScope,$http,$window,$state,
             // else {
             //     for (var index = startIndex; index <= stopIndex; index++) {
             //         if ($scope.customReport.widgets[index].widgetType != 'pageBreakWidget') {
-            //             console.log('inside delete loop', startIndex, stopIndex, index, $scope.customReport.widgets[index].row )
             //             $scope.customReport.widgets[index].row -= widget.sizeY;
             //
             //         }
@@ -1793,7 +1746,7 @@ function customReportController($scope,$timeout,$rootScope,$http,$window,$state,
             url:'/api/v1/delete/textWidgets/' + widget.id
         }).then(
             function successCallback(response){
-                //  console.log("Text Widget Deleted from db")
+
             },
             function errorCallback(error){
                 swal({
@@ -1817,7 +1770,6 @@ function customReportController($scope,$timeout,$rootScope,$http,$window,$state,
         }).then(
             function successCallback(response) {
                 //   if(response.status == '200')
-                //  console.log('Report Name changed')
             },
             function errorCallback(error) {
                 swal({

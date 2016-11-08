@@ -168,7 +168,7 @@ exports.listAccounts = function (req, res, next) {
                                 function (err, result, body) {
                                     if (err) {
                                         return res.status(500).json({error: 'Internal server error'});
-                                    }                                     
+                                    }
                                     else if(result.statusCode == 401){
                                         accesserror(profile._id)
                                     }
@@ -176,7 +176,7 @@ exports.listAccounts = function (req, res, next) {
                                         // var vimeoObject=[];
                                         var parsedData = JSON.parse(body);
                                         var length = parsedData.data.length;
-    
+
                                         // req.app.result = parsedData.data;
                                         for (var i = 0; i < length; i++) {
                                             var objectItem = {
@@ -187,7 +187,9 @@ exports.listAccounts = function (req, res, next) {
                                             };
                                             channelObject.push(objectItem);
                                         }
+
                                         callback(err, channelObject);
+
                                     }
                                 }
                             )
@@ -1088,8 +1090,8 @@ exports.listAccounts = function (req, res, next) {
                             if(response.statusCode == 401){
                                 accesserror(results._id)
                             }
-                           else
-                            return res.status(500).json({error: err});
+                            else
+                                return res.status(500).json({error: err});
                         }
                         else {
                             var objectStoreDetails = JSON.parse(body);

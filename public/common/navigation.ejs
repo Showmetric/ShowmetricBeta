@@ -35,13 +35,12 @@
                             </a>
                         </li>
             -->
-            <li class="sideBar-wrapper" ng-if="canAccessReportBuilder">
-                <a ui-sref="app.reporting.buildReports">
+            <li class="sideBar-wrapper"  ng-if="canAccessReportBuilder">
+                <a ng-click="stateValidation('buildReports')">
                     <img src="image/reportBuilder.png" class ="sidebar-icons" height="32" width="32">
                     <!--<i class="icon icon-grid navigation-menu-icon"></i>-->
                     <span class="nav-label">Reports</span>
                     <div class="tooltip">Create Customized Reports from your Dashboards</div>
-                </a>
                 </a>
             </li>
             <!--
