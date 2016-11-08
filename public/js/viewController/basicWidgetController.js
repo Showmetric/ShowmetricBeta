@@ -2125,6 +2125,8 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
                     );
                 }
                 else {
+                    var myDiv = document.getElementById('scroller');
+                    myDiv.scrollTop = 0;
                     $('#error').html('<div class="alert alert-danger fade in" style="width: 400px;margin-left: 212px;"><button type="button" class="close close-alert" data-dismiss="alert" aria-hidden="true">×</button>You have reached your Widgets limit. Please upgrade to enjoy more Widgets</div>');
                     document.getElementById('basicWidgetFinishButton').disabled = true;
                 }
@@ -2163,6 +2165,8 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
                     document.getElementById('basicWidgetNextButton1').disabled = false;
             }
             else {
+                var myDiv = document.getElementById('scroller');
+                myDiv.scrollTop = 0;
                 $('#error').html('<div class="alert alert-danger fade in"  style="width: 400px;margin-left: 212px;"><button type="button" class="close close-alert" data-dismiss="alert" aria-hidden="true">×</button>You have reached your Widgets limit. Please upgrade to enjoy more Widgets</div>');
                 document.getElementById('basicWidgetNextButton1').disabled = true;
             }
@@ -2202,8 +2206,10 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
                     }
                     else {
                         for (var i in $scope.channelList) {
-                            if (channel._id == $scope.channelList[i]._id)
+                            if (channel._id == $scope.channelList[i]._id){
+                                $('.alert-danger').remove();
                                 $scope.channelList[i].isSelected = 0;
+                            }
                         }
                     }
                     if ($scope.selectedTempChannelList.length<=availableBasicWidgets  ) {
@@ -2213,14 +2219,15 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
                             document.getElementById('basicWidgetNextButton1').disabled = false;
                     }
                     else {
-                        $('#error').html('<div class="alert alert-danger fade in"   style="width: 400px;margin-left: 212px;"><button type="button" class="close close-alert" data-dismiss="alert" aria-hidden="true">×</button>You dont have any available widgets</div>');
+                        var myDiv = document.getElementById('scroller');
+                        myDiv.scrollTop = 0;
+                        $('#error').html('<div class="alert alert-danger fade in"   style="width: 400px;margin-left: 212px;"><button type="button" class="close close-alert" data-dismiss="alert" aria-hidden="true">×</button>You have reached your Widgets limit. Please upgrade to enjoy more Widgets</div>');
                         document.getElementById('basicWidgetNextButton1').disabled = true;
                     }
                 }
             }
         }
     };
-
     var removeByAttr = function (arr, attr, value) {
         var i = arr.length;
         while (i--) {
@@ -2314,7 +2321,9 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
                 document.getElementById('basicWidgetNextButton2').disabled = false;
             }
             else {
-                $('#error').html('<div class="alert alert-danger fade in" style="width: 400px;margin-left: 212px;"><button type="button" class="close close-alert" data-dismiss="alert" aria-hidden="true">×</button>You dont have any available widgets</div>');
+                var myDiv = document.getElementById('scroller');
+                myDiv.scrollTop = 0;
+                $('#error').html('<div class="alert alert-danger fade in" style="width: 400px;margin-left: 212px;"><button type="button" class="close close-alert" data-dismiss="alert" aria-hidden="true">×</button>You have reached your Widgets limit. Please upgrade to enjoy more Widgets</div>');
                 document.getElementById('basicWidgetNextButton2').disabled = true;
 
             }
