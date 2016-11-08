@@ -608,11 +608,13 @@
             </div>
             <div class="modal-body">
                 <div class="wrapper wrapper-content">
-                    <div id="error"></div>
+                    <h5 ng-if="currentView === 'step_one'" class="model-title">Step 1 : Choose the Channels</h5>
+                    <h5 ng-if="currentView === 'step_two'" class="model-title">{{selectCustomLinkHead}}</h5>
+                    <h5 ng-if="currentView === 'step_three'" class="model-title" ng-hide="headerHide==true">Step 3 : Choose the Accounts</h5>
                     <div class="scrollbar" id="scroller">
                         <div class="row" ng-if="currentView === 'step_one'" ng-cloak>
-                            <h5 class="model-title">Step 1 : Choose the Channels</h5>
                             <div class="col-lg-12">
+                                <div id="error"></div>
                                 <div ng-repeat="data in channelList | filter:{integrated: true}" name="{{data._id}}"
                                      class="col-lg-2 widget-icons"
                                      ng-click="storeChannel(data);"
@@ -633,7 +635,6 @@
                             </div>
                         </div>
                         <div class="row" ng-if="currentView === 'step_two'" ng-cloak>
-                            <h5 class="model-title">{{selectCustomLinkHead}}</h5>
                             <div class="col-lg-12">
                                 <div id="error"></div>
                                 <div class="col-lg-12" ng-repeat="referenceWidgetsList in referenceWidgetsList">
@@ -676,8 +677,7 @@
                                         </button>
                                     </h4>
                                     <br/>
-                                    <p><h4 ng-hide="customDocLinkMessage"><a href="/customDataDocumentation"
-                                                                             target="_blank" class="findOutHow">Find out
+                                    <p><h4 ng-hide="customDocLinkMessage"><a href="/customDataDocumentation" target="_blank" class="findOutHow">Find out
                                             How to send data - Documentation</a></h4></p>
                                     <h4 ng-hide="errorMessage" style="color:red;">
                                         Error in creating widget. Try again to create a new widget
@@ -686,7 +686,6 @@
                             </div>
                         </div>
                         <div class="row" ng-if="currentView === 'step_three'" ng-cloak>
-                            <h5 class="model-title" ng-hide="headerHide==true">Step 3 : Choose the Accounts</h5>
                             <div id="error"></div>
                             <div ng-repeat="channel in selectedChannelList track by $index" >
                                 <div ng-hide="channel.name=='Moz'">

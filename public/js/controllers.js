@@ -4580,8 +4580,8 @@ showMetricApp.service('createWidgets', function ($http, $q) {
 
             if (widget.widgetType == 'customFusion') {
                 for (var charts in widgetCharts) {
-                    if (widgetCharts[charts].type == 'line' || widgetCharts[charts].type == 'area' || widgetCharts[charts].type == 'reachVsImpressions' || widgetCharts[charts].type == 'engagedUsersReach' || (widgetCharts[charts].type == 'costPerActionType' && (widget.meta != undefined))) finalCharts.lineCharts.push(widgetCharts[charts]);
-                    else if (widgetCharts[charts].type == 'bar' || widgetCharts[charts].type == 'column' || widgetCharts[charts].type == "stackcolumn") finalCharts.barCharts.push(widgetCharts[charts]);
+                    if (widgetCharts[charts].type == 'line' || widgetCharts[charts].type == 'area' || widgetCharts[charts].type == 'bar' || widgetCharts[charts].type == 'column' ) finalCharts.lineCharts.push(widgetCharts[charts]);
+                    else if (widgetCharts[charts].type ==  "stackcolumn") finalCharts.barCharts.push(widgetCharts[charts]);
                     else if (widgetCharts[charts].type == 'pie') finalCharts.pieCharts.push(widgetCharts[charts]);
                     else if (widgetCharts[charts].type == 'instagramPosts') finalCharts.instagramPosts.push(widgetCharts[charts]);
                     else if (widgetCharts[charts].type == 'highEngagementTweets') finalCharts.highEngagementTweets.push(widgetCharts[charts]);

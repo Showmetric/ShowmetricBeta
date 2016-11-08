@@ -589,6 +589,8 @@ function RecommendedDashboardController($scope, $http, $window, $q, $state, $roo
                                 );
                             }
                             else {
+                                var myDiv = document.getElementById('scroller');
+                                myDiv.scrollTop = 0;
                                 $('#errorInFinish').html('<div class="alert alert-danger fade in" style="width: 400px;margin-left: 212px;"><button type="button" class="close close-alert" data-dismiss="alert" aria-hidden="true">×</button>You have reached your Widgets limit. Please upgrade to enjoy more Widgets</div>');
                                 document.getElementById('basicWidgetFinishButton').disabled = true;
                             }
