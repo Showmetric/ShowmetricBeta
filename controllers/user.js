@@ -7,7 +7,7 @@ var moment = require('moment');
 var request = require('request');
 var nodemailer = require('nodemailer');
 var User = require('../models/user');
-var Subscription = require('../models/subscriptionType')
+var Subscription = require('../models/subscriptionType');
 
 module.exports = function (app, passport) {
     var codeValue;
@@ -16,7 +16,7 @@ module.exports = function (app, passport) {
     // HOME PAGE (with login links)
     app.get('/', function (req, res) {
         if (req.user) res.redirect('profile');
-        else res.redirect('https://datapoolt.co'); // load the index.ejs file
+        else res.redirect('/api/v1/login'); // load the index.ejs file
     });
 
 
