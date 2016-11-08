@@ -441,8 +441,8 @@ module.exports = {
         fusion:'fusion'
     },
     razorPayCredentials:{
-        apiKey:'rzp_test_cHlxIyQNJbANCc',
-        apiKeySecret:'DyftA4AIdVt6J5j8QbqfQlcw'
+        apiKey:'rzp_live_rkLZOuqqZYadEK',
+        apiKeySecret:'1YCPoxkFIPKTyd6lDqNAudKY'
     },
     subscriptionCodeMapping:{
         '195000':'starter',
