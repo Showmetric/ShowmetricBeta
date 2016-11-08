@@ -1,5 +1,6 @@
 showMetricApp.controller('DashboardController',DashboardController);
 function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$stateParams,createWidgets,$q,$compile) {
+    var availableBasicWidgets;
     $scope.loading=false;
     $scope.$window = $window;
     $scope.autoArrangeGrid = false;
@@ -9,6 +10,7 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
     $scope.actionTypeEnable={};
     $scope.submitEnable={};
     $scope.messageEnable={};
+    var dateRange;
     var expWid = { dashName:[], wid: [], widData: []};
     var cancel = $q.defer();
     $scope.currentDate=moment(new Date()).format("YYYY-DD-MM");
@@ -17,31 +19,209 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
             return {float:"left"}
         }
     };
-//function to check the subscription limits on basic widgets
-    $scope.basicwidget = function (){
-        $state.go("app.reporting.dashboard.basicWidget", {widgetType: 'basic'});
+    //function to check the subscription limits on basic widgets
+    $scope.basicwidget= function (){
+        toastr.options.positionClass = 'toast-top-right';
+        $http(
+            {
+                method: 'GET',
+                url: '/api/v1/subscriptionLimits'+'?requestType='+'basic'
+            }
+        ).then(
+            function successCallback(response) {
+                availableBasicWidgets = response.data.availableWidgets;
+                if (response.data.isExpired == true)
+                    toastr.info('Please renew !');
+                else {
+                    if (availableBasicWidgets != 0)
+                        $state.go("app.reporting.dashboard.basicWidget", {widgetType: 'basic'});
+
+                    else
+                        toastr.info("You have reached your Widgets limit. Please upgrade to enjoy more Widgets")
+                }
+            },
+            function errorCallback(error) {
+                swal({
+                    title: "",
+                    text: "<span style='sweetAlertFont'>Something went wrong! Please try again</span> .",
+                    html: true
+                });
+            }
+        );
     };
 
     $scope.stateValidation = function(targetState) {
         switch(targetState) {
             case 'basicWidget':
-                if($state.includes('app.reporting.dashboard')) $state.go('app.reporting.dashboard.'+targetState,{widgetType:'basic'});
-                else toastr.info('Please perform this action from within a dashboard');
+                if($state.includes('app.reporting.dashboard')){
+                    toastr.options.closeButton=true;
+                    toastr.options.positionClass = 'toast-top-right';
+                    $http(
+                        {
+                            method: 'GET',
+                            url: '/api/v1/subscriptionLimits' + '?requestType=' + 'basic'
+                        }
+                    ).then(
+                        function successCallback(response) {
+                            availableBasicWidgets = response.data.availableWidgets;
+                            if (response.data.isExpired == true)
+                                toastr.info('Please renew!');
+                            else {
+                                if (availableBasicWidgets <= 0)
+                                    toastr.info("You have reached your Widgets limit. Please upgrade to enjoy more Widgets")
+                                else
+                                    $state.go('app.reporting.dashboard.'+targetState,{widgetType:'basic'});
+                            }
+                        },
+                        function errorCallback(error) {
+                            swal({
+                                title: "",
+                                text: "<span style='sweetAlertFont'>Something went wrong! Please try Again</span> .",
+                                html: true
+                            });
+                        }
+                    );
+                    var toStateParams = "{widgetType:'basic'}";
+
+                }
+                else
+                    toastr.info('Please perform this action from within a dashboard');
                 break;
             case 'fusionWidget':
-                if($state.includes('app.reporting.dashboard')) $state.go('app.reporting.dashboard.'+targetState);
-                else toastr.info('Please perform this action from within a dashboard');
+                if($state.includes('app.reporting.dashboard')){
+
+                    //function to chech the subscription limits  of the user on fusion widgets
+                    toastr.options.closeButton=true;
+                    toastr.options.positionClass = 'toast-top-right';
+                    //request to get the subscription details of the user on fusion widgets
+
+                    $http(
+                        {
+                            method: 'GET',
+                            url: '/api/v1/subscriptionLimits' + '?requestType=' + 'fusion'
+                        }
+                    ).then(
+                        function successCallback(response) {
+                            availableFusionWidgets = response.data.availableWidgets;
+                            if (response.data.isExpired == true)
+                                toastr.info('Please renew !');
+                            else {
+                                if (availableFusionWidgets <= 0)
+                                    toastr.info("You have reached your Fusions limit. Please upgrade to enjoy more Fusions")
+                                else
+                                    $state.go('app.reporting.dashboard.'+targetState);
+                            }
+                        },
+                        function errorCallback(error) {
+                            swal({
+                                title: "",
+                                text: "<span style='sweetAlertFont'>Something went wrong! Please try again</span> .",
+                                html: true
+                            });
+                        }
+                    );
+                }
+                else
+                    toastr.info('Please perform this action from within a dashboard');
                 break;
         }
     };
-    // document.getElementById('dashLayout').style.visibility = "hidden";
     var isExportOptionSet = '';
     $(".navbar").css('z-index','1');
     $(".md-overlay").css('background','rgba(0,0,0,0.5)');
 
 
     //Sets up all the required parameters for the dashboard to function properly when it is initially loaded. This is called in the ng-init function of the dashboard template
-    $scope.dashboardConfiguration = function () {
+    $scope.dashboardConfiguration = function () {;
+        $scope.fetchDateForDashboard=function(){
+            $http({
+                method: 'GET',
+                url: '/api/v1/getSubscriptionFromDashboard/'+ $state.params.id
+            }).then(
+                function successCallback(response){
+                    if(response.status==200){
+                        dateRange=response.data.response.limits.dateRange;
+                        $scope.userModifyDate(dateRange)
+                    }
+                    else{
+                        $scope.userModifyDate(365)
+                    }
+                }
+            )
+        };
+        $scope.fetchDateForDashboard();
+
+        //To define the calendar in dashboard header
+        $scope.userModifyDate=function(dateRange) {
+            $scope.dashboardCalendar = new Calendar({
+                element: $('.daterange--double'),
+                earliest_date: moment(new Date()).subtract(dateRange, 'days'),
+                latest_date: new Date(),
+                latest_date: new Date(),
+                start_date: moment(new Date()).subtract(30,'days'),
+                end_date: new Date(),
+                callback: function () {
+                    var start = moment(this.start_date).format('ll'), end = moment(this.end_date).format('ll');
+                    $http.pendingRequests.forEach(function (request) {
+                        if (request.cancel)
+                            request.cancel.resolve();
+                    });
+                    $scope.populateDashboardWidgets()
+                }
+            });
+            $scope.fetchDashboardName();
+        }
+
+        //To fetch the name of the dashboard from database and display it when the dashboard is loaded
+        $scope.fetchDashboardName = function () {
+            $http({
+                method: 'GET',
+                url: '/api/v1/get/dashboards/'+ $state.params.id+'?buster='+new Date()
+            }).then(
+                function successCallback(response) {
+                    if(response.status == '200'){
+                        $scope.dashboard.dashboardName =  response.data.name;
+                        $rootScope.populateDashboardWidgets();
+                    }
+                    else
+                        $scope.dashboard.dashboardName =  null;
+                },
+                function errorCallback(error) {
+                    $scope.dashboard.dashboardName = null;
+                    swal({
+                        title: '',
+                        text: '<span style="sweetAlertFont">Something went wrong! Please reload the dashboard</span>',
+                        html: true
+                    });
+                }
+            );
+        };
+
+        //To change the name of the dashboard to user entered value
+        $scope.changeDashboardName = function () {
+            var jsonData = {
+                dashboardId: $state.params.id,
+                name: $scope.dashboard.dashboardName
+            };
+            $http({
+                method: 'POST',
+                url: '/api/v1/create/dashboards',
+                data: jsonData
+            }).then(
+                function successCallback(response) {
+                    if(response.status == '200')
+                        $rootScope.fetchRecentDashboards();
+                },
+                function errorCallback(error) {
+                    swal({
+                        title: "",
+                        text: "<span style='sweetAlertFont'>Error in changing the name! Please try again</span> .",
+                        html: true
+                    });
+                }
+            );
+        };
+
         //To set height for Window scroller in dashboard Template
         $scope.docHeight = window.innerHeight;
         $scope.docHeight = $scope.docHeight-110;
@@ -53,18 +233,20 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
         $scope.spinerEnable = true;
         $scope.loadedWidgetCount = 0;
         $scope.widgetErrorCode=0;
-        //To define the calendar in dashboard header
-        $scope.dashboardCalendar = new Calendar({
-            element: $('.daterange--double'),
-            earliest_date: moment(new Date()).subtract(365, 'days'),
-            latest_date: new Date(),
-            start_date: moment(new Date()).subtract(30,'days'),
-            end_date: new Date(),
-            callback: function () {
-                var start = moment(this.start_date).format('ll'), end = moment(this.end_date).format('ll');
-                $scope.populateDashboardWidgets();
-            }
-        });
+        //get calendar range from db
+
+        /*//To define the calendar in dashboard header
+         $scope.dashboardCalendar = new Calendar({
+         element: $('.daterange--double'),
+         earliest_date: moment(new Date()).subtract(dateRange, 'days'),
+         latest_date: new Date(),
+         start_date: moment(new Date()).subtract(30,'days'),
+         end_date: new Date(),
+         callback: function () {
+         var start = moment(this.start_date).format('ll'), end = moment(this.end_date).format('ll');
+         $scope.populateDashboardWidgets();
+         }
+         });*/
         $scope.setChartSize = function (index,childIndex) {
             $timeout(callAtTimeout, 100);
             function callAtTimeout() {
@@ -89,7 +271,7 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
             minSizeX: 1,
             minSizeY: 1,
             swapping: true,
-            float: true,
+            floating: true,
             pushing: true,
             width: 'auto',
             colWidth:'auto',
@@ -119,17 +301,17 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
                         getWidgetColor = '#288DC0';
                     }
                     $(".getBox-" + widget.id).css('border', '3px solid ' + getWidgetColor);
-                        var ind = $scope.dashboard.widgets.indexOf(widget);
-                        if(document.getElementById('chartOptions'+ind)!=null){
-                            var parentWidth = document.getElementById('chartOptions'+ind).offsetWidth;
-                            var parentHeight = document.getElementById('chartOptions'+ind).offsetHeight;
-                            for(var i=0;i<Highcharts.charts.length;i++){
-                                if(Highcharts.charts[i].container.parentElement.id.includes('chartRepeat'+ind)){
-                                    Highcharts.charts[i].setSize(parentWidth,parentHeight); // reflow the first chart..
-                                    Highcharts.charts[i].reflow(); // reflow the chart..
-                                }
+                    var ind = $scope.dashboard.widgets.indexOf(widget);
+                    if(document.getElementById('chartOptions'+ind)!=null){
+                        var parentWidth = document.getElementById('chartOptions'+ind).offsetWidth;
+                        var parentHeight = document.getElementById('chartOptions'+ind).offsetHeight;
+                        for(var i=0;i<Highcharts.charts.length;i++){
+                            if(Highcharts.charts[i].container.parentElement.id.includes('chartRepeat'+ind)){
+                                Highcharts.charts[i].setSize(parentWidth,parentHeight); // reflow the first chart..
+                                Highcharts.charts[i].reflow(); // reflow the chart..
                             }
                         }
+                    }
                 },
                 stop: function (event, $element, widget) {
                     $(".getBox-"+widget.id).css('border','1px solid #ccc');
@@ -147,32 +329,32 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
                                         $scope.dashboard.widgetData[ind].chart[i].data[j].myheight = elemHeight;
                                     }
                                 }
- /*                               else{
-                                    var getWigetId='#getWidgetColor-' + widget.id
-                                    var listed = $('#chartTable-'+widget.id).width();
-                                    if (listed <= 350){
-                                        $('#chartTable-'+widget.id).find('.date').addClass('responsiveDate').removeClass('date');
-                                        if($scope.dashboard.widgetData[ind].chart[i].options.chart.type !== 'instagramPosts')
-                                            $('#chartTable-'+widget.id).find('.listed').addClass('responsiveListed');
-                                        $('#chartTable-'+widget.id).find('.aside').css('padding-left','75px');
-                                        $('#chartTable-'+widget.id).find('.impression').css('padding-top','0px');
-                                        $('#chartTable-'+widget.id).find('.likes').css('float','none');
-                                        $('#chartTable-'+widget.id).find('.comment').css('float','none');
-                                        $('#chartTable-'+widget.id).find('.comment').css('margin-left','0px');
-                                    }
-                                    else {
-                                        $('#chartTable-'+widget.id).find('.responsiveDate').addClass('date').removeClass('responsiveDate');
-                                        if($scope.dashboard.widgetData[ind].chart[i].options.chart.type !== 'instagramPosts')
-                                            $('#chartTable-'+widget.id).find('.listed').removeClass('responsiveListed');
-                                        $('#chartTable-'+widget.id).find('.comment').css('float','left');
-                                        $('#chartTable-'+widget.id).find('.comment').css('margin-left','5px');
-                                        $('#chartTable-'+widget.id).find('.likes').css('float','left');
-                                        $('#chartTable-'+widget.id).find('.impression').css('padding-top','15px');
-                                        $('#chartTable-'+widget.id).find('.aside').css('padding-left','83px');
+                                /*                               else{
+                                 var getWigetId='#getWidgetColor-' + widget.id
+                                 var listed = $('#chartTable-'+widget.id).width();
+                                 if (listed <= 350){
+                                 $('#chartTable-'+widget.id).find('.date').addClass('responsiveDate').removeClass('date');
+                                 if($scope.dashboard.widgetData[ind].chart[i].options.chart.type !== 'instagramPosts')
+                                 $('#chartTable-'+widget.id).find('.listed').addClass('responsiveListed');
+                                 $('#chartTable-'+widget.id).find('.aside').css('padding-left','75px');
+                                 $('#chartTable-'+widget.id).find('.impression').css('padding-top','0px');
+                                 $('#chartTable-'+widget.id).find('.likes').css('float','none');
+                                 $('#chartTable-'+widget.id).find('.comment').css('float','none');
+                                 $('#chartTable-'+widget.id).find('.comment').css('margin-left','0px');
+                                 }
+                                 else {
+                                 $('#chartTable-'+widget.id).find('.responsiveDate').addClass('date').removeClass('responsiveDate');
+                                 if($scope.dashboard.widgetData[ind].chart[i].options.chart.type !== 'instagramPosts')
+                                 $('#chartTable-'+widget.id).find('.listed').removeClass('responsiveListed');
+                                 $('#chartTable-'+widget.id).find('.comment').css('float','left');
+                                 $('#chartTable-'+widget.id).find('.comment').css('margin-left','5px');
+                                 $('#chartTable-'+widget.id).find('.likes').css('float','left');
+                                 $('#chartTable-'+widget.id).find('.impression').css('padding-top','15px');
+                                 $('#chartTable-'+widget.id).find('.aside').css('padding-left','83px');
 
-                                    }
-                                }
- */                           }
+                                 }
+                                 }
+                                 */                           }
                             var ind = $scope.dashboard.widgets.indexOf(widget);
                             if(document.getElementById('chartOptions'+ind)!=null){
                                 var parentWidth = document.getElementById('chartOptions'+ind).offsetWidth;
@@ -191,57 +373,6 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
             }
         };
 
-        //To fetch the name of the dashboard from database and display it when the dashboard is loaded
-        $scope.fetchDashboardName = function () {
-            $http({
-                method: 'GET',
-                url: '/api/v1/get/dashboards/'+ $state.params.id+'?buster='+new Date()
-            }).then(
-                function successCallback(response) {
-                    if(response.status == '200'){
-                        $scope.dashboard.dashboardName =  response.data.name;
-                        $rootScope.populateDashboardWidgets();
-                    }
-                    else
-                        $scope.dashboard.dashboardName =  null;
-                },
-                function errorCallback(error) {
-                    $scope.dashboard.dashboardName = null;
-                    swal({
-                        title: '',
-                        text: '<span style="sweetAlertFont">Something went wrong! Please reload the dashboard</span>',
-                        html: true
-                    });
-                }
-            );
-        };
-
-        $scope.fetchDashboardName();
-
-        //To change the name of the dashboard to user entered value
-        $scope.changeDashboardName = function () {
-            var jsonData = {
-                dashboardId: $state.params.id,
-                name: $scope.dashboard.dashboardName
-            };
-            $http({
-                method: 'POST',
-                url: '/api/v1/create/dashboards',
-                data: jsonData
-            }).then(
-                function successCallback(response) {
-                    if(response.status == '200')
-                        $rootScope.fetchRecentDashboards();
-                },
-                function errorCallback(error) {
-                    swal({
-                        title: "",
-                        text: "<span style='sweetAlertFont'>Error in changing the name! Please try again</span> .",
-                        html: true
-                    });
-                }
-            );
-        };
 
         $scope.changeWidgetName = function (widgetInfo,widgetdata) {
             var inputParams = [];
@@ -339,7 +470,7 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
                                             $("#widgetData-"+$scope.dashboard.widgetData[i].id).hide();
                                             $("#errorWidgetData-"+$scope.dashboard.widgetData[i].id).hide();
                                             $("#errorWidgetTokenexpire-" + $scope.dashboard.widgetData[i].id).hide()
-                                        } 
+                                        }
                                         else {
                                             $("#widgetData-"+$scope.dashboard.widgetData[i].id).hide();
                                             $("#errorWidgetData-"+$scope.dashboard.widgetData[i].id).show();
@@ -542,8 +673,6 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
                 $scope.dashboard.widgets.splice(m,1)
                 $scope.dashboard.widgetData.splice(m,1)
                 $rootScope.$broadcast('populateWidget', response.data);
-
-                // console.log("response",response)
                 // $rootScope.populateDashboardWidgets();
             },
             function errorCallback() {
@@ -561,7 +690,6 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
 
         $(".navbar").css('z-index','1');
         $(".md-overlay").css("background","rgba(0,0,0,0.5)");
-
         isExportOptionSet=0;
 
         $scope.dashboard.widgets = [];
@@ -599,13 +727,14 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
                     }
                     var widgetID=0;
                     var dashboardWidgets = [];
+                    var rowNeutral =0;
                     for(var getWidgetInfo in dashboardWidgetList){
                         dashboardWidgets.push(createWidgets.widgetHandler(dashboardWidgetList[getWidgetInfo],{
                             'startDate': moment($scope.dashboardCalendar.start_date).format('YYYY-MM-DD'),
                             'endDate': moment($scope.dashboardCalendar.end_date).format('YYYY-MM-DD')
                         }));
                         $scope.dashboard.widgets.push({
-                            'row': (typeof dashboardWidgetList[getWidgetInfo].row != 'undefined'? dashboardWidgetList[getWidgetInfo].row : 0),
+                            'row': (typeof dashboardWidgetList[getWidgetInfo].row != 'undefined'? dashboardWidgetList[getWidgetInfo].row : rowNeutral),
                             'col': (typeof dashboardWidgetList[getWidgetInfo].col != 'undefined'? dashboardWidgetList[getWidgetInfo].col : 0),
                             'sizeY': (typeof dashboardWidgetList[getWidgetInfo].size != 'undefined'? dashboardWidgetList[getWidgetInfo].size.h : 2),
                             'sizeX': (typeof dashboardWidgetList[getWidgetInfo].size != 'undefined'? dashboardWidgetList[getWidgetInfo].size.w : 2),
@@ -629,6 +758,8 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
                             'name': (typeof dashboardWidgetList[getWidgetInfo].name != 'undefined'? dashboardWidgetList[getWidgetInfo].name : ''),
                             'color': (typeof dashboardWidgetList[getWidgetInfo].color != 'undefined'? dashboardWidgetList[getWidgetInfo].color : '')
                         });
+                        var sizeY=(typeof dashboardWidgetList[getWidgetInfo].size != 'undefined'? dashboardWidgetList[getWidgetInfo].size.h : 2);
+                        rowNeutral+=sizeY;
                         dashboardWidgets[getWidgetInfo].then(
                             function successCallback(dashboardWidgets) {
                                 var widgetIndex = $scope.dashboard.widgets.map(function(el) {return el.id;}).indexOf(dashboardWidgets.id);
@@ -654,12 +785,12 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
                                 else {
                                     $scope.loadedWidgetCount++;
                                     if(error.data!=null && typeof error.data!='undefined')
-                                    if(typeof error.data.id != 'undefined') {
-                                        $("#widgetData-"+error.data.id).hide();
-                                        $("#errorWidgetData-"+error.data.id).show();
-                                        $("#errorWidgetTokenexpire-" + error.data.id).hide();
-                                        isExportOptionSet=0;
-                                    }
+                                        if(typeof error.data.id != 'undefined') {
+                                            $("#widgetData-"+error.data.id).hide();
+                                            $("#errorWidgetData-"+error.data.id).show();
+                                            $("#errorWidgetTokenexpire-" + error.data.id).hide();
+                                            isExportOptionSet=0;
+                                        }
                                 }
                             }
                         );

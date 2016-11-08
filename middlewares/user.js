@@ -1,13 +1,17 @@
 var user = require('../models/user');
 var profile = require('../models/profiles');
-var dashboard=require('../models/dashboards')
+var organizations = require('../models/organizations');
+var subscriptionTypes = require('../models/subscriptionType');
+var payments = require('../models/payments');
+var dashboard = require('../models/dashboards')
 var exports = module.exports = {};
 var bcrypt = require('bcrypt-nodejs');
 // to create a random string
 var randomString = require("randomstring");
 // to send mail
 var configAuth = require('./../config/auth');
-var  utility= require('../helpers/utility');
+var utility = require('../helpers/utility');
+var _ = require('lodash');
 /**
  Function to get the user's details such as organization id,name ..
  @params 1.req contains the facebook user details i.e. username,token,email etc
@@ -18,61 +22,111 @@ var  utility= require('../helpers/utility');
 exports.getUserDetails = function (req, res, next) {
 
     //To check user is logged in or not
-    if(req.user){
+    if (req.user) {
         user.find({_id: req.user._id}, function (err, user) {
             if (err)
                 return res.status(500).json({error: 'Internal server error'});
             else if (!user)
                 return res.status(204).json({error: 'No records found'});
-            else{
-                req.app.result = user;
-                next();
+            else {
+                var userResult = user;
+                var orgId = user[0].orgId;
+                organizations.find({_id: orgId}, {
+                    subscriptionTypeId: 1,
+                    subscriptionExpiresOn: 1
+                }, function (err, result) {
+                    if (err)
+                        return res.status(500).json({error: 'Internal server error'});
+                    else if (!result)
+                        return res.status(204).json({error: 'No records found'});
+                    else {
+                        var subscriptionTypeId = result[0].subscriptionTypeId;
+                        var userExpiry = result[0].subscriptionExpiresOn;
+                        subscriptionTypes.findOne({_id: subscriptionTypeId}, function (err, type) {
+                            if (err)
+                                return res.status(500).json({error: 'Internal server error'});
+                            else if (!type)
+                                return res.status(204).json({error: 'No records found'});
+                            else {
+                                var subscriptionType = type.code;
+                                var expiryDate = moment(userExpiry).format("YYYY-MM-DD");
+                                var currentDate = moment(new Date).format("YYYY-MM-DD");
+                                console.log('codeeeee', expiryDate, currentDate)
+                                if (expiryDate >= currentDate) {
+                                    var user = {
+                                        user: userResult,
+                                        subscriptionType: type,
+                                        expiryDate: expiryDate,
+                                        organization: result
+                                    };
+                                    req.app.result = user;
+                                    next();
+                                }
+                                else {
+                                    var user = {
+                                        user: userResult,
+                                        subscriptionType: type,
+                                        statusCode: 1002,
+                                        organization: result
+                                    };
+                                    req.app.result = user;
+                                    next();
+                                }
+                            }
+                        });
+                    }
+                });
             }
         });
     }
     else
-        res.status(401).json({error:'Authentication required to perform this action'})
+        res.status(401).json({error: 'Authentication required to perform this action'})
 };
 
-exports.updateLastDashboardId = function (req,res,next) {
-    user.update({'_id': req.user._id}, {$set: {"lastDashboardId": req.params.id, updated: new Date()}},{upsert: true},  function (err,user) {
+exports.updateLastDashboardId = function (req, res, next) {
+    user.update({'_id': req.user._id}, {
+        $set: {
+            "lastDashboardId": req.params.id,
+            updated: new Date()
+        }
+    }, {upsert: true}, function (err, user) {
         if (err)
             return res.status(500).json({error: 'Internal server error'})
         else if (user == 0)
             return res.status(501).json({error: 'Not implemented'})
-        else{
-            dashboard.update({'_id': req.params.id},{$set: {updated: new Date()}},{upsert: true},function (err,user) {
+        else {
+            dashboard.update({'_id': req.params.id}, {$set: {updated: new Date()}}, {upsert: true}, function (err, user) {
                 if (err)
                     return res.status(500).json({error: 'Internal server error'})
                 else if (user == 0)
                     return res.status(501).json({error: 'Not implemented'})
-                else{
-            req.app.result = {'status': '200', 'dashboardId': req.params.id};
-            next();
-        }
-    });
+                else {
+                    req.app.result = {'status': '200', 'dashboardId': req.params.id};
+                    next();
+                }
+            });
         }
     });
 };
 
 exports.getUserPassword = function (req, res, next) {
 
-    if(req.user){
+    if (req.user) {
         user.findOne({_id: req.user._id}, function (err, user) {
             if (err)
                 return res.status(500).json({error: 'Internal server error'});
             else if (!user)
                 return res.status(204).json({error: 'No records found'});
             else {
-                if (bcrypt.compareSync(req.body.currentPassword, user.pwdHash)){
-                    user.pwdHash =  bcrypt.hashSync(req.body.newPassword, bcrypt.genSaltSync(8), null);
-                    user.save(function(err){
-                        if (!err){
+                if (bcrypt.compareSync(req.body.currentPassword, user.pwdHash)) {
+                    user.pwdHash = bcrypt.hashSync(req.body.newPassword, bcrypt.genSaltSync(8), null);
+                    user.save(function (err) {
+                        if (!err) {
                             return res.status(200).json({});
                         }
                     });
                 }
-                else{
+                else {
                     return res.status(204).json({error: 'No records found'});
 
                 }
@@ -80,23 +134,23 @@ exports.getUserPassword = function (req, res, next) {
         });
     }
     else
-        res.status(401).json({error:'Authentication required to perform this action'})
+        res.status(401).json({error: 'Authentication required to perform this action'})
 };
-exports.emailVerification=function(req,res,next){
-    var userResult={};
-    if(req.query.token){
-        user.findOne({'emailVerification.tokenId':req.query.token},function(err,userDetail){
+exports.emailVerification = function (req, res, next) {
+    var userResult = {};
+    if (req.query.token) {
+        user.findOne({'emailVerification.tokenId': req.query.token}, function (err, userDetail) {
             if (err)
                 return res.status(500).json({error: 'Internal server error'});
-            else if(!userDetail){
-                userResult={
-                    status:configAuth.emailVerification.inValid
+            else if (!userDetail) {
+                userResult = {
+                    status: configAuth.emailVerification.inValid
                 };
-                req.app.result=userResult;
+                req.app.result = userResult;
                 next();
             }
             else {
-                if(userDetail.emailVerified==false) {
+                if (userDetail.emailVerified == false) {
                     if (new Date().getTime() <= userDetail.emailVerification.expires.getTime()) {
                         var now = new Date();
                         user.update({
@@ -122,11 +176,11 @@ exports.emailVerification=function(req,res,next){
                                     else if (!verifiedUser)
                                         return res.status(204).json({error: 'No records found'});
                                     else {
-                                        userResult={
-                                            user:verifiedUser,
-                                            status:configAuth.emailVerification.verified
+                                        userResult = {
+                                            user: verifiedUser,
+                                            status: configAuth.emailVerification.verified
                                         };
-                                        req.app.result=userResult;
+                                        req.app.result = userResult;
                                         next();
                                     }
                                 })
@@ -171,18 +225,18 @@ exports.emailVerification=function(req,res,next){
                                             subject: unVerifiedUser.name + ', we\'ve received your request for an invite',
                                             // HTML Version
                                             html: '<p>Hi ' + unVerifiedUser.name + ',</p>' +
-                                            '<p> We have received your request for an invite.Click link below to activate your account.</p><br><button style="background-color: #1a8bb3;border-radius: 12px;color:#fff;font-size: 24px;"><a style="text-decoration: none;color:#fff" href="'+configAuth.emailVerification.redirectLink+unVerifiedUser.emailVerification.tokenId+'">Click to Activate</a></button> <p>Thanks for trying us out. Cheers!</p>'
+                                            '<p> We have received your request for an invite.Click link below to activate your account.</p><br><button style="background-color: #1a8bb3;border-radius: 12px;color:#fff;font-size: 24px;"><a style="text-decoration: none;color:#fff" href="' + configAuth.emailVerification.redirectLink + unVerifiedUser.emailVerification.tokenId + '">Click to Activate</a></button> <p>Thanks for trying us out. Cheers!</p>'
                                         };
-                                        utility.sendVerificationMail(mailOptionsSubmitter,function(err){
-                                            if(err){
+                                        utility.sendVerificationMail(mailOptionsSubmitter, function (err) {
+                                            if (err) {
                                                 return res.status(500).json({error: 'Internal server error'});
                                             }
                                             else
-                                                userResult={
-                                                    user:unVerifiedUser,
-                                                    status:configAuth.emailVerification.mailResend
+                                                userResult = {
+                                                    user: unVerifiedUser,
+                                                    status: configAuth.emailVerification.mailResend
                                                 };
-                                            req.app.result=userResult;
+                                            req.app.result = userResult;
                                             next();
                                         })
                                     }
@@ -191,18 +245,18 @@ exports.emailVerification=function(req,res,next){
                         })
                     }
                 }
-                else{
+                else {
                     user.findOne({_id: userDetail._id}, function (err, verifiedUser) {
                         if (err)
                             return res.status(500).json({error: 'Internal server error'});
                         else if (!verifiedUser)
                             return res.status(204).json({error: 'No records found'});
                         else {
-                            userResult={
-                                user:verifiedUser,
-                                status:configAuth.emailVerification.alreadyVerified
+                            userResult = {
+                                user: verifiedUser,
+                                status: configAuth.emailVerification.alreadyVerified
                             };
-                            req.app.result=userResult;
+                            req.app.result = userResult;
                             next();
                         }
                     })
@@ -210,7 +264,35 @@ exports.emailVerification=function(req,res,next){
             }
         })
     }
-    else{
+    else {
         return res.status(500).json({error: 'Internal server error'});
     }
+};
+
+exports.getPaymentDetails = function (req, res, next) {
+    payments.find({'orgId': req.user.orgId}, function (err, paymentDetails) {
+        if (err)
+            return res.status(500).json({error: 'Internal server error'});
+        else if (!paymentDetails)
+            return res.status(204).json({error: 'No records found'});
+        else {
+            subscriptionTypes.find(function (err, type) {
+                if (err)
+                    return res.status(500).json({error: 'Internal server error'});
+                else if (!type)
+                    return res.status(204).json({error: 'No records found'});
+                else {
+                    var subscriptionDetails = []
+                    for (var i = 0; i < paymentDetails.length; i++) {
+                        var subsciptionType = _.findIndex(type, function (o) {
+                            return o._id == paymentDetails[i].subscriptionTypeId;
+                        });
+                        paymentDetails[i].subscriptionTypeId = type[subsciptionType].name;
+                    }
+                    req.app.result = paymentDetails;
+                    next();
+                }
+            });
+        }
+    });
 };

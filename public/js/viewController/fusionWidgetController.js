@@ -17,6 +17,7 @@ function FusionWidgetController($scope, $http, $q, $window, $state, $rootScope, 
     $scope.fbAdObjId='';
     $scope.gaAdObjId='';
     $scope.canManage = true;
+    var availableFusionWidgets;
     $scope.fusionRefreshButton='';
     var apiResponse = 0;
 
@@ -39,20 +40,20 @@ function FusionWidgetController($scope, $http, $q, $window, $state, $rootScope, 
                 }, 50 );
             }
         });
-      
+
 
     });
 
     $scope.changeViewsInBasicWidget = function (obj) {
         $scope.currentView = obj;
         if ($scope.currentView === 'step_one') {
-          /*  document.getElementById('basicWidgetBackButton1').disabled = true;
-            document.getElementById('basicWidgetNextButton').disabled = true;*/
+            /*  document.getElementById('basicWidgetBackButton1').disabled = true;
+             document.getElementById('basicWidgetNextButton').disabled = true;*/
             $scope.clearReferenceWidget();
             $scope.listOfReferenceWidget();
         }
         else if ($scope.currentView === 'step_two') {
-           /* document.getElementById('basicWidgetBackButton1').disabled = true;*/
+            /* document.getElementById('basicWidgetBackButton1').disabled = true;*/
             $scope.getProfilesForDropdown();
         }
     };
@@ -300,7 +301,7 @@ function FusionWidgetController($scope, $http, $q, $window, $state, $rootScope, 
             $scope.hasNoAccess = profileObj.hasNoAccess;
             if($scope.uniquechannelNames[index] === 'Google Analytics'){
                 this.objectOptionsModel1='';
-				document.getElementById('basicWidgetFinishButton').disabled = true;
+                document.getElementById('basicWidgetFinishButton').disabled = true;
             }
             if ((profileObj.canManageClients === false) && ($scope.uniquechannelNames[index] === 'GoogleAdwords')) {
                 $scope.canManage = false;
@@ -546,25 +547,52 @@ function FusionWidgetController($scope, $http, $q, $window, $state, $rootScope, 
             "channelName": "custom"
         };
         inputParams.push(jsonData);
-        $http({
-            method: 'POST',
-            url: '/api/v1/widgets',
-            data: inputParams
-        }).then(
+        //request to get the subscription details of the user on fusion widgets
+
+        $http(
+            {
+                method: 'GET',
+                url: '/api/v1/subscriptionLimits' + '?requestType=' + 'fusion'
+            }
+        ).then(
             function successCallback(response) {
-                apiResponse = 1;
-                for(widgetObjects in response.data.widgetsList)
-                    $rootScope.$broadcast('populateWidget', response.data.widgetsList[widgetObjects]);
+                availableFusionWidgets = response.data.availableWidgets;
+                if((availableFusionWidgets>0) && (availableFusionWidgets >= inputParams.length)){
+                    $scope.ok();
+                    $http({
+                        method: 'POST',
+                        url: '/api/v1/widgets',
+                        data: inputParams
+                    }).then(
+                        function successCallback(response) {
+                            apiResponse = 1;
+                            for(widgetObjects in response.data.widgetsList)
+                                $rootScope.$broadcast('populateWidget', response.data.widgetsList[widgetObjects]);
+                        },
+                        function errorCallback(error) {
+                            apiResponse = 1;
+                            swal({
+                                title: "",
+                                text: "<span style='sweetAlertFont'>Please try again! Something is missing</span> .",
+                                html: true
+                            });
+                        }
+                    );
+                }
+                else{
+                    $('#errorInFusionWidgets').html('<div class="alert alert-danger fade in" style="width: 400px;margin-left: 212px;"><button type="button" class="close close-alert" data-dismiss="alert" aria-hidden="true">×</button>You have reached your Fusions limit. Please upgrade to enjoy more Fusions</div>');
+                }
             },
             function errorCallback(error) {
-                apiResponse = 1;
                 swal({
                     title: "",
-                    text: "<span style='sweetAlertFont'>Please try again! Something is missing</span> .",
+                    text: "<span style='sweetAlertFont'>Something went wrong!!!!</span> .",
                     html: true
                 });
             }
         );
+
+
     };
     $scope.dropdownWidth=function(hasnoAccess,tokenExpired){
         if(hasnoAccess==true || tokenExpired==true){

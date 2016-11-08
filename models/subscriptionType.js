@@ -4,13 +4,11 @@ var mongoose = require('mongoose');
 var subscriptionTypeSchema = mongoose.Schema({
     name: String,
     code: String,
-    limits: {
-        basic: Number,
-        adv: Number,
-        fusion: Number,
-        insights: Number,
-        dateRange: Number
-    },
+    limits: Object,
+    subscriptionCost:Number,
+    currencyType:String,
+    validity:Number,
+    reportBuilder:Boolean,
     created: Date,
     updated: Date,
     deleted: Date

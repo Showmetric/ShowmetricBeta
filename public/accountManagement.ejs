@@ -1,0 +1,99 @@
+<script src="/js/modernizr.custom.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+<script src="/js/hideShowPassword.min.js"></script>
+<script src="js/sweetAlert/sweetalert.min.js"></script>
+<link rel="stylesheet" type="text/css" href="css/sweetAlert/sweetalert.css">
+
+<div class="modal-header white-bg grid-header grid-font">
+    <p>My Account</p>
+</div>
+<div class="wrapper wrapper-content gridAlign greyish-bg" ng-controller="AccountManagementController"
+     ng-init="getSubscriptions()" ng-style="{'height': docHeight+'px'}">
+    <div style="height:auto;">
+       <div clas="row">
+           <div style="float: right;"><h2 style="text-align: center;padding-top: 15px;">Account Details</h2>
+               <table  class="table table-striped">
+                   <tbody>
+                   <tr style="padding:2px 5px;width:100%">
+                       <td style="padding:5px 5px;width:5%;text-align:left;">Current plan</td>
+                       <td style="padding:5px 5px;width:20%;text-align:center;text-transform: uppercase">{{subscriptionType}}</td>
+                   </tr>
+                   <tr style="padding:2px 5px;width:100%">
+                       <td style="padding:5px 5px;width:5%;text-align:left;">Plan Validity</td>
+                       <td style="padding:5px 5px;width:20%;text-align:center;">{{validity}}</td>
+                   </tr>
+                   <tr style="padding:2px 5px;width:100%">
+                       <td style="padding:5px 5px;width:5%;text-align:left;">Available Dashboards</td>
+                       <td style="padding:5px 5px;width:20%;text-align:center;">{{availableDashboards}}</td>
+                   </tr>
+                   <tr style="padding:2px 5px;width:100%">
+                       <td style="padding:5px 5px;width:5%;text-align:left;">Available Widgets</td>
+                       <td style="padding:5px 5px;width:20%;text-align:center;">{{availableWidgets}}</td>
+                   </tr>
+                   <tr style="padding:2px 5px;width:100%">
+                       <td style="padding:5px 5px;width:5%;text-align:left;">Available Fusions</td>
+                       <td style="padding:5px 5px;width:20%;text-align:center;">{{availableFusions}}</td>
+                   </tr>
+                   <tr style="padding:2px 5px;width:100%">
+                       <td style="padding:5px 5px;width:5%;text-align:left;">Available Alerts</td>
+                       <td style="padding:5px 5px;width:20%;text-align:center;">{{availableAlerts}}</td>
+                   </tr>
+                   </tbody>
+               </table>
+           </div>
+           <div class="form-group">
+            <div class="col-sm-4"></div>
+            <div class="col-sm-2 center-768 myaccount-upgrade">
+                <button type="submit" style="background: #ff6c3a;border: 2px solid #ff6c3a;" id="btn-submit" class="btn btn-primary changePassword"
+                        ui-sref="app.reporting.upgrade">Upgrade
+                </button>
+            </div>
+            <div class="col-sm-3 myaccount-upgrade center-768">
+                <button type="submit" style="background: #ff6c3a;border: 2px solid #ff6c3a;" id="btn-submit" class="btn btn-primary changePassword"
+                        ui-sref="app.changePassword">Change Password
+                </button>
+            </div>
+        </div>
+       </div>
+    </div>
+    <div style="float: right;"><h2 style="text-align: center;padding-top: 15px;">Transaction History</h2>
+       <table  class="table table-striped">
+            <thead>
+            <tr style="padding:2px 5px;width:100%">
+                <th style="padding:5px 5px;width:5%;text-align:center;">Date</th>
+                <th style="padding:5px 5px;width:20%;text-align:center;">Invoice number</th>
+                <th style="padding:5px 5px;width:6%;text-align:center;">Amount paid</th>
+                <th style="padding:5px 5px;width:6%;text-align:center;">Subcription plan</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr style="padding:2px 5px;width:100%" ng-repeat="data in paymentDetails | limitTo: limitScroll">
+                <td style="padding:5px 5px;width:5%;text-align:left;">{{data.paidOn}}</td>
+                <td style="padding:5px 5px;width:20%;text-align:center;">{{data.invoiceNumber}}</td>
+                <td style="padding:5px 5px;width:5%;text-align:center;">{{data.amount}}</td>
+                <td style="padding:5px 5px;width:5%;text-align:center;">{{data.subscriptionTypeId}}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#newPassword,#retypePassword").keyup(function () {
+            if (($("#newPassword").val() == $("#retypePassword").val()) && ($("#newPassword").val() != "") && ($("#retypePassword").val() != "")) {
+                $("#pwmatch").removeClass("glyphicon-remove");
+                $("#pwmatch").addClass("glyphicon-ok");
+                $("#pwmatch").css("color", "#00A41E");
+                $("#password-res").html("Password Match");
+
+            }
+            else {
+                $("#pwmatch").removeClass("glyphicon-ok");
+                $("#pwmatch").addClass("glyphicon-remove");
+                $("#pwmatch").css("color", "#FF0004");
+                $("#password-res").html("Password Mismatch");
+
+            }
+        });
+    });
+</script>

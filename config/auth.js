@@ -13,7 +13,6 @@ module.exports = {
         localCallbackURL:'/auth/facebook/callback',
         accessTokenURL:'https://graph.facebook.com/me?access_token='
     },
-
     'aweberAuth': {
         clientID: 'AkREQGDPsoHjCN2mdF3qY4YM',
         clientSecret: 'ibqzrt5XWBUhZf6jrN65Gr9nPDLanh1mq9Yel1uK',
@@ -189,8 +188,7 @@ module.exports = {
         costPerClick:'costPerClick',
         costPerThousandImpressions:'costPerThousandImpressions'
     },
-
-    'googleAdwordsStatic':{
+    googleAdwordsStatic:{
         host:'https://adwords.google.com/api/adwords/reportdownload/v201601',
         ADGROUP_PERFORMANCE_REPORT:'ADGROUP_PERFORMANCE_REPORT',
         adGroupId:'AdGroupId',
@@ -220,19 +218,18 @@ module.exports = {
         AD_PERFORMANCE_REPORT:'AD_PERFORMANCE_REPORT',
         ACCOUNT_PERFORMANCE_REPORT:'ACCOUNT_PERFORMANCE_REPORT'
     },
-
-    'googleApiTypes':{
+    googleApiTypes:{
         mcfApi:'mcf',
         gaApi:'ga',
         youtubeApi: 'youtube'
     },
 
-    'interval':{
+    interval:{
         setDaily:'daily',
         setWeekly:'weekly'
     },
 
-    'dayNames':{
+    dayNames:{
         Sunday:'Sunday',
         Monday:'Monday',
         Tuesday:'Tuesday',
@@ -242,7 +239,7 @@ module.exports = {
         Saturday:'Saturday'
     },
 
-    'youTubeAuth': {
+    youTubeAuth: {
         clientID: '697605351302-cm90a20idvq2gcu3qju0oaab88ik6peg.apps.googleusercontent.com',
         clientSecret: 'DkUY5XrdcWDQM_7tEI9xNAC6',
         callbackURL: 'https://uat.datapoolt.co/auth/youtube/callback',
@@ -261,7 +258,6 @@ module.exports = {
         FBAccessExpire:5097600,
         linkedInAccessExpire:60
     },
-
     apiVersions:{
         FBVersion:'2.7',
         FBInsights:'v2.7',
@@ -294,14 +290,12 @@ module.exports = {
         apiKey:"6bdce0374cf2724449d5d79454896415-us13"
 
     },
-
     'pinterest':{
         clientID        : '4850584692457482509',
         clientSecret    : '93dbedd44181a79569f40c90bd9c6d1eb04c80ec8016444c84bb53c0901f3092',
         redirect_uri : 'https://uat.datapoolt.co/auth/pinterest/callback',
         scope:'read_public,read_relationships'
     },
-
     'linkedIn':{
         clientID :'81665zttd0yozd',
         clientSecret :'KUlhe3rR1ZoV3V2o',
@@ -311,7 +305,7 @@ module.exports = {
         site:'https://www.linkedin.com/oauth/',
         authorizationPath: 'v2/authorization'
     },
-
+    
     'batchJobs':{
         dataBase:"mongodb://datapoolt:datapooltUat@mongo-uat/DatapooltUat",
         mail:{
@@ -335,8 +329,7 @@ module.exports = {
     linkedInMetrics:{
         endPoints:{
             followers:'followers'
-    },
-        
+        },
         highestEngagementUpdatesLinkedIn:'highestEngagementUpdatesLinkedIn'
     },
     vimeoMetric:{
@@ -389,13 +382,13 @@ module.exports = {
         quot:'002Q',
         question:'002T'
     },
-    
+
     mozStatic:{
         rank:'moz_rank_url',
         links:'links',
         page_authority:'page_authority',
         domain_authority:'domain_authority'
-    },
+    }, 
     
     insights:{
         topSentiment:'topSentiment', 
@@ -419,7 +412,7 @@ module.exports = {
         redirectVerifyUserToken:'https://uat.datapoolt.co/verifyUserToken?token=',
         inValid:'Invalid'
     },
-
+    
     JobTypes:{
         insightsJobs:['batchjobforinsights','shareOfVoice']
     },
@@ -433,6 +426,30 @@ module.exports = {
     dataValidityInHours:4,
     youTubeStaticVariables:{
         videosoverview:'videosoverview'
+    },
+    subscriptionType:{
+        starterFree:'free',
+        small:'starter',
+        medium:'advanced',
+        enterprise:'premium',
+        agency:'agency'
+    },
+    limitRequestType:{
+        alert:'alert',
+        dashboards:'dashboards',
+        basic:'basic',
+        fusion:'fusion'
+    },
+    razorPayCredentials:{
+        apiKey:'rzp_test_cHlxIyQNJbANCc',
+        apiKeySecret:'DyftA4AIdVt6J5j8QbqfQlcw'
+    },
+    subscriptionCodeMapping:{
+        '195000':'starter',
+        '330000':'advanced',
+        '700000':'premium',
+        '850000':'agency',
+        '0':'free',
     }
 };
 

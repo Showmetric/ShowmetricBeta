@@ -1,5 +1,6 @@
 showMetricApp.controller('AlertController', AlertController)
 function AlertController($scope, $http, $q, $state, $rootScope, $window, $stateParams, generateChartColours) {
+
     var startWidget=0;
     var isEdit = false;
     $scope.alert, $scope.metricName, $scope.currentView = 'step_one', $scope.operation;
@@ -7,6 +8,31 @@ function AlertController($scope, $http, $q, $state, $rootScope, $window, $stateP
     $scope.alertMetrics = [];
     $scope.inAlertMetric='';
     var storeMetricDetails = [], widgetMetricDetails = [];
+    $scope.needToChangeView = function(){
+        var isExpire=false;
+        $http({
+            method: 'GET',
+            url: '/api/v1/subscriptionLimits'+'?requestType='+'alert'
+        }).then(function successCallback(response){
+                if (response.data.isExpired === false){
+                    if(response.data.availablealerts > 0){
+                        $scope.changeViewsInAlertModal('step_two');
+                    }
+                    else
+                        $('.alertError').html('<div class="alert alert-danger fade in" style="width: 400px;margin-left: 212px;"><button type="button" class="close close-alert" data-dismiss="alert" aria-hidden="true">×</button>Alert limit is reached!</div>');
+                }
+                else
+                    $('.alertError').html('<div class="alert alert-danger fade in" style="width: 400px;margin-left: 212px;"><button type="button" class="close close-alert" data-dismiss="alert" aria-hidden="true">×</button>subscription is expire</div>');
+            },
+            function errorCallback(error){
+                swal({
+                    title: "",
+                    text: "<span style='sweetAlertFont'>Something went wrong! Please try again!</span> .",
+                    html: true
+                });
+            }
+        )
+    }
 
     $scope.changeViewsInAlertModal = function (obj) {
         $scope.currentView = obj;
@@ -31,8 +57,8 @@ function AlertController($scope, $http, $q, $state, $rootScope, $window, $stateP
                 $scope.name = $scope.alert.name;
                 $scope.interval = $scope.alert.interval;
                 $scope.email = $scope.alert.mailingId.email;
-                if(typeof $scope.alert.operation.gt != 'undefined') {
-                    if($scope.alert.operation.gt === true) {
+                if (typeof $scope.alert.operation.gt != 'undefined') {
+                    if ($scope.alert.operation.gt === true) {
                         $scope.operation = 'gt';
                         $scope.threshold = $scope.alert.threshold.gt;
                     }
@@ -48,7 +74,9 @@ function AlertController($scope, $http, $q, $state, $rootScope, $window, $stateP
                 $scope.widgetMetrics = [];
                 $scope.alertFunction();
             }
+
         }
+
     };
 
     $scope.fetchWidgetAlerts = function () {
@@ -228,37 +256,60 @@ function AlertController($scope, $http, $q, $state, $rootScope, $window, $stateP
                 mailingId: {email: $scope.email}
             };
         }
-
+        var isExpire=false;
         $http({
-            method: 'POST',
-            url: '/api/v1/alerts',
-            data: alertData
-        }).then(
-            function successCallback(alert) {
-                var updatedData = {
-                    objectId: objectId,
-                    metricId: parsedData[0],
-                    bgFetch: true
-                };
-                $http({
-                    method: 'POST',
-                    url: '/api/v1/bgFetchUpdate',
-                    data: updatedData
-                }).then(
-                    function successCallback(alert) {
-                        startWidget=1
-                    },
-                    function errorCallback(error) {
-                        $scope.$parent.closeBasicWidgetModal('');
-                        swal("Sorry! Something went wrong, Please try again.");
+            method: 'GET',
+            url: '/api/v1/subscriptionLimits'+'?requestType='+'alert'
+        }).then(function successCallback(response){
+                if (isExpire === false){
+                    if(response.data.availablealerts > 0){
+                        $http({
+                            method: 'POST',
+                            url: '/api/v1/alerts',
+                            data: alertData
+                        }).then(
+                            function successCallback(alert) {
+                                var updatedData = {
+                                    objectId: objectId,
+                                    metricId: parsedData[0],
+                                    bgFetch: true
+                                };
+                                $http({
+                                    method: 'POST',
+                                    url: '/api/v1/bgFetchUpdate',
+                                    data: updatedData
+                                }).then(
+                                    function successCallback(alert) {
+                                        $scope.fetchWidgetAlerts()
+                                        startWidget=1
+                                    },
+                                    function errorCallback(error) {
+                                        $scope.$parent.closeBasicWidgetModal('');
+                                        swal("Sorry! Something went wrong, Please try again.");
+                                    }
+                                );
+                            },
+                            function errorCallback(error) {
+                                $scope.$parent.closeBasicWidgetModal('');
+                                swal("Sorry! Something went wrong, Please try again.");
+                            }
+                        );
                     }
-                );
+                    else
+                        $('.alertError').html('<div class="alert alert-danger fade in" style="width: 400px;margin-left: 212px;"><button type="button" class="close close-alert" data-dismiss="alert" aria-hidden="true">×</button>Alert limit is reached!</div>');
+                }
+                else
+                    $('.alertError').html('<div class="alert alert-danger fade in" style="width: 400px;margin-left: 212px;"><button type="button" class="close close-alert" data-dismiss="alert" aria-hidden="true">×</button>subscription is expire</div>');
             },
-            function errorCallback(error) {
-                $scope.$parent.closeBasicWidgetModal('');
-                swal("Sorry! Something went wrong, Please try again.");
+            function errorCallback(error){
+                swal({
+                    title: "",
+                    text: "<span style='sweetAlertFont'>Something went wrong! Please try again!</span> .",
+                    html: true
+                });
             }
-        );
+        )
+
     };
 
     $scope.deleteAlert = function (alert, index) {

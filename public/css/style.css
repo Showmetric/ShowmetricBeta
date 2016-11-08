@@ -11,41 +11,41 @@
     margin :40px auto
 }
 /*.sideBar-wrapper .tooltip {*/
-    /*background: #2b3947;*/
-    /*bottom: 100%;*/
-    /*color: #fff;*/
-    /*display: block;*/
-    /*left: 70px;*/
-    /*margin-bottom: -51px;*/
-    /*opacity: 0;*/
-    /*padding: 18px 11px 17px 16px;;*/
-    /*pointer-events: none;*/
-    /*position: absolute;*/
-    /*width: 205px;*/
-    /*-webkit-transform: translateX(-10px);*/
-    /*-moz-transform: translateX(-10px);*/
-    /*-ms-transform: translateX(-10px);*/
-    /*-o-transform: translateX(-10px);*/
-    /*transform: translateX(-10px);*/
-    /*-webkit-transition: all .25s ease-out;*/
-    /*-moz-transition: all .25s ease-out;*/
-    /*-ms-transition: all .25s ease-out;*/
-    /*-o-transition: all .25s ease-out;*/
-    /*transition: all .25s ease-out;*/
-    /*-webkit-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);*/
-    /*-moz-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);*/
-    /*-ms-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);*/
-    /*-o-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);*/
-    /*box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);*/
+/*background: #2b3947;*/
+/*bottom: 100%;*/
+/*color: #fff;*/
+/*display: block;*/
+/*left: 70px;*/
+/*margin-bottom: -51px;*/
+/*opacity: 0;*/
+/*padding: 18px 11px 17px 16px;;*/
+/*pointer-events: none;*/
+/*position: absolute;*/
+/*width: 205px;*/
+/*-webkit-transform: translateX(-10px);*/
+/*-moz-transform: translateX(-10px);*/
+/*-ms-transform: translateX(-10px);*/
+/*-o-transform: translateX(-10px);*/
+/*transform: translateX(-10px);*/
+/*-webkit-transition: all .25s ease-out;*/
+/*-moz-transition: all .25s ease-out;*/
+/*-ms-transition: all .25s ease-out;*/
+/*-o-transition: all .25s ease-out;*/
+/*transition: all .25s ease-out;*/
+/*-webkit-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);*/
+/*-moz-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);*/
+/*-ms-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);*/
+/*-o-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);*/
+/*box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);*/
 /*}*/
 /*.sideBar-wrapper:hover .tooltip {*/
-    /*opacity: 1;*/
-    /*pointer-events: auto;*/
-    /*-webkit-transform: translateX(0px);*/
-    /*-moz-transform: translateX(0px);*/
-    /*-ms-transform: translateX(0px);*/
-    /*-o-transform: translateX(0px);*/
-    /*transform: translateX(0px);*/
+/*opacity: 1;*/
+/*pointer-events: auto;*/
+/*-webkit-transform: translateX(0px);*/
+/*-moz-transform: translateX(0px);*/
+/*-ms-transform: translateX(0px);*/
+/*-o-transform: translateX(0px);*/
+/*transform: translateX(0px);*/
 /*}*/
 .gobutton-mode{
     background-color: #efefef  !important;
@@ -2992,8 +2992,8 @@ a.customApiLink{
     cursor: pointer;
 }
 button.btn.btn-primary.changePassword {
-    background-color: #337ab7;
-    border-color: #2e6da4;
+    background-color: #ff6c3a;
+    border-color: #ff6c3a;
 }
 .getCheck{
     display: none;
@@ -4686,7 +4686,7 @@ body.rtls.top-navigation .footer.fixed {
 }
 @media(max-width : 340px) {
     .recentDashboard {
-       width:143px
+        width:143px
     }
 }
 @media(min-width: 319px) and (max-width : 367px) {
@@ -5541,4 +5541,8 @@ input:focus{
 }
 #field-entry a:hover{
     background-color: #ff6c3a;
+}
+.btn.active.focus, .btn.active:focus, .btn.focus, .btn:active.focus, .btn:active:focus, .btn:focus {
+    outline: 0px !important;
+    outline-offset: -2px;
 }

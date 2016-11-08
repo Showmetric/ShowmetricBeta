@@ -219,7 +219,7 @@ exports.getChannelData = function (req, res, next) {
     }
 
     function getEachData(results, callback) {
-        var wholeData = {}
+        var wholeData = {};
         Data.findOne({
             'objectId': results.metrics[0].objectId,
             'metricId': results.metrics[0].metricId
@@ -1965,6 +1965,7 @@ exports.getChannelData = function (req, res, next) {
                     wholeData = {
                         "data": results.store_final_data[0].data,
                         "metricId": results.store_final_data[0].metricId,
+                        "metricDetails":metric[k],
                         "objectId": results.store_final_data[0].queryResults.object[0]._id
                     }
                     next(null, wholeData)
@@ -1973,6 +1974,7 @@ exports.getChannelData = function (req, res, next) {
                     wholeData = {
                         "data": results.store_final_data[0].data,
                         "metricId": results.store_final_data[0].metricId,
+                        "metricDetails":metric[k],
                         "objectId": results.store_final_data[0].queryResults.object[0]._id
                     }
                     next(null, wholeData)
@@ -1981,6 +1983,7 @@ exports.getChannelData = function (req, res, next) {
                     wholeData = {
                         "data": results.store_final_data[0].apiResponse,
                         "metricId": results.store_final_data[0].metricId,
+                        "metricDetails":metric[k],
                         "objectId": results.store_final_data[0].queryResults.object[0]._id
                     };
                     next(null, wholeData);
@@ -1989,6 +1992,7 @@ exports.getChannelData = function (req, res, next) {
                     wholeData = {
                         "data": results.store_final_data[0].apiResponse,
                         "metricId": results.store_final_data[0].metricId,
+                        "metricDetails":metric[k],
                         "objectId": results.store_final_data[0].queryResults.object[0]._id
                     };
                     next(null, wholeData);
@@ -1997,6 +2001,7 @@ exports.getChannelData = function (req, res, next) {
                     wholeData = {
                         "data": results.store_final_data[0].apiResponse,
                         "metricId": results.store_final_data[0].metricId,
+                        "metricDetails":metric[k],
                         "objectId": results.store_final_data[0].queryResults.object[0]._id
                     };
                     next(null, wholeData);
@@ -2006,6 +2011,7 @@ exports.getChannelData = function (req, res, next) {
                     wholeData = {
                         "data": results.store_final_data[0].apiResponse,
                         "metricId": results.store_final_data[0].metricId,
+                        "metricDetails":metric[k],
                         "objectId": results.store_final_data[0].queryResults.object[0]._id
                     };
                     next(null, wholeData);
@@ -2014,6 +2020,7 @@ exports.getChannelData = function (req, res, next) {
                     wholeData = {
                         "data": results.store_final_data[0].data,
                         "metricId": results.store_final_data[0].metricId,
+                        "metricDetails":metric[k],
                         "objectId": results.store_final_data[0].queryResults.object[0]._id
                     };
                     next(null, wholeData);
@@ -2059,6 +2066,7 @@ exports.getChannelData = function (req, res, next) {
                             else if (!response.length) {
                                 finalDataArray.push({
                                     metricId: widget[k].metrics[0].metricId,
+                                    metricDetails:metric[k],
                                     objectId: widget[k].metrics[0].objectId,
                                     data: response
                                 })
@@ -2087,12 +2095,16 @@ exports.getChannelData = function (req, res, next) {
                                     finalDataArray.push({
                                         data: storeTotal,
                                         metricId: response[0].metricId,
+                                        metricDetails:metric[k],
                                         objectId: response[0].objectId,
                                         updated: response[0].updated,
                                         created: response[0].created
                                     })
                                 }
-                                else finalDataArray = response
+                                else {
+                                    response[0].metricDetails = metric[k];
+                                    finalDataArray = response
+                                }
                                 next(null, finalDataArray[0]);
                             }
                         })
@@ -3186,85 +3198,85 @@ exports.getChannelData = function (req, res, next) {
                 if (data.error) {
                     return res.status(500).json({error: 'Internal server error', id: req.params.widgetId});
                 }
-               if(initialResults.metric[0].objectTypes[0].meta.decreaseLevel != undefined){
-                   for(var i=0;i<data.length;i++){
-                     var  str= JSON.stringify(data[i]);
-                       str = str.replace(configAuth.googleAdwordsStatic.costPerConversionapper,configAuth.googleAdwordsStatic.costPerConversionchange);
-                       str = str.replace(configAuth.googleAdwordsStatic.DefaultmaxCPCapper,configAuth.googleAdwordsStatic.DefaultmaxCPCchange);
-                       str = str.replace(configAuth.googleAdwordsStatic.MaxCPVapper,configAuth.googleAdwordsStatic.MaxCPVchange);
-                       str = str.replace(configAuth.googleAdwordsStatic.MaxCPMapper,configAuth.googleAdwordsStatic.MaxCPMchange);
-                       str = str.replace(configAuth.googleAdwordsStatic.Totalconvvalueapper,configAuth.googleAdwordsStatic.Totalconvvaluechange);
-                       data[i] = JSON.parse(str);
-                   }
-                  var sampleArray=[]
-                 var groupData=  _.groupBy(data,'Day')
-                   for(var keys in groupData){
-                       var key=keys;
-                       sampleArray.push({
-                           total:groupData[keys],
-                           date:key
-                       })
-                   }
-               }
+                if(initialResults.metric[0].objectTypes[0].meta.decreaseLevel != undefined){
+                    for(var i=0;i<data.length;i++){
+                        var  str= JSON.stringify(data[i]);
+                        str = str.replace(configAuth.googleAdwordsStatic.costPerConversionapper,configAuth.googleAdwordsStatic.costPerConversionchange);
+                        str = str.replace(configAuth.googleAdwordsStatic.DefaultmaxCPCapper,configAuth.googleAdwordsStatic.DefaultmaxCPCchange);
+                        str = str.replace(configAuth.googleAdwordsStatic.MaxCPVapper,configAuth.googleAdwordsStatic.MaxCPVchange);
+                        str = str.replace(configAuth.googleAdwordsStatic.MaxCPMapper,configAuth.googleAdwordsStatic.MaxCPMchange);
+                        str = str.replace(configAuth.googleAdwordsStatic.Totalconvvalueapper,configAuth.googleAdwordsStatic.Totalconvvaluechange);
+                        data[i] = JSON.parse(str);
+                    }
+                    var sampleArray=[]
+                    var groupData=  _.groupBy(data,'Day')
+                    for(var keys in groupData){
+                        var key=keys;
+                        sampleArray.push({
+                            total:groupData[keys],
+                            date:key
+                        })
+                    }
+                }
                 else{
-                   var param = [];
-                   if (results.metricCode === configAuth.googleAdwordsMetric.clicks)
-                       param.push('Clicks');
-                   else if (results.metricCode === configAuth.googleAdwordsMetric.cost)
-                       param.push('Cost');
-                   else if (results.metricCode === configAuth.googleAdwordsMetric.conversionRate)
-                       param.push('ConversionsRate');
-                   else if (results.metricCode === configAuth.googleAdwordsMetric.conversions)
-                       param.push('Conversions');
-                   else if (results.metricCode === configAuth.googleAdwordsMetric.impressions)
-                       param.push('Impressions');
-                   else if (results.metricCode === configAuth.googleAdwordsMetric.clickThroughRate)
-                       param.push('CTR')
-                   else if (results.metricCode === configAuth.googleAdwordsMetric.costPerClick)
-                       param.push('Avg. CPC');
-                   else if (results.metricCode === configAuth.googleAdwordsMetric.costPerThousandImpressions)
-                       param.push('Avg. CPM');
-                   else
-                       param.push('Cost / conv.');
-                   var sampleArray = [];
-                   var totalValue;
-                 
-                       if (results.metricCode === configAuth.googleAdwordsMetric.costPerConversion || results.metricCode === configAuth.googleAdwordsMetric.costPerClick || results.metricCode === configAuth.googleAdwordsMetric.costPerThousandImpressions || results.metricCode === configAuth.googleAdwordsMetric.clickThroughRate || results.metricCode === configAuth.googleAdwordsMetric.conversionRate)
-                       {
-                           for(var i=0;i<data.length;i++){
-                               var  str= JSON.stringify(data[i]);
-                               str = str.replace(configAuth.googleAdwordsStatic.costPerConversionapper,configAuth.googleAdwordsStatic.costPerConversionchange);
-                               str = str.replace(configAuth.googleAdwordsStatic.DefaultmaxCPCapper,configAuth.googleAdwordsStatic.DefaultmaxCPCchange);
-                               str = str.replace(configAuth.googleAdwordsStatic.MaxCPVapper,configAuth.googleAdwordsStatic.MaxCPVchange);
-                               str = str.replace(configAuth.googleAdwordsStatic.MaxCPMapper,configAuth.googleAdwordsStatic.MaxCPMchange);
-                               str = str.replace(configAuth.googleAdwordsStatic.Totalconvvalueapper,configAuth.googleAdwordsStatic.Totalconvvaluechange);
-                               data[i] = JSON.parse(str);
-                           }
-                           var groupData=  _.groupBy(data,'Day')
-                           for(var keys in groupData){
-                               var key=keys;
-                               sampleArray.push({
-                                   total:groupData[keys],
-                                   date:key
-                               })
-                           }
-                       }
-                       else{
-                           for (var prop = 0; prop < data.length; prop++) {
-                             if( results.metricCode === configAuth.googleAdwordsMetric.cost)
-                           totalValue = parseFloat(data[prop][param]/1000000).toFixed(2);
-                               else
-                                 totalValue = parseFloat(data[prop][param]);
-                           var value = {};
-                           value = {
-                               total: totalValue,
-                               date: data[prop].Day
-                           };
-                           sampleArray.push(value);
-                       }
-                          
-                   }
-               }
+                    var param = [];
+                    if (results.metricCode === configAuth.googleAdwordsMetric.clicks)
+                        param.push('Clicks');
+                    else if (results.metricCode === configAuth.googleAdwordsMetric.cost)
+                        param.push('Cost');
+                    else if (results.metricCode === configAuth.googleAdwordsMetric.conversionRate)
+                        param.push('ConversionsRate');
+                    else if (results.metricCode === configAuth.googleAdwordsMetric.conversions)
+                        param.push('Conversions');
+                    else if (results.metricCode === configAuth.googleAdwordsMetric.impressions)
+                        param.push('Impressions');
+                    else if (results.metricCode === configAuth.googleAdwordsMetric.clickThroughRate)
+                        param.push('CTR')
+                    else if (results.metricCode === configAuth.googleAdwordsMetric.costPerClick)
+                        param.push('Avg. CPC');
+                    else if (results.metricCode === configAuth.googleAdwordsMetric.costPerThousandImpressions)
+                        param.push('Avg. CPM');
+                    else
+                        param.push('Cost / conv.');
+                    var sampleArray = [];
+                    var totalValue;
+
+                    if (results.metricCode === configAuth.googleAdwordsMetric.costPerConversion || results.metricCode === configAuth.googleAdwordsMetric.costPerClick || results.metricCode === configAuth.googleAdwordsMetric.costPerThousandImpressions || results.metricCode === configAuth.googleAdwordsMetric.clickThroughRate || results.metricCode === configAuth.googleAdwordsMetric.conversionRate)
+                    {
+                        for(var i=0;i<data.length;i++){
+                            var  str= JSON.stringify(data[i]);
+                            str = str.replace(configAuth.googleAdwordsStatic.costPerConversionapper,configAuth.googleAdwordsStatic.costPerConversionchange);
+                            str = str.replace(configAuth.googleAdwordsStatic.DefaultmaxCPCapper,configAuth.googleAdwordsStatic.DefaultmaxCPCchange);
+                            str = str.replace(configAuth.googleAdwordsStatic.MaxCPVapper,configAuth.googleAdwordsStatic.MaxCPVchange);
+                            str = str.replace(configAuth.googleAdwordsStatic.MaxCPMapper,configAuth.googleAdwordsStatic.MaxCPMchange);
+                            str = str.replace(configAuth.googleAdwordsStatic.Totalconvvalueapper,configAuth.googleAdwordsStatic.Totalconvvaluechange);
+                            data[i] = JSON.parse(str);
+                        }
+                        var groupData=  _.groupBy(data,'Day')
+                        for(var keys in groupData){
+                            var key=keys;
+                            sampleArray.push({
+                                total:groupData[keys],
+                                date:key
+                            })
+                        }
+                    }
+                    else{
+                        for (var prop = 0; prop < data.length; prop++) {
+                            if( results.metricCode === configAuth.googleAdwordsMetric.cost)
+                                totalValue = parseFloat(data[prop][param]/1000000).toFixed(2);
+                            else
+                                totalValue = parseFloat(data[prop][param]);
+                            var value = {};
+                            value = {
+                                total: totalValue,
+                                date: data[prop].Day
+                            };
+                            sampleArray.push(value);
+                        }
+
+                    }
+                }
                 //Array to hold the final result
                 var finalData = [];
                 var storeStartDate = new Date(results.startDate);

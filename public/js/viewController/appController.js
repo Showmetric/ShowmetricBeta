@@ -13,7 +13,20 @@ function AppController($http,$state,$scope,$rootScope) {
             }
         ).then(
             function successCallback(response) {
-                $scope.userName = response.data.userDetails[0].name;
+                if (response.data.userDetails.subscriptionType === 'free') {
+                    $scope.userName = response.data.userDetails.user[0].name;
+                }
+                else {
+                    if (response.data.userDetails.statusCode === 1002) {
+                        $rootScope.isExpired = true;
+                        $scope.userName = response.data.userDetails.user[0].name;
+                        $state.go('app.reporting.upgrade');
+                    }
+                    else {
+                        $rootScope.isExpired = false;
+                        $scope.userName = response.data.userDetails.user[0].name;
+                    }
+                }
             },
             function errorCallback(error) {
                 $scope.userName = '';
@@ -32,7 +45,7 @@ function AppController($http,$state,$scope,$rootScope) {
                 if(response.status == '200'){
                     var sortedDashboard= _.orderBy(response.data.dashboardList, ['updated'],['desc']);
                     if(sortedDashboard.length<=5)
-                        $scope.recentDashboards = sortedDashboard;
+                        $rootScope.recentDashboards = sortedDashboard;
                     else{
                         for(var i=0;i<5;i++)
                             $rootScope.recentDashboards.push(sortedDashboard[i]);
