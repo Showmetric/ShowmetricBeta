@@ -13,7 +13,6 @@ function TopNavbarController($scope,$http,$rootScope,$state) {
         $("#newAccountModalContent").addClass('md-show');
     });
 
-
     function removeModal( hasPerspective ) {
         classie.remove( modal, 'md-show' );
 
@@ -61,4 +60,5 @@ function TopNavbarController($scope,$http,$rootScope,$state) {
             }
         }
     }
+
 }

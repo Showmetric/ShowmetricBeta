@@ -19,6 +19,7 @@ function customReportController($scope,$timeout,$rootScope,$http,$window,$state,
     $scope.customReport = { widgets: [], widgetData: [] };
     $scope.orgLogosList = [];
     $scope.cliLogosList = [];
+    var cancel = $q.defer();
     $scope.orgLogoSrc = '/userFiles/datapoolt.png';
     $scope.cliLogoSrc = '/userFiles/plain-white.jpg';
 //To set height for Window scroller in report Template
@@ -484,7 +485,44 @@ function customReportController($scope,$timeout,$rootScope,$http,$window,$state,
 
         }
 
+        /* $scope.fetchDateForDashboard=function(){
+         var dahboardId='undefined'
+         $http({
+         method: 'GET',
+         url: '/api/v1/getSubscriptionFromDashboard/'+ dahboardId
+         }).then(
+         function successCallback(response){
+         console.log('response',response)
+         if(response.status==200){
+         console.log('response',response)
+         dateRange=response.data.response.limits.dateRange;
+         $scope.userModifyDate(dateRange)
+         }
+         else{
+         $scope.userModifyDate(365)
+         }
+         }
+         )
+         };
+
+         $scope.fetchDateForDashboard();*/
+
         $scope.fetchReportDetails = function () {
+            var dateRange;
+            var dahboardId='undefined'
+            $http({
+                method: 'GET',
+                url: '/api/v1/getSubscriptionFromDashboard/'+ dahboardId
+            }).then(
+                function successCallback(response){
+                    if(response.status==200){
+                        dateRange=response.data.response.limits.dateRange;
+                    }
+                    else{
+                        dateRange=365;
+                    }
+                }
+            )
             $http({
                 method: 'GET',
                 url: '/api/v1/get/report/' + null,
@@ -492,7 +530,6 @@ function customReportController($scope,$timeout,$rootScope,$http,$window,$state,
             }).then(
                 function successCallback(response) {
                     if (response.status == 200 && response.data.dashboardDeleted!=true) {
-
                         $scope.customReportId = response.data.customReportId;
                         $scope.reportId = response.data._id;
                         $scope.customReport.reportName = response.data.name;
@@ -525,7 +562,7 @@ function customReportController($scope,$timeout,$rootScope,$http,$window,$state,
                         else {
                             $scope. startDate = response.data.startDate;
                             $scope. endDate = response.data.endDate;
-                            $scope.userModifyDate($scope.startDate, $scope.endDate);
+                            $scope.userModifyDate($scope.startDate, $scope.endDate,dateRange);
                         }
                     }
                     // else if(response.data.dashboardDeleted!=true){
@@ -582,15 +619,20 @@ function customReportController($scope,$timeout,$rootScope,$http,$window,$state,
         $scope.fetchReportDetails();
 
         //To define the calendar in dashboard header
-        $scope.userModifyDate = function (startDate, endDate) {
+        $scope.userModifyDate = function (startDate, endDate ,dateRange) {
+            console.log('dateRange',dateRange)
             $scope.dashboardCalendar = new Calendar({
                 element: $('.daterange--double'),
-                earliest_date: moment(new Date()).subtract(365, 'days'),
+                earliest_date: moment(new Date()).subtract(dateRange, 'days'),
                 latest_date: new Date(),
                 start_date: startDate,
                 end_date: endDate,
                 callback: function () {
                     storeDateInDb(this.start_date, this.end_date);
+                    $http.pendingRequests.forEach(function (request) {
+                        if (request.cancel)
+                            request.cancel.resolve();
+                    });
                 }
             });
             $scope.populateReportWidgets();
@@ -974,6 +1016,8 @@ function customReportController($scope,$timeout,$rootScope,$http,$window,$state,
         $http({
             method: 'POST',
             url: '/api/v1/get/reportWidgets/',
+            timeout:cancel.promise,
+            cancel:cancel,
             data: jsonData
         })
             .then(

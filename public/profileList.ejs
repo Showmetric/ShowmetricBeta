@@ -4,50 +4,49 @@
             <button type="button" class="overlayCloseButton" ng-click="closeProfilelistModal()">
                 <i class="fa fa-times fa-lg" aria-hidden="true"></i>
             </button>
-        <div class="modal-header">
-            <h5 class="model-title" Style="text-align: center;color: #04509B;">
+            <div class="modal-header">
+                <h5 class="model-title" Style="text-align: center;color: #04509B;">
                     Profile Management
-            </h5>
-        </div>
-        <div class="modal-body" >
+                </h5>
+            </div>
+            <div class="modal-body" >
                 <div ng-show="currentView === 'step_one'" class=""  ng-cloak>
                     <div  style="text-align: center;">
                         <a ng-click="changeViewsInProfileList('step_two')" style="text-align: center"><i class="fa fa-plus plus" style="font-size: 6em;"></i></a>
                         <p>Add New Profile</p>
                     </div>
                     <div style="height:300px !important;" class="scrollbar scrollInWidget col-lg-12" id="scroller">
-                <div id ="errorInRelink"></div>
-                <div class="ibox-content">
-                    <table class="table table-striped">
-                        <thead>
-                        <tr class="profiletitle">
-                            <th>Channel</th>
-                            <th>Profile Name</th>
-                            <th>Expires in</th>
-                            <th>Status</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr ng-repeat="profile in profileListArray">
-                            <td><img  src="image/thumbnail/{{profile.channelName}}.png" class="img-thumbnail profilelisImg"/></td>
-                            <td class="adjustPadding">{{profile.name}}</td>
-                            <td class="adjustPadding">{{profile.expiresIn | date}}</td>
-                            <td class="adjustPadding">
-                                <span ng-show="profile.hasNoAccess">Inactive</span>
-                                <span ng-show="!profile.hasNoAccess">Active</span>
-                            </td>
-                            <td class="adjustPadding">
-                                <a ng-show="profile.expiresIn && !profile.hasNoAccess" style="color: #45596b" ng-click="refreshProfile(profile)" ><i class="fa fa-refresh" aria-hidden="true"></i></a>
-                                <a ng-show="profile.hasNoAccess"style="color: #45596b" ng-click="refreshProfile(profile)" ><i class="fa fa-refresh" aria-hidden="true"></i></a>
-                            </td>
+                        <div id ="errorInRelink"></div>
+                        <div class="ibox-content">
+                            <table class="table table-striped">
+                                <thead>
+                                <tr class="profiletitle">
+                                    <th>Channel</th>
+                                    <th>Profile Name</th>
+                                    <th>Expires in</th>
+                                    <th>Status</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr ng-repeat="profile in profileListArray">
+                                    <td><img  src="image/thumbnail/{{profile.channelName}}.png" class="img-thumbnail profilelisImg"/></td>
+                                    <td class="adjustPadding">{{profile.name}}</td>
+                                    <td class="adjustPadding">{{profile.expiresIn | date}}</td>
+                                    <td class="adjustPadding">
+                                        <span ng-show="profile.hasNoAccess">Inactive</span>
+                                        <span ng-show="!profile.hasNoAccess">Active</span>
+                                    </td>
+                                    <td class="adjustPadding">
+                                        <a ng-show="profile.expiresIn && !profile.hasNoAccess" style="color: #45596b" ng-click="refreshProfile(profile)" ><i class="fa fa-refresh" aria-hidden="true"></i></a>
+                                        <a ng-show="profile.hasNoAccess"style="color: #45596b" ng-click="refreshProfile(profile)" ><i class="fa fa-refresh" aria-hidden="true"></i></a>
+                                    </td>
                                     <td class="adjustPadding glyphicon glyphicon-trash" ng-click="removeExistingProfile(profile)" ></td>
-                        </tr>
-
-                        </tbody>
-                    </table>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
                 <div ng-show="currentView === 'step_two'" class="col-lg-12"  ng-cloak>
                     <h4  style="font-size: initial; "class="model-title"> Choose the Channels</h4>
                     <div style="height:300px !important;" class="scrollbar scrollInWidget " id="scroller">

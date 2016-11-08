@@ -71,14 +71,25 @@ exports.widgetDetails = function (req, res, next) {
                             updated: new Date(),
                             meta:req.query.meta
                         }
-                    },{upsert: true},  function (err,widget) {
+                    },{upsert: true},  function (err,widget,widgetDetail) {
                         if (err)
                             return res.status(500).json({error: 'Internal server error'})
                         else if (!widget)
                             return res.status(204).json({error: 'No records found'})
                         else{
-                            req.app.result = widget;
-                            next();
+                            widgetsList.findOne({_id: req.params.widgetId},function(err,widgetDetail){
+                                if (err)
+                                    return res.status(500).json({error: 'Internal server error'});
+                                else if (!widgetDetail)
+                                    return res.status(501).json({error: 'Not implemented'});
+                                else{
+                                    req.app.result = widgetDetail;
+                                    next();
+                                }
+                            })
+
+
+
                         }
                     });
                 }
@@ -151,8 +162,21 @@ exports.deleteWidgets = function (req, res, next) {
 
                                         //Doing the bulk update
                                         bulk.execute(function (err, response) {
-                                            req.app.result = req.params.widgetId;
-                                            next();
+                                            var widgetIds=[];
+                                            for(var i=0;i<widgetDetail.widgets.length;i++){
+                                                widgetIds.push(widgetDetail.widgets[i].widgetId)
+                                            }
+                                            widgetsList.find({_id: {$in: widgetIds}}, function (err, widgetDetails) {
+                                                if (err)
+                                                    return res.status(500).json({error: 'Internal server error'});
+                                                else if (!widgetDetails)
+                                                    return res.status(204).json({error: 'No records found'});
+                                                else {
+                                                    req.app.result = widgetDetails;
+                                                    next();
+                                                }
+                                            })
+
                                         });
                                     }
                                     else {
@@ -177,10 +201,10 @@ exports.deleteWidgets = function (req, res, next) {
                                     objectlength = objects.length;
                                     if(objectlength==1){
                                         //deleting objects for moz
-                                       objectList.remove({_id:objectid},function(err){
-                                           if (err)
-                                               return res.status(500).json({error: 'Internal server error'});
-                                       })
+                                        objectList.remove({_id:objectid},function(err){
+                                            if (err)
+                                                return res.status(500).json({error: 'Internal server error'});
+                                        })
                                         removal();
                                     }
                                     else
@@ -204,24 +228,25 @@ exports.deleteWidgets = function (req, res, next) {
 exports.deleteTextWidgets = function (req, res, next) {
     if (req.user) {
         textWidgetsList.findOne({_id: req.params.widgetId},function(err,widgetDetail){
+            if (err)
+                return res.status(500).json({error: 'Internal server error'});
+            else if (!widgetDetail)
+                return res.status(501).json({error: 'Not implemented'});
+            else{
+                textWidgetsList.remove({_id: req.params.widgetId}, function (err, widget) {
                     if (err)
                         return res.status(500).json({error: 'Internal server error'});
-                    else if (!widgetDetail)
+                    else if (!widget)
                         return res.status(501).json({error: 'Not implemented'});
-                    else{
-                         textWidgetsList.remove({_id: req.params.widgetId}, function (err, widget) {
-                            if (err)
-                                return res.status(500).json({error: 'Internal server error'});
-                            else if (!widget)
-                                return res.status(501).json({error: 'Not implemented'});
-                            else {
-                                req.app.result = req.params.widgetId;
-                                next();
-                            }
-                        })
+                    else {
+                        req.app.result = req.params.widgetId;
+                        next();
+
                     }
                 })
-        }
+            }
+        })
+    }
     else
         res.status(401).json({error: 'Authentication required to perform this action'})
 };
@@ -233,7 +258,6 @@ exports.saveTextWidgets = function (req, res, next) {
                 if (err)
                     return res.status(500).json({error: 'Internal server error'});
                 else {
-                    console.log("text widgets",result.storeAllWidgets)
                     req.app.result = result.storeAllWidgets;
                     next();
                 }
@@ -265,71 +289,71 @@ exports.saveTextWidgets = function (req, res, next) {
                 widgetType = result.widgetType;
                 widgetName=result.name;
                 //To store the widget
-                        var createWidget = new textWidgetsList();
-                        //To check whether new dashboard or not
-                        if (result.widgetId === undefined) {
-                            createWidget.reportId = reportId;
-                            createWidget.widgetType = widgetType;
-                            createWidget.textData = textData;
-                            createWidget.name = widgetName;
-                            createWidget.row = rowCount;
-                            createWidget.col = colCount;
-                            createWidget.sizeX = widgetSizeX;
-                            createWidget.sizeY = widgetSizeY;
-                            createWidget.created = new Date();
-                            createWidget.updated = new Date();
-                            createWidget.save(function (err, widgetDetail) {
-                                if (err)
-                                    return res.status(500).json({error: 'Internal server error'});
-                                else if (!widgetDetail)
-                                    return res.status(501).json({error: 'Not implemented'})
-                                else {
-                                        req.app.result = widgetDetail;
-                                        callback(null, widgetDetail);
-                                }
-                            });
-                        }
-
-                        //To update already existing database
+                var createWidget = new textWidgetsList();
+                //To check whether new dashboard or not
+                if (result.widgetId === undefined) {
+                    createWidget.reportId = reportId;
+                    createWidget.widgetType = widgetType;
+                    createWidget.textData = textData;
+                    createWidget.name = widgetName;
+                    createWidget.row = rowCount;
+                    createWidget.col = colCount;
+                    createWidget.sizeX = widgetSizeX;
+                    createWidget.sizeY = widgetSizeY;
+                    createWidget.created = new Date();
+                    createWidget.updated = new Date();
+                    createWidget.save(function (err, widgetDetail) {
+                        if (err)
+                            return res.status(500).json({error: 'Internal server error'});
+                        else if (!widgetDetail)
+                            return res.status(501).json({error: 'Not implemented'})
                         else {
-                            var widgetId = result.widgetId;
+                            req.app.result = widgetDetail;
+                            callback(null, widgetDetail);
+                        }
+                    });
+                }
 
-                            // set all of the user data that we need
-                            var textData = req.body.textData == undefined ? '' : textData;
-                            var row = rowCount == undefined ? '' : rowCount;
-                             var col = colCount == undefined ? '' : colCount;
-                            var sizeX = widgetSizeX == undefined ? '' : widgetSizeX;
-                            var sizeY = widgetSizeY == undefined ? '' : widgetSizeY;
-                            var updated = new Date();
-                            // update the dashboard data
-                            widgetsList.update({_id: widgetId}, {
-                                $set: {
-                                    textData: textData,
-                                    row: row,
-                                    col: col,
-                                    sizeX: sizeX,
-                                    sizeY: sizeY,
-                                    updated: updated
-                                }
-                            }, {upsert: true}, function (err, widget) {
+                //To update already existing database
+                else {
+                    var widgetId = result.widgetId;
+
+                    // set all of the user data that we need
+                    var textData = req.body.textData == undefined ? '' : textData;
+                    var row = rowCount == undefined ? '' : rowCount;
+                    var col = colCount == undefined ? '' : colCount;
+                    var sizeX = widgetSizeX == undefined ? '' : widgetSizeX;
+                    var sizeY = widgetSizeY == undefined ? '' : widgetSizeY;
+                    var updated = new Date();
+                    // update the dashboard data
+                    widgetsList.update({_id: widgetId}, {
+                        $set: {
+                            textData: textData,
+                            row: row,
+                            col: col,
+                            sizeX: sizeX,
+                            sizeY: sizeY,
+                            updated: updated
+                        }
+                    }, {upsert: true}, function (err, widget) {
+                        if (err)
+                            return res.status(500).json({error: 'Internal server error'});
+                        else if (widget === 0)
+                            return res.status(501).json({error: 'Not Saved in Widget Collection'});
+                        else {
+                            widgetsList.findOne({_id: widgetId}, function (err, widgetDetails) {
                                 if (err)
                                     return res.status(500).json({error: 'Internal server error'});
-                                else if (widget === 0)
-                                    return res.status(501).json({error: 'Not Saved in Widget Collection'});
+                                else if (!widgetDetails)
+                                    return res.status(204).json({error: 'No records found'});
                                 else {
-                                    widgetsList.findOne({_id: widgetId}, function (err, widgetDetails) {
-                                        if (err)
-                                            return res.status(500).json({error: 'Internal server error'});
-                                        else if (!widgetDetails)
-                                            return res.status(204).json({error: 'No records found'});
-                                        else {
-                                            req.app.result = widgetId;
-                                            callback(null, widgetDetails);
-                                        }
-                                    })
+                                    req.app.result = widgetId;
+                                    callback(null, widgetDetails);
                                 }
-                            });
+                            })
                         }
+                    });
+                }
 
 
             }

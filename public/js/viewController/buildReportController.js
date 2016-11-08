@@ -141,6 +141,7 @@ function buildReportController($scope,$http,$window,$timeout) {
                     $scope.fetchAllReports();
                     var reportId = response.data;
                     var reportDomain = window.location.hostname == 'localhost' ? "localhost:8080/customReports" : "https://" + window.location.hostname + "/customReports";
+                    console.log('reportDomain',reportDomain)
                     //var reportUrl = reportDomain + '#/' + reportId;
                     var reportUrl = String(reportDomain + '#/' + reportId);
                     // $window.open(reportUrl,'_blank');

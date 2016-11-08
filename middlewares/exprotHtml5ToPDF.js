@@ -151,7 +151,7 @@ exports.createHtml5ToPdf = function (req, res, next) {
         doc = new PDFDocument({size: 'A4',
             layout: 'landscape', margin: 18});
         // stream = doc.pipe(blobStream());
-      //  doc.image('images/test.jpeg',{scale: 0.80})
+        //  doc.image('images/test.jpeg',{scale: 0.80})
         //   doc.image(req.body.dashboardLayout[0],{scale: 0.67});
         doc.image(req.body.dashboardLayout[0],{width: 800,height:560});
         if(req.body.dashboardLayout.length>0){

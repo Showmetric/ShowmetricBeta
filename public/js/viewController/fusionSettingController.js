@@ -17,7 +17,7 @@ function FusionSettingsController($scope, $uibModalInstance, widget, $http, $sta
         $scope.dashboardWidgets = [];
         $uibModalInstance.dismiss();
     };
-    
+
     $scope.selectedFusableWidgets = function () {
         if($scope.dashboardWidgets.length > 0) {
 
@@ -93,8 +93,8 @@ function FusionSettingsController($scope, $uibModalInstance, widget, $http, $sta
                 "name": "Custom Fusion",
                 "widgetType": widgetType,
                 "widgets":storeFinalWidgetsList,
-                "size": {h: 2, w: 4},
-                "minSize": {h: 2, w: 4},
+                "size": {h: 2, w: 6},
+                "minSize": {h: 2, w: 6},
                 "maxSize": {h: 3, w: 6},
                 "color": '#1F77B4',
                 "channelName": "customFusion"
@@ -106,7 +106,7 @@ function FusionSettingsController($scope, $uibModalInstance, widget, $http, $sta
                 data: inputParams
             }).then(
                 function successCallback(response) {
-                    $rootScope.populateDashboardWidgets();
+                    $rootScope.$broadcast('populateWidget', response.data.widgetsList[0]);
                     $scope.dismiss();
                 },
                 function errorCallback(error) {

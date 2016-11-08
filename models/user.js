@@ -11,6 +11,8 @@ var userSchema = mongoose.Schema({
     phoneNo: String,
     pwdHash: String,
     emailVerified: Boolean,
+    subscriptionId:String,
+    validity:Number,
     emailVerification: {
         tokenId: String,
         expires: Date

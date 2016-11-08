@@ -26,36 +26,100 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider, IdlePro
         .state('app.reporting', {
             url: "/reporting",
             template: '{{loadingVariable}}',
-            controller: function ($http,$state,$scope){
+            controller: function ($http,$state,$scope,$interval,$rootScope){
                 $scope.loadingVariable = '';
                 if($state.$current.name == 'app.reporting'){
                     $scope.loadingVariable = '';
-                    $http(
-                        {
-                            method: 'GET',
-                            url: '/api/v1/me'
-                        }
-                    ).then(
-                        function successCallback(response) {
-                            if(response.data.userDetails[0].lastDashboardId) {
-                                $scope.loadingVariable = '';
-                                if(response.data.userDetails[0].lastDashboardId != 'undefined')
-                                    $state.go('.dashboard',{id: response.data.userDetails[0].lastDashboardId});
-                                else
-                                    $scope.createNewDashboard();
+                    var repeat=0;
+                    $rootScope.expiryCheck = function() {
+                        $http(
+                            {
+                                method: 'GET',
+                                url: '/api/v1/me'
                             }
-                            else {
+                        ).then(
+                            function successCallback(response) {
+                                $rootScope.subscriptionDetails = response.data.userDetails;
+                                console.log('response.data.userDetails',response.data.userDetails,repeat)
+                                if(repeat==0) {
+                                    console.log('statusif',$state)
+                                    if (response.data.userDetails.statusCode === 1002) {
+                                        console.log('if')
+                                        $rootScope.isExpired = true;
+                                        $state.go('.upgrade');
+                                    }
+                                    else {
+                                        console.log('else')
+                                        $rootScope.isExpired = false;
+                                        var expiryDate = moment(response.data.userDetails.organization[0].subscriptionExpiresOn);
+                                        var currentDate = moment(new Date).format("YYYY-MM-DD");
+                                        currentDate = moment(currentDate);
+                                        var diffDays = expiryDate.diff(currentDate, 'days');
+                                        if (diffDays < 4) {
+                                            toastr.info("Hi, welcome to Datapoolt.Your pricing plan is going to expire soon.Please upgrade to access Datapoolt", 'Expiry Warning', {
+                                                "closeButton": true,
+                                                "debug": false,
+                                                "progressBar": true,
+                                                "preventDuplicates": false,
+                                                "positionClass": "toast-top-right",
+                                                "onclick": null,
+                                                "showDuration": "4000",
+                                                "hideDuration": "1000",
+                                                "timeOut": "7000",
+                                                "extendedTimeOut": "1000",
+                                                "showEasing": "swing",
+                                                "hideEasing": "linear",
+                                                "showMethod": "fadeIn",
+                                                "hideMethod": "fadeOut"
+                                            });
+                                        }
+                                        if (response.data.userDetails.user[0].lastDashboardId) {
+                                            $scope.loadingVariable = '';
+                                            if (response.data.userDetails.user[0].lastDashboardId != 'undefined')
+                                                $state.go('.dashboard', {id: response.data.userDetails.user[0].lastDashboardId});
+                                            else
+                                                $scope.createNewDashboard();
+                                        }
+                                        else {
+                                            $scope.createNewDashboard();
+                                        }
+
+                                    }
+                                    repeat++;
+                                }
+                                else {
+                                    console.log('statuselse')
+                                    if (response.data.userDetails.statusCode === 1002) {
+                                        $rootScope.isExpired = true;
+                                        $state.go('app.reporting.upgrade');
+                                    }
+                                }
+                            },
+                            function errorCallback(error) {
                                 $scope.createNewDashboard();
                             }
-                        },
-                        function errorCallback(error) {
-                            $scope.createNewDashboard();
-                        }
-                    );
+                        );
+                    }
+                    $rootScope.expiryCheck();
+                    $interval($rootScope.expiryCheck,3600000);
                 }
             }
         })
-
+        .state('app.reporting.upgrade', {
+            url: "/upgrade",
+            views: {
+                'main@app': {
+                    templateUrl: "common/upgrade.ejs",
+                    //templateUrl: "dashboardTemplate.ejs",
+                    controller: 'UpgradeController'
+                }
+            },
+            resolve: {
+                loadPlugin: function ($ocLazyLoad) {
+                    return $ocLazyLoad.load('css/upgrade.css');
+                }
+            },
+        })
         .state('app.reporting.dashboard', {
             url: "/dashboard/:id",
             views: {
@@ -116,11 +180,7 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider, IdlePro
             onEnter: function ($http,$state,$rootScope){
                 $rootScope.$on('$stateChangeSuccess', function(ev, to, toParams, from, fromParams) {
                     var previousState = from.name;
-                    if(previousState=='app.changePassword')
-                        $rootScope.previousProfileState=previousState;
-                    if(previousState=='app.reporting.dashboards')
-                        $rootScope.previousProfileState=previousState;
-                    if(previousState=='app.reporting.dashboard')
+                    if(previousState=='app.changePassword' || previousState=='app.reporting.upgrade' || previousState=='app.reporting.dashboards' || previousState=='app.accountManagement' || previousState=='app.reporting.dashboard' || previousState=='app.reporting.buildReports')
                         $rootScope.previousProfileState=previousState;
                 });
             }
@@ -224,7 +284,6 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider, IdlePro
                 }
             }
         })
-
         .state('app.changePassword', {
             url: "/changePassword",
             views: {
@@ -232,7 +291,16 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider, IdlePro
                     templateUrl: "changePassword.ejs"
                 }
             }
+        })
+        .state('app.reporting.accountManagement', {
+            url: "/accountManagement",
+            views: {
+                'main@app': {
+                    templateUrl: "accountManagement.ejs"
+                }
+            }
         });
+
 }
 angular
     .module('inspinia')
