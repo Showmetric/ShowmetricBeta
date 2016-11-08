@@ -51,10 +51,6 @@
                                     <img src="image/thumbnail/{{widget.channelName}}.png" style="vertical-align: super;max-height: 31px; max-width: 50px; padding:5px"/>
                                     <h3 ng-style="widget.sizeX!=1  && {'width':'80%'}  || widget.sizeX==1 && {'width':'50%'} ">{{dashboard.widgetData[widgetIndex].name}}</h3>
                                         </div>
-
-                                <div class="graph-icon">
-                                    <a title="Toggle Legends" ng-click="toggleLegends(widget.id)"><i class="fa fa-filter"></i></a>
-                                </div>
                                     </div>
                                     <div class="box-content" style="vertical-align: middle" ng-style="{position:(isMobile?'static':'absolute')}">
                                         <div ng-if="dashboard.widgetData[widgetIndex].visibility == false" style="height:100%">
