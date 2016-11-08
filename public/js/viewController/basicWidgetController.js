@@ -3,7 +3,8 @@ showMetricApp.controller('BasicWidgetController', BasicWidgetController)
 function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stateParams, generateChartColours,$q) {
     $scope.objectList = {};
     $scope.referenceWidgetsList = [];
-    $scope.fbObjectTypeList={};
+    var availableBasicWidgets;
+    $scope.fbObjectTypeList = {};
     $scope.tokenExpired = [];
     $scope.channelList;
     $scope.currentView = 'step_one';
@@ -60,37 +61,51 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
                 var interval = setInterval( function(){
                     progress = Math.min( progress + Math.random() * 0.1, 1 );
                     instance.setProgress( progress );
-
                     if( progress === 1 && startWidget===1 ){
                         instance.stop();
                         clearInterval( interval );
                         $scope.ok();
-
                     }
                 }, 50 );
             }
         });
-
-
     });
 
     $scope.changeViewsInBasicWidget = function (obj) {
         $scope.currentView = obj;
         $rootScope.currentModalView = obj;
         if ($scope.currentView === 'step_one') {
-            $scope.listChannels();
-            $scope.clearReferenceWidget();
-            $scope.selectedChannelList=[];
-            $scope.customMessageEnable=false;
-            $scope.metricMessage=false;
-            storeChosenObject = [];
-            $scope.fbObjectTypeList={};
-            $scope.canManageClients = true;
-            document.getElementById('basicWidgetFinishButton').disabled = true;
-            $("#basicWidgetNextButton1").show();
-            $('#basicWidgetBackButton').hide();
-            $('#basicWidgetBackButton2').hide();
-            $("#basicWidgetNextButton2").hide();
+            //request to get the subscription details of the user on basic widgets
+            $http(
+                {
+                    method: 'GET',
+                    url: '/api/v1/subscriptionLimits' + '?requestType=' + 'basic'
+                }
+            ).then(
+                function successCallback(response) {
+                    availableBasicWidgets = response.data.availableWidgets;
+                    $scope.listChannels();
+                    $scope.clearReferenceWidget();
+                    $scope.selectedChannelList=[];
+                    $scope.customMessageEnable=false;
+                    $scope.metricMessage=false;
+                    storeChosenObject = [];
+                    $scope.fbObjectTypeList={};
+                    $scope.canManageClients = true;
+                    document.getElementById('basicWidgetFinishButton').disabled = true;
+                    $("#basicWidgetNextButton1").show();
+                    $('#basicWidgetBackButton').hide();
+                    $('#basicWidgetBackButton2').hide();
+                    $("#basicWidgetNextButton2").hide();
+                },
+                function errorCallback(error) {
+                    swal({
+                        title: "",
+                        text: "<span style='sweetAlertFont'>Something went wrong!!!!</span> .",
+                        html: true
+                    });
+                }
+            );
         }
         else if ($scope.currentView === 'step_two') {
             $scope.customMessageEnable=false;
@@ -270,7 +285,7 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
                         return o.channelName == $scope.selectedTempChannelList[j].name
                     });
                     if(index < 0)
-                    $scope.referenceWidgetsList.push({widgets:tempReferenceList,channelName:$scope.selectedTempChannelList[j].name})
+                        $scope.referenceWidgetsList.push({widgets:tempReferenceList,channelName:$scope.selectedTempChannelList[j].name})
                 }
             },
             function errorCallback(error) {
@@ -744,11 +759,11 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
             var adGroupPresent=false;
             var accountPresent=false;
             for (var getData in getReferenceWidgetsArr) {
-                if(getReferenceWidgetsArr[getData].name == "Account's campaigns performance (Account level only)")
+                if(getReferenceWidgetsArr[getData].name == "Adwords campaigns overview (Account level)")
                     accountPresent=true;
-                if(getReferenceWidgetsArr[getData].name == "Campaign's Adgroup performance (Campaign level only)" || getReferenceWidgetsArr[getData].name == "Campaign Demographics - Age Analysis (Campaign Level only)" || getReferenceWidgetsArr[getData].name == "Campaign Demographics - Gender Analysis (Campaign Level only)"|| getReferenceWidgetsArr[getData].name == "Campaign Demographics - Device Analysis (Campaign Level only)")
+                if(getReferenceWidgetsArr[getData].name == "Adgroups overview (Campaign level)" || getReferenceWidgetsArr[getData].name == "Age Demographics (Campaign Level)" || getReferenceWidgetsArr[getData].name == "Gender Demographics (Campaign Level)"|| getReferenceWidgetsArr[getData].name == "Device Demographics (Campaign Level)")
                     campaignPresent=true;
-                if(getReferenceWidgetsArr[getData].name == "Adgroup's Ad performance (Adgroup level only)"|| getReferenceWidgetsArr[getData].name == "Adgroup Demographics - Age Analysis (Adgroup Level only)"|| getReferenceWidgetsArr[getData].name == "Adgroup Demographics - Gender Analysis (Adgroup Level only)"|| getReferenceWidgetsArr[getData].name == "Adgroup Demographics - Device Analysis (Adgroup Level only)")
+                if(getReferenceWidgetsArr[getData].name == "Ads overview (Adgroup level)"|| getReferenceWidgetsArr[getData].name == "Age Demographics (Adgroup Level)"|| getReferenceWidgetsArr[getData].name == "Gender Demographics (Adgroup Level)"|| getReferenceWidgetsArr[getData].name == "Device Demographics (Adgroup Level)")
                     adGroupPresent=true;
             }
             if(campaignPresent==false && adGroupPresent==false && accountPresent==false){
@@ -1773,323 +1788,355 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
         var channel=[];
         $(".navbar").css('z-index', '1');
         $(".md-overlay").css("background", "rgba(0,0,0,0.5)");
-        if (getChannelName == "CustomData") {
-            getCustomWidgetObj = {
-                '_id': getCustomWidgetId,
-                'widgetType': 'custom',
-                "channelName": 'custom'
-            };
-            // final function after custom api url creation goes here
-            $rootScope.$broadcast('populateWidget', getCustomWidgetObj);
-        }
-
-        var widgetCreateList=function(channel,index){
-            var deferred = $q.defer();
-            if(channel.name=="Moz"){
-                channelName=channel.name;
-                channelId=channel.id;
-                uniqueObjectCount=channel.uniqueObjectCount;
+//request to get the subscription details of the user on basic widgets
+        $http(
+            {
+                method: 'GET',
+                url: '/api/v1/subscriptionLimits' + '?requestType=' + 'basic'
             }
-            else if(channel.name==storeChosenObject[index].channelName) {
-                channelName=storeChosenObject[index].channelName;
-                channelId=channel.id;
-                uniqueObjectCount=channel.uniqueObjectCount;
-                chosenObject=storeChosenObject[index].objectDetails;
-                profileName=storedProfile[index].name;
-            }
-            if(channelName == "Moz"){
-                var mozData = {
-                    "channelId": channelId,
-                    "mozObject": $scope.weburl,
-                    "mozObjectTypeId":uniqueObjectCount[0]
-                };
-                var httpPromise=$http({
-                    method: 'POST',
-                    url: '/api/v1/objects',
-                    data: mozData
-                }).then(
-                    function successCallback(response) {
-                        $scope.mozObjectdetails=response.data.objectList;
-                        return $scope.mozObjectdetails;
-                    },
-                    function errorCallback(error) {
-                        swal({
-                            title: "",
-                            text: "<span style='sweetAlertFont'>Something went wrong! Please reopen widgets link</span>",
-                            html: true
-                        });
+        ).then(
+            function successCallback(response) {
+                availableBasicWidgets = response.data.availableWidgets;
+                if (getReferenceWidgetsArr.length<=availableBasicWidgets) {
+                    if (getChannelName == "CustomData") {
+                        getCustomWidgetObj = {
+                            '_id': getCustomWidgetId,
+                            'widgetType': 'custom',
+                            "channelName": 'custom'
+                        };
+                        // final function after custom api url creation goes here
+                        $rootScope.$broadcast('populateWidget', getCustomWidgetObj);
                     }
-                );
-                httpPromise.then (
-                    function (mozObjectDetails) {
-                        //creating widget for moz
-                        var inputParams=[];
-                        for (var getData in getReferenceWidgetsArr) {
-                            if (getReferenceWidgetsArr[getData].channelName == channelName) {
-                                var matchingMetric = [];
-                                var matchingMetricName = '';
-                                var widgetColor = generateChartColours.fetchWidgetColor(channelName);
 
-                                for (var i = 0; i < getReferenceWidgetsArr[getData].charts.length; i++) {
-                                    matchingMetric = [];
-                                    matchingMetricName = '';
+                    var widgetCreateList=function(channel,index){
+                        var deferred = $q.defer();
+                        if(channel.name=="Moz"){
+                            channelName=channel.name;
+                            channelId=channel.id;
+                            uniqueObjectCount=channel.uniqueObjectCount;
+                        }
+                        else if(channel.name==storeChosenObject[index].channelName) {
+                            channelName=storeChosenObject[index].channelName;
+                            channelId=channel.id;
+                            uniqueObjectCount=channel.uniqueObjectCount;
+                            chosenObject=storeChosenObject[index].objectDetails;
+                            profileName=storedProfile[index].name;
+                        }
+                        if(channelName == "Moz"){
+                            var mozData = {
+                                "channelId": channelId,
+                                "mozObject": $scope.weburl,
+                                "mozObjectTypeId":uniqueObjectCount[0]
+                            };
+                            var httpPromise=$http({
+                                method: 'POST',
+                                url: '/api/v1/objects',
+                                data: mozData
+                            }).then(
+                                function successCallback(response) {
+                                    $scope.mozObjectdetails=response.data.objectList;
+                                    return $scope.mozObjectdetails;
+                                },
+                                function errorCallback(error) {
+                                    swal({
+                                        title: "",
+                                        text: "<span style='sweetAlertFont'>Something went wrong! Please reopen widgets link</span>",
+                                        html: true
+                                    });
+                                }
+                            );
+                            httpPromise.then (
+                                function (mozObjectDetails) {
+                                    //creating widget for moz
+                                    var inputParams=[];
+                                    for (var getData in getReferenceWidgetsArr) {
+                                        if (getReferenceWidgetsArr[getData].channelName == channelName) {
+                                            var matchingMetric = [];
+                                            var matchingMetricName = '';
+                                            var widgetColor = generateChartColours.fetchWidgetColor(channelName);
 
-                                    for (var j = 0; j < getReferenceWidgetsArr[getData].charts[i].metrics.length; j++) {
-                                        matchingMetric.push(getReferenceWidgetsArr[getData].charts[i].metrics[j]);
-                                        matchingMetric[0].objectId = mozObjectDetails[0]._id;
-                                        matchingMetricName = mozObjectDetails[0].name;
+                                            for (var i = 0; i < getReferenceWidgetsArr[getData].charts.length; i++) {
+                                                matchingMetric = [];
+                                                matchingMetricName = '';
+
+                                                for (var j = 0; j < getReferenceWidgetsArr[getData].charts[i].metrics.length; j++) {
+                                                    matchingMetric.push(getReferenceWidgetsArr[getData].charts[i].metrics[j]);
+                                                    matchingMetric[0].objectId = mozObjectDetails[0]._id;
+                                                    matchingMetricName = mozObjectDetails[0].name;
+                                                }
+                                                getReferenceWidgetsArr[getData].charts[i].metrics = matchingMetric;
+                                                getReferenceWidgetsArr[getData].charts[i].objectName = matchingMetricName;
+                                            }
+
+                                            widgetName = getReferenceWidgetsArr[getData].name + ' - ' + matchingMetricName;
+
+                                            var jsonData = {
+                                                "dashboardId": $state.params.id,
+                                                "widgetType": widgetType,
+                                                "name": widgetName,
+                                                "description": getReferenceWidgetsArr[getData].description,
+                                                "charts": getReferenceWidgetsArr[getData].charts,
+                                                "order": getReferenceWidgetsArr[getData].order,
+                                                "offset": getReferenceWidgetsArr[getData].offset,
+                                                "size": getReferenceWidgetsArr[getData].size,
+                                                "minSize": getReferenceWidgetsArr[getData].minSize,
+                                                "maxSize": getReferenceWidgetsArr[getData].maxSize,
+                                                "color": widgetColor,
+                                                "visibility": true,
+                                                "isAlert": getReferenceWidgetsArr[getData].isAlert,
+                                                "isFusion":getReferenceWidgetsArr[getData].isFusion != undefined?getReferenceWidgetsArr[getData].isFusion:true,
+                                                "channelName": channelName
+                                            };
+                                            inputParams.push(jsonData);
+                                        }
                                     }
-                                    getReferenceWidgetsArr[getData].charts[i].metrics = matchingMetric;
-                                    getReferenceWidgetsArr[getData].charts[i].objectName = matchingMetricName;
+                                    deferred.resolve(inputParams);
+                                },
+                                function errorCallback() {
+                                    deferred.reject(error);
+                                    $(".navbar").css('z-index', '1');
+                                    $(".md-overlay").css("background", "rgba(0,0,0,0.5)");
+                                    $("#somethingWentWrongModalContent").addClass('md-show');
+                                    $("#somethingWentWrongText").text("Something went wrong! Please try again");
                                 }
-
-                                widgetName = getReferenceWidgetsArr[getData].name + ' - ' + matchingMetricName;
-
-                                var jsonData = {
-                                    "dashboardId": $state.params.id,
-                                    "widgetType": widgetType,
-                                    "name": widgetName,
-                                    "description": getReferenceWidgetsArr[getData].description,
-                                    "charts": getReferenceWidgetsArr[getData].charts,
-                                    "order": getReferenceWidgetsArr[getData].order,
-                                    "offset": getReferenceWidgetsArr[getData].offset,
-                                    "size": getReferenceWidgetsArr[getData].size,
-                                    "minSize": getReferenceWidgetsArr[getData].minSize,
-                                    "maxSize": getReferenceWidgetsArr[getData].maxSize,
-                                    "color": widgetColor,
-                                    "visibility": true,
-                                    "isAlert": getReferenceWidgetsArr[getData].isAlert,
-                                    "isFusion":getReferenceWidgetsArr[getData].isFusion != undefined?getReferenceWidgetsArr[getData].isFusion:true,
-                                    "channelName": channelName
-                                };
-                                inputParams.push(jsonData);
-                            }
+                            );
                         }
-                        deferred.resolve(inputParams);
-                    },
-                    function errorCallback() {
-                        deferred.reject(error);
-                        $(".navbar").css('z-index', '1');
-                        $(".md-overlay").css("background", "rgba(0,0,0,0.5)");
-                        $("#somethingWentWrongModalContent").addClass('md-show');
-                        $("#somethingWentWrongText").text("Something went wrong! Please try again");
-                    }
-                );
-            }
-            else if(channelName == "FacebookAds"){
-                var inputParams=[];
-                // function for saving facebook widgets goes here
-                for (var getData in getReferenceWidgetsArr) {
-                    if (getReferenceWidgetsArr[getData].channelName == channelName) {
-                        var matchingMetric = [];
-                        var matchingMetricName = '';
-                        var widgetColor = generateChartColours.fetchWidgetColor(channelName);
-                        for (var i = 0; i < getReferenceWidgetsArr[getData].charts.length; i++) {
-                            matchingMetric = [];
-                            matchingMetricName = '';
-                            for (var j = 0; j < getReferenceWidgetsArr[getData].charts[i].metrics.length; j++) {
-                                matchingMetric.push(getReferenceWidgetsArr[getData].charts[i].metrics[j]);
-                                if ($scope.selectedLevel == 'fbadaccount') {
-                                    matchingMetric[0].objectTypeId = $scope.selectedObjectType._id;
-                                    matchingMetric[0].objectId = chosenObject[0]._id;
-                                    matchingMetricName = chosenObject[0].name;
-                                }
-                                else if ($scope.selectedLevel == 'fbAdcampaign') {
-                                    matchingMetric[0].objectTypeId = $scope.selectedObjectType._id;
-                                    matchingMetric[0].objectId = $scope.campaign._id;
-                                    matchingMetricName = $scope.campaign.name;
-                                }
-                                else if ($scope.selectedLevel == 'fbAdSet') {
-                                    matchingMetric[0].objectTypeId = $scope.selectedObjectType._id;
-                                    matchingMetric[0].objectId = $scope.adSet._id;
-                                    matchingMetricName = $scope.adSet.name;
-                                }
-                                else if ($scope.selectedLevel == 'fbAdSetAds') {
-                                    matchingMetric[0].objectTypeId = $scope.selectedObjectType._id;
-                                    matchingMetric[0].objectId = $scope.adSetAds._id;
-                                    matchingMetricName = $scope.adSetAds.name;
-                                }
-                            }
-                            getReferenceWidgetsArr[getData].charts[i].metrics = matchingMetric;
-                            getReferenceWidgetsArr[getData].charts[i].objectName = matchingMetricName;
-                        }
-                        widgetName = getReferenceWidgetsArr[getData].name + ' - ' + matchingMetricName;
-
-                        var jsonData = {
-                            "dashboardId": $state.params.id,
-                            "widgetType": widgetType,
-                            "name": widgetName,
-                            "description": getReferenceWidgetsArr[getData].description,
-                            "charts": getReferenceWidgetsArr[getData].charts,
-                            "order": getReferenceWidgetsArr[getData].order,
-                            "offset": getReferenceWidgetsArr[getData].offset,
-                            "size": getReferenceWidgetsArr[getData].size,
-                            "minSize": getReferenceWidgetsArr[getData].minSize,
-                            "maxSize": getReferenceWidgetsArr[getData].maxSize,
-                            "color": widgetColor,
-                            "visibility": true,
-                            "isAlert": getReferenceWidgetsArr[getData].isAlert,
-                            "isFusion":getReferenceWidgetsArr[getData].isFusion != undefined?getReferenceWidgetsArr[getData].isFusion:true,
-                            "channelName": channelName
-                        };
-                        inputParams.push(jsonData);
-                    }
-                }
-                deferred.resolve(inputParams);
-            }
-            else if(channelName == "GoogleAdwords"){
-                // function for saving facebook widgets goes here
-                var inputParams=[];
-                for (var getData in getReferenceWidgetsArr) {
-                    if (getReferenceWidgetsArr[getData].channelName == channelName) {
-                        var matchingMetric = [];
-                        var matchingMetricName = '';
-                        var widgetColor = generateChartColours.fetchWidgetColor(channelName);
-
-                        for (var i = 0; i < getReferenceWidgetsArr[getData].charts.length; i++) {
-                            matchingMetric = [];
-                            matchingMetricName = '';
-                            for (var j = 0; j < getReferenceWidgetsArr[getData].charts[i].metrics.length; j++) {
-                                matchingMetric.push(getReferenceWidgetsArr[getData].charts[i].metrics[j]);
-                                if ($scope.selectedGoogleLevel == 'adwordaccount') {
-                                    matchingMetric[0].objectTypeId = $scope.selectedGoogleObjectType._id;
-                                    matchingMetric[0].objectId = chosenObject[0]._id;
-                                    matchingMetricName = chosenObject[0].name;
-                                }
-                                else if ($scope.selectedGoogleLevel == 'adwordCampaign') {
-                                    matchingMetric[0].objectTypeId = $scope.selectedGoogleObjectType._id;
-                                    matchingMetric[0].objectId = $scope.googleCampaign._id;
-                                    matchingMetricName = $scope.googleCampaign.name;
-                                }
-                                else if ($scope.selectedGoogleLevel == 'adwordAdgroup') {
-                                    matchingMetric[0].objectTypeId = $scope.selectedGoogleObjectType._id;
-                                    matchingMetric[0].objectId = $scope.googleGroup._id;
-                                    matchingMetricName = $scope.googleGroup.name;
-                                }
-                                else if ($scope.selectedGoogleLevel == 'adwordsAd') {
-                                    matchingMetric[0].objectTypeId = $scope.selectedGoogleObjectType._id;
-                                    matchingMetric[0].objectId = $scope.googleAd._id;
-                                    matchingMetricName = $scope.googleAd.name;
-                                }
-                            }
-                            getReferenceWidgetsArr[getData].charts[i].metrics = matchingMetric;
-                            getReferenceWidgetsArr[getData].charts[i].objectName = matchingMetricName;
-                        }
-                        widgetName = getReferenceWidgetsArr[getData].name + ' - ' + matchingMetricName;
-
-                        var jsonData = {
-                            "dashboardId": $state.params.id,
-                            "widgetType": widgetType,
-                            "name": widgetName,
-                            "description": getReferenceWidgetsArr[getData].description,
-                            "charts": getReferenceWidgetsArr[getData].charts,
-                            "order": getReferenceWidgetsArr[getData].order,
-                            "offset": getReferenceWidgetsArr[getData].offset,
-                            "size": getReferenceWidgetsArr[getData].size,
-                            "minSize": getReferenceWidgetsArr[getData].minSize,
-                            "maxSize": getReferenceWidgetsArr[getData].maxSize,
-                            "color": widgetColor,
-                            "visibility": true,
-                            "isAlert": getReferenceWidgetsArr[getData].isAlert,
-                            "isFusion":getReferenceWidgetsArr[getData].isFusion != undefined?getReferenceWidgetsArr[getData].isFusion:true,
-                            "channelName":channelName
-                        };
-                        inputParams.push(jsonData);
-                    }
-                }
-                deferred.resolve(inputParams);
-            }
-            else {
-                // function for saving other widgets goes here
-                var inputParams=[];
-                for (var getData in getReferenceWidgetsArr) {
-                    if (getReferenceWidgetsArr[getData].channelName == channelName) {
-                        var matchingMetric = [];
-                        var matchingMetricName = '';
-                        var widgetColor = generateChartColours.fetchWidgetColor(channelName);
-
-                        for (var i = 0; i < getReferenceWidgetsArr[getData].charts.length; i++) {
-                            matchingMetric = [];
-                            matchingMetricName = '';
-                            for (var j = 0; j < getReferenceWidgetsArr[getData].charts[i].metrics.length; j++) {
-                                for (var k = 0; k < chosenObject.length; k++) {
-                                    if (getReferenceWidgetsArr[getData].charts[i].metrics[j].objectTypeId === chosenObject[k].objectTypeId) {
-                                        matchingMetric.push(getReferenceWidgetsArr[getData].charts[i].metrics[j]);
-                                        matchingMetric[0].objectId = chosenObject[k]._id;
-                                        matchingMetricName = chosenObject[k].name;
+                        else if(channelName == "FacebookAds"){
+                            var inputParams=[];
+                            // function for saving facebook widgets goes here
+                            for (var getData in getReferenceWidgetsArr) {
+                                if (getReferenceWidgetsArr[getData].channelName == channelName) {
+                                    var matchingMetric = [];
+                                    var matchingMetricName = '';
+                                    var widgetColor = generateChartColours.fetchWidgetColor(channelName);
+                                    for (var i = 0; i < getReferenceWidgetsArr[getData].charts.length; i++) {
+                                        matchingMetric = [];
+                                        matchingMetricName = '';
+                                        for (var j = 0; j < getReferenceWidgetsArr[getData].charts[i].metrics.length; j++) {
+                                            matchingMetric.push(getReferenceWidgetsArr[getData].charts[i].metrics[j]);
+                                            if ($scope.selectedLevel == 'fbadaccount') {
+                                                matchingMetric[0].objectTypeId = $scope.selectedObjectType._id;
+                                                matchingMetric[0].objectId = chosenObject[0]._id;
+                                                matchingMetricName = chosenObject[0].name;
+                                            }
+                                            else if ($scope.selectedLevel == 'fbAdcampaign') {
+                                                matchingMetric[0].objectTypeId = $scope.selectedObjectType._id;
+                                                matchingMetric[0].objectId = $scope.campaign._id;
+                                                matchingMetricName = $scope.campaign.name;
+                                            }
+                                            else if ($scope.selectedLevel == 'fbAdSet') {
+                                                matchingMetric[0].objectTypeId = $scope.selectedObjectType._id;
+                                                matchingMetric[0].objectId = $scope.adSet._id;
+                                                matchingMetricName = $scope.adSet.name;
+                                            }
+                                            else if ($scope.selectedLevel == 'fbAdSetAds') {
+                                                matchingMetric[0].objectTypeId = $scope.selectedObjectType._id;
+                                                matchingMetric[0].objectId = $scope.adSetAds._id;
+                                                matchingMetricName = $scope.adSetAds.name;
+                                            }
+                                        }
+                                        getReferenceWidgetsArr[getData].charts[i].metrics = matchingMetric;
+                                        getReferenceWidgetsArr[getData].charts[i].objectName = matchingMetricName;
                                     }
+                                    widgetName = getReferenceWidgetsArr[getData].name + ' - ' + matchingMetricName;
+
+                                    var jsonData = {
+                                        "dashboardId": $state.params.id,
+                                        "widgetType": widgetType,
+                                        "name": widgetName,
+                                        "description": getReferenceWidgetsArr[getData].description,
+                                        "charts": getReferenceWidgetsArr[getData].charts,
+                                        "order": getReferenceWidgetsArr[getData].order,
+                                        "offset": getReferenceWidgetsArr[getData].offset,
+                                        "size": getReferenceWidgetsArr[getData].size,
+                                        "minSize": getReferenceWidgetsArr[getData].minSize,
+                                        "maxSize": getReferenceWidgetsArr[getData].maxSize,
+                                        "color": widgetColor,
+                                        "visibility": true,
+                                        "isAlert": getReferenceWidgetsArr[getData].isAlert,
+                                        "isFusion":getReferenceWidgetsArr[getData].isFusion != undefined?getReferenceWidgetsArr[getData].isFusion:true,
+                                        "channelName": channelName
+                                    };
+                                    inputParams.push(jsonData);
                                 }
                             }
-                            getReferenceWidgetsArr[getData].charts[i].metrics = matchingMetric;
-                            getReferenceWidgetsArr[getData].charts[i].objectName = matchingMetricName;
+                            deferred.resolve(inputParams);
                         }
-                        if (channelName === 'Twitter' || channelName === 'Instagram' || channelName === 'Google Analytics' || channelName === 'Pinterest')
-                            widgetName = getReferenceWidgetsArr[getData].name + ' - ' + profileName;
-                        else
-                            widgetName = getReferenceWidgetsArr[getData].name + ' - ' + matchingMetricName;
+                        else if(channelName == "GoogleAdwords"){
+                            // function for saving facebook widgets goes here
+                            var inputParams=[];
+                            for (var getData in getReferenceWidgetsArr) {
+                                if (getReferenceWidgetsArr[getData].channelName == channelName) {
+                                    var matchingMetric = [];
+                                    var matchingMetricName = '';
+                                    var widgetColor = generateChartColours.fetchWidgetColor(channelName);
 
-                        var jsonData = {
-                            "dashboardId": $state.params.id,
-                            "widgetType": widgetType,
-                            "name": widgetName,
-                            "description": getReferenceWidgetsArr[getData].description,
-                            "charts": getReferenceWidgetsArr[getData].charts,
-                            "order": getReferenceWidgetsArr[getData].order,
-                            "offset": getReferenceWidgetsArr[getData].offset,
-                            "size": getReferenceWidgetsArr[getData].size,
-                            "minSize": getReferenceWidgetsArr[getData].minSize,
-                            "maxSize": getReferenceWidgetsArr[getData].maxSize,
-                            "color": widgetColor,
-                            "visibility": true,
-                            "isAlert": getReferenceWidgetsArr[getData].isAlert,
-                            "isFusion":getReferenceWidgetsArr[getData].isFusion != undefined?getReferenceWidgetsArr[getData].isFusion:true,
-                            "channelName": channelName
-                        };
-                        inputParams.push(jsonData);
-                    }
-                }
-                deferred.resolve(inputParams);
-            }
-            return deferred.promise;
-        };
+                                    for (var i = 0; i < getReferenceWidgetsArr[getData].charts.length; i++) {
+                                        matchingMetric = [];
+                                        matchingMetricName = '';
+                                        for (var j = 0; j < getReferenceWidgetsArr[getData].charts[i].metrics.length; j++) {
+                                            matchingMetric.push(getReferenceWidgetsArr[getData].charts[i].metrics[j]);
+                                            if ($scope.selectedGoogleLevel == 'adwordaccount') {
+                                                matchingMetric[0].objectTypeId = $scope.selectedGoogleObjectType._id;
+                                                matchingMetric[0].objectId = chosenObject[0]._id;
+                                                matchingMetricName = chosenObject[0].name;
+                                            }
+                                            else if ($scope.selectedGoogleLevel == 'adwordCampaign') {
+                                                matchingMetric[0].objectTypeId = $scope.selectedGoogleObjectType._id;
+                                                matchingMetric[0].objectId = $scope.googleCampaign._id;
+                                                matchingMetricName = $scope.googleCampaign.name;
+                                            }
+                                            else if ($scope.selectedGoogleLevel == 'adwordAdgroup') {
+                                                matchingMetric[0].objectTypeId = $scope.selectedGoogleObjectType._id;
+                                                matchingMetric[0].objectId = $scope.googleGroup._id;
+                                                matchingMetricName = $scope.googleGroup.name;
+                                            }
+                                            else if ($scope.selectedGoogleLevel == 'adwordsAd') {
+                                                matchingMetric[0].objectTypeId = $scope.selectedGoogleObjectType._id;
+                                                matchingMetric[0].objectId = $scope.googleAd._id;
+                                                matchingMetricName = $scope.googleAd.name;
+                                            }
+                                        }
+                                        getReferenceWidgetsArr[getData].charts[i].metrics = matchingMetric;
+                                        getReferenceWidgetsArr[getData].charts[i].objectName = matchingMetricName;
+                                    }
+                                    widgetName = getReferenceWidgetsArr[getData].name + ' - ' + matchingMetricName;
 
-        for (var j = 0; j < $scope.selectedChannelList.length; j++) {
-            channel.push(widgetCreateList($scope.selectedChannelList[j],j));
-        }
-        $q.all(channel).then(
-            function (inputParams) {
-                var widgets=[];
-                for(var i=0;i<inputParams.length;i++){
-                    for(var j=0;j<inputParams[i].length;j++)
-                        widgets.push(inputParams[i][j])
-                }
-                $http({
-                    method: 'POST',
-                    url: '/api/v1/widgets',
-                    data: widgets
-                }).then(
-                    function successCallback(response) {
-                        startWidget=1;
-                        for (var widgetObjects in response.data.widgetsList) {
-                            $rootScope.$broadcast('populateWidget', response.data.widgetsList[widgetObjects]);
+                                    var jsonData = {
+                                        "dashboardId": $state.params.id,
+                                        "widgetType": widgetType,
+                                        "name": widgetName,
+                                        "description": getReferenceWidgetsArr[getData].description,
+                                        "charts": getReferenceWidgetsArr[getData].charts,
+                                        "order": getReferenceWidgetsArr[getData].order,
+                                        "offset": getReferenceWidgetsArr[getData].offset,
+                                        "size": getReferenceWidgetsArr[getData].size,
+                                        "minSize": getReferenceWidgetsArr[getData].minSize,
+                                        "maxSize": getReferenceWidgetsArr[getData].maxSize,
+                                        "color": widgetColor,
+                                        "visibility": true,
+                                        "isAlert": getReferenceWidgetsArr[getData].isAlert,
+                                        "isFusion":getReferenceWidgetsArr[getData].isFusion != undefined?getReferenceWidgetsArr[getData].isFusion:true,
+                                        "channelName":channelName
+                                    };
+                                    inputParams.push(jsonData);
+                                }
+                            }
+                            deferred.resolve(inputParams);
                         }
-                    },
-                    function errorCallback(error) {
-                        startWidget = 1;
-                        $(".navbar").css('z-index', '1');
-                        $(".md-overlay").css("background", "rgba(0,0,0,0.5)");
-                        $("#somethingWentWrongModalContent").addClass('md-show');
-                        $("#somethingWentWrongText").text("Something went wrong! Please try again");
-                        swal({
-                            title: "",
-                            text: "<span style='sweetAlertFont'>Something went wrong! Please try again!</span>",
-                            html: true
-                        });
+                        else {
+                            // function for saving other widgets goes here
+                            var inputParams=[];
+                            for (var getData in getReferenceWidgetsArr) {
+                                if (getReferenceWidgetsArr[getData].channelName == channelName) {
+                                    var matchingMetric = [];
+                                    var matchingMetricName = '';
+                                    var widgetColor = generateChartColours.fetchWidgetColor(channelName);
+
+                                    for (var i = 0; i < getReferenceWidgetsArr[getData].charts.length; i++) {
+                                        matchingMetric = [];
+                                        matchingMetricName = '';
+                                        for (var j = 0; j < getReferenceWidgetsArr[getData].charts[i].metrics.length; j++) {
+                                            for (var k = 0; k < chosenObject.length; k++) {
+                                                if (getReferenceWidgetsArr[getData].charts[i].metrics[j].objectTypeId === chosenObject[k].objectTypeId) {
+                                                    matchingMetric.push(getReferenceWidgetsArr[getData].charts[i].metrics[j]);
+                                                    matchingMetric[0].objectId = chosenObject[k]._id;
+                                                    matchingMetricName = chosenObject[k].name;
+                                                }
+                                            }
+                                        }
+                                        getReferenceWidgetsArr[getData].charts[i].metrics = matchingMetric;
+                                        getReferenceWidgetsArr[getData].charts[i].objectName = matchingMetricName;
+                                    }
+                                    if (channelName === 'Twitter' || channelName === 'Instagram' || channelName === 'Google Analytics' || channelName === 'Pinterest')
+                                        widgetName = getReferenceWidgetsArr[getData].name + ' - ' + profileName;
+                                    else
+                                        widgetName = getReferenceWidgetsArr[getData].name + ' - ' + matchingMetricName;
+
+                                    var jsonData = {
+                                        "dashboardId": $state.params.id,
+                                        "widgetType": widgetType,
+                                        "name": widgetName,
+                                        "description": getReferenceWidgetsArr[getData].description,
+                                        "charts": getReferenceWidgetsArr[getData].charts,
+                                        "order": getReferenceWidgetsArr[getData].order,
+                                        "offset": getReferenceWidgetsArr[getData].offset,
+                                        "size": getReferenceWidgetsArr[getData].size,
+                                        "minSize": getReferenceWidgetsArr[getData].minSize,
+                                        "maxSize": getReferenceWidgetsArr[getData].maxSize,
+                                        "color": widgetColor,
+                                        "visibility": true,
+                                        "isAlert": getReferenceWidgetsArr[getData].isAlert,
+                                        "isFusion":getReferenceWidgetsArr[getData].isFusion != undefined?getReferenceWidgetsArr[getData].isFusion:true,
+                                        "channelName": channelName
+                                    };
+                                    inputParams.push(jsonData);
+                                }
+                            }
+                            deferred.resolve(inputParams);
+                        }
+                        return deferred.promise;
+                    };
+
+                    for (var j = 0; j < $scope.selectedChannelList.length; j++) {
+                        channel.push(widgetCreateList($scope.selectedChannelList[j],j));
                     }
-                );
-                getReferenceWidgetsArr = [];
-            }
-        );
+                    $q.all(channel).then(
+                        function (inputParams) {
+                            var widgets=[];
+                            for(var i=0;i<inputParams.length;i++){
+                                for(var j=0;j<inputParams[i].length;j++)
+                                    widgets.push(inputParams[i][j])
+                            }
+                            $http({
+                                method: 'POST',
+                                url: '/api/v1/widgets',
+                                data: widgets
+                            }).then(
+                                function successCallback(response) {
+                                    startWidget=1;
+                                    var rowNeutral =0;
+                                    var colNeutral=0;
+                                    for (var widgetObjects in response.data.widgetsList) {
+                                        var sizeY=(typeof response.data.widgetsList[widgetObjects].size != 'undefined'? response.data.widgetsList[widgetObjects].size.h : 2);
+                                        var sizeX=(typeof response.data.widgetsList[widgetObjects].size != 'undefined'? response.data.widgetsList[widgetObjects].size.w : 2);
+                                        rowNeutral+=sizeY;
+                                        response.data.widgetsList[widgetObjects].row = rowNeutral;
+                                    }
+                                    for (var widgetObjects in response.data.widgetsList) {
+                                        $rootScope.$broadcast('populateWidget', response.data.widgetsList[widgetObjects]);
+                                    }
+                                },
+                                function errorCallback(error) {
+                                    startWidget = 1;
+                                    $(".navbar").css('z-index', '1');
+                                    $(".md-overlay").css("background", "rgba(0,0,0,0.5)");
+                                    $("#somethingWentWrongModalContent").addClass('md-show');
+                                    $("#somethingWentWrongText").text("Something went wrong! Please try again");
+                                    swal({
+                                        title: "",
+                                        text: "<span style='sweetAlertFont'>Something went wrong! Please try again!</span>",
+                                        html: true
+                                    });
+                                }
+                            );
+                            getReferenceWidgetsArr = [];
+                        }
+                    );
+                }
+                else {
+                    $('#error').html('<div class="alert alert-danger fade in" style="width: 400px;margin-left: 212px;"><button type="button" class="close close-alert" data-dismiss="alert" aria-hidden="true">×</button>You have reached your Widgets limit. Please upgrade to enjoy more Widgets</div>');
+                    document.getElementById('basicWidgetFinishButton').disabled = true;
+                }
+            },
+            function errorCallback(error) {
+                swal({
+                    title: "",
+                    text: "<span style='sweetAlertFont'>Something went wrong!!!!</span> .",
+                    html: true
+                });
+            })
+
 
     };
 
@@ -2110,6 +2157,14 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
                 $scope.metricContent = false;
                 $scope.showCustomContent = true;
                 $scope.selectCustomLinkHead = "Step 2 : Choose your Metrics";
+            }
+            if ($scope.selectedTempChannelList.length<=availableBasicWidgets   ){
+                if($scope.selectedTempChannelList.length >0)
+                    document.getElementById('basicWidgetNextButton1').disabled = false;
+            }
+            else {
+                $('#error').html('<div class="alert alert-danger fade in"  style="width: 400px;margin-left: 212px;"><button type="button" class="close close-alert" data-dismiss="alert" aria-hidden="true">×</button>You have reached your Widgets limit. Please upgrade to enjoy more Widgets</div>');
+                document.getElementById('basicWidgetNextButton1').disabled = true;
             }
         }
         else{
@@ -2151,13 +2206,19 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
                                 $scope.channelList[i].isSelected = 0;
                         }
                     }
+                    if ($scope.selectedTempChannelList.length<=availableBasicWidgets  ) {
+                        if($scope.selectedTempChannelList.length ===0)
+                            document.getElementById('basicWidgetNextButton1').disabled = true;
+                        else
+                            document.getElementById('basicWidgetNextButton1').disabled = false;
+                    }
+                    else {
+                        $('#error').html('<div class="alert alert-danger fade in"   style="width: 400px;margin-left: 212px;"><button type="button" class="close close-alert" data-dismiss="alert" aria-hidden="true">×</button>You dont have any available widgets</div>');
+                        document.getElementById('basicWidgetNextButton1').disabled = true;
+                    }
                 }
             }
         }
-        if($scope.selectedTempChannelList.length)
-            document.getElementById('basicWidgetNextButton1').disabled = false;
-        else
-            document.getElementById('basicWidgetNextButton1').disabled = true;
     };
 
     var removeByAttr = function (arr, attr, value) {
@@ -2182,26 +2243,27 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
         var campaignLevel=false;
         var adgroupLevel=false;
         if($scope.storedReferenceWidget.channelName=="GoogleAdwords"){
+            availableBasicWidgets++;
             if(!getReferenceWidgetsArr.length)
                 canProcess=1;
             else{
                 for (var getData in getReferenceWidgetsArr){
-                    if(getReferenceWidgetsArr[getData].name == "Account's campaigns performance (Account level only)")
+                    if(getReferenceWidgetsArr[getData].name == "Adwords campaigns overview (Account level)")
                         accountLevel=true;
-                    else if(getReferenceWidgetsArr[getData].name == "Campaign's Adgroup performance (Campaign level only)" || getReferenceWidgetsArr[getData].name == "Campaign Demographics - Age Analysis (Campaign Level only)" || getReferenceWidgetsArr[getData].name == "Campaign Demographics - Gender Analysis (Campaign Level only)"|| getReferenceWidgetsArr[getData].name == "Campaign Demographics - Device Analysis (Campaign Level only)")
+                    else if(getReferenceWidgetsArr[getData].name == "Adgroups overview (Campaign level)" || getReferenceWidgetsArr[getData].name == "Age Demographics (Campaign Level)" || getReferenceWidgetsArr[getData].name == "Gender Demographics (Campaign Level)"|| getReferenceWidgetsArr[getData].name == "Device Demographics (Campaign Level)")
                         campaignLevel=true;
-                    else if(getReferenceWidgetsArr[getData].name == "Adgroup's Ad performance (Adgroup level only)"|| getReferenceWidgetsArr[getData].name == "Adgroup Demographics - Age Analysis (Adgroup Level only)"|| getReferenceWidgetsArr[getData].name == "Adgroup Demographics - Gender Analysis (Adgroup Level only)"|| getReferenceWidgetsArr[getData].name == "Adgroup Demographics - Device Analysis (Adgroup Level only)")
+                    else if(getReferenceWidgetsArr[getData].name == "Ads overview (Adgroup level)"|| getReferenceWidgetsArr[getData].name == "Age Demographics (Adgroup Level)"|| getReferenceWidgetsArr[getData].name == "Gender Demographics (Adgroup Level)"|| getReferenceWidgetsArr[getData].name == "Device Demographics (Adgroup Level)")
                         adgroupLevel=true;
                 }
-                if(accountLevel==true && ($scope.storedReferenceWidget.name == "Campaign's Adgroup performance (Campaign level only)" || $scope.storedReferenceWidget.name == "Campaign Demographics - Age Analysis (Campaign Level only)" || $scope.storedReferenceWidget.name == "Campaign Demographics - Gender Analysis (Campaign Level only)"|| $scope.storedReferenceWidget.name == "Campaign Demographics - Device Analysis (Campaign Level only)" || $scope.storedReferenceWidget.name == "Adgroup's Ad performance (Adgroup level only)" || $scope.storedReferenceWidget.name == "Adgroup Demographics - Age Analysis (Adgroup Level only)" || $scope.storedReferenceWidget.name == "Adgroup Demographics - Gender Analysis (Adgroup Level only)"|| $scope.storedReferenceWidget.name == "Adgroup Demographics - Device Analysis (Adgroup Level only)")){
+                if(accountLevel==true && ($scope.storedReferenceWidget.name == "Adgroups overview (Campaign level)" || $scope.storedReferenceWidget.name == "Age Demographics (Campaign Level)" || $scope.storedReferenceWidget.name == "Gender Demographics (Campaign Level)"|| $scope.storedReferenceWidget.name == "Device Demographics (Campaign Level)" || $scope.storedReferenceWidget.name == "Ads overview (Adgroup level)" || $scope.storedReferenceWidget.name == "Age Demographics (Adgroup Level)" || $scope.storedReferenceWidget.name == "Gender Demographics (Adgroup Level)"|| $scope.storedReferenceWidget.name == "Device Demographics (Adgroup Level)")){
                     canProcess=0;
                     $scope.metricMessage=true;
                 }
-                else if(campaignLevel==true && ($scope.storedReferenceWidget.name == "Account's campaigns performance (Account level only)" || $scope.storedReferenceWidget.name == "Adgroup's Ad performance (Adgroup level only)" || $scope.storedReferenceWidget.name == "Adgroup Demographics - Age Analysis (Adgroup Level only)" || $scope.storedReferenceWidget.name == "Adgroup Demographics - Gender Analysis (Adgroup Level only)"|| $scope.storedReferenceWidget.name == "Adgroup Demographics - Device Analysis (Adgroup Level only)")){
+                else if(campaignLevel==true && ($scope.storedReferenceWidget.name == "Adwords campaigns overview (Account level)" || $scope.storedReferenceWidget.name == "Ads overview (Adgroup level)" || $scope.storedReferenceWidget.name == "Age Demographics (Adgroup Level)" || $scope.storedReferenceWidget.name == "Gender Demographics (Adgroup Level)"|| $scope.storedReferenceWidget.name == "Device Demographics (Adgroup Level)")){
                     canProcess=0;
                     $scope.metricMessage=true;
                 }
-                else if(adgroupLevel==true && ($scope.storedReferenceWidget.name == "Account's campaigns performance (Account level only)" || $scope.storedReferenceWidget.name == "Campaign's Adgroup performance (Campaign level only)" || $scope.storedReferenceWidget.name == "Campaign Demographics - Age Analysis (Campaign Level only)" || $scope.storedReferenceWidget.name == "Campaign Demographics - Gender Analysis (Campaign Level only)"|| $scope.storedReferenceWidget.name == "Campaign Demographics - Device Analysis (Campaign Level only)")){
+                else if(adgroupLevel==true && ($scope.storedReferenceWidget.name == "Adwords campaigns overview (Account level)" || $scope.storedReferenceWidget.name == "Adgroups overview (Campaign level)" || $scope.storedReferenceWidget.name == "Age Demographics (Campaign Level)" || $scope.storedReferenceWidget.name == "Gender Demographics (Campaign Level)"|| $scope.storedReferenceWidget.name == "Device Demographics (Campaign Level)")){
                     canProcess=0;
                     $scope.metricMessage=true;
                 }
@@ -2220,6 +2282,7 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
                     $("#metricNames-" + this.referenceWidgets._id).removeClass("getMetricName");
                     $("#getCheck-" + this.referenceWidgets._id).hide();
                     IsAlreadyExist = 1;
+                    $('.alert-danger').remove()
                 }
             }
             if (IsAlreadyExist != 1) {
@@ -2229,6 +2292,7 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
                 $("#metricNames-" + this.referenceWidgets._id).addClass("getMetricName");
                 $("#getCheck-" + this.referenceWidgets._id).show();
                 document.getElementById('basicWidgetNextButton2').disabled = false;
+
             }
         }
         if (getReferenceWidgetsArr == "" || getReferenceWidgetsArr == "[]" || getReferenceWidgetsArr == null) {
@@ -2236,14 +2300,25 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
         }
         if (getReferenceWidgetsArr.length) {
             var referenceWidgetLength = getReferenceWidgetsArr.length;
-
-            for (var i = 0; i < referenceWidgetLength; i++) {
-                for (var j = 0; j < getReferenceWidgetsArr[i].charts.length; j++) {
-                    for (var k = 0; k < getReferenceWidgetsArr[i].charts[j].metrics.length; k++) {
-                        $scope.uniqueObjectCount.push({objectType:getReferenceWidgetsArr[i].charts[j].metrics[k].objectTypeId,channelId:getReferenceWidgetsArr[i].charts[j].channelId})
+            if (referenceWidgetLength<=availableBasicWidgets) {
+                for (var i = 0; i < referenceWidgetLength; i++) {
+                    for (var j = 0; j < getReferenceWidgetsArr[i].charts.length; j++) {
+                        for (var k = 0; k < getReferenceWidgetsArr[i].charts[j].metrics.length; k++) {
+                            $scope.uniqueObjectCount.push({
+                                objectType: getReferenceWidgetsArr[i].charts[j].metrics[k].objectTypeId,
+                                channelId: getReferenceWidgetsArr[i].charts[j].channelId
+                            })
+                        }
                     }
                 }
+                document.getElementById('basicWidgetNextButton2').disabled = false;
             }
+            else {
+                $('#error').html('<div class="alert alert-danger fade in" style="width: 400px;margin-left: 212px;"><button type="button" class="close close-alert" data-dismiss="alert" aria-hidden="true">×</button>You dont have any available widgets</div>');
+                document.getElementById('basicWidgetNextButton2').disabled = true;
+
+            }
+
         }
     };
 
