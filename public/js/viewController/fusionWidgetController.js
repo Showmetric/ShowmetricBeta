@@ -580,6 +580,8 @@ function FusionWidgetController($scope, $http, $q, $window, $state, $rootScope, 
                     );
                 }
                 else{
+                    var myDiv = document.getElementById('scroller');
+                    myDiv.scrollTop = 0;
                     $('#errorInFusionWidgets').html('<div class="alert alert-danger fade in" style="width: 400px;margin-left: 212px;"><button type="button" class="close close-alert" data-dismiss="alert" aria-hidden="true">×</button>You have reached your Fusions limit. Please upgrade to enjoy more Fusions</div>');
                 }
             },

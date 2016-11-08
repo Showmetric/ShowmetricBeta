@@ -207,8 +207,10 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
                         channels[i].isSelected=0;
                     $scope.channelList=channels
                 }
-                else
+                else{
                     document.getElementById('basicWidgetNextButton1').disabled = false;
+                }
+
             },
             function errorCallback(error) {
                 swal({
@@ -272,7 +274,12 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
                                     'border': '2px solid #e7eaec',
                                     'channelName':$scope.selectedTempChannelList[j].name
                                 };
-                                document.getElementById('basicWidgetNextButton2').disabled = false;
+                                if(availableBasicWidgets<getReferenceWidgetsArr.length){
+                                    $('#error').html('<div class="alert alert-danger fade in" style="width: 400px;margin-left: 212px;"><button type="button" class="close close-alert" data-dismiss="alert" aria-hidden="true">×</button>You have reached your Widgets limit. Please upgrade to enjoy more Widgets</div>');
+                                    document.getElementById('basicWidgetNextButton2').disabled = true;
+                                }
+                                else
+                                    document.getElementById('basicWidgetNextButton2').disabled = false;
                             }
 
                             if (getReferenceWidgetsArr == "" || getReferenceWidgetsArr == "[]" || getReferenceWidgetsArr == null)
@@ -2100,8 +2107,8 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
                                     for (var widgetObjects in response.data.widgetsList) {
                                         var sizeY=(typeof response.data.widgetsList[widgetObjects].size != 'undefined'? response.data.widgetsList[widgetObjects].size.h : 2);
                                         var sizeX=(typeof response.data.widgetsList[widgetObjects].size != 'undefined'? response.data.widgetsList[widgetObjects].size.w : 2);
-                                        rowNeutral+=sizeY;
                                         response.data.widgetsList[widgetObjects].row = rowNeutral;
+                                        rowNeutral+=sizeY;
                                     }
                                     for (var widgetObjects in response.data.widgetsList) {
                                         $rootScope.$broadcast('populateWidget', response.data.widgetsList[widgetObjects]);
@@ -2125,6 +2132,8 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
                     );
                 }
                 else {
+                    var myDiv = document.getElementById('scroller');
+                    myDiv.scrollTop = 0;
                     $('#error').html('<div class="alert alert-danger fade in" style="width: 400px;margin-left: 212px;"><button type="button" class="close close-alert" data-dismiss="alert" aria-hidden="true">×</button>You have reached your Widgets limit. Please upgrade to enjoy more Widgets</div>');
                     document.getElementById('basicWidgetFinishButton').disabled = true;
                 }
@@ -2163,6 +2172,8 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
                     document.getElementById('basicWidgetNextButton1').disabled = false;
             }
             else {
+                var myDiv = document.getElementById('scroller');
+                myDiv.scrollTop = 0;
                 $('#error').html('<div class="alert alert-danger fade in"  style="width: 400px;margin-left: 212px;"><button type="button" class="close close-alert" data-dismiss="alert" aria-hidden="true">×</button>You have reached your Widgets limit. Please upgrade to enjoy more Widgets</div>');
                 document.getElementById('basicWidgetNextButton1').disabled = true;
             }
@@ -2202,8 +2213,10 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
                     }
                     else {
                         for (var i in $scope.channelList) {
-                            if (channel._id == $scope.channelList[i]._id)
+                            if (channel._id == $scope.channelList[i]._id){
+                                $('.alert-danger').remove();
                                 $scope.channelList[i].isSelected = 0;
+                            }
                         }
                     }
                     if ($scope.selectedTempChannelList.length<=availableBasicWidgets  ) {
@@ -2213,14 +2226,15 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
                             document.getElementById('basicWidgetNextButton1').disabled = false;
                     }
                     else {
-                        $('#error').html('<div class="alert alert-danger fade in"   style="width: 400px;margin-left: 212px;"><button type="button" class="close close-alert" data-dismiss="alert" aria-hidden="true">×</button>You dont have any available widgets</div>');
+                        var myDiv = document.getElementById('scroller');
+                        myDiv.scrollTop = 0;
+                        $('#error').html('<div class="alert alert-danger fade in"   style="width: 400px;margin-left: 212px;"><button type="button" class="close close-alert" data-dismiss="alert" aria-hidden="true">×</button>You have reached your Widgets limit. Please upgrade to enjoy more Widgets</div>');
                         document.getElementById('basicWidgetNextButton1').disabled = true;
                     }
                 }
             }
         }
     };
-
     var removeByAttr = function (arr, attr, value) {
         var i = arr.length;
         while (i--) {
@@ -2314,7 +2328,9 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
                 document.getElementById('basicWidgetNextButton2').disabled = false;
             }
             else {
-                $('#error').html('<div class="alert alert-danger fade in" style="width: 400px;margin-left: 212px;"><button type="button" class="close close-alert" data-dismiss="alert" aria-hidden="true">×</button>You dont have any available widgets</div>');
+                var myDiv = document.getElementById('scroller');
+                myDiv.scrollTop = 0;
+                $('#error').html('<div class="alert alert-danger fade in" style="width: 400px;margin-left: 212px;"><button type="button" class="close close-alert" data-dismiss="alert" aria-hidden="true">×</button>You have reached your Widgets limit. Please upgrade to enjoy more Widgets</div>');
                 document.getElementById('basicWidgetNextButton2').disabled = true;
 
             }

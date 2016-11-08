@@ -40,16 +40,12 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider, IdlePro
                         ).then(
                             function successCallback(response) {
                                 $rootScope.subscriptionDetails = response.data.userDetails;
-                                console.log('response.data.userDetails',response.data.userDetails,repeat)
                                 if(repeat==0) {
-                                    console.log('statusif',$state)
                                     if (response.data.userDetails.statusCode === 1002) {
-                                        console.log('if')
                                         $rootScope.isExpired = true;
                                         $state.go('.upgrade');
                                     }
                                     else {
-                                        console.log('else')
                                         $rootScope.isExpired = false;
                                         var expiryDate = moment(response.data.userDetails.organization[0].subscriptionExpiresOn);
                                         var currentDate = moment(new Date).format("YYYY-MM-DD");
@@ -88,7 +84,6 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider, IdlePro
                                     repeat++;
                                 }
                                 else {
-                                    console.log('statuselse')
                                     if (response.data.userDetails.statusCode === 1002) {
                                         $rootScope.isExpired = true;
                                         $state.go('app.reporting.upgrade');
@@ -114,6 +109,7 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider, IdlePro
                     controller: 'UpgradeController'
                 }
             },
+
             resolve: {
                 loadPlugin: function ($ocLazyLoad) {
                     return $ocLazyLoad.load('css/upgrade.css');
@@ -246,15 +242,6 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider, IdlePro
             }
         })
 
-        .state('app.reporting.dashboard.exportMessageModal', {
-            url: "",
-            views: {
-                'lightbox@app.reporting.dashboard': {
-                    templateUrl: "exportMessage.ejs",
-                    controller: 'LightBoxController'
-                }
-            }
-        })
 
         .state('app.reporting.recommendedDashboard', {
             url: "",

@@ -158,9 +158,10 @@
             </div>
             <div class="modal-body">
                 <div class="wrapper wrapper-content">
+                    <h5  ng-show="currentView === 'step_one'" class="model-title">Step 1 : Choose a Metric</h5>
+                    <h5  ng-show="currentView === 'step_two'" class="model-title">Step 2 : Choose Your Accounts</h5>
                     <div class="scrollbar" id="scroller">
                         <div class="row" ng-show="currentView === 'step_one'">
-                            <h5 class="model-title">Step 1 : Choose a Metric</h5>
                             <div class="col-lg-12">
                                 <div ng-repeat="referenceWidgets in referenceWidgetsList" name="{{referenceWidgets.name}}" class="col-lg-2 widget-icons showReferenceWidgets" ng-click="storeReferenceWidget();changeViewsInBasicWidget('step_two');">
                                     <p class="FusionMetricNames">{{referenceWidgets.name}}</p>
@@ -173,7 +174,6 @@
                         </div>
 
                         <div class="row" ng-show="currentView === 'step_two'">
-                            <h5 class="model-title">Step 2 : Choose Your Accounts</h5>
                             <div id="errorInFusionWidgets"></div>
                             <div class="col-lg-12" style="background-color: #f3f3f4">
                                 <div class="center" style="margin-top:  23px;">

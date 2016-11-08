@@ -187,7 +187,9 @@ exports.listAccounts = function (req, res, next) {
                                             };
                                             channelObject.push(objectItem);
                                         }
+
                                         callback(err, channelObject);
+
                                     }
                                 }
                             )
