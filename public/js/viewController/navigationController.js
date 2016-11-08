@@ -3,24 +3,6 @@ showMetricApp.controller('NavigationController',NavigationController)
 function NavigationController($scope,$state,$http,$stateParams,$rootScope) {
     var availableBasicWidgets;
     var availableFusionWidgets;
-   /* $rootScope.getSubscriptions();
-    $rootScope.getSubscriptions = function() {
-        $http(
-            {
-                method: 'GET',
-                url: '/api/v1/me'
-            }
-        ).then(
-            function successCallback(response) {
-                console.log('sss',response)
-                $rootScope.subscriptionDetails = response.data.userDetails;
-                $scope.subscriptionType = $rootScope.subscriptionDetails.subscriptionType.code;
-                console.log($rootScope)
-            },
-            function errorCallback(error) {
-            }
-        );
-    }*/
     $rootScope.getReportBuilder = function () {
         $http({
             method: 'POST',
@@ -103,6 +85,9 @@ function NavigationController($scope,$state,$http,$stateParams,$rootScope) {
                                 });
                             }
                         )
+                    break;
+                case 'buildReports':
+                    $state.go('app.reporting.'+targetState);
                     break;
                 case 'insights':
                     toastr.info('Coming Soon');

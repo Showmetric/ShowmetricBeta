@@ -51,7 +51,6 @@ exports.getUserDetails = function (req, res, next) {
                                 var subscriptionType = type.code;
                                 var expiryDate = moment(userExpiry).format("YYYY-MM-DD");
                                 var currentDate = moment(new Date).format("YYYY-MM-DD");
-                                console.log('codeeeee', expiryDate, currentDate)
                                 if (expiryDate >= currentDate) {
                                     var user = {
                                         user: userResult,
