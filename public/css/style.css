@@ -47,6 +47,10 @@
     /*-o-transform: translateX(0px);*/
     /*transform: translateX(0px);*/
 /*}*/
+.btn.active:focus, .btn.focus, .btn:active.focus, .btn:active:focus, .btn:focus {
+    outline: 0px !important;
+    outline-offset: -2px;
+}
     .gobutton-mode{
     background-color: #efefef  !important;
     color:#000000  !important;
@@ -2145,7 +2149,7 @@ a:focus {
 }
 
 .modal-footer {
-    margin-top: 0;
+    margin-top: 30px;
     border:none !important;
 }
 /* WRAPPERS */
@@ -2218,7 +2222,7 @@ body.body-small .footer.fixed {
 
 
 .table > thead > tr > th {
-    border-bottom: 1px solid #DDDDDD;
+    border-bottom: none;
     vertical-align: bottom;
 }
 .table > thead > tr > th,
@@ -5545,4 +5549,11 @@ input:focus{
 .btn.active.focus, .btn.active:focus, .btn.focus, .btn:active.focus, .btn:active:focus, .btn:focus {
     outline: 0px !important;
     outline-offset: -2px;
+}
+.st-sort-ascent:before{
+    content: '\25B2';
+}
+
+.st-sort-descent:before{
+    content: '\25BC';
 }

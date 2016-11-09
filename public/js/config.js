@@ -176,7 +176,7 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider, IdlePro
             onEnter: function ($http,$state,$rootScope){
                 $rootScope.$on('$stateChangeSuccess', function(ev, to, toParams, from, fromParams) {
                     var previousState = from.name;
-                    if(previousState=='app.changePassword' || previousState=='app.reporting.upgrade' || previousState=='app.reporting.dashboards' || previousState=='app.accountManagement' || previousState=='app.reporting.dashboard' || previousState=='app.reporting.buildReports')
+                    if(previousState=='app.changePassword' || previousState=='app.reporting.upgrade' || previousState=='app.reporting.dashboards' || previousState=='app.reporting.accountManagement' || previousState=='app.reporting.dashboard' || previousState=='app.reporting.buildReports')
                         $rootScope.previousProfileState=previousState;
                 });
             }
