@@ -887,12 +887,6 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
         $rootScope.expObj = $scope.dashboard;
         $state.go(val);
     };
-
-    //To delete a widget from the dashboard
-    $scope.removeWid = function (widget) {
-        $scope.dashboard.widgets.splice($scope.dashboard.widgets.indexOf(widget), 1);
-    };
-
     $scope.deleteWidget = function(widget){
         var widgetType = widget.widgetType;
         var widgetId = widget.id;
@@ -904,16 +898,20 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
                 if(widgetType != 'customFusion') {
                     $scope.loadedWidgetCount--;
                     for(var items in $scope.dashboard.widgetData) {
-                        if($scope.dashboard.widgetData[items].id == widgetId)
+                        if($scope.dashboard.widgetData[items].id == widgetId){
                             $scope.dashboard.widgetData.splice(items,1);
+                            $scope.dashboard.widgets.splice($scope.dashboard.widgets.indexOf(widget), 1);
+                        }
                     }
                     if($scope.dashboard.widgets.length == 0)
                         $scope.widgetsPresent = false;
                 }
                 else {
                     for(var items in $scope.dashboard.widgetData) {
-                        if($scope.dashboard.widgetData[items].id == widgetId)
+                        if($scope.dashboard.widgetData[items].id == widgetId){
                             $scope.dashboard.widgetData.splice(items,1);
+                            $scope.dashboard.widgets.splice($scope.dashboard.widgets.indexOf(widget), 1);
+                        }
                     }
                     for (var widgetObjects in response.data.widgetsList) {
                         $rootScope.$broadcast('populateWidget', response.data.widgetsList[widgetObjects]);

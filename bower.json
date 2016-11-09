@@ -28,6 +28,7 @@
     "jspdf": "*",
     "angular-gridster": "*",
     "lodash": "*",
-    "highcharts": "^5.0.0"
+    "highcharts": "^5.0.0",
+    "angular-smart-table": "^2.1.8"
   }
 }
