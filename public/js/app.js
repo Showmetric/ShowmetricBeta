@@ -15,7 +15,8 @@
         'gridster',
         /*'daterangepicker',*/
         'xeditable',
-        'uiSwitch'
+        'uiSwitch',
+        'smart-table'
     ])
 })();
 
