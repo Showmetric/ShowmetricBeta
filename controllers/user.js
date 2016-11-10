@@ -383,4 +383,12 @@ module.exports = function (app, passport) {
     app.get('/api/v1/getPaymentDetails/',userDetails.getPaymentDetails,function (req, res){
         res.json({paymentDetails:req.app.result});
     })
+    app.get('/api/v1/getKey',function (req,res) {
+        if(newUser) {
+            res.json({key: configAuth.razorPayCredentials.apiKey});
+        }
+        else {
+            res.status(401).json({error: 'Authentication required to perform this action'});
+        }
+    })
 };

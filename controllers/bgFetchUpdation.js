@@ -6,7 +6,7 @@ module.exports = function (app) {
 
     //Create/update a new alert
     app.post('/api/v1/bgFetchUpdate', function (req, res) {
-        bgFetchUpdateHelper.updateBgFetch(req, function () {
+        bgFetchUpdateHelper.updateBgFetch(req,res, function () {
             res.json(req.app.result);
         })
     });
