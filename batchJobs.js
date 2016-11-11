@@ -96,16 +96,23 @@ var transporter = nodemailer.createTransport({
 var errorDataList = [];
 var countOfData;
 agenda.define('Update channel data',{lockLifetime: 36000000},function(job, done) {
-    var mailOptions = {
-        from: 'Datapoolt Team <alerts@datapoolt.co>',
-        to: 'natarajan@datapoolt.co',
-        subject: 'total of Update Data',
-        // HTML Version
-        html: '<span>total of Update Data' + ' ' +countOfData
-    };
-    utility.sendEmail(mailOptions, '', function (err, response) {
-        // callback(null, 'success');
+
+    Data.find({bgFetch: true}).count(function (err,count) {
+        countOfData = count;
+        if(count){
+            var mailOptions = {
+                from: 'Datapoolt Team <alerts@datapoolt.co>',
+                to: 'natarajan@datapoolt.co',
+                subject: 'total of Update Data',
+                // HTML Version
+                html: '<span>total of Update Data' + ' ' +countOfData
+            };
+            utility.sendEmail(mailOptions, '', function (err, response) {
+                // callback(null, 'success');
+            });
+        }
     });
+
     init();
     function init() {
 
@@ -256,7 +263,7 @@ agenda.define('Update channel data',{lockLifetime: 36000000},function(job, done)
                             selectAdwordsObjectType(allResultData, next);
                             break;
                         case configAuth.channels.mailChimp:
-                            selectMailChimp(allResultData, next);
+                            selectMailChimp(allResultData, next)
                             break;
                         case configAuth.channels.youtube:
                             initializeGa(allResultData, next);
@@ -370,7 +377,9 @@ agenda.define('Update channel data',{lockLifetime: 36000000},function(job, done)
                 request(result.query + '?access_token=' + access_token + '&page=' + page, function (err, results, body) {
 
                         var parsedData = JSON.parse(body);
-                        if (results.statusCode != 200) return callback(null,null);
+                        if (results.statusCode != 200) {
+                            return callback(null, null);
+                        }
                         else {
                             var storeStartDate = new Date(result.startDate);
                             var storeEndDate = new Date(result.endDate);
@@ -493,8 +502,10 @@ agenda.define('Update channel data',{lockLifetime: 36000000},function(job, done)
                 }
 
                 else {
+                    //console.log('queries',results.data);
+                    var startDate= results.data.updated;
                     var finalTwitterResponse = {}
-                    callTwitterApi(queries, wholeTweetObjects, function (err, response) {
+                    callTwitterApi(queries, wholeTweetObjects, startDate,function (err, response) {
                         if (err) {
                             return  callback(null, null);
                         }
@@ -508,7 +519,7 @@ agenda.define('Update channel data',{lockLifetime: 36000000},function(job, done)
                 // }, callback)
             }
 
-            function callTwitterApi(queries, wholeTweetObjects, callback) {
+            function callTwitterApi(queries, wholeTweetObjects,startDate, callback) {
                 var finalTwitterResponse = {};
                 var finalHighEngagedTweets = [];
                 var query = queries.get_tweet_queries.query;
@@ -544,8 +555,9 @@ agenda.define('Update channel data',{lockLifetime: 36000000},function(job, done)
                         }
                         else {
                             var lastCreatedAt = moment(new Date(Date.parse(tweets[tweets.length - 1].created_at.replace(/( +)/, ' UTC$1')))).format('YYYY-MM-DD');
+                            var startDate=moment(startDate).format('YYYY-MM-DD');
                             var maxId = tweets[tweets.length - 1].id;
-                            if (lastCreatedAt >= req.body.startDate) {
+                            if (lastCreatedAt >= startDate) {
                                 tweets.forEach(function (value, index) {
                                     storeTweetDate = moment(new Date(Date.parse(value.created_at.replace(/( +)/, ' UTC$1')))).format('YYYY-MM-DD');
                                     wholeTweetObjects.push({total: value, date: storeTweetDate});
@@ -564,8 +576,8 @@ agenda.define('Update channel data',{lockLifetime: 36000000},function(job, done)
                                     wholeTweetObjects.push({total: value, date: storeTweetDate});
 
                                 });
-                                var storeStartDate = new Date(req.body.startDate);
-                                var storeEndDate = new Date(req.body.endDate);
+                                var storeStartDate = new Date(startDate);
+                                var storeEndDate = new Date();
                                 var timeDiff = Math.abs(storeEndDate.getTime() - storeStartDate.getTime());
                                 var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
                                 for (var i = 0; i < diffDays; i++) {
@@ -913,7 +925,9 @@ agenda.define('Update channel data',{lockLifetime: 36000000},function(job, done)
                 }
                 else {
                     graph.get(query.query, function (err, fbQueryRes) {
-                        if (err) return callback(null,null);
+                        if (err) {
+                            return callback(null, null);
+                        }
 
                         else {
                             queryResponse = {
@@ -1038,7 +1052,8 @@ agenda.define('Update channel data',{lockLifetime: 36000000},function(job, done)
                     function Adsinsights(query) {
                         var metricId = results.metricId;
                         FB.api(query, function (apiResult) {
-                            if (apiResult.error) callback(null,null)
+                            if (apiResult.error){callback(null,null)}
+
                             else {
                                 var wholeData = [];
                                 var storeMetricName = results.metricName;
@@ -1201,8 +1216,9 @@ agenda.define('Update channel data',{lockLifetime: 36000000},function(job, done)
                     refresh_token: results.profile.refreshToken
                 });
                 oauth2Client.refreshAccessToken(function (err, tokens) {
-                    if (err)
-                        callback(null,null);
+                    if (err) {
+                        callback(null, null);
+                    }
                     else {
                         profile.token = tokens.access_token;
                         oauth2Client.setCredentials({
@@ -1332,8 +1348,9 @@ agenda.define('Update channel data',{lockLifetime: 36000000},function(job, done)
 
                         function callGoogleApi(apiQuery) {
                             analytics(apiQuery, function (err, result) {
-                                if (err)
+                                if (err) {
                                     return callback(null, null)
+                                }
                                 else {
                                     if (result.rows != undefined) {
                                         for (var i = 0; i < result.rows.length; i++) {
@@ -1717,7 +1734,9 @@ agenda.define('Update channel data',{lockLifetime: 36000000},function(job, done)
                     var parsedResponse;
                     var storeMetric;
                     var tot_metric = [];
-                    if (err) callback(null,null)
+                    if (err) {
+                        callback(null, null)
+                    }
                     else {
                         var mailChimpResponse = JSON.parse(body);
                         var storeStartDate = new Date(result.startDate);
@@ -2023,7 +2042,9 @@ agenda.define('Update channel data',{lockLifetime: 36000000},function(job, done)
                 var actualMetric = [];
                 request(result.query,
                     function (err, response, body) {
-                        if (err || response.statusCode != 200) return callback(null,null);
+                        if (err || response.statusCode != 200) {
+                            return callback(null, null);
+                        }
                         else {
                             storeMetric = JSON.parse(body);
                             if (storeMetric._total == 0) {
@@ -2678,7 +2699,7 @@ agenda.define('Update channel data',{lockLifetime: 36000000},function(job, done)
                                         }
                                     }
                                     else {
-                                        req.app.result = {Error: '500'};
+                                        // req.app.result = {Error: '500'};
                                         next();
                                     }
                                     if (dataFromDb[j].data != null) {
@@ -2732,7 +2753,7 @@ agenda.define('Update channel data',{lockLifetime: 36000000},function(job, done)
                                     }
                                 }
                                 else {
-                                    req.app.result = {Error: '500'};
+                                    //req.app.result = {Error: '500'};
                                     next('error');
                                 }
                             }
@@ -2869,7 +2890,6 @@ agenda.define('Update channel data',{lockLifetime: 36000000},function(job, done)
                         else next(null, 'DataFromDb')
                     }
                     else if (channel[j].code === configAuth.channels.moz) {
-
                         var beforeReplaceEmptyData = [];
                         var finalData1 = [];
                         if (dataFromRemote[j] === null) {
@@ -3178,7 +3198,6 @@ agenda.define('Update channel data',{lockLifetime: 36000000},function(job, done)
 
                             }
                             next(null, finalDbData)
-
                         }
                         else
                             next(null, 'DataFromDb')
@@ -3224,7 +3243,6 @@ agenda.define('Update channel data',{lockLifetime: 36000000},function(job, done)
                             next(null, 'DataFromDb')
                     }
                     else if (channel[j].code === configAuth.channels.linkedIn) {
-
                         var finalApiData = [];
                         var finalDbData = [];
                         if (dataFromRemote[j] === null) {
@@ -3469,6 +3487,7 @@ agenda.define('Update channel data',{lockLifetime: 36000000},function(job, done)
         }
     }
 });
+
 agenda.define(configAuth.batchJobs.alertName, function (job, done) {
     var now = new Date();
     var storeOperator;
@@ -3607,15 +3626,13 @@ agenda.define(configAuth.batchJobs.alertName, function (job, done) {
         else callback(null, 'success')
     }
 })
+
 agenda.on('ready', function () {
     agenda.cancel({name: configAuth.batchJobs.alertJobName}, function(err, numRemoved) {
     });
     agenda.every('2 hours', configAuth.batchJobs.alertJobName);
-    // agenda.now(10 minutes configAuth.batchJobs.alertJobName)
     agenda.start();
-    Data.find({bgFetch: true}).count(function (err,count) {
-        countOfData = count
-    });
+
 
     agenda.on(configAuth.batchJobs.successBatchJobMessage, function (job) {
         var split = errorDataList.join('<br>')
@@ -3641,6 +3658,7 @@ agenda.on('ready', function () {
             agenda.start();
         }
     }   );
+
     agenda.on(configAuth.batchJobs.successAlertMessage, function (job) {
         if(getCountOfAlertdata !=0) {
             var split = failureAlert.join('<br>')

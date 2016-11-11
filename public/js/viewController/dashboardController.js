@@ -1,6 +1,6 @@
 showMetricApp.controller('DashboardController',DashboardController);
 function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$stateParams,createWidgets,$q,$compile) {
-    var availableBasicWidgets;
+    $rootScope.availableBasicWidgets;
     $scope.loading=false;
     $scope.$window = $window;
     $scope.autoArrangeGrid = false;
@@ -20,36 +20,6 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
         }
     };
     //function to check the subscription limits on basic widgets
-    $scope.basicwidget= function (){
-        toastr.options.positionClass = 'toast-top-right';
-        $http(
-            {
-                method: 'GET',
-                url: '/api/v1/subscriptionLimits'+'?requestType='+'basic'
-            }
-        ).then(
-            function successCallback(response) {
-                availableBasicWidgets = response.data.availableWidgets;
-                if (response.data.isExpired == true)
-                    toastr.info('Please renew !');
-                else {
-                    if (availableBasicWidgets != 0)
-                        $state.go("app.reporting.dashboard.basicWidget", {widgetType: 'basic'});
-
-                    else
-                        toastr.info("You have reached your Widgets limit. Please upgrade to enjoy more Widgets")
-                }
-            },
-            function errorCallback(error) {
-                swal({
-                    title: "",
-                    text: "<span style='sweetAlertFont'>Something went wrong! Please try again</span> .",
-                    html: true
-                });
-            }
-        );
-    };
-
     $scope.stateValidation = function(targetState) {
         switch(targetState) {
             case 'basicWidget':
@@ -63,11 +33,11 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
                         }
                     ).then(
                         function successCallback(response) {
-                            availableBasicWidgets = response.data.availableWidgets;
+                            $rootScope.availableBasicWidgets = response.data.availableWidgets;
                             if (response.data.isExpired == true)
                                 toastr.info('Please renew!');
                             else {
-                                if (availableBasicWidgets <= 0)
+                                if ($rootScope.availableBasicWidgets <= 0)
                                     toastr.info("You have reached your Widgets limit. Please upgrade to enjoy more Widgets")
                                 else
                                     $state.go('app.reporting.dashboard.'+targetState,{widgetType:'basic'});

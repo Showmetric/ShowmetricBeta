@@ -2181,6 +2181,7 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
         else{
             if($scope.showCustomContent == false){
                 if(channel.name == "CustomData"){
+
                     for (var i in $scope.channelList) {
                         if (channel._id == $scope.channelList[i]._id){
                             $scope.channelList[i].isSelected = 0;
@@ -2188,6 +2189,7 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
                     }
                     removeByAttr($scope.selectedTempChannelList, 'id', channel._id);
                     $scope.customMessageEnable=false;
+                    document.getElementById('basicWidgetNextButton1').disabled = true;
                 }
                 else
                     $scope.customMessageEnable=true;
