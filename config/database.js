@@ -7,6 +7,6 @@ module.exports = {
     //'url': 'mongodb://admin:admin@ds015334.mlab.com:15334/datapoolt15062016'
     //'url':'mongodb://admin:admin@ds013366.mlab.com:13366/datapoolt'
     //'url':'mongodb://datapoolt:datapooltUat@mongo-uat/DatapooltUat'
-    'url': 'mongodb://admin:admin@ds025603.mlab.com:25603/datapooltlatestversion'
+    'url': 'mongodb://admin:admin@ds149567.mlab.com:49567/datapoolt_uat'
 
 };

@@ -4,6 +4,7 @@ var exports = module.exports = {};
 var dashboards = require('../models/profiles');
 var User = require('../models/user');
 var Widget = require('../models/widgets');
+var Alert = require('../models/alert');
 var userPermission = require('../helpers/utility');
 var Q = require("q");
 var _ = require('lodash');
@@ -232,7 +233,7 @@ exports.removeDashboardFromUser = function (req, res, next) {
                                 return res.status(500).json({error: 'Internal server error'})
                             else if (updateDashboard == 0)
                                 return res.status(501).json({error: 'Not implemented'})
-                            else removeWidget();
+                            else removeAlert();
                         })
                     } 
                     else {
@@ -246,26 +247,43 @@ exports.removeDashboardFromUser = function (req, res, next) {
                                 return res.status(500).json({error: 'Internal server error'})
                             else if (updateDashboard == 0)
                                 return res.status(501).json({error: 'Not implemented'})
-                            else removeWidget();
+                            else removeAlert();
                         })
                     }
                 }
                 else {
                     User.update({'_id': req.user._id}, {$set: {'dashboards': tempDashboardId}}, function (err, updateDashboard) {
                         if (err)
-                            return res.status(500).json({error: 'Internal server error'})
+                            return res.status(500).json({error: 'Internal server error'});
                         else if (tempDashboardId == 0)
-                            return res.status(501).json({error: 'Not implemented'})
-                        else removeWidget();
+                            return res.status(501).json({error: 'Not implemented'});
+                        else removeAlert();
                     })
                 }
             }
         });
+        function removeAlert(){
+            Widget.find({'dashboardId': req.params.dashboardId}, function (err, widget) {
+                if (err)
+                    return res.status(500).json({error: 'Internal server error'});
+                else if(!widget) removeWidget();
+                else{
+                    var widgets=[];
+                    for(var i=0;i<widget.length;i++)
+                        widgets.push(widget[i]._id);
+                    Alert.remove({'widgetId':{$in:widgets}},function (err, alert) {
+                            if (err)
+                                return res.status(500).json({error: 'Internal server error'});
+                        else removeWidget();
+                    })
+                }
+            })
+        };
+
         function removeWidget() {
             Widget.remove({'dashboardId': req.params.dashboardId}, function (err, widget) {
                 if (err)
-                    return res.status(500).json({error: 'Internal server error'})
-
+                    return res.status(500).json({error: 'Internal server error'});
                 else
                     removeDashboard();
             })

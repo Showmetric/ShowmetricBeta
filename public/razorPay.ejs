@@ -368,7 +368,7 @@
                             <!--<form name="form" role="form" action="/api/v1/payment/capture" method="post" >-->
                             <div class="signupButton" style="left: 0%; ">
                                 <input class="button" id="rzp-button1" type="submit" value="Proceed to pay"
-                                       onclick="getPaymentOption(<%= amount %>)"/>
+                                       onclick="getRazorpayKey(<%= amount %>)"/>
                                 <div style="margin-top: 10px;">
                                     <b class="text-white">Already have an account?</b>
                                     <a href="/api/v1/login" class="text-white">Login ➞</a><br>
@@ -462,10 +462,19 @@
     t=d.getElementsByTagName("script")[0];t.parentNode.insertBefore(s,t);
 </script>
 <script>
+    function  getRazorpayKey(code) {
+        jQuery.ajax({
+            type: 'get',
+            url: '/api/v1/getKey',
+            success: function(razorpayKey){
+                getPaymentOption(code,razorpayKey.key)
+            }
 
-    function getPaymentOption(code) {
+        })
+    }
+    function getPaymentOption(code,key) {
         var options = {
-            "key": "rzp_test_cHlxIyQNJbANCc",
+            "key": key,
             "amount": code, // 2000 paise = INR 20
             "name": "Datapoolt",
             "description": "Purchase Description",
