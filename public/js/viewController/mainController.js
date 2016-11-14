@@ -13,17 +13,17 @@ function MainCtrl($scope,$rootScope,$http,$timeout) {
         steps:[
             {
                 element: '#step8',
-                intro: 'Get it, use it.',
+                intro: 'Blank Dashboard - Click here to create a new blank dashboard. Create dashboards to organize your widgets and monitor them.',
                 position:'right'
             },
             {
                 element: '#step9',
-                intro: 'Get it, use it.',
+                intro: 'Dashboard Templates - Ready made pre-built dashboards comprising of specific curated widgets to address an unique theme or purpose. They provide a great way to quickly get your dashboard created rather than building it one widget at a time.',
                 position:'right'
             },
             {
                 element: '#step10',
-                intro: 'Get it, use it.',
+                intro: 'Reports - Take complete control of your reporting. Easily build reports with custom logos, custom text and export them as professional looking PDFs. White label your reports and use your own logo to send reports.',
                 position:'right'
             },
             {
@@ -88,92 +88,92 @@ function MainCtrl($scope,$rootScope,$http,$timeout) {
                 steps:[
                     {
                         element: '#step1',
-                        intro: "This is the first tooltip.",
+                        intro: "Name all your dashboards here the way you see fit for easy organization",
                         position:'bottom'
                     },
                     {
                         element: '#step2'   ,
-                        intro: "<strong>You</strong> can also <em>include</em> HTML",
+                        intro: "Choose the date range for which you want to analyze the data of your dashboard widgets",
                         position:'bottom'
                     },
                     {
                         element: '#step3',
-                        intro: 'More features, more fun.',
+                        intro: 'Add new widgets to your dashboards from all our integrated channels. Choose your channels followed by the metrics. Choose the profiles for which your want to see the data for your chosen metrics.',
                         position:'left'
                     },
                     {
                         element: '#step4',
-                        intro: "Another step.",
+                        intro: "Take relevant metrics from two different channels and fuse them together to spot interesting correlations and trends.",
                         position:'left'
                     },
                     {
                         element: '#step5',
-                        intro: 'Get it, use it.',
+                        intro: 'Arrange all the widgets in your dashboard in a presentable manner with a single click.',
                         position:'left'
                     },
                     {
                         element: '#step6',
-                        intro: 'Get it, use it.',
+                        intro: 'Export the current dashboard in different available formats. Also share the url of this dashboard to people who require view access for analysis.',
                         position:'left'
                     },
                     {
                         element: '#step7',
-                        intro: 'Get it, use it.',
+                        intro: 'Click here to delete your current dashboard.',
                         position:'left'
                     },
                     {
                         element: '#step8',
-                        intro: 'Get it, use it.',
+                        intro: 'Blank Dashboard - Click here to create a new blank dashboard. Create dashboards to organize your widgets and monitor them.',
                         position:'right'
                     },
                     {
                         element: '#step9',
-                        intro: 'Get it, use it.',
+                        intro: 'Dashboard Templates - Ready made pre-built dashboards comprising of specific curated widgets to address an unique theme or purpose. They provide a great way to quickly get your dashboard created rather than building it one widget at a time.',
                         position:'right'
                     },
                     {
                         element: '#step10',
-                        intro: 'Get it, use it.',
+                        intro: 'Reports - Take complete control of your reporting. Easily build reports with custom logos, custom text and export them as professional looking PDFs. White label your reports and use your own logo to send reports.',
                         position:'right'
                     },
                     {
                         element: '#step11',
-                        intro: 'Get it, use it.',
+                        intro: 'Quickly navigate back and forth between your recent dashboards in a single click. Get a complete view of all your dashboards by clicking on All dashboards',
                         position:'bottom'
                     },
                     {
                         element: '#step12',
-                        intro: 'Get it, use it.',
+                        intro: 'Navigate to handle all your account related features and settings through this menu.',
                         position:'left'
                     },
                     {
                         element: '#step13',
-                        intro: 'Get it, use it.',
+                        intro: 'View and manage (create/edit/delete) all the social/digital profiles whose health you want to monitor in your dashboards.',
                         position:'left'
                     },
                     {
                         element: '#step14',
-                        intro: 'Get it, use it.',
+                        intro: 'View and manage (create/edit/delete) all the social/digital profiles whose health you want to monitor in your dashboards.',
                         position:'left'
                     },
                     {
                         element: '#soonModel',
-                        intro: 'Get it, use it.',
+                        intro: 'View and manage all the users from your team whom you would like to use and benefit from Datapoolt',
                         position:'left'
                     },
                     {
                         element: '#step15',
-                        intro: 'Get it, use it.',
+                        intro: 'Have a quick tour and understand the features available in Datapoolt',
                         position:'left'
                     },
                     {
                         element: '#step16',
-                        intro: 'Get it, use it.',
+                        intro: 'Watch a quick video guide of how to use Datapoolt and leverage the maximum out of it',
                         position:'left'
                     },
                     {
                         element: '#step17',
-                        intro: 'Get it, use it.',
+                        intro: 'Click here to logout of Datapoolt till you visit again soon',
                         position:'left'
                     }
                 ],
@@ -190,57 +190,57 @@ function MainCtrl($scope,$rootScope,$http,$timeout) {
                 steps:[
                     {
                         element: '#step8',
-                        intro: 'Get it, use it.',
+                        intro: 'Blank Dashboard - Click here to create a new blank dashboard. Create dashboards to organize your widgets and monitor them.',
                         position:'right'
                     },
                     {
                         element: '#step9',
-                        intro: 'Get it, use it.',
+                        intro: 'Dashboard Templates - Ready made pre-built dashboards comprising of specific curated widgets to address an unique theme or purpose. They provide a great way to quickly get your dashboard created rather than building it one widget at a time.',
                         position:'right'
                     },
                     {
                         element: '#step10',
-                        intro: 'Get it, use it.',
+                        intro: 'Reports - Take complete control of your reporting. Easily build reports with custom logos, custom text and export them as professional looking PDFs. White label your reports and use your own logo to send reports.',
                         position:'right'
                     },
                     {
                         element: '#step11',
-                        intro: 'Get it, use it.',
+                        intro: 'Quickly navigate back and forth between your recent dashboards in a single click. Get a complete view of all your dashboards by clicking on All dashboards',
                         position:'bottom'
                     },
                     {
                         element: '#step12',
-                        intro: 'Get it, use it.',
+                        intro: 'Navigate to handle all your account related features and settings through this menu.',
                         position:'left'
                     },
                     {
                         element: '#step13',
-                        intro: 'Get it, use it.',
+                        intro: 'View and manage (create/edit/delete) all the social/digital profiles whose health you want to monitor in your dashboards.',
                         position:'left'
                     },
                     {
                         element: '#step14',
-                        intro: 'Get it, use it.',
+                        intro: 'View and manage (create/edit/delete) all the social/digital profiles whose health you want to monitor in your dashboards.',
                         position:'left'
                     },
                     {
                         element: '#soonModel',
-                        intro: 'Get it, use it.',
+                        intro: 'View and manage all the users from your team whom you would like to use and benefit from Datapoolt',
                         position:'left'
                     },
                     {
                         element: '#step15',
-                        intro: 'Get it, use it.',
+                        intro: 'Have a quick tour and understand the features available in Datapoolt',
                         position:'left'
                     },
                     {
                         element: '#step16',
-                        intro: 'Get it, use it.',
+                        intro: 'Watch a quick video guide of how to use Datapoolt and leverage the maximum out of it',
                         position:'left'
                     },
                     {
                         element: '#step17',
-                        intro: 'Get it, use it.',
+                        intro: 'Click here to logout of Datapoolt till you visit again soon',
                         position:'left'
                     }
                 ],
@@ -323,7 +323,6 @@ function MainCtrl($scope,$rootScope,$http,$timeout) {
                //  else if($scope.IntroOptions.steps[toInsertIndex+1].element=='#step10') {
                //     $scope.IntroOptions.steps.splice(toInsertIndex + 1, 1);
                // }
-               console.log('$rootScope.canAccessReportBuilder',$rootScope.canAccessReportBuilder,$scope.IntroOptions)
             },
             function errorCallback(error) {
                 swal({
