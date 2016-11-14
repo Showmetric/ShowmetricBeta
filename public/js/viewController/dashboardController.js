@@ -155,6 +155,22 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
                     }
                     else
                         $scope.dashboard.dashboardName =  null;
+                    $http({
+                        method: 'GET',
+                        url: '/api/v1/getUserActivityDetails/'
+                    }).then(
+                        function successCallback(response) {
+                            if(typeof response.data.isFirstTimeLogin != 'undefined' && response.data.isFirstTimeLogin == true)
+                            $scope.CallMe();
+                        },
+                        function errorCallback(error) {
+                            swal({
+                                title: '',
+                                text: '<span style="sweetAlertFont">Something went wrong! Please reload the dashboard</span>',
+                                html: true
+                            });
+                        }
+                    );
                 },
                 function errorCallback(error) {
                     $scope.dashboard.dashboardName = null;
@@ -744,6 +760,7 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
                                         }
                                         $("#widgetData-"+error.data.id).hide();
                                         $("#errorWidgetData-"+error.data.id).hide();
+                                        $("#errorGatewayTimeout-"+ errorWidgetId).hide();
                                         $("#errorWidgetTokenexpire-" + error.data.id).show();
                                         $scope.widgetErrorCode=1;
                                         $scope.loadedWidgetCount++;
@@ -756,8 +773,19 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
                                         if(typeof error.data.id != 'undefined') {
                                             $("#widgetData-"+error.data.id).hide();
                                             $("#errorWidgetData-"+error.data.id).show();
+                                            $("#errorGatewayTimeout-"+ errorWidgetId).hide();
                                             $("#errorWidgetTokenexpire-" + error.data.id).hide();
                                             isExportOptionSet=0;
+                                        }
+                                        else{
+                                            if(error.status === 504 && typeof error.config.data.widId!='undefined'){
+                                                var errorWidgetId =error.config.data.widId;
+                                                $("#widgetData-"+ errorWidgetId).hide();
+                                                $("#errorWidgetData-"+ errorWidgetId).hide();
+                                                $("#errorGatewayTimeout-"+ errorWidgetId).show();
+                                                $("#errorWidgetTokenexpire-" + errorWidgetId).hide();
+                                                isExportOptionSet=0;
+                                            }
                                         }
                                 }
                             }
@@ -836,14 +864,25 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
                         }
                         $("#widgetData-" + widget._id).hide();
                         $("#errorWidgetData-" + widget._id).hide();
+                        $("#errorGatewayTimeout-" + widget._id).hide();
                         $("#errorWidgetTokenexpire-" + widget._id).show();
                         $scope.widgetErrorCode=1;
                         $scope.loadedWidgetCount++;
                         isExportOptionSet = 0;
                     }
-                } else{
+                }
+                else if(error.status === 504){
+                    $("#widgetData-" + widget._id).hide();
+                    $("#errorWidgetData-" + widget._id).hide();
+                    $("#errorGatewayTimeout-" + widget._id).show();
+                    $("#errorWidgetTokenexpire-" + widget._id).hide()
+                    $scope.loadedWidgetCount++;
+                    isExportOptionSet = 0;
+                }
+                else{
                     $("#widgetData-" + widget._id).hide();
                     $("#errorWidgetData-" + widget._id).show();
+                    $("#errorGatewayTimeout-" + widget._id).hide();
                     $("#errorWidgetTokenexpire-" + widget._id).hide()
                     $scope.loadedWidgetCount++;
                     isExportOptionSet = 0;
@@ -851,6 +890,7 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
             }
         );
     });
+
 
     //To download a pdf/jpeg version of the dashboard
     $scope.exportModal = function(val){

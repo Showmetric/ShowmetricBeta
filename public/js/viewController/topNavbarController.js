@@ -1,6 +1,8 @@
 showMetricApp.controller('TopNavbarController',TopNavbarController)
 
 function TopNavbarController($scope,$http,$rootScope,$state) {
+    $scope.theBestVideo = 'sMKoNBRZM1M';
+    $scope.anotherGoodOne = 'https://www.youtube.com/watch?v=18-xvIjH8T4';
     $(".modifyUserModalContent").on( 'click', function( ev ) {
         $(".navbar").css('z-index','1');
         $(".md-overlay").css("background","rgba(0,0,0,0.5)");
@@ -11,6 +13,11 @@ function TopNavbarController($scope,$http,$rootScope,$state) {
         $(".navbar").css('z-index','1');
         $(".md-overlay").css("background","rgba(0,0,0,0.5)");
         $("#newAccountModalContent").addClass('md-show');
+    });
+    $("#step16").on( 'click', function( ev ) {
+        $(".navbar").css('z-index','1');
+        $(".md-overlay").css("background","rgba(0,0,0,0.5)");
+        $("#videoTourModalContent").addClass('md-show');
     });
 
     function removeModal( hasPerspective ) {
@@ -45,17 +52,20 @@ function TopNavbarController($scope,$http,$rootScope,$state) {
                 dropdowns.classList.remove('show');
             }
         }
-        else{
-            var dropdowns = document.getElementById("myDropdown");
-            if (dropdowns.classList.contains('show')) {
-                dropdowns.classList.remove('show');
-            }
-            var dropdown = document.getElementsByClassName("dropdown-content");
-            var i;
-            for (i = 0; i < dropdown.length; i++) {
-                var openDropdown = dropdown[i];
-                if (openDropdown.classList.contains('shw')) {
-                    openDropdown.classList.remove('shw');
+        else {
+            $rootScope.dropDownActive = $rootScope.dropDownActive||false;
+            if ($rootScope.dropDownActive == false) {
+                var dropdowns = document.getElementById("myDropdown");
+                if (dropdowns.classList.contains('show')) {
+                    dropdowns.classList.remove('show');
+                }
+                var dropdown = document.getElementsByClassName("dropdown-content");
+                var i;
+                for (i = 0; i < dropdown.length; i++) {
+                    var openDropdown = dropdown[i];
+                    if (openDropdown.classList.contains('shw')) {
+                        openDropdown.classList.remove('shw');
+                    }
                 }
             }
         }

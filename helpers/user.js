@@ -272,18 +272,12 @@ exports.generateToken = function (req, res, done) {
                 else if (!user) return res.status(501).json({error: 'Not implemented'});
                 else {
                     var verificationUrl = configAuth.emailVerification.redirectVerifyUserToken + tokenId;
-                    var mailOptions = {
-                        from: 'Datapoolt Team <alerts@datapoolt.co>',
-                        to: req.userEmail,
-                        subject: userDetail.name + ",we've received your request to reset password",
 
-                        // HTML Version
-                        html: '<p style="align-content: center;font-weight: bold">Welcome to Datapoolt</p>' + '<br>' + '<div style="font-family: Helvetica,Arial,sans-serif">' + '<span>Hi </span>' + '' + '<span>' + userDetail.name + ',' + '</span>' +
+                    // HTML Version
+                    userDetail.html= '<p style="align-content: center;font-weight: bold">Welcome to Datapoolt</p>' + '<br>' + '<div style="font-family: Helvetica,Arial,sans-serif">' + '<span>Hi </span>' + '' + '<span>' + userDetail.name + ',' + '</span>' +
 
-                        '<br>' + '<p>We have received your request to reset password.</p>' + '<p> Click the link below to reset your password.</p>' + '</div>' + '</b>' + '<button style="text-decoration: none;color: #FFF;background-color: #1a8bb3;border: solid #1a8bb3;border-width: 1px 10px;line-height: 2;font-weight: bold;text-align: center;cursor: pointer;display: inline-block;border-radius: 5px;background-color: #1a8bb3 ;border-radius: 12px;color:#fff;font-size: 14px;height: 33px;"><a style="text-decoration: none;color:#fff" href="' + verificationUrl + '">Click Here</a></button>'
-
-                    };
-                    utilityFunctions.sendVerificationMail(mailOptions, function (err, mail) {
+                    '<br>' + '<p>We have received your request to reset password.</p>' + '<p> Click the link below to reset your password.</p>' + '</div>' + '</b>' + '<button style="text-decoration: none;color: #FFF;background-color: #1a8bb3;border: solid #1a8bb3;border-width: 1px 10px;line-height: 2;font-weight: bold;text-align: center;cursor: pointer;display: inline-block;border-radius: 5px;background-color: #1a8bb3 ;border-radius: 12px;color:#fff;font-size: 14px;height: 33px;"><a style="text-decoration: none;color:#fff" href="' + verificationUrl + '">Click Here</a></button>'
+                    utilityFunctions.sendConfirmationMail(userDetail, function (err, mail) {
                         if (err) done(err)
                         else done(null, {mailId: req.userEmail})
                     })

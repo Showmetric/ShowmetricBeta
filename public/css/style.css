@@ -214,6 +214,7 @@ svg:hover #Calendar-Icon { fill: #293846; }
     .report-header {
         height: 55px !important;
     }
+    .postitionRelative{position: relative !important;}
 }
 .dashboards a:hover{text-decoration: underline;}
 .gridAlign{padding: 27px 50px 40px !important; overflow-y: scroll !important;}
@@ -330,6 +331,7 @@ svg:hover #Calendar-Icon { fill: #293846; }
 
 
 .nav li a:hover .nav-label{color: #232c3b !important;}
+.nav li a:focus .nav-label{color: #FFFFFF !important;}
 .add-profile{float: left;margin: 0px ; text-align: left;!important}
 .fa-3x{font-size: 28px!important;color:#fff;padding-left: 5px;}
 .remove-profile{float: right;margin: 0px ;text-align: right;}
@@ -2999,6 +3001,10 @@ button.btn.btn-primary.changePassword {
     background-color: #ff6c3a;
     border-color: #ff6c3a;
 }
+button.btn.btn-primary.closeModalContent {
+    background-color: #ff6c3a;
+    border-color: #ff6c3a;
+}
 .getCheck{
     display: none;
     z-index: 1;
@@ -3024,6 +3030,14 @@ button.btn.btn-primary.changePassword {
     background-color: white;
     font-family: Montserrat-Regular;
     width: 450px;
+    padding: 17px;
+    border-radius: 5px;
+    text-align: center;
+}
+.videoTourContent{
+    background-color: white;
+    font-family: Montserrat-Regular;
+    width: 700px !important;
     padding: 17px;
     border-radius: 5px;
     text-align: center;
@@ -3261,9 +3275,10 @@ div.context a.commentLink {
     top: 10px;
     z-index: 1;
 }
-
-.navbarFixed{
-    position: fixed !important;
+@media (max-width: 768px) {
+    .navbarFixed {
+        position: fixed !important;
+    }
 }
 
 
@@ -5404,6 +5419,9 @@ input:focus{
     border: 1px solid black;
     border-right: none;
 }
+.sidebar-icons img {
+    cursor:pointer;
+}
 .autoarrange-export-delete img {
     padding: 0px 10px;
     cursor:pointer;
@@ -5556,4 +5574,33 @@ input:focus{
 
 .st-sort-descent:before{
     content: '\25BC';
+}
+/* Custom container for Intro.js */
+.container-narrow {
+    margin: 0 auto;
+    max-width: 700px;
+}
+.container-narrow > hr {
+    margin: 30px 0;
+}
+.embed-responsive {
+    position: relative;
+    display: block;
+    height: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+.embed-responsive.embed-responsive-16by9 {
+    padding-bottom: 56.25%;
+}
+
+.embed-responsive-item {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
 }

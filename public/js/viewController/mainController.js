@@ -6,16 +6,341 @@
 
 showMetricApp.controller('MainCtrl', MainCtrl)
 
-function MainCtrl($scope) {
+function MainCtrl($scope,$rootScope,$http,$timeout) {
     //For the purpose of determining height for nav-bar
     $scope.navbarHeight = window.innerHeight;
+    $scope.IntroOptions = {
+        steps:[
+            {
+                element: '#step8',
+                intro: 'Get it, use it.',
+                position:'right'
+            },
+            {
+                element: '#step9',
+                intro: 'Get it, use it.',
+                position:'right'
+            },
+            {
+                element: '#step10',
+                intro: 'Get it, use it.',
+                position:'right'
+            },
+            {
+                element: '#step11',
+                intro: 'Get it, use it.',
+                position:'bottom'
+            },
+            {
+                element: '#step12',
+                intro: 'Get it, use it.',
+                position:'left'
+            },
+            {
+                element: '#step13',
+                intro: 'Get it, use it.',
+                position:'left'
+            },
+            {
+                element: '#step14',
+                intro: 'Get it, use it.',
+                position:'left'
+            },
+            {
+                element: '#soonModel',
+                intro: 'Get it, use it.',
+                position:'left'
+            },
+            {
+                element: '#step15',
+                intro: 'Get it, use it.',
+                position:'left'
+            },
+            {
+                element: '#step16',
+                intro: 'Get it, use it.',
+                position:'left'
+            },
+            {
+                element: '#step17',
+                intro: 'Get it, use it.',
+                position:'left'
+            }
+        ],
+        showStepNumbers: true,
+        exitOnOverlayClick: true,
+        exitOnEsc:true,
+        nextLabel: '<strong>Next</strong>',
+        prevLabel: '<strong>Previous</strong>',
+        skipLabel: '<span style="color:red">Exit</span>',
+        doneLabel: '<span style="color:green">Thanks</span>'
+    };
     window.addEventListener("resize", function (e) {
         $scope.navbarHeight = window.innerHeight;
     });
+    $rootScope.dropDownActive = false;
+    $scope.ShouldAutoStart = false;
+    $rootScope.$on('$stateChangeSuccess', function(ev, to, toParams, from, fromParams) {
+        $rootScope.canAccessReportBuilder = $rootScope.canAccessReportBuilder || false;
+        $rootScope.currentStateForIntro= to.name;
+        if($rootScope.currentStateForIntro=='app.reporting.dashboard')
+            $scope.IntroOptions = {
+                steps:[
+                    {
+                        element: '#step1',
+                        intro: "This is the first tooltip.",
+                        position:'bottom'
+                    },
+                    {
+                        element: '#step2'   ,
+                        intro: "<strong>You</strong> can also <em>include</em> HTML",
+                        position:'bottom'
+                    },
+                    {
+                        element: '#step3',
+                        intro: 'More features, more fun.',
+                        position:'left'
+                    },
+                    {
+                        element: '#step4',
+                        intro: "Another step.",
+                        position:'left'
+                    },
+                    {
+                        element: '#step5',
+                        intro: 'Get it, use it.',
+                        position:'left'
+                    },
+                    {
+                        element: '#step6',
+                        intro: 'Get it, use it.',
+                        position:'left'
+                    },
+                    {
+                        element: '#step7',
+                        intro: 'Get it, use it.',
+                        position:'left'
+                    },
+                    {
+                        element: '#step8',
+                        intro: 'Get it, use it.',
+                        position:'right'
+                    },
+                    {
+                        element: '#step9',
+                        intro: 'Get it, use it.',
+                        position:'right'
+                    },
+                    {
+                        element: '#step10',
+                        intro: 'Get it, use it.',
+                        position:'right'
+                    },
+                    {
+                        element: '#step11',
+                        intro: 'Get it, use it.',
+                        position:'bottom'
+                    },
+                    {
+                        element: '#step12',
+                        intro: 'Get it, use it.',
+                        position:'left'
+                    },
+                    {
+                        element: '#step13',
+                        intro: 'Get it, use it.',
+                        position:'left'
+                    },
+                    {
+                        element: '#step14',
+                        intro: 'Get it, use it.',
+                        position:'left'
+                    },
+                    {
+                        element: '#soonModel',
+                        intro: 'Get it, use it.',
+                        position:'left'
+                    },
+                    {
+                        element: '#step15',
+                        intro: 'Get it, use it.',
+                        position:'left'
+                    },
+                    {
+                        element: '#step16',
+                        intro: 'Get it, use it.',
+                        position:'left'
+                    },
+                    {
+                        element: '#step17',
+                        intro: 'Get it, use it.',
+                        position:'left'
+                    }
+                ],
+                showStepNumbers: true,
+                exitOnOverlayClick: false,
+                exitOnEsc:true,
+                nextLabel: '<strong>Next</strong>',
+                prevLabel: '<strong>Previous</strong>',
+                skipLabel: '<span style="color:red">Exit</span>',
+                doneLabel: '<span style="color:green">Thanks</span>'
+            };
+        else
+            $scope.IntroOptions = {
+                steps:[
+                    {
+                        element: '#step8',
+                        intro: 'Get it, use it.',
+                        position:'right'
+                    },
+                    {
+                        element: '#step9',
+                        intro: 'Get it, use it.',
+                        position:'right'
+                    },
+                    {
+                        element: '#step10',
+                        intro: 'Get it, use it.',
+                        position:'right'
+                    },
+                    {
+                        element: '#step11',
+                        intro: 'Get it, use it.',
+                        position:'bottom'
+                    },
+                    {
+                        element: '#step12',
+                        intro: 'Get it, use it.',
+                        position:'left'
+                    },
+                    {
+                        element: '#step13',
+                        intro: 'Get it, use it.',
+                        position:'left'
+                    },
+                    {
+                        element: '#step14',
+                        intro: 'Get it, use it.',
+                        position:'left'
+                    },
+                    {
+                        element: '#soonModel',
+                        intro: 'Get it, use it.',
+                        position:'left'
+                    },
+                    {
+                        element: '#step15',
+                        intro: 'Get it, use it.',
+                        position:'left'
+                    },
+                    {
+                        element: '#step16',
+                        intro: 'Get it, use it.',
+                        position:'left'
+                    },
+                    {
+                        element: '#step17',
+                        intro: 'Get it, use it.',
+                        position:'left'
+                    }
+                ],
+                showStepNumbers: true,
+                exitOnOverlayClick: true,
+                exitOnEsc:true,
+                nextLabel: '<strong>Next</strong>',
+                prevLabel: '<strong>Previous</strong>',
+                skipLabel: '<span style="color:red">Exit</span>',
+                doneLabel: '<span style="color:green">Thanks</span>'
+            };
+        // var toInsertIndex;
+        // for(var step in $scope.IntroOptions.steps) {
+        //     if ($scope.IntroOptions.steps[step].element == '#step9')
+        //         toInsertIndex = Number(step);
+        // }
+
+        // if($rootScope.canAccessReportBuilder) {
+        //     $scope.IntroOptions.steps.splice(toInsertIndex+1, 0, {
+        //         element: '#step10',
+        //         intro: 'Get it, use it.',
+        //         position: 'right'
+        //     });
+        // }
+        // else if($scope.IntroOptions.steps[toInsertIndex+1].element=='#step10') {
+        //     $scope.IntroOptions.steps.splice(toInsertIndex + 1, 1);
+        // }
+        console.log('statechangesuccess',$scope.IntroOptions);
+    });
+    $scope.CompletedEvent = function (scope) {
+        $rootScope.dropDownActive = false;
+        document.getElementById("myDropdown").classList.remove("show");
+    };
+
+    $scope.ExitEvent = function (scope) {
+        $rootScope.dropDownActive = false;
+        document.getElementById("myDropdown").classList.remove("show");
+    };
+
+    $scope.ChangeEvent = function (targetElement, scope) {
+    };
+
+    $scope.BeforeChangeEvent = function (targetElement, scope) {
+        if(targetElement.id=='step12'||targetElement.id=='step13'||targetElement.id=='step14'||targetElement.id=='step15'||targetElement.id=='step16'||targetElement.id=='step17'||targetElement.id=='soonModel') {
+            $rootScope.dropDownActive = true;
+            if (!document.getElementById("myDropdown").classList.contains('show'))
+                document.getElementById("myDropdown").classList.add("show");
+
+            // $timeout(function(){
+            //     document.getElementById("myDropdown").classList.add("show");
+            //     console.log('dropdown opened',document.getElementById("myDropdown"));
+            // },2000);
+        }
+        else
+            $rootScope.dropDownActive = false;
+    };
+
+    $scope.AfterChangeEvent = function (targetElement, scope) {
+    };
+    $scope.getReportBuilder = function () {
+        $http({
+            method: 'POST',
+            url: '/api/v1/updateUserSubscription?buster='+new Date()
+        }).then(
+            function successCallback(response) {
+                $rootScope.canAccessReportBuilder = response.data.response.reportBuilder;
+               //  var toInsertIndex;
+               //  if(typeof $scope.IntroOptions != 'undefined')
+               //  for(var step in $scope.IntroOptions.steps) {
+               //      if ($scope.IntroOptions.steps[step].element == '#step9')
+               //          toInsertIndex = Number(step);
+               //  }
+               // if($rootScope.canAccessReportBuilder) {
+               //     $scope.IntroOptions.steps.splice(toInsertIndex+1, 0, {
+               //         element: '#step10',
+               //         intro: 'Get it, use it.',
+               //         position: 'right'
+               //     });
+               // }
+               //  else if($scope.IntroOptions.steps[toInsertIndex+1].element=='#step10') {
+               //     $scope.IntroOptions.steps.splice(toInsertIndex + 1, 1);
+               // }
+               console.log('$rootScope.canAccessReportBuilder',$rootScope.canAccessReportBuilder,$scope.IntroOptions)
+            },
+            function errorCallback(error) {
+                swal({
+                    title: '',
+                    text: '<span style="sweetAlertFont">Something went wrong! Please reload the dashboard</span>',
+                    html: true
+                });
+            }
+        );
+    };
+    $scope.getReportBuilder();
+
     /**
      * daterange - Used as initial model for data range picker in Advanced form view
      */
-    this.daterange = {startDate: null, endDate: null}
+    this.daterange = {startDate: null, endDate: null};
+
 
     /**
      * slideInterval - Interval for bootstrap Carousel, in milliseconds:

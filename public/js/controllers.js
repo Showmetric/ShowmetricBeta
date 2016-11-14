@@ -322,6 +322,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                     data: {
                         "startDate": dateRange.startDate,
                         "endDate": dateRange.endDate,
+                        "widId": widget._id
                     },
                     timeout: cancel.promise, // cancel promise, standard thing in $http request
                     cancel: cancel // this is where we do our magic

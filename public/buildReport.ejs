@@ -1,4 +1,4 @@
-<div class="white-bg report-header">
+<div class="white-bg report-header postitionRelative">
 
     <div ng-if="newReportActive!=true" ng-show="newReportActive!=true" class="row">
         <div class="col col-xs-24 col-sm-12 col-md-12 col-lg-12">
@@ -73,7 +73,7 @@
     <!--<p ng-if='newReportActive!=true'>Build a Report From your Dashboard</p>-->
     <!--<p ng-if='newReportActive==true'>Choose a Dashboard for your Report</p>-->
 </div>
-<div ng-if='newReportActive==true' ng-init="fetchAllDashboards()" class="wrapper wrapper-content  greyish-bg">
+<div ng-if='newReportActive==true' ng-init="fetchAllDashboards()" class="wrapper wrapper-content postitionRelative greyish-bg">
     <div ng-if="gridloading === true"  class="spiner-example">
         <div class="sk-spinner sk-spinner-double-bounce">
             <div class="sk-double-bounce1"></div>
@@ -121,7 +121,7 @@
     <!--</div>-->
 </div>
 
-<div ng-if="newReportActive!=true" ng-init="fetchAllReports();" class="wrapper wrapper-content gridTableAlign greyish-bg" ng-style="{'height': docHeight+'px'}">
+<div ng-if="newReportActive!=true" ng-init="fetchAllReports();" class="wrapper wrapper-content postitionRelative gridTableAlign greyish-bg" ng-style="{'height': docHeight+'px'}">
 
     <div ng-show="gridloading === true"  class="spiner-example">
         <div class="sk-spinner sk-spinner-double-bounce">
