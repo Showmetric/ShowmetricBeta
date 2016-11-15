@@ -3586,7 +3586,7 @@ agenda.define(configAuth.batchJobs.alertName, function (job, done) {
                                     // Email Setup
                                     var mailOptions = {
                                         from: 'Datapoolt Team <alerts@datapoolt.co>',
-                                        to: configAuth.mailingId.email,
+                                        to: configAuth.batchJobsReceiverMailDetails.email,
                                         subject: 'The alert ' + alert.name + ' has been triggered',
 
                                         // HTML Version

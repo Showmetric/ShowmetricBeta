@@ -452,7 +452,7 @@ module.exports = {
         apiKey: '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',
     },
     batchJobsReceiverMailDetails:{
-        email:'natarajan@datapoolt.co'
+        email:'batchjobs@datapoolt.co'
     }
 
 };

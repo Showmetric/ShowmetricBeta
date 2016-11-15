@@ -5394,6 +5394,8 @@ input:focus{
     left: -3px;
     top: 2px !important;
     height: 32px;
+    padding-bottom: 1px;
+    paddding-top: 1px;
 }
 .chooseDashboardquestion{
     font-size: 18px;
