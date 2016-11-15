@@ -72,7 +72,7 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider, IdlePro
                                             if (response.data.userDetails.user[0].lastDashboardId) {
                                                 $scope.loadingVariable = '';
                                                 if (response.data.userDetails.user[0].lastDashboardId != 'undefined')
-                                                    $state.go('.dashboard', {id: response.data.userDetails.user[0].lastDashboardId});
+                                                    $state.go('.dashboards');
                                                 else
                                                     $scope.createNewDashboard();
                                             }

@@ -2832,9 +2832,20 @@ agenda.define('Update channel data', {lockLifetime: 36000000}, function (job, do
                                 //Array to hold the final result
                                 for (var index in dataFromRemote[j].res.data[0].values) {
                                     var value = {};
+                                    if (dataFromRemote[j].res.data[0].values[index].value) var totalValue = dataFromRemote[j].res.data[0].values[index].value;
+                                    else {
+                                        if (dataFromRemote[j].metric.objectTypes[0].meta.responseType === 'object')
+                                            var totalValue = {};
+                                        else
+                                            var totalValue = 0;
+
+                                    }
+                                    var date = new Date(dataFromRemote[j].res.data[0].values[index].end_time.substr(0, 10));
+                                    date.setDate(date.getDate() - 1)
+                                    var dateString =moment(date).format("YYYY-MM-DD");
                                     value = {
-                                        total: dataFromRemote[j].res.data[0].values[index].value,
-                                        date: dataFromRemote[j].res.data[0].values[index].end_time.substr(0, 10)
+                                        total: totalValue,
+                                        date: dateString
                                     };
                                     if (String(metric[j]._id) === String(dataFromRemote[j].metricId)) {
                                         if (dataFromRemote[j].res.data[0].values[index].end_time.substr(0, 10) <= endDate)
