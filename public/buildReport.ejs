@@ -87,15 +87,15 @@
         </div>
     </div>
     <div class="gridAlign scroller"  ng-show="dashboardList != null && gridloading === false " ng-style="{'height': dashboardHeight+'px'}">
-        <div class="col col-lg-2 grid-font grid-text"  ng-repeat="dashboard in dashboardList" ng-style="dashboard.isSelected==true  && {'border': '2px solid #04509B'}  || dashboard.isSelected==true && {'border': '0px solid #eaeff3'} " >
+        <div class="col col-lg-2 grid-font grid-text"  ng-repeat="dashboard in dashboardList" ng-click="selectDashboard(dashboard)" ng-style="dashboard.isSelected==true  && {'border': '2px solid #04509B'}  || dashboard.isSelected==true && {'border': '0px solid #eaeff3'} " >
             <div style="height: 10px; cursor: pointer;" ng-if="dashboard.isSelected==true" class="col-lg-1 pull-right"><i class="fa fa-check" style="color: green" aria-hidden="true"></i></div>
             <div style="height: 40px" class="contentName">
-                <div class="dashboards col-lg-2"  ng-if="(dashboard.name == null || dashboard.name==' ')">
-                    <a ng-click="selectDashboard(dashboard)" style="color:#9A9A9A">Unnamed Dashboard</a>
+                <div class="dashboards col-lg-2"  ng-if="(dashboard.name == null || dashboard.name==' ')" >
+                    <a style="color:#9A9A9A">Unnamed Dashboard</a>
                 </div>
 
                 <div class="dashboards col-lg-2" ng-if="dashboard.name != null">
-                    <a ng-click="selectDashboard(dashboard)" style="color:#000">{{dashboard.name}}</a>
+                    <a style="color:#000">{{dashboard.name}}</a>
                 </div>
             </div>
         </div>

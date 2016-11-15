@@ -56,11 +56,11 @@ function MainCtrl($scope,$rootScope,$http,$timeout) {
                 intro: 'Get it, use it.',
                 position:'left'
             },
-            {
-                element: '#step16',
-                intro: 'Get it, use it.',
-                position:'left'
-            },
+            // {
+            //     element: '#step16',
+            //     intro: 'Get it, use it.',
+            //     position:'left'
+            // },
             {
                 element: '#step17',
                 intro: 'Get it, use it.',
@@ -81,7 +81,7 @@ function MainCtrl($scope,$rootScope,$http,$timeout) {
     $rootScope.dropDownActive = false;
     $scope.ShouldAutoStart = false;
     $rootScope.$on('$stateChangeSuccess', function(ev, to, toParams, from, fromParams) {
-        $rootScope.canAccessReportBuilder = $rootScope.canAccessReportBuilder || false;
+        // $rootScope.canAccessReportBuilder = $rootScope.canAccessReportBuilder || false;
         $rootScope.currentStateForIntro= to.name;
         if($rootScope.currentStateForIntro=='app.reporting.dashboard')
             $scope.IntroOptions = {
@@ -166,11 +166,11 @@ function MainCtrl($scope,$rootScope,$http,$timeout) {
                         intro: 'Have a quick tour and understand the features available in Datapoolt',
                         position:'left'
                     },
-                    {
-                        element: '#step16',
-                        intro: 'Watch a quick video guide of how to use Datapoolt and leverage the maximum out of it',
-                        position:'left'
-                    },
+                    // {
+                    //     element: '#step16',
+                    //     intro: 'Watch a quick video guide of how to use Datapoolt and leverage the maximum out of it',
+                    //     position:'left'
+                    // },
                     {
                         element: '#step17',
                         intro: 'Click here to logout of Datapoolt till you visit again soon',
@@ -233,11 +233,11 @@ function MainCtrl($scope,$rootScope,$http,$timeout) {
                         intro: 'Have a quick tour and understand the features available in Datapoolt',
                         position:'left'
                     },
-                    {
-                        element: '#step16',
-                        intro: 'Watch a quick video guide of how to use Datapoolt and leverage the maximum out of it',
-                        position:'left'
-                    },
+                    // {
+                    //     element: '#step16',
+                    //     intro: 'Watch a quick video guide of how to use Datapoolt and leverage the maximum out of it',
+                    //     position:'left'
+                    // },
                     {
                         element: '#step17',
                         intro: 'Click here to logout of Datapoolt till you visit again soon',
@@ -268,7 +268,6 @@ function MainCtrl($scope,$rootScope,$http,$timeout) {
         // else if($scope.IntroOptions.steps[toInsertIndex+1].element=='#step10') {
         //     $scope.IntroOptions.steps.splice(toInsertIndex + 1, 1);
         // }
-        console.log('statechangesuccess',$scope.IntroOptions);
     });
     $scope.CompletedEvent = function (scope) {
         $rootScope.dropDownActive = false;
@@ -284,7 +283,7 @@ function MainCtrl($scope,$rootScope,$http,$timeout) {
     };
 
     $scope.BeforeChangeEvent = function (targetElement, scope) {
-        if(targetElement.id=='step12'||targetElement.id=='step13'||targetElement.id=='step14'||targetElement.id=='step15'||targetElement.id=='step16'||targetElement.id=='step17'||targetElement.id=='soonModel') {
+        if(targetElement.id=='step13'||targetElement.id=='step14'||targetElement.id=='step15'||targetElement.id=='step16'||targetElement.id=='step17'||targetElement.id=='soonModel') {
             $rootScope.dropDownActive = true;
             if (!document.getElementById("myDropdown").classList.contains('show'))
                 document.getElementById("myDropdown").classList.add("show");
@@ -300,40 +299,40 @@ function MainCtrl($scope,$rootScope,$http,$timeout) {
 
     $scope.AfterChangeEvent = function (targetElement, scope) {
     };
-    $scope.getReportBuilder = function () {
-        $http({
-            method: 'POST',
-            url: '/api/v1/updateUserSubscription?buster='+new Date()
-        }).then(
-            function successCallback(response) {
-                $rootScope.canAccessReportBuilder = response.data.response.reportBuilder;
-               //  var toInsertIndex;
-               //  if(typeof $scope.IntroOptions != 'undefined')
-               //  for(var step in $scope.IntroOptions.steps) {
-               //      if ($scope.IntroOptions.steps[step].element == '#step9')
-               //          toInsertIndex = Number(step);
-               //  }
-               // if($rootScope.canAccessReportBuilder) {
-               //     $scope.IntroOptions.steps.splice(toInsertIndex+1, 0, {
-               //         element: '#step10',
-               //         intro: 'Get it, use it.',
-               //         position: 'right'
-               //     });
-               // }
-               //  else if($scope.IntroOptions.steps[toInsertIndex+1].element=='#step10') {
-               //     $scope.IntroOptions.steps.splice(toInsertIndex + 1, 1);
-               // }
-            },
-            function errorCallback(error) {
-                swal({
-                    title: '',
-                    text: '<span style="sweetAlertFont">Something went wrong! Please reload the dashboard</span>',
-                    html: true
-                });
-            }
-        );
-    };
-    $scope.getReportBuilder();
+    // $scope.getReportBuilder = function () {
+    //     $http({
+    //         method: 'POST',
+    //         url: '/api/v1/updateUserSubscription?buster='+new Date()
+    //     }).then(
+    //         function successCallback(response) {
+    //             $rootScope.canAccessReportBuilder = response.data.response.reportBuilder;
+    //            //  var toInsertIndex;
+    //            //  if(typeof $scope.IntroOptions != 'undefined')
+    //            //  for(var step in $scope.IntroOptions.steps) {
+    //            //      if ($scope.IntroOptions.steps[step].element == '#step9')
+    //            //          toInsertIndex = Number(step);
+    //            //  }
+    //            // if($rootScope.canAccessReportBuilder) {
+    //            //     $scope.IntroOptions.steps.splice(toInsertIndex+1, 0, {
+    //            //         element: '#step10',
+    //            //         intro: 'Get it, use it.',
+    //            //         position: 'right'
+    //            //     });
+    //            // }
+    //            //  else if($scope.IntroOptions.steps[toInsertIndex+1].element=='#step10') {
+    //            //     $scope.IntroOptions.steps.splice(toInsertIndex + 1, 1);
+    //            // }
+    //         },
+    //         function errorCallback(error) {
+    //             swal({
+    //                 title: '',
+    //                 text: '<span style="sweetAlertFont">Something went wrong! Please reload the dashboard</span>',
+    //                 html: true
+    //             });
+    //         }
+    //     );
+    // };
+    // $scope.getReportBuilder();
 
     /**
      * daterange - Used as initial model for data range picker in Advanced form view

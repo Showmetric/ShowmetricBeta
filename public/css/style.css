@@ -5606,3 +5606,6 @@ input:focus{
     height: 100%;
     border: 0;
 }
+.introjs-fixParent {
+    z-index: 10000000 !important;
+}

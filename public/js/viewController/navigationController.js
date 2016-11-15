@@ -3,25 +3,25 @@ showMetricApp.controller('NavigationController',NavigationController)
 function NavigationController($scope,$state,$http,$stateParams,$rootScope) {
     var availableBasicWidgets;
     var availableFusionWidgets;
-    // $rootScope.getReportBuilder = function () {
-    //     $http({
-    //         method: 'POST',
-    //         url: '/api/v1/updateUserSubscription?buster='+new Date()
-    //     }).then(
-    //         function successCallback(response) {
-    //             $scope.canAccessReportBuilder = response.data.response.reportBuilder;
-    //         },
-    //         function errorCallback(error) {
-    //             $scope.dashboard.dashboardName = null;
-    //             swal({
-    //                 title: '',
-    //                 text: '<span style="sweetAlertFont">Something went wrong! Please reload the dashboard</span>',
-    //                 html: true
-    //             });
-    //         }
-    //     );
-    // }
-    // $rootScope.getReportBuilder();
+    $rootScope.getReportBuilder = function () {
+        $http({
+            method: 'POST',
+            url: '/api/v1/updateUserSubscription?buster='+new Date()
+        }).then(
+            function successCallback(response) {
+                $scope.canAccessReportBuilder = response.data.response.reportBuilder;
+            },
+            function errorCallback(error) {
+                $scope.dashboard.dashboardName = null;
+                swal({
+                    title: '',
+                    text: '<span style="sweetAlertFont">Something went wrong! Please reload the dashboard</span>',
+                    html: true
+                });
+            }
+        );
+    }
+    $rootScope.getReportBuilder();
 
     $state.includes('app.reporting.dashboard')
     $scope.stateValidation = function(targetState) {
