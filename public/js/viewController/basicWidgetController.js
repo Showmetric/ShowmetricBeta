@@ -3,7 +3,6 @@ showMetricApp.controller('BasicWidgetController', BasicWidgetController)
 function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stateParams, generateChartColours,$q) {
     $scope.objectList = {};
     $scope.referenceWidgetsList = [];
-    var availableBasicWidgets;
     $scope.fbObjectTypeList = {};
     $scope.tokenExpired = [];
     $scope.channelList;
@@ -76,36 +75,19 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
         $rootScope.currentModalView = obj;
         if ($scope.currentView === 'step_one') {
             //request to get the subscription details of the user on basic widgets
-            $http(
-                {
-                    method: 'GET',
-                    url: '/api/v1/subscriptionLimits' + '?requestType=' + 'basic'
-                }
-            ).then(
-                function successCallback(response) {
-                    availableBasicWidgets = response.data.availableWidgets;
-                    $scope.listChannels();
-                    $scope.clearReferenceWidget();
-                    $scope.selectedChannelList=[];
-                    $scope.customMessageEnable=false;
-                    $scope.metricMessage=false;
-                    storeChosenObject = [];
-                    $scope.fbObjectTypeList={};
-                    $scope.canManageClients = true;
-                    document.getElementById('basicWidgetFinishButton').disabled = true;
-                    $("#basicWidgetNextButton1").show();
-                    $('#basicWidgetBackButton').hide();
-                    $('#basicWidgetBackButton2').hide();
-                    $("#basicWidgetNextButton2").hide();
-                },
-                function errorCallback(error) {
-                    swal({
-                        title: "",
-                        text: "<span style='sweetAlertFont'>Something went wrong!!!!</span> .",
-                        html: true
-                    });
-                }
-            );
+            $scope.listChannels();
+            $scope.clearReferenceWidget();
+            $scope.selectedChannelList=[];
+            $scope.customMessageEnable=false;
+            $scope.metricMessage=false;
+            storeChosenObject = [];
+            $scope.fbObjectTypeList={};
+            $scope.canManageClients = true;
+            document.getElementById('basicWidgetFinishButton').disabled = true;
+            $("#basicWidgetNextButton1").show();
+            $('#basicWidgetBackButton').hide();
+            $('#basicWidgetBackButton2').hide();
+            $("#basicWidgetNextButton2").hide();
         }
         else if ($scope.currentView === 'step_two') {
             $scope.customMessageEnable=false;
@@ -168,6 +150,26 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
         }
     };
 
+    $scope.getSubscriptions=function(){
+        $http(
+            {
+                method: 'GET',
+                url: '/api/v1/subscriptionLimits' + '?requestType=' + 'basic'
+            }
+        ).then(
+            function successCallback(response) {
+                $rootScope.availableBasicWidgets = response.data.availableWidgets;
+            },
+            function errorCallback(error) {
+                swal({
+                    title: "",
+                    text: "<span style='sweetAlertFont'>Something went wrong!!!!</span> .",
+                    html: true
+                });
+            }
+        );
+    }
+
     $scope.dropdownWidth=function(hasnoAccess,tokenExpired){
         if(hasnoAccess==true || tokenExpired==true){
             return ('col-sm-'+10+' col-md-'+10+' col-lg-'+10+' col-xs-10');
@@ -201,6 +203,7 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
             url: '/api/v1/get/channels'
         }).then(
             function successCallback(response) {
+                $scope.getSubscriptions();
                 var channels = response.data;
                 if(!$scope.selectedTempChannelList.length){
                     for(i in channels)
@@ -274,7 +277,7 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
                                     'border': '2px solid #e7eaec',
                                     'channelName':$scope.selectedTempChannelList[j].name
                                 };
-                                if(availableBasicWidgets<getReferenceWidgetsArr.length){
+                                if($rootScope.availableBasicWidgets<getReferenceWidgetsArr.length){
                                     $('#error').html('<div class="alert alert-danger fade in" style="width: 400px;margin-left: 212px;"><button type="button" class="close close-alert" data-dismiss="alert" aria-hidden="true">×</button>You have reached your Widgets limit. Please upgrade to enjoy more Widgets</div>');
                                     document.getElementById('basicWidgetNextButton2').disabled = true;
                                 }
@@ -1803,8 +1806,8 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
             }
         ).then(
             function successCallback(response) {
-                availableBasicWidgets = response.data.availableWidgets;
-                if (getReferenceWidgetsArr.length<=availableBasicWidgets) {
+                $rootScope.availableBasicWidgets = response.data.availableWidgets;
+                if (getReferenceWidgetsArr.length<=$rootScope.availableBasicWidgets) {
                     if (getChannelName == "CustomData") {
                         getCustomWidgetObj = {
                             '_id': getCustomWidgetId,
@@ -2167,7 +2170,7 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
                 $scope.showCustomContent = true;
                 $scope.selectCustomLinkHead = "Step 2 : Choose your Metrics";
             }
-            if ($scope.selectedTempChannelList.length<=availableBasicWidgets   ){
+            if ($scope.selectedTempChannelList.length<=$rootScope.availableBasicWidgets){
                 if($scope.selectedTempChannelList.length >0)
                     document.getElementById('basicWidgetNextButton1').disabled = false;
             }
@@ -2181,6 +2184,7 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
         else{
             if($scope.showCustomContent == false){
                 if(channel.name == "CustomData"){
+
                     for (var i in $scope.channelList) {
                         if (channel._id == $scope.channelList[i]._id){
                             $scope.channelList[i].isSelected = 0;
@@ -2188,6 +2192,7 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
                     }
                     removeByAttr($scope.selectedTempChannelList, 'id', channel._id);
                     $scope.customMessageEnable=false;
+                    document.getElementById('basicWidgetNextButton1').disabled = true;
                 }
                 else
                     $scope.customMessageEnable=true;
@@ -2219,7 +2224,7 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
                             }
                         }
                     }
-                    if ($scope.selectedTempChannelList.length<=availableBasicWidgets  ) {
+                    if ($scope.selectedTempChannelList.length<=$rootScope.availableBasicWidgets) {
                         if($scope.selectedTempChannelList.length ===0)
                             document.getElementById('basicWidgetNextButton1').disabled = true;
                         else
@@ -2257,7 +2262,6 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
         var campaignLevel=false;
         var adgroupLevel=false;
         if($scope.storedReferenceWidget.channelName=="GoogleAdwords"){
-            availableBasicWidgets++;
             if(!getReferenceWidgetsArr.length)
                 canProcess=1;
             else{
@@ -2314,7 +2318,7 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
         }
         if (getReferenceWidgetsArr.length) {
             var referenceWidgetLength = getReferenceWidgetsArr.length;
-            if (referenceWidgetLength<=availableBasicWidgets) {
+            if (referenceWidgetLength<=$rootScope.availableBasicWidgets) {
                 for (var i = 0; i < referenceWidgetLength; i++) {
                     for (var j = 0; j < getReferenceWidgetsArr[i].charts.length; j++) {
                         for (var k = 0; k < getReferenceWidgetsArr[i].charts[j].metrics.length; k++) {

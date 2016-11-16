@@ -3,7 +3,8 @@ var profile = require('../models/profiles');
 var organizations = require('../models/organizations');
 var subscriptionTypes = require('../models/subscriptionType');
 var payments = require('../models/payments');
-var dashboard = require('../models/dashboards')
+var dashboard = require('../models/dashboards');
+var UserActivity = require('../models/userActivity');
 var exports = module.exports = {};
 var bcrypt = require('bcrypt-nodejs');
 // to create a random string
@@ -218,18 +219,16 @@ exports.emailVerification = function (req, res, next) {
                                     else if (!unVerifiedUser)
                                         return res.status(204).json({error: 'No records found'});
                                     else {
-                                        var mailOptionsSubmitter = {
-                                            from: 'Datapoolt Invites <alerts@datapoolt.co>',
-                                            to: unVerifiedUser.email,
-                                            subject: unVerifiedUser.name + ', we\'ve received your request for an invite',
-                                            // HTML Version
-                                            html: '<p>Hi ' + unVerifiedUser.name + ',</p>' +
-                                            '<p> We have received your request for an invite.Click link below to activate your account.</p><br><button style="background-color: #1a8bb3;border-radius: 12px;color:#fff;font-size: 24px;"><a style="text-decoration: none;color:#fff" href="' + configAuth.emailVerification.redirectLink + unVerifiedUser.emailVerification.tokenId + '">Click to Activate</a></button> <p>Thanks for trying us out. Cheers!</p>'
-                                        };
-                                        utility.sendVerificationMail(mailOptionsSubmitter, function (err) {
-                                            if (err) {
-                                                return res.status(500).json({error: 'Internal server error'});
-                                            }
+                                        userDetail.html =
+                                            '<p><img alt="" src="https://www.datapoolt.co/wp-content/uploads/2016/10/Logo@3x.png" width=150 height=50/></p>'+ '<p>Hi ' + unVerifiedUser.name + ',</p>' +
+                                            '<p>Welcome to Datapoolt!</p>'+
+                                            '<p> We are glad to on-board you with Datapoolt. Please activate your Datapoolt account by clicking the verification link below:</p><a href="' + configAuth.emailVerification.redirectLink + unVerifiedUser.emailVerification.tokenId + '">Click Here</a><br>' +
+                                            '<p>Here is a short video to help you set up your account and explore what Datapoolt can do for you and your team.</p>'+
+                                            '<p>Our team is here to assist you with any questions you may have. </p>'+
+                                            "<p>Simply reply to this email if you'd like to get in touch.</p>"
+                                            +' <p>Cheers,</p><br><p>Datapoolt Team</p>';
+                                        utility.sendConfirmationMail(userDetail, function (err) {
+                                            if (err) next(err,null);
                                             else
                                                 userResult = {
                                                     user: unVerifiedUser,
@@ -295,3 +294,22 @@ exports.getPaymentDetails = function (req, res, next) {
         }
     });
 };
+exports.fetchUserActivityDetails = function (req, res, next) {
+    if(req.user) {
+        UserActivity.find({'userId': req.user._id}, function (err, UserActivityDetails) {
+            if (err)
+                return res.status(500).json({error: 'Internal server error'});
+            else if (!UserActivityDetails.length || !UserActivityDetails)
+                return res.status(204).json({error: 'No records found'});
+            else{
+                if(UserActivityDetails.length==1)
+                    req.app.result = true;
+                else
+                    req.app.result = false;
+                next();
+            }
+        })
+    }
+    else
+        res.status(401).json({error: 'Authentication required to perform this action'});
+}

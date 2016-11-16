@@ -16,7 +16,9 @@
         /*'daterangepicker',*/
         'xeditable',
         'uiSwitch',
-        'smart-table'
+        'smart-table',
+        'angular-intro',
+        'youtube-embed'
     ])
 })();
 

@@ -565,7 +565,7 @@ exports.getChannelData = function (req, res, next) {
             function loopGetDates(data, metric, done) {
                 async.timesSeries(Math.min(data.length, metric.length), function (j, next) {
                     var d = new Date();
-                    d.setDate(d.getDate() + 1);
+                    d.setDate(d.getDate() +1);
                     var queryObject = {};
 
                     //check already there is one year data in db
@@ -947,10 +947,14 @@ exports.getChannelData = function (req, res, next) {
                                                         var totalValue = 0;
 
                                                 }
+                                                var date = new Date(dataFromRemote[key].res.data[0].values[index].end_time.substr(0, 10));
+                                                date.setDate(date.getDate() - 1)
+                                                var dateString =moment(date).format("YYYY-MM-DD");
                                                 value = {
                                                     total: totalValue,
-                                                    date: dataFromRemote[key].res.data[0].values[index].end_time.substr(0, 10)
+                                                    date: dateString
                                                 };
+
                                                 if (String(metric[j]._id) === String(dataFromRemote[key].metricId)) {
                                                     beforeReplaceEmptyData.push(value);
                                                     var metricId = dataFromRemote[key].metricId;
@@ -958,12 +962,12 @@ exports.getChannelData = function (req, res, next) {
                                             }
                                             if (String(metric[j]._id) === String(dataFromRemote[key].metricId)) {
                                                 if (dataFromRemote[key].metric.objectTypes[0].meta.endpoint.length)
-                                                    finalData1 = findDaysDifference(dataFromRemote[key].startDate, d, dataFromRemote[key].metric.objectTypes[0].meta.endpoint);
+                                                    finalData1 = findDaysDifference(dataFromRemote[key].startDate, dataFromRemote[key].endDate, dataFromRemote[key].metric.objectTypes[0].meta.endpoint);
                                                 else {
                                                     if (dataFromRemote[key].metric.objectTypes[0].meta.responseType === 'object')
-                                                        finalData1 = findDaysDifference(dataFromRemote[key].startDate, d, undefined, 'noEndPoint');
+                                                        finalData1 = findDaysDifference(dataFromRemote[key].startDate, dataFromRemote[key].endDate, undefined, 'noEndPoint');
                                                     else
-                                                        finalData1 = findDaysDifference(dataFromRemote[key].startDate, d, undefined);
+                                                        finalData1 = findDaysDifference(dataFromRemote[key].startDate, dataFromRemote[key].endDate, undefined);
                                                 }
                                                 var finalReplacedData = replaceEmptyData(finalData1, beforeReplaceEmptyData);
                                                 finalReplacedData.forEach(function (value) {
@@ -974,12 +978,12 @@ exports.getChannelData = function (req, res, next) {
                                         else {
                                             if (String(metric[j]._id) === String(dataFromRemote[key].metricId)) {
                                                 if (dataFromRemote[key].metric.objectTypes[0].meta.endpoint.length)
-                                                    finalData = findDaysDifference(dataFromRemote[key].startDate, d, dataFromRemote[key].metric.objectTypes[0].meta.endpoint);
+                                                    finalData = findDaysDifference(dataFromRemote[key].startDate, dataFromRemote[key].endDate, dataFromRemote[key].metric.objectTypes[0].meta.endpoint);
                                                 else {
                                                     if (dataFromRemote[key].metric.objectTypes[0].meta.responseType === 'object')
-                                                        finalData = findDaysDifference(dataFromRemote[key].startDate, d, undefined, 'noEndPoint');
+                                                        finalData = findDaysDifference(dataFromRemote[key].startDate, dataFromRemote[key].endDate, undefined, 'noEndPoint');
                                                     else
-                                                        finalData = findDaysDifference(dataFromRemote[key].startDate, d, undefined);
+                                                        finalData = findDaysDifference(dataFromRemote[key].startDate, dataFromRemote[key].endDate, undefined);
                                                 }
                                             }
                                         }

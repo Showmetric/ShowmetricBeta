@@ -4,6 +4,7 @@ var exports = module.exports = {};
 var dashboards = require('../models/profiles');
 var User = require('../models/user');
 var Widget = require('../models/widgets');
+var Alert = require('../models/alert');
 var userPermission = require('../helpers/utility');
 var Q = require("q");
 var _ = require('lodash');
@@ -62,7 +63,7 @@ exports.getDashboardList = function (req, res, next) {
  * @param req contains the dashboard id
  */
 exports.getDashboardDetails = function (req, res, next) {
-        if (req.user && req.query.dashboardId===undefined) {
+    if (req.user && req.query.dashboardId===undefined) {
         var dashboardId = req.params.dashboardId;
         dashboardList.findOne({'_id': dashboardId}, function (err, dashboardDetails) {
             if (err)
@@ -75,7 +76,7 @@ exports.getDashboardDetails = function (req, res, next) {
             }
         })
     }
-        else if(String(req.params.dashboardId) === String(null)){
+    else if(String(req.params.dashboardId) === String(null)){
         var dashboardId = req.query.dashboardId;
         dashboardList.findOne({'_id': dashboardId}, function (err, dashboardDetails) {
             if (err)
@@ -232,9 +233,9 @@ exports.removeDashboardFromUser = function (req, res, next) {
                                 return res.status(500).json({error: 'Internal server error'})
                             else if (updateDashboard == 0)
                                 return res.status(501).json({error: 'Not implemented'})
-                            else removeWidget();
+                            else removeAlert();
                         })
-                    } 
+                    }
                     else {
                         User.update({'_id': req.user._id}, {
                             $set: {
@@ -246,26 +247,43 @@ exports.removeDashboardFromUser = function (req, res, next) {
                                 return res.status(500).json({error: 'Internal server error'})
                             else if (updateDashboard == 0)
                                 return res.status(501).json({error: 'Not implemented'})
-                            else removeWidget();
+                            else removeAlert();
                         })
                     }
                 }
                 else {
                     User.update({'_id': req.user._id}, {$set: {'dashboards': tempDashboardId}}, function (err, updateDashboard) {
                         if (err)
-                            return res.status(500).json({error: 'Internal server error'})
+                            return res.status(500).json({error: 'Internal server error'});
                         else if (tempDashboardId == 0)
-                            return res.status(501).json({error: 'Not implemented'})
-                        else removeWidget();
+                            return res.status(501).json({error: 'Not implemented'});
+                        else removeAlert();
                     })
                 }
             }
         });
+        function removeAlert(){
+            Widget.find({'dashboardId': req.params.dashboardId}, function (err, widget) {
+                if (err)
+                    return res.status(500).json({error: 'Internal server error'});
+                else if(!widget) removeWidget();
+                else{
+                    var widgets=[];
+                    for(var i=0;i<widget.length;i++)
+                        widgets.push(widget[i]._id);
+                    Alert.remove({'widgetId':{$in:widgets}},function (err, alert) {
+                        if (err)
+                            return res.status(500).json({error: 'Internal server error'});
+                        else removeWidget();
+                    })
+                }
+            })
+        };
+
         function removeWidget() {
             Widget.remove({'dashboardId': req.params.dashboardId}, function (err, widget) {
                 if (err)
-                    return res.status(500).json({error: 'Internal server error'})
-
+                    return res.status(500).json({error: 'Internal server error'});
                 else
                     removeDashboard();
             })
@@ -290,21 +308,21 @@ exports.removeDashboardFromUser = function (req, res, next) {
 //To get dashboard details based on reportid
 exports.getDashboardDetailsFromReportId = function (req, res, done) {
     dashboardList.findOne({reportId: req.reportId}, function (err, dashboardDetails) {
-            if (err)
-                return res.status(500).json({error: 'Internal server error'});
-            else if (!dashboardDetails)
-                return res.status(204).json({error: 'No records found'});
-            else {
-                Widget.find({dashboardId: dashboardDetails._id}, function (err, widget) {
-                    if (err)
-                        return res.status(500).json({error: 'Internal server error'});
-                    else if (!widget.length)
-                        return res.status(206).json({error: 'No records found'});
-                    else {
-                        done(null,{widget:widget,dashboardDetails:dashboardDetails});
-                    }
-                })
+        if (err)
+            return res.status(500).json({error: 'Internal server error'});
+        else if (!dashboardDetails)
+            return res.status(204).json({error: 'No records found'});
+        else {
+            Widget.find({dashboardId: dashboardDetails._id}, function (err, widget) {
+                if (err)
+                    return res.status(500).json({error: 'Internal server error'});
+                else if (!widget.length)
+                    return res.status(206).json({error: 'No records found'});
+                else {
+                    done(null,{widget:widget,dashboardDetails:dashboardDetails});
+                }
+            })
 
-            }
-        })
+        }
+    })
 };

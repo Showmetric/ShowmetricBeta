@@ -87,7 +87,24 @@ function NavigationController($scope,$state,$http,$stateParams,$rootScope) {
                 )
                 break;
             case 'buildReports':
-                $state.go('app.reporting.'+targetState);
+                if($scope.canAccessReportBuilder){
+                    $state.go('app.reporting.'+targetState);
+                }
+                else{
+                    swal({
+                            title: "",
+                            text: "Sorry! The Report builder feature is only available on the Agency Plan.",
+                            type: "warning",
+                            showCancelButton: true,
+                            confirmButtonColor: "#DD6B55",
+                            confirmButtonText: "Upgrade",
+                            closeOnConfirm: true
+                        },
+                        function () {
+                            $state.go('app.reporting.upgrade');
+                        });
+                }
+
                 break;
             case 'insights':
                 toastr.info('Coming Soon');

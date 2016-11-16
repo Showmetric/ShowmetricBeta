@@ -7,6 +7,7 @@ var userPermission = require('../helpers/utility');
 var widgetsList = require('../models/widgets');
 var textWidgetsList = require('../models/textWidgets');
 var objectList=require('../models/objects');
+var Alert=require('../models/alert');
 /**
  Function to get the widgets's details such as channel id,name,desciption ..
  @params 1.req contains the  user details i.e. username,token,email etc
@@ -190,6 +191,16 @@ exports.deleteWidgets = function (req, res, next) {
                                 }
                             }
                         })}
+                        var deleteAlerts = function () {
+                            //todo rollback alerts
+                            Alert.remove({widgetId:req.params.widgetId},function (err, alert) {
+                                if (err)
+                                    return res.status(500).json({error: 'Internal server error'});
+                                else
+                                    removal();
+                            })
+                        }
+
                         if(widgetDetail.channelName=='Moz') {
                             var objectid=widgetDetail.charts[0].metrics[0].objectId;
                             var objectlength;
@@ -205,17 +216,15 @@ exports.deleteWidgets = function (req, res, next) {
                                             if (err)
                                                 return res.status(500).json({error: 'Internal server error'});
                                         })
-                                        removal();
+                                        deleteAlerts();
                                     }
-                                    else
-                                        removal();
+                                    else deleteAlerts();
                                 }
                             })
 
 
                         }
-                        else
-                            removal();
+                        else deleteAlerts();
                     }
                 })
             }

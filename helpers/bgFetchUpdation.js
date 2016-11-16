@@ -1,6 +1,6 @@
 var Data = require('../models/data');
 var exports = module.exports = {};
-exports.updateBgFetch = function (req, done) {
+exports.updateBgFetch = function (req,res, done) {
     Data.update({
         'objectId': req.body.objectId,
         'metricId': req.body.metricId},{$set:{bgFetch:req.body.bgFetch, fetchPeriod:1}},function (err,data) {

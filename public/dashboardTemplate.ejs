@@ -1,25 +1,25 @@
 <div ng-init="dashboardConfiguration()">
-    <div id="dashboardLayout" class="dashboardLayout">
-        <div class="border-bottom dashboardTitle white-bg">
+    <div id="dashboardLayout" class="dashboardLayout" >
+        <div class="border-bottom dashboardTitle postitionRelative white-bg">
             <div class="row titleMargin">
                 <div class="col col-sm-12" id="CustomTemplate">
                     <div class="dashboardTemplate-items">
-                        <div class="col-sm-3 dashboardName">
+                        <div id='step1' class="col-sm-3 dashboardName">
                             <a title="Click to rename this Dashboard" id='reset-btn' href="#" ng-model="dashboardName" editable-text="dashboard.dashboardName"   onaftersave="changeDashboardName()"  e-maxlength="26">
-                                <pre ng-style="!dashboard.dashboardName  && {'color':'#999'}  || dashboard.dashboardName && {'color':'#232c3b'}">{{dashboard.dashboardName || 'Name your dashboard'}}</pre>
+                                <pre ng-style="!dashboard.dashboardName  && {'color':'#999'}  || dashboard.dashboardName && {'color':'#232c3b'}">{{ dashboard.dashboardName || 'Name your dashboard'}}</pre>
                                 <i class="fa fa-pencil hover-icon" aria-hidden="true" style="font-size: 1.5em;margin-top: 6px;color:#232c3b;display:none"></i>
                             </a>
                         </div >
-                        <div class="col-sm-4">
+                        <div id="step2" class="col-sm-4">
                             <div style="width:100%" class="daterange daterange--double two"></div>
                         </div>
                         <div class="col-sm-3 pull-right dashboardTitleIcons" style="padding-right: 5px !important"  id="dashboardTitleIcons" >
                             <form class="dashboardIcons autoarrange-export-delete">
-                                <img src="image/Widget.png" height="25" width="43"  title="Add Widgets" ng-click="stateValidation('basicWidget')" title="Add Widgets" data-toggle="tooltip" data-placement="bottom" data-original-title="Add Widgets">
-                                <img src="image/fusion.png" height="25" width="43"  title="Fusions" ng-click="stateValidation('fusionWidget')" title="Add Fusions" data-toggle="tooltip" data-placement="bottom" data-original-title="Add Fusions">
-                                <img ng-hide="isMobile==true" src="image/autoarrange.png" height="25" width="43" ng-disabled="loadedWidgetCount != dashboard.widgets.length" ng-click="(loadedWidgetCount != dashboard.widgets.length) || setAutoArrange()" title="Auto-arrange" data-toggle="tooltip" data-placement="bottom" data-original-title="Auto-Arrange">
-                                <img ng-hide="isMobile==true" src="image/exports.png" height="25" width="43" ng-disabled="loadedWidgetCount != dashboard.widgets.length" ng-click="(loadedWidgetCount != dashboard.widgets.length) || exportModal('app.reporting.dashboard.exportModal')" title="Export" data-toggle="tooltip" data-placement="bottom" data-original-title="Export">
-                                <img src="image/delete.png" height="25" width="43" ng-click="deleteDashboard()" title="Delete Dashboard" data-toggle="tooltip" data-placement="bottom" data-original-title="Delete Dashboard">
+                                <img id="step3" src="image/Widget.png" height="25" width="43"  title="Add Widgets" ng-click="stateValidation('basicWidget')" title="Add Widgets" data-toggle="tooltip" data-placement="bottom" data-original-title="Add Widgets">
+                                <img id="step4" src="image/fusion.png" height="25" width="43"  title="Fusions" ng-click="stateValidation('fusionWidget')" title="Add Fusions" data-toggle="tooltip" data-placement="bottom" data-original-title="Add Fusions">
+                                <img id="step5" ng-hide="isMobile==true" src="image/autoarrange.png" height="25" width="43" ng-disabled="loadedWidgetCount != dashboard.widgets.length" ng-click="(loadedWidgetCount != dashboard.widgets.length) || setAutoArrange()" title="Auto-arrange" data-toggle="tooltip" data-placement="bottom" data-original-title="Auto-Arrange">
+                                <img id='step6' ng-hide="isMobile==true" src="image/exports.png" height="25" width="43" ng-disabled="loadedWidgetCount != dashboard.widgets.length" ng-click="(loadedWidgetCount != dashboard.widgets.length) || exportModal('app.reporting.dashboard.exportModal')" title="Export" data-toggle="tooltip" data-placement="bottom" data-original-title="Export">
+                                <img id='step7' src="image/delete.png" height="25" width="43" ng-click="deleteDashboard()" title="Delete Dashboard" data-toggle="tooltip" data-placement="bottom" data-original-title="Delete Dashboard">
                             </form>
                         </div>
                     </div>
@@ -28,7 +28,7 @@
         </div>
         <div class="parallel-dashboard greyish-bg" ng-style="{'height': docHeight+'px'}" ng-if="widgetsPresent == false">
             <!--<a ui-sref="app.reporting.dashboard.basicWidget({widgetType:'basic'})"><div class="white-bg empty-dashboard"><span>Add your first widget</span></div></a>-->
-            <a ng-click="basicwidget()"><div class="white-bg empty-dashboard"><span>Add your first widget</span></div></a>
+            <a ng-click="stateValidation('basicWidget')"><div class="white-bg empty-dashboard"><span>Add your first widget</span></div></a>
         </div>
         <div id="dashboardContent"  ng-style="{'height': docHeight+'px'}" class="greyish-bg dashboardContent" ng-if="widgetsPresent == true" >
             <div class="spiner-mobile-example" ng-if="loadedWidgetCount != dashboard.widgets.length">
@@ -83,6 +83,16 @@
                                             <div style="height:99%;">
                                                 <div style="position:relative; top:36%; text-align:center; padding-right:20px">
                                                     <p style="word-wrap:break-word;font-size: 10px;">Your credential is insufficient to fetch data for this metric</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class=" errorWidgetData  background-color" id="errorGatewayTimeout-{{widget.id}}" style="margin-top: 0%;">
+                                        <div class="row" style="margin: 0px;height: 100%">
+                                            <div style="height:99%;">
+                                                <div style="position:relative; top:25%; text-align:center; padding-right:20px">
+                                                    <p style="word-wrap:break-word;font-size: 10px;">Error in populating widget.Please Refresh</p>
+                                                    <!--<a><i style="color: #23527c;" class="fa fa-refresh" aria-hidden="true"> </i><p style="color:#232c3b;font-size: 10px">  Refresh</p></a>-->
                                                 </div>
                                             </div>
                                         </div>
@@ -260,7 +270,7 @@
                                                             </tr>
                                                             <tr>
                                                                 <th>
-                                                                    <input st-search="pageTitle" placeholder="search for pageTitle" class="input-sm form-control" type="search"/>
+                                                                    <input st-search="pageTitle" placeholder="Search Page" class="input-sm form-control" type="search"/>
                                                                 </th>
                                                                 <th></th>
                                                                 <th></th>
@@ -341,10 +351,10 @@
                                                             </tr>
                                                             <tr>
                                                                 <th>
-                                                                    <input st-search="Name" placeholder="search for Name" class="input-sm form-control" type="search"/>
+                                                                    <input st-search="Name" placeholder="Search Name" class="input-sm form-control" type="search"/>
                                                                 </th>
                                                                 <th>
-                                                                    <input st-search="status" placeholder="search for Status" class="input-sm form-control" type="search"/>
+                                                                    <input st-search="status" placeholder="Search Status" class="input-sm form-control" type="search"/>
                                                                 </th>
                                                                 <th></th>
                                                                 <th></th>
@@ -414,10 +424,10 @@
                                                             </tr>
                                                             <tr>
                                                                 <th>
-                                                                    <input st-search="Name" placeholder="search for Name" class="input-sm form-control" type="search"/>
+                                                                    <input st-search="Name" placeholder="Search Name" class="input-sm form-control" type="search"/>
                                                                 </th>
                                                                 <th>
-                                                                    <input st-search="status" placeholder="search for Status" class="input-sm form-control" type="search"/>
+                                                                    <input st-search="status" placeholder="Search Status" class="input-sm form-control" type="search"/>
                                                                 </th>
                                                                 <th></th>
                                                                 <th></th>
@@ -486,10 +496,10 @@
                                                             </tr>
                                                             <tr>
                                                                 <th>
-                                                                    <input st-search="Name" placeholder="search for Name" class="input-sm form-control" type="search"/>
+                                                                    <input st-search="Name" placeholder="Search Name" class="input-sm form-control" type="search"/>
                                                                 </th>
                                                                 <th>
-                                                                    <input st-search="type" placeholder="search for type" class="input-sm form-control" type="search"/>
+                                                                    <input st-search="type" placeholder="Search Type" class="input-sm form-control" type="search"/>
                                                                 </th>
                                                                 <th></th>
                                                                 <th></th>
@@ -584,13 +594,13 @@
                                                         <table st-table="chart.data"  class="table table-striped">
                                                             <thead>
                                                             <tr >
-                                                                <th st-sort="text">HashTag</th>
+                                                                <th st-sort="text">Hashtag</th>
                                                                 <th st-sort="engagement">Engagement</th>
 
                                                             </tr>
                                                             <tr>
                                                                 <th>
-                                                                    <input st-search="tag" placeholder="search for tag" class="input-sm form-control" type="search"/>
+                                                                    <input st-search="tag" placeholder="Search Hashtag" class="input-sm form-control" type="search"/>
                                                                 </th>
                                                                 <th></th>
                                                             </tr>
@@ -630,7 +640,7 @@
                                                             </tr>
                                                             <tr>
                                                                 <th>
-                                                                    <input st-search="pageTitle" placeholder="search for pageTitle" class="input-sm form-control" type="search"/>
+                                                                    <input st-search="pageTitle" placeholder="Search Page" class="input-sm form-control" type="search"/>
                                                                 </th>
                                                                 <th></th>
                                                                 <th></th>
@@ -677,7 +687,7 @@
                                                             </tr>
                                                             <tr>
                                                                 <th>
-                                                                    <input st-search="pageTitle" placeholder="search for pageTitle" class="input-sm form-control" type="search"/>
+                                                                    <input st-search="pageTitle" placeholder="Search Page" class="input-sm form-control" type="search"/>
                                                                 </th>
                                                                 <th></th>
                                                                 <th></th>
@@ -720,7 +730,7 @@
                                                             </tr>
                                                             <tr>
                                                                 <th>
-                                                                    <input st-search="sourceMedium" placeholder="search for sourceMedium" class="input-sm form-control" type="search"/>
+                                                                    <input st-search="sourceMedium" placeholder="Search Source Medium" class="input-sm form-control" type="search"/>
                                                                 </th>
                                                                 <th></th>
                                                                 <th></th>
@@ -767,7 +777,7 @@
                                                             </tr>
                                                             <tr>
                                                                 <th>
-                                                                    <input st-search="source" placeholder="search for source" class="input-sm form-control" type="search"/>
+                                                                    <input st-search="source" placeholder="Search Source" class="input-sm form-control" type="search"/>
                                                                 </th>
                                                                 <th></th>
                                                                 <th></th>
@@ -883,14 +893,14 @@
                                                     <table st-table="chart.data" class="table table-striped" >
                                                         <thead>
                                                         <tr>
-                                                            <th st-sort="tag">HashTag</th>
+                                                            <th st-sort="tag">Hashtag</th>
                                                             <th st-sort="likes">Likes</th>
                                                             <th st-sort="comments">Comments</th>
 
                                                         </tr>
                                                         <tr>
                                                             <th>
-                                                                <input st-search="tag" placeholder="search for tag" class="input-sm form-control" type="search"/>
+                                                                <input st-search="tag" placeholder="Search Hashtag" class="input-sm form-control" type="search"/>
                                                             </th>
                                                             <th></th>
                                                             <th></th>
@@ -922,7 +932,7 @@
                                                             </tr>
                                                             <tr>
                                                                 <th>
-                                                                    <input st-search="userMentionedScreenName" placeholder="search for userMentionedScreenName" class="input-sm form-control" type="search"/>
+                                                                    <input st-search="userMentionedScreenName" placeholder="Search User Mentioned" class="input-sm form-control" type="search"/>
                                                                 </th>
                                                                 <th></th>
                                                                 <th></th>
@@ -962,7 +972,7 @@
                                                             </tr>
                                                             <tr>
                                                                 <th>
-                                                                    <input st-search="name" placeholder="search for name" class="input-sm form-control" type="search"/>
+                                                                    <input st-search="name" placeholder="Search Name" class="input-sm form-control" type="search"/>
                                                                 </th>
                                                                 <th></th>
                                                                 <th></th>

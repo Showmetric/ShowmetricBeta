@@ -9,14 +9,8 @@ var Payment = require('../models/payments');
 var Dashboard = require('../models/dashboards')
 // to create a random string
 var randomString = require("randomstring");
-var nodemailer = require('nodemailer');
-var transporter = nodemailer.createTransport({
-    service: configAuth.emailVerification.service,
-    auth: {
-        user: configAuth.emailVerification.username,
-        pass: configAuth.emailVerification.password
-    }
-});
+var sg = require('sendgrid')(configAuth.sendGridDetails.apiKey);
+var request = require('request');
 var User = require('../models/user');
 var Widget = require('../models/widgets');
 var dashboards = require('../models/dashboards')
@@ -113,11 +107,38 @@ var self = module.exports = {
         })
     },
     sendEmail: function (mailOptions, alertId, done) {
-        // Send
-        transporter.sendMail(mailOptions, function (error, info) {
+        var request = sg.emptyRequest({
+            method: 'POST',
+            path: '/v3/mail/send',
+            body: {
+                personalizations: [
+                    {
+                        to: [
+                            {
+                                email: mailOptions.to,
+                            },
+                        ],
+                        subject: mailOptions.subject,
+                    },
+                ],
+                from: {
+                    email: configAuth.emailVerification.username,
+                    name:'Datapoolt',
+                },
+                content: [
+                    {
+                        type: 'text/html',
+                        value: mailOptions.html
+                    },
+                ],
+            },
+        });
+        //With callback
+        sg.API(request, function(error, response) {
             if (error) done(null, 'success')
             else {
                 Alert.update({_id: alertId}, {$set: {lastEvaluatedTime: new Date()}}, function (err, alertUpdate) {
+
                     done(null, 'success')
                 })
             }
@@ -179,7 +200,6 @@ var self = module.exports = {
             })
     },
     getSubscriptionType: function (req, res, done) {
-        /*console.log(req.body.orgId,req.user.orgId)*/
         if(req.body.orgId && req.body.orgId !='undefined') var user = {_id:req.body.orgId};
         else var user = {_id: req.user.orgId}
         organization.findOne(user, function (err, subscriptionType) {
@@ -303,15 +323,10 @@ var self = module.exports = {
                             if (err)
                                 return done(err);
                             else {
-                                var mailOptionsSubmitter = {
-                                    from: 'Datapoolt Invites <alerts@datapoolt.co>',
-                                    to: user.email,
-                                    subject: user.name + ', we\'ve received your request for an invite' ,
-                                    // HTML Version
-                                    html: '<p>Hi ' + user.name + ',</p>' +
+                                // HTML Version
+                                newUser.html= '<p>Hi ' + user.name + ',</p>' +
                                     '<p> We have received your request for an invite.Click link below to activate your account</p><br><button style="background-color: #1a8bb3;border-radius: 12px;color:#fff;font-size: 24px;"><a style="text-decoration: none;color:#fff" href="'+configAuth.emailVerification.redirectLink+user.emailVerification.tokenId+'">Click to Activate</a></button> <p>Thanks for trying us out. Cheers!</p>'
-                                };
-                                self.sendVerificationMail(mailOptionsSubmitter,function(err){
+                                self.sendConfirmationMail(newUser,function(err){
                                     if(err){
                                         User.remove({_id: user._id}, function (err,result){
                                             if (err)
@@ -355,6 +370,40 @@ var self = module.exports = {
         else{
             done(null, []);
         }
+    },
+    sendConfirmationMail:function (user,done) {
+        var request = sg.emptyRequest({
+            method: 'POST',
+            path: '/v3/mail/send',
+            body: {
+                personalizations: [
+                    {
+                        to: [
+                            {
+                                email: user.email,
+                                name:user.name
+                            },
+                        ],
+                        subject: 'Welcome to Datapoolt!',
+                    },
+                ],
+                from: {
+                    email: configAuth.emailVerification.username,
+                    name:'Datapoolt',
+                },
+                content: [
+                    {
+                        type: 'text/html',
+                        value: user.html
+                    },
+                ],
+            },
+        });
+        //With callback
+        sg.API(request, function(error, response) {
+            if(error) done(error,null)
+            else done(null,response)
+        });
     }
 };
 

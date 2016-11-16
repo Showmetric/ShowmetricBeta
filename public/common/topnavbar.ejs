@@ -2,7 +2,7 @@
     <nav class="navbar navbar-static-top" role="navigation">
         <div class="navbar-header topnavbar-header">
             <span minimaliza-sidebar class="menus-img menuButton"></span>
-            <button style="margin-top:7px" data-toggle="dropdown" class="btn btn-white dropdown-toggle recentDashboard" type="button" aria-expanded="false">Recent Dashboards <span class="caret"></span></button>
+            <button id='step11' style="margin-top:7px" data-toggle="dropdown" class="btn btn-white dropdown-toggle recentDashboard" type="button" aria-expanded="false">Recent Dashboards <span class="caret"></span></button>
             <ul class="dropdown-menu">
                 <li ng-repeat="recentDashboard in recentDashboards"><a ui-sref="app.reporting.dashboard({id: recentDashboard._id})">{{recentDashboard.name || 'unnamed'}}</a></li>
                 <li class="divider"></li>
@@ -15,19 +15,25 @@
                        </h3>
                     <div  style="float: right;height: inherit;padding: 15px 0px;">
                         <div class="topdropdown">
-                            <button ng-click="getDropdown()" class="topdropbtn">
+                            <button id='step12' ng-click="getDropdown()" class="topdropbtn">
                                 <i class="glyphicon glyphicon-chevron-down"></i>
                             </button>
                             <div id="myDropdown" class="topdropdown-content">
-                                <a class="navbar-minimalize minimalize-styl-1 md-trigger md-setperspective md-effect-19" ui-sref="app.reporting.listProfile">
+                                <a id='step13' class="navbar-minimalize minimalize-styl-1 md-trigger md-setperspective md-effect-19" ui-sref="app.reporting.listProfile">
                                     Profile Management
                                 </a>
-                                <a class="navbar-minimalize minimalize-styl-1 md-trigger md-setperspective md-effect-19" ui-sref="app.reporting.accountManagement" data-modal="settingModalContent" >My Account
+                                <a id='step14' class="navbar-minimalize minimalize-styl-1 md-trigger md-setperspective md-effect-19" ui-sref="app.reporting.accountManagement" data-modal="settingModalContent" >My Account
                                 </a>
                                 <a id="soonModel" class="navbar-minimalize minimalize-styl-1 md-trigger md-setperspective md-effect-19 " data-modal="addRemoveModalContent">
                                     User Management
                                 </a>
-                                <a class="navbar-minimalize minimalize-styl-1" href="/signout">
+                                <a id='step15' class="navbar-minimalize minimalize-styl-1" ng-click="CallMe();">
+                                    Take a Tour
+                                </a>
+                                <!--<a id='step16' class="navbar-minimalize minimalize-styl-1 md-trigger md-setperspective md-effect-19 " data-modal="videoTourModalContent">-->
+                                <!--Take a Video Tour-->
+                                <!--</a>-->
+                                <a id='step17' class="navbar-minimalize minimalize-styl-1" href="/signout">
                                     Logout
                                 </a>
                             </div>
