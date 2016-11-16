@@ -885,7 +885,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                     var formattedChartDataArray = [];
                                     for (datas in widget.charts[charts].chartData) {
                                         var formattedChartData = {
-                                            date: moment(widget.charts[charts].chartData[datas].date).format('DD-MMM-YYYY'),
+                                            date: moment(new Date(widget.charts[charts].chartData[datas].date)).format('DD-MMM-YYYY'),
                                             likes: (widget.charts[charts].chartData[datas].total != null && Object.keys(widget.charts[charts].chartData[datas].total.length != 0) ? (typeof widget.charts[charts].chartData[datas].total[likes] != 'undefined' ? widget.charts[charts].chartData[datas].total[likes] : 0) : 0),
                                             reTweet: (widget.charts[charts].chartData[datas].total != null && Object.keys(widget.charts[charts].chartData[datas].total.length != 0) ? (typeof widget.charts[charts].chartData[datas].total[reTweet] != 'undefined' ? widget.charts[charts].chartData[datas].total[reTweet] : 0) : 0),
                                             postComment: (widget.charts[charts].chartData[datas].total != null && Object.keys(widget.charts[charts].chartData[datas].total.length != 0) ? (typeof widget.charts[charts].chartData[datas].total[post] != 'undefined' ? widget.charts[charts].chartData[datas].total[post] : 0) : 0),
