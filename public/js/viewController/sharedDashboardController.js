@@ -34,7 +34,6 @@ function SharedDashboardController($scope,$timeout,$rootScope,$http,$window,$sta
                 params: {dashboardId:$state.params.id}
             }).then(
                 function successCallback(response) {
-                    console.log(response)
                     if (response.status == 200) {
                         dateRange = response.data.response.limits.dateRange;
                         $scope.userModifyDate(dateRange)
