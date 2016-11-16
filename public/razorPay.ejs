@@ -483,11 +483,13 @@
                 $.ajax({
                     type: 'post',
                     url: '/api/v1/savePayments',
-                    data: {paymentId: response.razorpay_payment_id,
-                        amount: code*100,
+                    data: {
+                        paymentId: response.razorpay_payment_id,
+                        amount: code * 100,
                         duringSignup: true,
-                        code:code},
-                    success:function () {
+                        code: code
+                    },
+                    success: function () {
                         window.location = "confirmation"
                     }
                 });
@@ -499,7 +501,6 @@
         var rzp1 = new Razorpay(options);
         rzp1.open();
     }
-
 
 </script>
 </body>

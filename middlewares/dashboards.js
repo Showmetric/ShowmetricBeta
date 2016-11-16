@@ -274,7 +274,7 @@ exports.removeDashboardFromUser = function (req, res, next) {
                     Alert.remove({'widgetId':{$in:widgets}},function (err, alert) {
                             if (err)
                                 return res.status(500).json({error: 'Internal server error'});
-                        else removeWidget();
+                            else removeWidget();
                     })
                 }
             })

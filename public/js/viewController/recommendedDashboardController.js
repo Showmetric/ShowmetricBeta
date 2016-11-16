@@ -105,7 +105,7 @@ function RecommendedDashboardController($scope, $http, $window, $q, $state, $roo
     $scope.closeRecommendedDashboardModal = function () {
         changeState().then(
             function () {
-                $state.go('app.reporting.dashboard', {id: $rootScope.stateDashboard._id});
+                $state.go('app.reporting.dashboards');
             }
         )
     }

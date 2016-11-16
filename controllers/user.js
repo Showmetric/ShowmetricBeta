@@ -5,10 +5,9 @@ var limitcheck = require('../helpers/pricing')
 var getSubscriptionDetails = require('../helpers/utility');
 var moment = require('moment');
 var request = require('request');
-var nodemailer = require('nodemailer');
 var User = require('../models/user');
 var Subscription = require('../models/subscriptionType');
-
+var sg = require('sendgrid')(configAuth.sendGridDetails.apiKey);
 module.exports = function (app, passport) {
     var codeValue;
     var subscribedAmount;
@@ -122,23 +121,15 @@ module.exports = function (app, passport) {
                 req.subscriptionId = newUser.subscriptionId;
                 req.validity = newUser.validity;
                 req.code = codeValue
+                newUser.html = '<p><img alt="" src="https://www.datapoolt.co/wp-content/uploads/2016/10/Logo@3x.png" width=150 height=50/></p>'+ '<p>Hi ' + newUser.name + ',</p>' +
+                    '<p>Welcome to Datapoolt!</p>'+
+                    '<p> We are glad to on-board you with Datapoolt. Please activate your Datapoolt account by clicking the verification link below:</p><a href="' + configAuth.emailVerification.redirectLink + newUser.emailVerification.tokenId + '">Click Here</a><br>' +
+                    '<p>Here is a short video to help you set up your account and explore what Datapoolt can do for you and your team.</p>'+
+                    '<p>Our team is here to assist you with any questions you may have. </p>'+
+                    "<p>Simply reply to this email if you'd like to get in touch.</p>"
+                    +' <p>Cheers,</p><p>Datapoolt Team</p>';
                 getSubscriptionDetails.updateSubscription(req, res, function (updateDetails) {
-                    var mailOptionsSubmitter = {
-                        from: 'Datapoolt Invites <alerts@datapoolt.co>',
-                        to: newUser.email,
-                        subject: newUser.name + ', we\'ve received your request for an invite',
-                        // HTML Version
-                        html: '<p>Hi ' + newUser.name + ',</p>' +
-                        '<p> We have received your request for an invite.Click link below to activate your account</p><br><button style="background-color: #1a8bb3;border-radius: 12px;color:#fff;font-size: 24px;"><a style="text-decoration: none;color:#fff" href="' + configAuth.emailVerification.redirectLink + newUser.emailVerification.tokenId + '">Click to Activate</a></button> <p>Thanks for trying us out. Cheers!</p>'
-                    };
-                    var transporter = nodemailer.createTransport({
-                        service: configAuth.emailVerification.service,
-                        auth: {
-                            user: configAuth.emailVerification.username,
-                            pass: configAuth.emailVerification.password
-                        }
-                    });
-                    transporter.sendMail(mailOptionsSubmitter, function (error, info) {
+                    getSubscriptionDetails.sendConfirmationMail(newUser,function(error,userDetails){
                         if (error) {
                             User.remove({_id: newUser._id}, function (err, result) {
                                 if (err)
@@ -152,7 +143,7 @@ module.exports = function (app, passport) {
                         }
                         else
                             res.redirect('/confirmation')
-                    });
+                    })
                 })
             }
             else return res.redirect('/payment?code=' + req.body.code);
@@ -192,38 +183,33 @@ module.exports = function (app, passport) {
                     req.status = body.status;
                     req.email = body.email;
                     req.contact = body.contact;
-                    var mailOptionsSubmitter = {
-                        from: 'Datapoolt Invites <alerts@datapoolt.co>',
-                        to: newUser.email,
-                        subject: newUser.name + ', we\'ve received your request for an invite',
-                        // HTML Version
-                        html: '<p>Hi ' + newUser.name + ',</p>' +
-                        '<p> We have received your request for an invite.Click link below to activate your account</p><br><button style="background-color: #1a8bb3;border-radius: 12px;color:#fff;font-size: 24px;"><a style="text-decoration: none;color:#fff" href="' + configAuth.emailVerification.redirectLink + newUser.emailVerification.tokenId + '">Click to Activate</a></button> <p>Thanks for trying us out. Cheers!</p>'
-                    };
-                    var transporter = nodemailer.createTransport({
-                        service: configAuth.emailVerification.service,
-                        auth: {
-                            user: configAuth.emailVerification.username,
-                            pass: configAuth.emailVerification.password
-                        }
-                    });
-                    transporter.sendMail(mailOptionsSubmitter, function (error, info) {
-                        if (error) {
-                            User.remove({_id: newUser._id}, function (err, result) {
-                                if (err)
-                                    return res.status(500).json({error: 'Internal server error'});
-                                else if (!result)
-                                    return res.status(501).json({error: 'Not implemented'});
-                                else
-                                    res.render('../public/signup.ejs', {message: 'Failed to send email.Try to signup again'});
-                            });
-                        }
-                        else {
-                            getSubscriptionDetails.updateSubscription(req, res, function (updateDetails) {
-                                res.redirect('/confirmation');
-                            })
-                        }
-                    });
+                    newUser.html = '<p><img alt="" src="https://www.datapoolt.co/wp-content/uploads/2016/10/Logo@3x.png" width=150 height=50/></p>'+ '<p>Hi ' + newUser.name + ',</p>' +
+                        '<p>Welcome to Datapoolt!</p>'+
+                        '<p> We are glad to on-board you with Datapoolt. Please activate your Datapoolt account by clicking the verification link below:</p><a href="' + configAuth.emailVerification.redirectLink + newUser.emailVerification.tokenId + '">Click Here</a><br>' +
+                        '<p>Here is a short video to help you set up your account and explore what Datapoolt can do for you and your team.</p>'+
+                        '<p>Our team is here to assist you with any questions you may have. </p>'+
+                        "<p>Simply reply to this email if you'd like to get in touch.</p>"
+                        +' <p>Cheers,</p><br><p>Datapoolt Team</p>';
+                    getSubscriptionDetails.updateSubscription(req, res, function (updateDetails) {
+                        getSubscriptionDetails.sendConfirmationMail(newUser,function(err,userDetails){
+                            if (error) {
+                                User.remove({_id: newUser._id}, function (err, result) {
+                                    if (err)
+                                        return res.status(500).json({error: 'Internal server error'});
+                                    else if (!result)
+                                        return res.status(501).json({error: 'Not implemented'});
+                                    else
+                                        res.render('../public/signup.ejs', {message: 'Failed to send email.Try to signup again'});
+                                });
+                            }
+                            else {
+                                getSubscriptionDetails.updateSubscription(req, res, function (updateDetails) {
+                                    res.redirect('/confirmation');
+                                })
+                            }
+                        })
+
+                    })
                 }
                 else{
                     User.remove({_id: newUser._id}, function (err, result) {
@@ -356,18 +342,12 @@ module.exports = function (app, passport) {
                 res.redirect('/profile');
             });
         }
-        else if (req.app.result.status == configAuth.emailVerification.alreadyVerified) {
-            req.flash('loginMessage', 'This account is already verified.Please login to use datapoolt.')
-            res.redirect('/api/v1/login');
-        }
-        else if (req.app.result.status == configAuth.emailVerification.mailResend) {
-            req.flash('signupMessage', 'Your activation link has expired.Please check your mail for new activation link')
-            res.redirect('/api/v1/signup');
-        }
-        else if (req.app.result.status == configAuth.emailVerification.inValid) {
-            req.flash('signupMessage', 'Your activation link is invalid');
-            res.redirect('/api/v1/signup');
-        }
+        else if (req.app.result.status == configAuth.emailVerification.alreadyVerified)
+            return res.render('../public/signup.ejs', {message: 'This account is already verified.Please login to use datapoolt.'});
+        else if (req.app.result.status == configAuth.emailVerification.mailResend)
+            return res.render('../public/signup.ejs', {message: 'Your activation link has expired.Please check your mail for new activation link'});
+        else if (req.app.result.status == configAuth.emailVerification.inValid)
+            return res.render('../public/signup.ejs', {message: 'Your activation link is invalid'});
     });
     app.get('/api/v1/getSubscriptionFromDashboard/:dashboardId',function (req,res) {
         getSubscriptionDetails.getDashboardDetail(req,res,function (err,dashboard) {
@@ -390,5 +370,8 @@ module.exports = function (app, passport) {
         else {
             res.status(401).json({error: 'Authentication required to perform this action'});
         }
+    })
+    app.get('/api/v1/getUserActivityDetails/',userDetails.fetchUserActivityDetails,function (req, res){
+        res.json({isFirstTimeLogin:req.app.result});
     })
 };

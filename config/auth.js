@@ -444,12 +444,11 @@ module.exports = {
         apiKey:'rzp_test_cHlxIyQNJbANCc',
         apiKeySecret:'DyftA4AIdVt6J5j8QbqfQlcw'
     },
-    subscriptionCodeMapping:{
-        '195000':'starter',
-        '330000':'advanced',
-        '700000':'premium',
-        '850000':'agency',
-        '0':'free',
+    sendGridDetails: {
+        apiKey: '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',
+    },
+    batchJobsReceiverMailDetails:{
+        email:'batchjobs@datapoolt.co'
     }
 };
 
