@@ -384,7 +384,7 @@ var self = module.exports = {
                                 name:user.name
                             },
                         ],
-                        subject: 'Welcome to Datapoolt!',
+                        subject:user.subject,
                     },
                 ],
                 from: {

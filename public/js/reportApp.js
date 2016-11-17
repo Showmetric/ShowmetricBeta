@@ -14,8 +14,8 @@
         'ui.bootstrap.tpls',
         'gridster',
         /*'daterangepicker',*/
-        'xeditable',
-        'uiSwitch'
+        'xeditable'
+        //'uiSwitch'
     ])
 })();
 

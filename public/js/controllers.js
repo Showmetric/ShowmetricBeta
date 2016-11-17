@@ -371,10 +371,25 @@ showMetricApp.service('createWidgets', function ($http, $q) {
             return deferred.promise;
         }
 
-
         function formulateRegularWidgetGraphs(widget, dateRange) {
             var deferred = $q.defer();
             var widgetCharts = [];
+            var objectChannelName={
+                'Facebook':'FB',
+                'Twitter':'TW',
+                'Google Analytics':'GA',
+                'Facebook Ads':'FBAds',
+                'Google Adwords':'GAds',
+                'Instagram':'In',
+                'Pinterest':'Pi',
+                'Mailchimp':'Mc',
+                'Vimeo':'Vi',
+                'Linkedin':'Lin',
+                'Youtube':'YT',
+                'Moz':'Moz',
+                'Google Sheets':'GSheet',
+                'Aweber':'AW'
+            }
             var totalNonZeroPoints = -1;
             var summaryValueinChart = 0;
             if (widget.charts.length > 0) {
@@ -3228,6 +3243,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                 if (chartType == 'line' || chartType == 'bar' || chartType == 'column' || chartType == 'mozoverview') {
                                     if ((widget.channelName == 'FacebookAds') && (widget.charts[charts].metricDetails.name == 'Cost Per Unique Action Type')) {
                                         widgetCharts.push({
+                                            'channelName':objectChannelName[widget.channelName],
                                             'type': widget.charts[charts].chartType,
                                             'values': widget.charts[charts].chartData,      //values - represents the array of {x,y} data points
                                             'key': widget.charts[charts].chartName, //key  - the name of the series.
@@ -3238,6 +3254,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                     else if ((chartType == 'bar' || chartType == 'column') && totalNonZeroPoints < 0 && summaryValue == 0) {
                                         widgetCharts.push({
                                             'type': 'line',
+                                            'channelName':objectChannelName[widget.channelName],
                                             'values': widget.charts[charts].chartData,      //values - represents the array of {x,y} data points
                                             'key': widget.charts[charts].metricDetails.name, //key  - the name of the series.
                                             'color': widget.charts[charts].chartColour[0],  //color - optional: choose your own line color.
@@ -3250,6 +3267,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                     else {
                                         widgetCharts.push({
                                             "subChartType": widget.charts[charts].subChartType,
+                                            'channelName':objectChannelName[widget.channelName],
                                             'type': widget.charts[charts].chartType,
                                             'values': widget.charts[charts].chartData,      //values - represents the array of {x,y} data points
                                             'key': widget.charts[charts].chartSubType === 'fbTopReferringDomain' ? undefined : widget.charts[charts].metricDetails.name, //key  - the name of the series.
@@ -3275,6 +3293,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                         }
                                         widget.charts[charts].chartType = 'area';
                                         widgetCharts.push({
+                                            'channelName':objectChannelName[widget.channelName],
                                             'type': 'area',
                                             'values': negativArray,      //values - represents the array of {x,y} data points
                                             'key': widget.charts[charts].metricDetails.name, //key  - the name of the series.
@@ -3289,6 +3308,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                     }
                                     else {
                                         widgetCharts.push({
+                                            'channelName':objectChannelName[widget.channelName],
                                             'type': widget.charts[charts].chartType,
                                             'values': widget.charts[charts].chartData,      //values - represents the array of {x,y} data points
                                             'key': widget.charts[charts].metricDetails.name, //key  - the name of the series.
@@ -3303,6 +3323,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                 else if (chartType == 'area' || chartType == 'reachVsImpressions' || chartType == "engagedUsersReach") {
                                     var summary = Math.round(summaryValue * 100) / 100;
                                     widgetCharts.push({
+                                        'channelName':objectChannelName[widget.channelName],
                                         'type': widget.charts[charts].chartType,
                                         'values': widget.charts[charts].chartData,      //values - represents the array of {x,y} data points
                                         'key': widget.charts[charts].metricDetails.name == 'Total Impressions' ? 'Impressions/Reach (%)' : widget.charts[charts].metricDetails.name, //key  - the name of the series.
@@ -3317,6 +3338,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                 else if (chartType == 'bounceRateArea') {
                                     widget.charts[charts].chartType = 'area';
                                     widgetCharts.push({
+                                        'channelName':objectChannelName[widget.channelName],
                                         'type': widget.charts[charts].chartType,
                                         'values': widget.charts[charts].chartData,      //values - represents the array of {x,y} data points
                                         'key': widget.charts[charts].metricDetails.name, //key  - the name of the series.
@@ -3330,6 +3352,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                 else if (chartType == 'costPerClick' || chartType == 'costPerThosuandImpressions' || chartType == "clickThroughRate" || chartType == "ConversionRate" || chartType == "costPerConversion") {
                                     widget.charts[charts].chartType = 'area';
                                     widgetCharts.push({
+                                        'channelName':objectChannelName[widget.channelName],
                                         'type': widget.charts[charts].chartType,
                                         'values': widget.charts[charts].chartData,      //values - represents the array of {x,y} data points
                                         'key': widget.charts[charts].metricDetails.name, //key  - the name of the series.
@@ -3342,6 +3365,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                 }
                                 else if (chartType == 'costPerActionType') {
                                     widgetCharts.push({
+                                        'channelName':objectChannelName[widget.channelName],
                                         'type': 'line',
                                         'values': widget.charts[charts].chartData,      //values - represents the array of {x,y} data points
                                         'key': widget.meta.replace('_', ' '), //key  - the name of the series.
@@ -3355,6 +3379,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                 else if (chartType == 'trafficSourcesBrkdwnLine') {
                                     widgetCharts.push({
                                         'type': 'line',
+                                        'channelName':objectChannelName[widget.channelName],
                                         'values': widget.charts[charts].chartData,      //values - represents the array of {x,y} data points
                                         'key': widget.charts[charts].metricDetails.name, //key  - the name of the series.
                                         'color': widget.charts[charts].chartColour[0],  //color - optional: choose your own line color.
@@ -3366,6 +3391,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                 }
                                 else if (chartType == 'trafficSourcesBrkdwnPie') {
                                     widgetCharts.push({
+                                        'channelName':objectChannelName[widget.channelName],
                                         'name': widget.charts[charts].chartName,
                                         'type': 'pie',
                                         'values': widget.charts[charts].chartData,      //values - represents the array of {x,y} data points
@@ -3379,6 +3405,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                 }
                                 else if (chartType == "percentageArea") {
                                     widgetCharts.push({
+                                        'channelName':objectChannelName[widget.channelName],
                                         'type': widget.charts[charts].chartType,
                                         'metricCode': widget.charts[charts].metricCode,
                                         'metricName': widget.charts[charts].metricName,
@@ -3393,6 +3420,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                 }
                                 else {
                                     widgetCharts.push({
+                                        'channelName':objectChannelName[widget.channelName],
                                         'name': widget.charts[charts].chartName,
                                         'type': widget.charts[charts].chartType,
                                         'y': parseFloat(summaryValue),      //values - represents the array of {x,y} data points
@@ -3494,6 +3522,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                     if (chartType == 'line' || chartType == 'bar' || chartType == 'column' || chartType == 'mozoverview' || chartType == 'stackcolumn') {
                                         if ((chartType == 'bar' || chartType == 'column') && totalNonZeroPoints < 0 && summaryValue == 0) {
                                             widgetCharts.push({
+                                                'channelName':objectChannelName[widget.channelName],
                                                 'type': 'line',
                                                 'values': widget.charts[charts].chartData[items],      //values - represents the array of {x,y} data points
                                                 'key': widget.charts[charts].metricDetails.objectTypes[0].meta.endpoint,
@@ -3506,6 +3535,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                         }
                                         else
                                             widgetCharts.push({
+                                                'channelName':objectChannelName[widget.channelName],
                                                 'type': widget.charts[charts].chartType,
                                                 'values': widget.charts[charts].chartData[items],      //values - represents the array of {x,y} data points
                                                 'key': typeof widget.charts[charts].metricDetails.objectTypes[0].meta.endpointDisplayName != 'undefined' ? (typeof widget.charts[charts].metricDetails.objectTypes[0].meta.endpointDisplayName[endpointDisplayCode] != 'undefined' ? widget.charts[charts].metricDetails.objectTypes[0].meta.endpointDisplayName[endpointDisplayCode] : widget.charts[charts].metricDetails.objectTypes[0].meta.endpoint[items]) : widget.charts[charts].metricDetails.objectTypes[0].meta.endpoint[items],
@@ -3518,6 +3548,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                     }
                                     else if (chartType == 'trafficSourcesBrkdwnLine') {
                                         widgetCharts.push({
+                                            'channelName':objectChannelName[widget.channelName],
                                             'type': 'line',
                                             'values': widget.charts[charts].chartData[items],      //values - represents the array of {x,y} data points
                                             'key': typeof widget.charts[charts].metricDetails.objectTypes[0].meta.endpointDisplayName != 'undefined' ? (typeof widget.charts[charts].metricDetails.objectTypes[0].meta.endpointDisplayName[endpointDisplayCode] != 'undefined' ? widget.charts[charts].metricDetails.objectTypes[0].meta.endpointDisplayName[endpointDisplayCode] : widget.charts[charts].metricDetails.objectTypes[0].meta.endpoint[items]) : widget.charts[charts].metricDetails.objectTypes[0].meta.endpoint[items],
@@ -3530,6 +3561,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                     }
                                     else if (chartType == 'trafficSourcesBrkdwnPie') {
                                         widgetCharts.push({
+                                            'channelName':objectChannelName[widget.channelName],
                                             'name': widget.charts[charts].chartName,
                                             'type': 'pie',
                                             'y': parseFloat(summaryValue),       //values - represents the array of {x,y} data points
@@ -3543,6 +3575,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                     }
                                     else if (chartType == 'area' || chartType == 'negativebar') {
                                         widgetCharts.push({
+                                            'channelName':objectChannelName[widget.channelName],
                                             'type': widget.charts[charts].chartType,
                                             'values': widget.charts[charts].chartData[items],      //values - represents the array of {x,y} data points
                                             'key': typeof widget.charts[charts].metricDetails.objectTypes[0].meta.endpointDisplayName != 'undefined' ? (typeof widget.charts[charts].metricDetails.objectTypes[0].meta.endpointDisplayName[endpointDisplayCode] != 'undefined' ? widget.charts[charts].metricDetails.objectTypes[0].meta.endpointDisplayName[endpointDisplayCode] : widget.charts[charts].metricDetails.objectTypes[0].meta.endpoint[items]) : widget.charts[charts].metricDetails.objectTypes[0].meta.endpoint[items],
@@ -3556,6 +3589,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                     }
                                     else if (chartType == 'costPerActionType') {
                                         widgetCharts.push({
+                                            'channelName':objectChannelName[widget.channelName],
                                             'type': 'line',
                                             'values': widget.charts[charts].chartData,      //values - represents the array of {x,y} data points
                                             'key': widget.meta, //key  - the name of the series.
@@ -3568,6 +3602,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                     }
                                     else {
                                         widgetCharts.push({
+                                            'channelName':objectChannelName[widget.channelName],
                                             'name': widget.charts[charts].chartName,
                                             'type': widget.charts[charts].chartType,
                                             'y': parseFloat(summaryValue),      //values - represents the array of {x,y} data points
@@ -3593,6 +3628,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                         var colorIndex = 0;
                         for (var index in widget.charts[charts].chartData) {
                             widgetCharts.push({
+                                'channelName':objectChannelName[widget.channelName],
                                 'name': widget.charts[charts].chartName,
                                 'type': 'fbReachByCity',
                                 'y': parseFloat(widget.charts[charts].chartData[index]),      //values - represents the array of {x,y} data points
@@ -3712,6 +3748,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                     value: bounce
                                 }];
                                 widgetCharts.push({
+                                    'channelName':objectChannelName[widget.channelName],
                                     'type': widget.charts[charts].chartType,
                                     'values': widget.charts[charts].chartData,
                                     'summary': summmary,
@@ -3736,6 +3773,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                     value: pageviews
                                 }, {key: 'Bounce Rate', value: bounce}, {key: 'Entrance rate', value: entranceRate}];
                                 widgetCharts.push({
+                                    'channelName':objectChannelName[widget.channelName],
                                     'type': widget.charts[charts].chartType,
                                     'values': widget.charts[charts].chartData,
                                     'summary': summmary,
@@ -3758,6 +3796,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                     value: goalValuePerSession
                                 }, {key: 'Goal conversion rate', value: goalConversionRateAll}];
                                 widgetCharts.push({
+                                    'channelName':objectChannelName[widget.channelName],
                                     'type': widget.charts[charts].chartType,
                                     'values': widget.charts[charts].chartData,
                                     'summary': summmary,
@@ -3768,6 +3807,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                 break;
                             case 'gaSocialMediaOverview':
                                 widgetCharts.push({
+                                    'channelName':objectChannelName[widget.channelName],
                                     'type': widget.charts[charts].chartType,
                                     'values': widget.charts[charts].chartData,
                                     'key': widget.charts[charts].chartName,
@@ -3795,6 +3835,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                         value: goalCompletions
                                     }, {key: 'Goal conversion rate', value: goalConversionRate}];
                                     widgetCharts.push({
+                                        'channelName':objectChannelName[widget.channelName],
                                         'type': widget.charts[charts].chartType,
                                         'values': widget.charts[charts].chartData,
                                         'summary': summmary,
@@ -3815,6 +3856,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                     var colorIndex = 0;
                                     for (var index in widget.charts[charts].chartData) {
                                         widgetCharts.push({
+                                            'channelName':objectChannelName[widget.channelName],
                                             'name': widget.charts[charts].chartName,
                                             'type': 'pie',
                                             'key': index,
@@ -3829,6 +3871,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                     var colorIndex = 0;
                                     for (var index in widget.charts[charts].chartData) {
                                         widgetCharts.push({
+                                            'channelName':objectChannelName[widget.channelName],
                                             'name': widget.charts[charts].chartName,
                                             'type': 'fbReachByCity',
                                             'y': parseFloat(widget.charts[charts].chartData[index]),      //values - represents the array of {x,y} data points
@@ -3839,12 +3882,14 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                         });
                                         ++colorIndex;
                                     }
-                                } else if (widget.charts[charts].chartSubType === "instagramPostFrequency") {
+                                }
+                                else if (widget.charts[charts].chartSubType === "instagramPostFrequency") {
                                     var date1 = new Date(dateRange.startDate);
                                     var date2 = new Date(dateRange.endDate);
                                     var timeDiff = Math.abs(date2.getTime() - date1.getTime());
                                     var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
                                     widgetCharts.push({
+                                        'channelName':objectChannelName[widget.channelName],
                                         'key': 'Post per day',
                                         'type': 'angularGauge',
                                         'y': Math.round((widget.charts[charts].chartData / diffDays) * 100) / 100,   //values - represents the array of {x,y} data points
@@ -3859,6 +3904,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                 var colorIndex = 0;
                                 for (var index in widget.charts[charts].chartData) {
                                     widgetCharts.push({
+                                        'channelName':objectChannelName[widget.channelName],
                                         'name': widget.charts[charts].chartName,
                                         'type': 'pie',
                                         'y': parseFloat(widget.charts[charts].chartData[index]),      //values - represents the array of {x,y} data points
@@ -3874,6 +3920,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                             var colorIndex = 0;
                             for (var index in widget.charts[charts].chartData) {
                                 widgetCharts.push({
+                                    'channelName':objectChannelName[widget.channelName],
                                     'name': widget.charts[charts].chartName,
                                     'type': 'pie',
                                     'y': parseFloat(widget.charts[charts].chartData[index]),      //values - represents the array of {x,y} data points
@@ -3994,6 +4041,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                             }
                                         }
                                         widgetCharts.push({
+                                            'channelName':objectChannelName[widget.channelName],
                                             'type': widget.charts[charts].chartType,
                                             'metricCode': widget.charts[charts].metricCode,
                                             'metricName': widget.charts[charts].metricName,
@@ -4028,6 +4076,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                 }
                                 else {
                                     widgetCharts.push({
+                                        'channelName':objectChannelName[widget.channelName],
                                         'type': widget.charts[charts].chartType,
                                         'chartSubType': widget.charts[charts].chartSubType,
                                         'values': widget.charts[charts].chartData,
@@ -5577,7 +5626,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                         },
                         exporting: {enabled: false},
                         tooltip: {
-                            split: true,
+                            //split: true,
                             enabled: true,
                             shared: true
                         },

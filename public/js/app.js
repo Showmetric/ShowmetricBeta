@@ -15,10 +15,10 @@
         'gridster',
         /*'daterangepicker',*/
         'xeditable',
-        'uiSwitch',
+        //'uiSwitch',
         'smart-table',
-        'angular-intro',
-        'youtube-embed'
+        'angular-intro'
+        //'youtube-embed'
     ])
 })();
 

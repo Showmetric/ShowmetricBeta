@@ -5609,3 +5609,12 @@ input:focus{
 .introjs-fixParent {
     z-index: 10000000 !important;
 }
+.instapost{
+    white-space: nowrap;
+    width: 30em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+a{
+    color:black !important;
+}

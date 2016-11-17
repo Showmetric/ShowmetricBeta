@@ -112,7 +112,6 @@ agenda.define('Update channel data', {lockLifetime: 36000000}, function (job, do
             });
         }
     });
-
     init();
     function init() {
 
@@ -3505,6 +3504,7 @@ agenda.define('Update channel data', {lockLifetime: 36000000}, function (job, do
 agenda.define(configAuth.batchJobs.alertName, function (job, done) {
     var now = new Date();
     var storeOperator;
+    var Criteria;
     var thresholdValue;
     var getCountOfAlertdata = 0;
     var getCountOfSatisfiedData = 0;
@@ -3590,6 +3590,7 @@ agenda.define(configAuth.batchJobs.alertName, function (job, done) {
                                     else
                                         var valueToCheck = chosenValue.total;
                                     for (var key in alert.threshold) {
+                                        Criteria=key == 'gt' ? 'greater than':"less than";
                                         storeOperator = key == 'gt' ? '>' : '<';
                                         thresholdValue = alert.threshold[key]
                                     }
@@ -3599,10 +3600,11 @@ agenda.define(configAuth.batchJobs.alertName, function (job, done) {
                                         from: 'Datapoolt Team <alerts@datapoolt.co>',
                                         to: alert.mailingId.email,
                                         subject: 'Datapoolt Alerts:' + alert.name,
-
                                         // HTML Version
-                                        html: '<span>The data has crossed the limit of <b>' + thresholdValue + '</b></span>' + '<span> for the metric  <b>' + metric.name + '</b></span>' + '<span> in  <b>' + object.name + '</b></span>'
-
+                                        html: '<p style="align-content: center;font-weight: bold">Welcome to Datapoolt</p>' + '<br>' + '<div style="font-family: Helvetica,Arial,sans-serif">' + '<span>Dear Datapoolt User,</span>' +'<br>' + '<p>One of your configured alerts has been triggered.</p>' + '</div>'+
+                                        '<div style="width:400px;height:120px;padding:5px">'+'<div style="float:left;height:120px;padding:5%"><img stlyle="float:left;width:100px" src="https://cdn2.iconfinder.com/data/icons/bitsies/128/Alarm-64.png"></div>'+'<div style="float:right;border:1px solid #ff6c3a;width:250px;text-align:center;padding:5px;">'+'<br>'+alert.name+'<br>'+'<br>'+'<span style="color:#ffa000">'+valueToCheck+'</span>'+ '<br>'+'<br>'+
+                                    "Alert criteria:"+ metric.name +' '+Criteria+' '+thresholdValue+
+                                        '</div>'+'</div>' + '</b>' + '<button style="margin-left:80px;margin-top:10px;background-color:#ff6c3a;border-radius: 5px;background-color: #ff6c3a;box-shadow: 1px 1px 2px rgba(0,0,0,.2), inset 0 -2px #fd845b;border: solid 1px #ff6c3a;display: inline-block;padding: 6px 20px;font-size: 11px;color: #fff;font-family: bold, sans-serif, Arial;text-transform: uppercase;"><a style="text-decoration: none;color:#fff" href="http://datapoolt.co/">Visit Datapoolt</a></button>'+ '<p>Cheers,</p>'+'<p>Datapoolt Team</p>'
                                     };
                                     if (checkingThreshold === false) {
                                         getCountOfSatisfiedData++;
@@ -3640,11 +3642,11 @@ agenda.define(configAuth.batchJobs.alertName, function (job, done) {
         else callback(null, 'success')
     }
 })
-
 agenda.on('ready', function () {
     agenda.cancel({name: configAuth.batchJobs.alertJobName}, function (err, numRemoved) {
     });
-    agenda.every('2 hours', configAuth.batchJobs.alertJobName);
+    // agenda.every('2 hours', configAuth.batchJobs.alertJobName);
+    agenda.now( configAuth.batchJobs.alertJobName);
     agenda.start();
     agenda.on(configAuth.batchJobs.successBatchJobMessage, function (job) {
         var split = errorDataList.join('<br>')

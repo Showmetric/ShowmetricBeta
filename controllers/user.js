@@ -123,11 +123,11 @@ module.exports = function (app, passport) {
                 req.code = codeValue
                 newUser.html = '<p><img alt="" src="https://www.datapoolt.co/wp-content/uploads/2016/10/Logo@3x.png" width=150 height=50/></p>'+ '<p>Hi ' + newUser.name + ',</p>' +
                     '<p>Welcome to Datapoolt!</p>'+
-                    '<p> We are glad to on-board you with Datapoolt. Please activate your Datapoolt account by clicking the verification link below:</p><a href="' + configAuth.emailVerification.redirectLink + newUser.emailVerification.tokenId + '">Click Here</a><br>' +
-                    '<p>Here is a short video to help you set up your account and explore what Datapoolt can do for you and your team.</p>'+
+                    '<p> We are glad to on-board you with Datapoolt. Please activate your Datapoolt account by clicking the verification link below:</p><button style="background-color:#ff6c3a;border-radius: 5px;background-color: #ff6c3a;box-shadow: 1px 1px 2px rgba(0,0,0,.2), inset 0 -2px #fd845b;border: solid 1px #ff6c3a;display: inline-block;padding: 6px 20px;font-size: 11px;color: #fff;font-family: bold, sans-serif, Arial;text-transform: uppercase;"><a style="color:#ffffff;text-decoration:none" href="' + configAuth.emailVerification.redirectLink + newUser.emailVerification.tokenId + '">Verification Link</a></button><br>' +
                     '<p>Our team is here to assist you with any questions you may have. </p>'+
                     "<p>Simply reply to this email if you'd like to get in touch.</p>"
                     +' <p>Cheers,</p><p>Datapoolt Team</p>';
+                newUser.subject="Welcome to Datapoolt!";
                 getSubscriptionDetails.updateSubscription(req, res, function (updateDetails) {
                     getSubscriptionDetails.sendConfirmationMail(newUser,function(error,userDetails){
                         if (error) {
@@ -185,11 +185,11 @@ module.exports = function (app, passport) {
                     req.contact = body.contact;
                     newUser.html = '<p><img alt="" src="https://www.datapoolt.co/wp-content/uploads/2016/10/Logo@3x.png" width=150 height=50/></p>'+ '<p>Hi ' + newUser.name + ',</p>' +
                         '<p>Welcome to Datapoolt!</p>'+
-                        '<p> We are glad to on-board you with Datapoolt. Please activate your Datapoolt account by clicking the verification link below:</p><a href="' + configAuth.emailVerification.redirectLink + newUser.emailVerification.tokenId + '">Click Here</a><br>' +
-                        '<p>Here is a short video to help you set up your account and explore what Datapoolt can do for you and your team.</p>'+
+                        '<p> We are glad to on-board you with Datapoolt. Please activate your Datapoolt account by clicking the verification link below:</p><button style="background-color:#ff6c3a;border-radius: 5px;background-color: #ff6c3a;box-shadow: 1px 1px 2px rgba(0,0,0,.2), inset 0 -2px #fd845b;border: solid 1px #ff6c3a;display: inline-block;padding: 6px 20px;font-size: 11px;color: #fff;font-family: bold, sans-serif, Arial;text-transform: uppercase;"><a style="color:#ffffff;text-decoration:none" href="' + configAuth.emailVerification.redirectLink + newUser.emailVerification.tokenId + '">Verification Link</a></button><br>' +
                         '<p>Our team is here to assist you with any questions you may have. </p>'+
                         "<p>Simply reply to this email if you'd like to get in touch.</p>"
                         +' <p>Cheers,</p><br><p>Datapoolt Team</p>';
+                    newUser.subject="Welcome to Datapoolt!";
                     getSubscriptionDetails.updateSubscription(req, res, function (updateDetails) {
                         getSubscriptionDetails.sendConfirmationMail(newUser,function(err,userDetails){
                             if (error) {
