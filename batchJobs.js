@@ -3645,8 +3645,8 @@ agenda.define(configAuth.batchJobs.alertName, function (job, done) {
 agenda.on('ready', function () {
     agenda.cancel({name: configAuth.batchJobs.alertJobName}, function (err, numRemoved) {
     });
-    // agenda.every('2 hours', configAuth.batchJobs.alertJobName);
-    agenda.now( configAuth.batchJobs.alertJobName);
+     agenda.every('2 hours', configAuth.batchJobs.alertJobName);
+    //agenda.now( configAuth.batchJobs.alertJobName);
     agenda.start();
     agenda.on(configAuth.batchJobs.successBatchJobMessage, function (job) {
         var split = errorDataList.join('<br>')
