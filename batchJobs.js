@@ -103,7 +103,7 @@ agenda.define('Update channel data', {lockLifetime: 36000000}, function (job, do
             var mailOptions = {
                 from: 'Datapoolt Team <alerts@datapoolt.co>',
                 to: configAuth.batchJobsReceiverMailDetails.email,
-                subject: 'total of Update Data',
+                subject: 'total of Update Data UAT',
                 // HTML Version
                 html: '<span>total of Update Data' + ' ' + countOfData
             };
@@ -3598,7 +3598,7 @@ agenda.define(configAuth.batchJobs.alertName, function (job, done) {
                                     var mailOptions = {
                                         from: 'Datapoolt Team <alerts@datapoolt.co>',
                                         to: alert.mailingId.email,
-                                        subject: 'Datapoolt Alerts:' + alert.name,
+                                        subject: 'Datapoolt Alerts UAT:' + alert.name,
 
                                         // HTML Version
                                         html: '<span>The data has crossed the limit of <b>' + thresholdValue + '</b></span>' + '<span> for the metric  <b>' + metric.name + '</b></span>' + '<span> in  <b>' + object.name + '</b></span>'
@@ -3653,7 +3653,7 @@ agenda.on('ready', function () {
         var mailOptions = {
             from: 'Datapoolt Team <alerts@datapoolt.co>',
             to: configAuth.batchJobsReceiverMailDetails.email,
-            subject: 'BatchJobs Status',
+            subject: 'BatchJobs Status UAT',
             // HTML Version
             html: '<span>Count of data  <b>' + countOfData + '</b></span>' + '<span> Success metrics  <b>' + (countOfData - errorDataList.length) + '</b></span>' + '<span> Failure Metrics  <b>' + errorDataList.length + '</b></span><br><span>' + convertTostring + '</span>'
 
@@ -3679,7 +3679,7 @@ agenda.on('ready', function () {
             var mailOptions = {
                 from: 'Datapoolt Team <alerts@datapoolt.co>',
                 to: configAuth.batchJobsReceiverMailDetails.email,
-                subject: 'Alert Status',
+                subject: 'Alert Status UAT',
                 // HTML Version
                 html: '<span>Count of Alert  <b>' + getCountOfAlertdata + '</b></span>' + '<span> Success Alerts  <b>' + (getCountOfAlertdata - failureAlert.length) + '</b></span>' + '<span> Failure Alerts  <b>' + failureAlert.length + '</b></span><br><span> AlertId ' + convertTostring + '</span>'
 
