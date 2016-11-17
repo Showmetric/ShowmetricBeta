@@ -3597,8 +3597,8 @@ agenda.define(configAuth.batchJobs.alertName, function (job, done) {
                                     // Email Setup
                                     var mailOptions = {
                                         from: 'Datapoolt Team <alerts@datapoolt.co>',
-                                        to: configAuth.batchJobsReceiverMailDetails.email,
-                                        subject: 'The alert ' + alert.name + ' has been triggered',
+                                        to: alert.mailingId.email,
+                                        subject: 'Datapoolt Alerts:' + alert.name,
 
                                         // HTML Version
                                         html: '<span>The data has crossed the limit of <b>' + thresholdValue + '</b></span>' + '<span> for the metric  <b>' + metric.name + '</b></span>' + '<span> in  <b>' + object.name + '</b></span>'
