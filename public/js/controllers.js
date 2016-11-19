@@ -607,7 +607,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                             var percentage = [];
                             for (var data in imp) {
                                 var value = (imp[data].total / reach[data].total) * 100;
-                                if (isNaN(value))
+                                if (isNaN(value) || !(isFinite(value)))
                                     value = 0;
                                 percentage.push({
                                     x: moment(imp[data].date),
@@ -3246,7 +3246,8 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                             'channelName':objectChannelName[widget.channelName],
                                             'type': widget.charts[charts].chartType,
                                             'values': widget.charts[charts].chartData,      //values - represents the array of {x,y} data points
-                                            'key': widget.charts[charts].chartName, //key  - the name of the series.
+                                            'key': widget.charts[charts].chartName,
+                                            'unit':widget.charts[charts].metricDetails.objectTypes[0].meta.unit != undefined?widget.charts[charts].metricDetails.objectTypes[0].meta.unit[0]:"",//key  - the name of the series.
                                             'color': widget.charts[charts].chartColour[0],  //color - optional: choose your own line color.
                                             'summaryDisplay': (parseFloat(summaryValue).toFixed(2) % Math.floor(parseFloat(summaryValue).toFixed(2))) > 0 ? parseFloat(summaryValue).toFixed(2) : parseFloat(summaryValue).toFixed(2) > 1 ? parseInt(summaryValue) : parseFloat(summaryValue) > 0 ? parseFloat(summaryValue).toFixed(2) : parseInt(summaryValue)
                                         });
@@ -3256,7 +3257,8 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                             'type': 'line',
                                             'channelName':objectChannelName[widget.channelName],
                                             'values': widget.charts[charts].chartData,      //values - represents the array of {x,y} data points
-                                            'key': widget.charts[charts].metricDetails.name, //key  - the name of the series.
+                                            'key': widget.charts[charts].metricDetails.name,
+                                            'unit':widget.charts[charts].metricDetails.objectTypes[0].meta.unit != undefined?widget.charts[charts].metricDetails.objectTypes[0].meta.unit[0]:"",///key  - the name of the series.
                                             'color': widget.charts[charts].chartColour[0],  //color - optional: choose your own line color.
                                             'arrow': comparingData,
                                             'variance': percentage,
@@ -3271,6 +3273,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                             'type': widget.charts[charts].chartType,
                                             'values': widget.charts[charts].chartData,      //values - represents the array of {x,y} data points
                                             'key': widget.charts[charts].chartSubType === 'fbTopReferringDomain' ? undefined : widget.charts[charts].metricDetails.name, //key  - the name of the series.
+                                            'unit':widget.charts[charts].metricDetails.objectTypes[0].meta.unit != undefined?widget.charts[charts].metricDetails.objectTypes[0].meta.unit[0]:"",
                                             'color': widget.charts[charts].chartColour[0],  //color - optional: choose your own line color.
                                             'arrow': comparingData,
                                             'variance': percentage,
@@ -3297,6 +3300,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                             'type': 'area',
                                             'values': negativArray,      //values - represents the array of {x,y} data points
                                             'key': widget.charts[charts].metricDetails.name, //key  - the name of the series.
+                                            'unit':widget.charts[charts].metricDetails.objectTypes[0].meta.unit != undefined?widget.charts[charts].metricDetails.objectTypes[0].meta.unit[0]:"",
                                             'color': widget.charts[charts].chartColour[0],  //color - optional: choose your own line color.
                                             'arrow': comparingData,
                                             'variance': percentage,
@@ -3312,6 +3316,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                             'type': widget.charts[charts].chartType,
                                             'values': widget.charts[charts].chartData,      //values - represents the array of {x,y} data points
                                             'key': widget.charts[charts].metricDetails.name, //key  - the name of the series.
+                                            'unit':widget.charts[charts].metricDetails.objectTypes[0].meta.unit != undefined?widget.charts[charts].metricDetails.objectTypes[0].meta.unit[0]:"",
                                             'color': widget.charts[charts].chartColour[0],  //color - optional: choose your own line color.
                                             'arrow': comparingData,
                                             'variance': percentage,
@@ -3327,6 +3332,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                         'type': widget.charts[charts].chartType,
                                         'values': widget.charts[charts].chartData,      //values - represents the array of {x,y} data points
                                         'key': widget.charts[charts].metricDetails.name == 'Total Impressions' ? 'Impressions/Reach (%)' : widget.charts[charts].metricDetails.name, //key  - the name of the series.
+                                        'unit':widget.charts[charts].metricDetails.objectTypes[0].meta.unit != undefined?widget.charts[charts].metricDetails.objectTypes[0].meta.unit[0]:"",
                                         'color': widget.charts[charts].chartColour[0],  //color - optional: choose your own line color.
                                         'arrow': comparingData,
                                         'variance': percentage,
@@ -3342,6 +3348,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                         'type': widget.charts[charts].chartType,
                                         'values': widget.charts[charts].chartData,      //values - represents the array of {x,y} data points
                                         'key': widget.charts[charts].metricDetails.name, //key  - the name of the series.
+                                        'unit':widget.charts[charts].metricDetails.objectTypes[0].meta.unit != undefined?widget.charts[charts].metricDetails.objectTypes[0].meta.unit[0]:"",
                                         'color': widget.charts[charts].chartColour[0],  //color - optional: choose your own line color.
                                         'arrow': comparingData,
                                         'variance': percentage,
@@ -3356,6 +3363,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                         'type': widget.charts[charts].chartType,
                                         'values': widget.charts[charts].chartData,      //values - represents the array of {x,y} data points
                                         'key': widget.charts[charts].metricDetails.name, //key  - the name of the series.
+                                        'unit':widget.charts[charts].metricDetails.objectTypes[0].meta.unit != undefined?widget.charts[charts].metricDetails.objectTypes[0].meta.unit[0]:"",
                                         'color': widget.charts[charts].chartColour[0],  //color - optional: choose your own line color.
                                         'arrow': comparingData,
                                         'variance': percentage,
@@ -3382,6 +3390,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                         'channelName':objectChannelName[widget.channelName],
                                         'values': widget.charts[charts].chartData,      //values - represents the array of {x,y} data points
                                         'key': widget.charts[charts].metricDetails.name, //key  - the name of the series.
+                                        'unit':widget.charts[charts].metricDetails.objectTypes[0].meta.unit != undefined?widget.charts[charts].metricDetails.objectTypes[0].meta.unit[0]:"",
                                         'color': widget.charts[charts].chartColour[0],  //color - optional: choose your own line color.
                                         'arrow': comparingData,
                                         'variance': percentage,
@@ -3396,6 +3405,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                         'type': 'pie',
                                         'values': widget.charts[charts].chartData,      //values - represents the array of {x,y} data points
                                         'key': widget.charts[charts].metricDetails.name, //key  - the name of the series.
+                                        'unit':widget.charts[charts].metricDetails.objectTypes[0].meta.unit != undefined?widget.charts[charts].metricDetails.objectTypes[0].meta.unit[0]:"",
                                         'color': widget.charts[charts].chartColour[0],  //color - optional: choose your own line color.
                                         'arrow': comparingData,
                                         'variance': percentage,
@@ -3410,6 +3420,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                         'metricCode': widget.charts[charts].metricCode,
                                         'metricName': widget.charts[charts].metricName,
                                         'key': widget.charts[charts].metricName,
+                                        'unit':widget.charts[charts].metricDetails.objectTypes[0].meta.unit != undefined?widget.charts[charts].metricDetails.objectTypes[0].meta.unit[0]:"",
                                         'values': widget.charts[charts].chartData,
                                         'color': widget.charts[charts].chartColour,
                                         'arrow': comparingData,
@@ -3425,6 +3436,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                         'type': widget.charts[charts].chartType,
                                         'y': parseFloat(summaryValue),      //values - represents the array of {x,y} data points
                                         'key': widget.charts[charts].metricDetails.name, //key  - the name of the series.
+                                        'unit':widget.charts[charts].metricDetails.objectTypes[0].meta.unit != undefined?widget.charts[charts].metricDetails.objectTypes[0].meta.unit[0]:"",
                                         'color': widget.charts[charts].chartColour[0],  //color - optional: choose your own line color.
                                         'arrow': comparingData,
                                         'period': granularity,
@@ -3526,6 +3538,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                                 'type': 'line',
                                                 'values': widget.charts[charts].chartData[items],      //values - represents the array of {x,y} data points
                                                 'key': widget.charts[charts].metricDetails.objectTypes[0].meta.endpoint,
+                                                'unit':widget.charts[charts].metricDetails.objectTypes[0].meta.unit != undefined?widget.charts[charts].metricDetails.objectTypes[0].meta.unit[0]:"",
                                                 'color': widget.charts[charts].chartColour[0],  //color - optional: choose your own line color.
                                                 'arrow': comparingData,
                                                 'variance': percentage,
@@ -3539,6 +3552,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                                 'type': widget.charts[charts].chartType,
                                                 'values': widget.charts[charts].chartData[items],      //values - represents the array of {x,y} data points
                                                 'key': typeof widget.charts[charts].metricDetails.objectTypes[0].meta.endpointDisplayName != 'undefined' ? (typeof widget.charts[charts].metricDetails.objectTypes[0].meta.endpointDisplayName[endpointDisplayCode] != 'undefined' ? widget.charts[charts].metricDetails.objectTypes[0].meta.endpointDisplayName[endpointDisplayCode] : widget.charts[charts].metricDetails.objectTypes[0].meta.endpoint[items]) : widget.charts[charts].metricDetails.objectTypes[0].meta.endpoint[items],
+                                                'unit':widget.charts[charts].metricDetails.objectTypes[0].meta.unit != undefined?widget.charts[charts].metricDetails.objectTypes[0].meta.unit[items]:"",
                                                 'color': typeof widget.charts[charts].chartColour != 'undefined' ? (typeof widget.charts[charts].chartColour[items] != 'undefined' ? widget.charts[charts].chartColour[items] : '') : '',  //color - optional: choose your own line color.
                                                 'arrow': comparingData,
                                                 'variance': percentage,
@@ -3552,6 +3566,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                             'type': 'line',
                                             'values': widget.charts[charts].chartData[items],      //values - represents the array of {x,y} data points
                                             'key': typeof widget.charts[charts].metricDetails.objectTypes[0].meta.endpointDisplayName != 'undefined' ? (typeof widget.charts[charts].metricDetails.objectTypes[0].meta.endpointDisplayName[endpointDisplayCode] != 'undefined' ? widget.charts[charts].metricDetails.objectTypes[0].meta.endpointDisplayName[endpointDisplayCode] : widget.charts[charts].metricDetails.objectTypes[0].meta.endpoint[items]) : widget.charts[charts].metricDetails.objectTypes[0].meta.endpoint[items],
+                                            'unit':widget.charts[charts].metricDetails.objectTypes[0].meta.unit != undefined?widget.charts[charts].metricDetails.objectTypes[0].meta.unit[items]:"",
                                             'color': typeof widget.charts[charts].chartColour != 'undefined' ? (typeof widget.charts[charts].chartColour[items] != 'undefined' ? widget.charts[charts].chartColour[items] : '') : '',  //color - optional: choose your own line color.
                                             'arrow': comparingData,
                                             'variance': percentage,
@@ -3566,6 +3581,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                             'type': 'pie',
                                             'y': parseFloat(summaryValue),       //values - represents the array of {x,y} data points
                                             'key': typeof widget.charts[charts].metricDetails.objectTypes[0].meta.endpointDisplayName != 'undefined' ? (typeof widget.charts[charts].metricDetails.objectTypes[0].meta.endpointDisplayName[endpointDisplayCode] != 'undefined' ? widget.charts[charts].metricDetails.objectTypes[0].meta.endpointDisplayName[endpointDisplayCode] : widget.charts[charts].metricDetails.objectTypes[0].meta.endpoint[items]) : widget.charts[charts].metricDetails.objectTypes[0].meta.endpoint[items],
+                                            'unit':widget.charts[charts].metricDetails.objectTypes[0].meta.unit != undefined?widget.charts[charts].metricDetails.objectTypes[0].meta.unit[items]:"",
                                             'color': typeof widget.charts[charts].chartColour != 'undefined' ? (typeof widget.charts[charts].chartColour[items] != 'undefined' ? widget.charts[charts].chartColour[items] : '') : '',  //color - optional: choose your own line color.
                                             'arrow': comparingData,
                                             'variance': percentage,
@@ -3579,6 +3595,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                             'type': widget.charts[charts].chartType,
                                             'values': widget.charts[charts].chartData[items],      //values - represents the array of {x,y} data points
                                             'key': typeof widget.charts[charts].metricDetails.objectTypes[0].meta.endpointDisplayName != 'undefined' ? (typeof widget.charts[charts].metricDetails.objectTypes[0].meta.endpointDisplayName[endpointDisplayCode] != 'undefined' ? widget.charts[charts].metricDetails.objectTypes[0].meta.endpointDisplayName[endpointDisplayCode] : widget.charts[charts].metricDetails.objectTypes[0].meta.endpoint[items]) : widget.charts[charts].metricDetails.objectTypes[0].meta.endpoint[items],
+                                            'unit':widget.charts[charts].metricDetails.objectTypes[0].meta.unit != undefined?widget.charts[charts].metricDetails.objectTypes[0].meta.unit[items]:"",
                                             'color': typeof widget.charts[charts].chartColour != 'undefined' ? (typeof widget.charts[charts].chartColour[items] != 'undefined' ? widget.charts[charts].chartColour[items] : '') : '',  //color - optional: choose your own line color.
                                             'arrow': comparingData,
                                             'variance': percentage,
@@ -3607,6 +3624,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                             'type': widget.charts[charts].chartType,
                                             'y': parseFloat(summaryValue),      //values - represents the array of {x,y} data points
                                             'key': typeof widget.charts[charts].metricDetails.objectTypes[0].meta.endpointDisplayName != 'undefined' ? (typeof widget.charts[charts].metricDetails.objectTypes[0].meta.endpointDisplayName[endpointDisplayCode] != 'undefined' ? widget.charts[charts].metricDetails.objectTypes[0].meta.endpointDisplayName[endpointDisplayCode] : (widget.charts[charts].metricDetails.objectTypes[0].meta.endpoint[items]).replace(/\_/g, " ")) : (widget.charts[charts].metricDetails.objectTypes[0].meta.endpoint[items]).replace(/\_/g, " "),
+                                            'unit':widget.charts[charts].metricDetails.objectTypes[0].meta.unit != undefined?widget.charts[charts].metricDetails.objectTypes[0].meta.unit[items]:"",
                                             'color': typeof widget.charts[charts].chartColour != 'undefined' ? (typeof widget.charts[charts].chartColour[items] != 'undefined' ? widget.charts[charts].chartColour[items] : '') : '',  //color - optional: choose your own line color.
                                             'arrow': comparingData,
                                             'variance': percentage,
@@ -3633,6 +3651,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                 'type': 'fbReachByCity',
                                 'y': parseFloat(widget.charts[charts].chartData[index]),      //values - represents the array of {x,y} data points
                                 'key': index,
+                                'unit':widget.charts[charts].metricDetails.objectTypes[0].meta.unit != undefined?widget.charts[charts].metricDetails.objectTypes[0].meta.unit[0]:"",
                                 'color': typeof widget.charts[charts].chartColour != 'undefined' ? (typeof widget.charts[charts].chartColour[colorIndex] != 'undefined' ? widget.charts[charts].chartColour[colorIndex] : '') : '',  //color - optional: choose your own line color.
                                 'summaryDisplay': Math.round(widget.charts[charts].chartData[index] * 100) / 100
                             });
@@ -3743,9 +3762,10 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                     bounce += Number(widget.charts[charts].chartData[i].bounceRate);
                                     pageLoad += Number(widget.charts[charts].chartData[i].PageLoadTime);
                                 }
-                                var summmary = [{key: 'Page LoadTime', value: pageLoad}, {
+                                var summmary = [{key: 'Page LoadTime', value: pageLoad,unit:'s'}, {
                                     key: 'Bounce Rate',
-                                    value: bounce
+                                    value: bounce,
+                                    unit:'%'
                                 }];
                                 widgetCharts.push({
                                     'channelName':objectChannelName[widget.channelName],
@@ -3770,8 +3790,9 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                 }
                                 var summmary = [{key: 'Unique Page views', value: uniquePageviews}, {
                                     key: 'Page views',
-                                    value: pageviews
-                                }, {key: 'Bounce Rate', value: bounce}, {key: 'Entrance rate', value: entranceRate}];
+                                    value: pageviews,
+                                    unit:""
+                                }, {key: 'Bounce Rate', value: bounce,unit:"%"}, {key: 'Entrance rate', value: entranceRate,unit:"%"}];
                                 widgetCharts.push({
                                     'channelName':objectChannelName[widget.channelName],
                                     'type': widget.charts[charts].chartType,
@@ -3793,8 +3814,9 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                 }
                                 var summmary = [{key: 'New users', value: newUsers}, {
                                     key: 'Per session goal value',
-                                    value: goalValuePerSession
-                                }, {key: 'Goal conversion rate', value: goalConversionRateAll}];
+                                    value: goalValuePerSession,
+                                    unit:""
+                                }, {key: 'Goal conversion rate', value: goalConversionRateAll,unit:"%"}];
                                 widgetCharts.push({
                                     'channelName':objectChannelName[widget.channelName],
                                     'type': widget.charts[charts].chartType,
@@ -3832,8 +3854,9 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                     }
                                     var summmary = [{key: 'Sessions', value: sessions}, {
                                         key: 'Goal Completions',
-                                        value: goalCompletions
-                                    }, {key: 'Goal conversion rate', value: goalConversionRate}];
+                                        value: goalCompletions,
+                                        unit:""
+                                    }, {key: 'Goal conversion rate', value: goalConversionRate,unit:"%"}];
                                     widgetCharts.push({
                                         'channelName':objectChannelName[widget.channelName],
                                         'type': widget.charts[charts].chartType,
@@ -4806,6 +4829,9 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                     chartSeriesArray.push({
                         name: finalCharts.lineCharts[i].key === '(none)' ? 'Direct' : finalCharts.lineCharts[i].key,
                         data: chartValues,
+                        tooltip: {
+                            valueSuffix: finalCharts.lineCharts[charts].unit,
+                        },
                         color: finalCharts.lineCharts[i].color
                     });
                 }
@@ -4905,7 +4931,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                             name: finalCharts.lineCharts[charts].key,
                             yAxis: typeof charts === 'string' ? parseInt(charts) : charts,
                             tooltip: {
-                                valueSuffix: (finalCharts.lineCharts[charts].key === 'Impressions/Reach (%)' || finalCharts.lineCharts[charts].key === 'Engaged users/Reach (%)') ? '%' : ''
+                                valueSuffix: (finalCharts.lineCharts[charts].key === 'Impressions/Reach (%)' || finalCharts.lineCharts[charts].key === 'Engaged users/Reach (%)') ? '%' :finalCharts.lineCharts[charts].unit,
                             },
                             data: chartValues, type: 'area',
                             color: finalCharts.lineCharts[charts].color
@@ -4914,6 +4940,9 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                     else {
                         chartSeriesArray.push({
                             name: finalCharts.lineCharts[charts].key === '(none)' ? 'Direct' : finalCharts.lineCharts[charts].key,
+                            tooltip: {
+                                valueSuffix: finalCharts.lineCharts[charts].unit,
+                            },
                             data: chartValues, type: finalCharts.lineCharts[charts].type,
                             color: finalCharts.lineCharts[charts].color
                         });
@@ -5133,6 +5162,9 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                     chartSeriesArray.push({
                         name: finalCharts.barCharts[charts].key === '(none)' ? 'Direct' : finalCharts.barCharts[charts].key,
                         data: chartValues,
+                        tooltip: {
+                            valueSuffix: finalCharts.barCharts[charts].unit,
+                        },
                         color: finalCharts.barCharts[charts].color
                     });
                     chartColorChecker.push(finalCharts.barCharts[charts].color);
@@ -5392,134 +5424,147 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                     return total + num;
                 }
 
-                if (finalCharts.multicharts[charts].type === "socialContributionToSiteTraffic") {
-                    for (var k = 0; k < finalCharts.multicharts[charts].values.length; k++) {
-                        dateArray.push(finalCharts.multicharts[charts].values[k].x);
-                    }
-                    for (var j in finalCharts.multicharts) {
-                        var dataArray = [];
-                        for (var index = 0; index < finalCharts.multicharts[j].values.length; index++) {
-                            dataArray.push(String(finalCharts.multicharts[j].values[index].y).indexOf('.') ? parseFloat(finalCharts.multicharts[j].values[index].y) : parseInt(multicharts[j].values[index].y));
-                        }
-                        chartSeriesArray.push({
-                            type: finalCharts.multicharts[j].metricCode == 'sessions' ? 'column' : 'line',
-                            name: finalCharts.multicharts[j].metricName,
-                            data: dataArray,
-                            yAxis: finalCharts.multicharts[j].metricCode == 'sessions' ? 0 : 0,
-                            color: finalCharts.multicharts[j].color[j]
-                        });
-                        var summaryDisplay = dataArray.reduce(getSum);
-                        var sample = {
-                            summaryDisplay: Math.round(summaryDisplay * 100) / 100,
-                            key: finalCharts.multicharts[j].metricName,
-                            showComparision: false,
-                            variance: 0,
-                            color: finalCharts.multicharts[j].color[j]
-                        };
-                        displaySummary.push(sample);
-                    }
-                    var yAxisOption = [{ // left y axis
-                        title: {
-                            text: 'Total sessions'
-                        }
-                    }, { // left y axis
-                        title: {
-                            text: 'Sessions from social sources'
-                        },
-                        opposite: true
-                    }
-                    ];
-                    var xAxisOption = {
-                        type: 'datetime',
-                        categories: dateArray,
-                        labels: {
-                            formatter: function () {
-                                var date = new Date(this.value);
-                                return months[date.getMonth()] + ' ' + date.getDate();
-                            }
-                        },
-                        tickInterval: 7,
-                        min: 0,
-                        max: dateArray.length
-                    };
-                }
-                else {
-                    var yAxisOption = [{ // left y axis
-                        title: {
-                            text: null
-                        }
-                    }, { // left y axis
-                        title: {
-                            text: null
-                        },
-                        opposite: true,
-                    }
-                    ];
-                    var xAxisOption = {
-                        type: 'datetime',
-                        categories: dateArray
-                    };
-                    chartsCount++;
-                    for (var k = 0; k < finalCharts.multicharts[charts].values.length; k++) {
-                        dateArray.push(finalCharts.multicharts[charts].values[k].date);
-                    }
-                    var i = 0;
-                    for (var key in finalCharts.multicharts[charts].values[0].total) {
-                        var dataSample = [];
+                    if (finalCharts.multicharts[charts].type === "socialContributionToSiteTraffic") {
                         for (var k = 0; k < finalCharts.multicharts[charts].values.length; k++) {
-                            var value = Math.round(finalCharts.multicharts[charts].values[k].total[key] * 100) / 100;
-                            dataSample.push(value);
+                            dateArray.push(finalCharts.multicharts[charts].values[k].x);
                         }
-                        if (key == 'pageviews') {
+                        for (var j in finalCharts.multicharts) {
+                            var dataArray = [];
+                            for (var index = 0; index < finalCharts.multicharts[j].values.length; index++) {
+                                dataArray.push(String(finalCharts.multicharts[j].values[index].y).indexOf('.') ? parseFloat(finalCharts.multicharts[j].values[index].y) : parseInt(multicharts[j].values[index].y));
+                            }
                             chartSeriesArray.push({
-                                type: 'column',
-                                name: 'Page views',
-                                data: dataSample,
-                                yAxis: 0,
-                                color: finalCharts.multicharts[charts].color[i]
+                                type: finalCharts.multicharts[j].metricCode == 'sessions' ? 'column' : 'line',
+                                name: finalCharts.multicharts[j].metricName,
+                                data: dataArray,
+                                yAxis: finalCharts.multicharts[j].metricCode == 'sessions' ? 0 : 0,
+                                color: finalCharts.multicharts[j].color[j]
                             });
-                            var summaryDisplay = dataSample.reduce(getSum);
+                            var summaryDisplay = dataArray.reduce(getSum);
                             var sample = {
                                 summaryDisplay: Math.round(summaryDisplay * 100) / 100,
-                                key: 'Page views',
+                                key: finalCharts.multicharts[j].metricName,
                                 showComparision: false,
                                 variance: 0,
-                                color: finalCharts.multicharts[charts].color[i]
-                            }
-                            displaySummary.push(sample);
-                        }
-                        else if (key != 'total' && key != 'sessions' && key != 'hour' && key != "bounces") {
-                            var name;
-                            if (key == 'pageviewsPerSession') {
-                                name = 'Pages / Session';
-                            }
-                            else if (key == 'bounceRate') {
-                                name = 'Bounce rate';
-                            }
-                            else if (key == 'percentNewSessions') {
-                                name = '% New sessions';
-                            }
-                            chartSeriesArray.push({
-                                type: 'line',
-                                data: dataSample,
-                                name: name,
-                                yAxis: 1,
-                                color: finalCharts.multicharts[charts].color[i]
-                            })
-                            var summaryDisplay = dataSample.reduce(getSum);
-                            var sample = {
-                                summaryDisplay: Math.round(summaryDisplay * 100) / 100,
-                                key: name,
-                                showComparision: false,
-                                variance: 0,
-                                color: finalCharts.multicharts[charts].color[i]
+                                color: finalCharts.multicharts[j].color[j]
                             };
                             displaySummary.push(sample);
                         }
-                        i++;
-
+                        var yAxisOption = [{ // left y axis
+                            title: {
+                                text: 'Total sessions'
+                            }
+                        }, { // left y axis
+                            title: {
+                                text: 'Sessions from social sources'
+                            },
+                            opposite: true
+                        }
+                        ];
+                        var xAxisOption = {
+                            type: 'datetime',
+                            categories: dateArray,
+                            labels: {
+                                formatter: function () {
+                                    var date = new Date(this.value);
+                                    return months[date.getMonth()] + ' ' + date.getDate();
+                                }
+                            },
+                            tickInterval: 7,
+                            min: 0,
+                            max: dateArray.length
+                        };
                     }
-                }
+
+                    else {
+                        var yAxisOption = [{ // left y axis
+                            title: {
+                                text: null
+                            }
+                        }, { // left y axis
+                            title: {
+                                text: null
+                            },
+                            opposite: true,
+                        }
+                        ];
+                        var xAxisOption = {
+                            type: 'datetime',
+                            categories: dateArray
+                        };
+                        chartsCount++;
+                        for (var k = 0; k < finalCharts.multicharts[charts].values.length; k++) {
+                            dateArray.push(finalCharts.multicharts[charts].values[k].date);
+                        }
+                        var i = 0;
+                        for (var key in finalCharts.multicharts[charts].values[0].total) {
+                            var dataSample = [];
+                            for (var k = 0; k < finalCharts.multicharts[charts].values.length; k++) {
+                                var value = Math.round(finalCharts.multicharts[charts].values[k].total[key] * 100) / 100;
+                                dataSample.push(value);
+                            }
+                            if (key == 'pageviews') {
+                                chartSeriesArray.push({
+                                    type: 'column',
+                                    name: 'Page views',
+                                    data: dataSample,
+                                    yAxis: 0,
+                                    tooltip:{
+                                        valueSuffix:""
+                                    },
+                                    color: finalCharts.multicharts[charts].color[i]
+                                });
+                                var summaryDisplay = dataSample.reduce(getSum);
+                                var sample = {
+                                    summaryDisplay: Math.round(summaryDisplay * 100) / 100,
+                                    key: 'Page views',
+                                    showComparision: false,
+                                    variance: 0,
+                                    color: finalCharts.multicharts[charts].color[i]
+                                }
+                                displaySummary.push(sample);
+                            }
+                            else if (key != 'total' && key != 'sessions' && key != 'hour' && key != "bounces") {
+                                var name;
+                                var unit;
+                                if (key == 'pageviewsPerSession') {
+                                    name = 'Pages / Session';
+                                    unit='pages';
+                                }
+                                else if (key == 'bounceRate') {
+                                    name = 'Bounce rate';
+                                    unit='%';
+                                }
+                                else if (key == 'percentNewSessions') {
+                                    name = '% New sessions';
+                                    unit='%';
+                                }
+                                chartSeriesArray.push({
+                                    type: 'line',
+                                    data: dataSample,
+                                    name: name,
+                                    tooltip:{
+                                        valueSuffix:unit
+                                    },
+                                    yAxis: 1,
+                                    color: finalCharts.multicharts[charts].color[i]
+                                })
+                                var summaryDisplay = dataSample.reduce(getSum);
+                                var sample = {
+                                    summaryDisplay: Math.round(summaryDisplay * 100) / 100,
+                                    key: name,
+                                    showComparision: false,
+                                    variance: 0,
+                                    color: finalCharts.multicharts[charts].color[i]
+                                };
+                                displaySummary.push(sample);
+                            }
+                            i++;
+
+                        }
+                    }
+
+
                 chartOptions = {
                     chart: {
                         zoomType: 'x'
@@ -6046,7 +6091,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                             name: finalCharts.pageTechnicalEfficiency[charts].summary[i].key,
                             yAxis: i,
                             tooltip: {
-                                valueSuffix: ''
+                                valueSuffix: finalCharts.pageTechnicalEfficiency[charts].summary[i].unit
                             },
                             data: chartValues[i], type: i == 0 ? 'column' : 'line',
                             color: finalCharts.pageTechnicalEfficiency[charts].color[i]
@@ -6124,7 +6169,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                             name: finalCharts.visitorAcquisitionEfficiency[charts].summary[i].key,
                             yAxis: i < 1 ? 0 : 1,
                             tooltip: {
-                                valueSuffix: ''
+                                valueSuffix: finalCharts.visitorAcquisitionEfficiency[charts].summary[i].unit
                             },
                             data: chartValues[i], type: i < 1 ? 'column' : 'line',
                             color: finalCharts.visitorAcquisitionEfficiency[charts].color[i]
@@ -6212,9 +6257,9 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                         useHTML: true,
                         headerFormat: '<table>',
                         pointFormat: '<tr><th colspan="2"><h3>{point.name}</h3></th></tr>' +
-                        '<tr><th>Page Views Per Session:</th><td>{point.x}</td></tr>' +
+                        '<tr><th>Page Views Per Session:</th><td>{point.x}pages</td></tr>' +
                         '<tr><th>Sessions:</th><td>{point.y}</td></tr>' +
-                        '<tr><th>Time on Page:</th><td>{point.z}</td></tr>',
+                        '<tr><th>Time on Page:</th><td>{point.z}s</td></tr>',
                         footerFormat: '</table>',
                         enabled: true,
                         shared: true
@@ -6279,7 +6324,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                             name: finalCharts.topReferringSites[charts].summary[i].key,
                             yAxis: i <= 1 ? 0 : 1,
                             tooltip: {
-                                valueSuffix: ''
+                                valueSuffix: finalCharts.topReferringSites[charts].summary[i].unit
                             },
                             data: chartValues[i], type: i < 1 ? 'column' : 'line',
                             color: finalCharts.topReferringSites[charts].color[i]
@@ -6364,7 +6409,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                             name: finalCharts.pageContentEfficiency[charts].summary[i].key,
                             yAxis: i < 2 ? 0 : 1,
                             tooltip: {
-                                valueSuffix: ''
+                                valueSuffix: finalCharts.pageContentEfficiency[charts].summary[i].unit
                             },
                             data: chartValues[i], type: i < 2 ? 'column' : 'line',
                             color: finalCharts.pageContentEfficiency[charts].color[i]
