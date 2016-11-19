@@ -2592,7 +2592,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                         var splitArray = [];
                                         for (var k = 0; k < widget.charts[charts].chartData.length; k++) {
                                             if (typeof widget.charts[charts].chartData[k].total === 'object') {
-                                                widget.charts[charts].chartData[k].total.created_time = moment.unix(widget.charts[charts].chartData[k].total.created_time).format('YYYY-MM-DD');
+                                                widget.charts[charts].chartData[k].total.created_time = moment.unix(widget.charts[charts].chartData[k].total.created_time).format('YYYY-MMM-DD');
                                                 widget.charts[charts].chartData[k].total.created_time = new Date(widget.charts[charts].chartData[k].total.created_time).getDay();
                                                 splitArray.push(widget.charts[charts].chartData[k].total);
                                             }
@@ -4799,7 +4799,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                     var dateArray = [];
                     var chartValues = [];
                     for (var k = 0; k < finalCharts.lineCharts[i].values.length; k++) {
-                        dateArray.push(finalCharts.lineCharts[i].values[k].x.format('YYYY-MM-DD'));
+                        dateArray.push(finalCharts.lineCharts[i].values[k].x.format('YYYY-MMM-DD'));
                         var yValue = String(finalCharts.lineCharts[i].values[k].y).indexOf('.') ? parseFloat(finalCharts.lineCharts[i].values[k].y) : parseInt(finalCharts.lineCharts[i].values[k].y);
                         chartValues.push(yValue);
                     }
@@ -4883,7 +4883,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                         if (typeof finalCharts.lineCharts[charts].values[k].x !== 'object') {
                             var check = isValidDate(finalCharts.lineCharts[charts].values[k].x);
                             if (check) {
-                                dateArray.push(finalCharts.lineCharts[charts].values[k].x.format('YYYY-MM-DD'));
+                                dateArray.push(finalCharts.lineCharts[charts].values[k].x.format('YYYY-MMM-DD'));
                                 var yValue = String(finalCharts.lineCharts[charts].values[k].y).indexOf('.') ? parseFloat(finalCharts.lineCharts[charts].values[k].y) : parseInt(finalCharts.lineCharts[charts].values[k].y);
                                 chartValues.push(yValue);
                             }
@@ -4894,7 +4894,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                             }
                         }
                         else {
-                            dateArray.push(finalCharts.lineCharts[charts].values[k].x.format('YYYY-MM-DD'));
+                            dateArray.push(finalCharts.lineCharts[charts].values[k].x.format('YYYY-MMM-DD'));
                             var yValue = String(finalCharts.lineCharts[charts].values[k].y).indexOf('.') ? parseFloat(finalCharts.lineCharts[charts].values[k].y) : parseInt(finalCharts.lineCharts[charts].values[k].y);
                             chartValues.push(yValue);
                         }
@@ -5125,7 +5125,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                         }
                         else {
                             typeOfXaxis = 'date';
-                            dateArray.push(finalCharts.barCharts[charts].values[k].x.format('YYYY-MM-DD'));
+                            dateArray.push(finalCharts.barCharts[charts].values[k].x.format('YYYY-MMM-DD'));
                         }
                         var yValue = String(finalCharts.barCharts[charts].values[k].y).indexOf('.') ? parseFloat(finalCharts.barCharts[charts].values[k].y) : parseInt(finalCharts.barCharts[charts].values[k].y);
                         chartValues.push(yValue);
@@ -5563,7 +5563,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                     }
 
                     for (var k = 0; k < finalCharts.percentageArea[charts].totalChartLength.length; k++) {
-                        dateArray.push(finalCharts.percentageArea[charts].totalChartLength[k].x);
+                        dateArray.push(moment(finalCharts.percentageArea[charts].totalChartLength[k].x).format('YYYY-MMM-DD'));
                     }
                     var color = 0;
                     for (var j in finalCharts.percentageArea) {

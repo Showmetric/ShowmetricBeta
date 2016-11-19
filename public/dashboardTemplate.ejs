@@ -310,7 +310,7 @@
                                                     <div class="col-lg-12 table-responsive" style="overflow-x: hidden;padding:0px;">
                                                         <table st-table="chart.data" class="table table-striped">
                                                             <thead>
-                                                                <tr>
+                                                                <tr style="padding:2px 5px;width:100%">
                                                                     <th style="padding:5px 5px;width:55%;text-align:center;" st-sort="pageTitle">Page</th>
                                                                     <th style="padding:5px 5px;width:15%;text-align:center;" st-sort="pageviews">Page views</th>
                                                                     <th style="padding:5px 5px;width:15%;text-align:center;" st-sort="avgTimeOnpage">Avg. Time on page</th>
@@ -326,7 +326,7 @@
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
-                                                                <tr ng-repeat="data in chart.data | limitTo: limitScroll" ng-if="data.pagePath">
+                                                                <tr style="padding:2px 5px;width:100%" ng-repeat="data in chart.data | limitTo: limitScroll" ng-if="data.pagePath">
                                                                     <td style="padding:5px 5px;width:55%;text-align:center;">{{data.pageTitle}}<br><i>{{data.pagePath}}</i></td>
                                                                     <td style="padding:5px 5px;width:15%;text-align:center;">{{data.pageviews}}</td>
                                                                     <td style="padding:5px 5px;width:15%;text-align:center;">{{data.avgTimeOnpage}}</td>
@@ -640,7 +640,7 @@
                                                         <table st-table="chart.data"  class="table table-striped">
                                                             <thead>
                                                                 <tr style="padding:2px 5px;width:100%">
-                                                                    <th style="padding:5px 5px;width:55%;text-align:center;" st-sort="text">Hashtag</th>
+                                                                    <th style="padding:5px 5px;width:55%;text-align:center;" st-sort="text">HashTag</th>
                                                                     <th style="padding:5px 5px;width:35%;text-align:center;" st-sort="engagement">Engagement</th>
 
                                                                 </tr>
@@ -874,7 +874,7 @@
                                                         </thead>
                                                         <tbody>
                                                         <tr ng-repeat="data in chart.data | limitTo: limitScroll" ng-if="data.postComment">
-                                                            <td><a style="color: #232c3b;" href="{{data.links}}" target="_blank">{{data.postComment}}<br></a></td></td>
+                                                            <td><a style="color: #232c3b;" href="{{data.links}}" target="_blank">{{data.postComment}}<br></a></td>
                                                             <td>{{data.date}}</td>
                                                             <td>{{data.likes}}</td>
                                                             <td>{{data.comments}}</td>
@@ -916,7 +916,7 @@
                                                         </thead>
                                                         <tbody>
                                                         <tr ng-repeat="data in chart.data " ng-if="data.postComment">
-                                                            <td><a style="color: #232c3b;" href="{{data.links}}" target="_blank">{{data.postComment}}<br></a></td></td>
+                                                            <td><a style="color: #232c3b;" href="{{data.links}}" target="_blank">{{data.postComment}}<br></a></td>
                                                             <td>{{data.date}}</td>
                                                             <td>{{data.collaborators}}</td>
                                                             <td>{{data.pins}}</td>
@@ -986,7 +986,7 @@
                                                     <table st-table="chart.data" class="table table-striped" >
                                                         <thead>
                                                         <tr style="padding:2px 5px;width:100%">
-                                                            <th style="padding:5px 5px;width:55%;text-align:center;" st-sort="tag">Hashtag</th>
+                                                            <th style="padding:5px 5px;width:55%;text-align:center;" st-sort="tag">HashTag</th>
                                                             <th style="padding:5px 5px;width:15%;text-align:right;" st-sort="likes">Likes</th>
                                                             <th style="padding:5px 5px;width:15%;text-align:right;" st-sort="comments">Comments</th>
 
@@ -1001,7 +1001,7 @@
                                                         </thead>
                                                         <tbody>
                                                         <tr style="padding:2px 5px;width:100%" ng-repeat="data in chart.data ">
-                                                            <td style="padding:5px 5px;width:55%;text-align:left;"><a style="color: #232c3b;" href="{{data.tagLink}}" target="_blank">{{data.tag}}<br></a></td></td>
+                                                            <td style="padding:5px 5px;width:55%;text-align:left;"><a style="color: #232c3b;" href="{{data.tagLink}}" target="_blank">{{data.tag}}<br></a></td>
                                                             <td style="padding:5px 5px;width:15%;text-align:right;">{{data.likes}}</td>
                                                             <td style="padding:5px 5px;width:15%;text-align:right;">{{data.comments}}</td>
                                                         </tr>
@@ -1035,8 +1035,8 @@
                                                             <tbody>
                                                             <tr style="padding:2px 5px;width:100%" ng-repeat="data in chart.data | limitTo: limitScroll" ng-if="data.userMentionedScreenName">
                                                                 {{data}}
-                                                                <td style="padding:5px 5px;width:12%;text-align:center;">{{data.userMentionedScreenName}}</td>
-                                                                <td style="padding:5px 5px;width:12%;text-align:center;">{{data.engagement}}</td>
+                                                                        <td style="padding:5px 5px;width:50%;text-align:center;">{{data.userMentionedScreenName}}</td>
+                                                                        <td style="padding:5px 5px;width:50%;text-align:center;">{{data.engagement}}</td>
                                                             </tr>
                                                             </tbody>
                                                         </table>

@@ -540,10 +540,8 @@ agenda.define('Update channel data', {lockLifetime: 36000000}, function (job, do
                         };
                         return callback(null, response);
                     }
-
                     else {
                         if (queries.get_tweet_queries.metricCode === configAuth.twitterMetric.tweets || queries.get_tweet_queries.metricCode === configAuth.twitterMetric.followers || queries.get_tweet_queries.metricCode === configAuth.twitterMetric.following || queries.get_tweet_queries.metricCode === configAuth.twitterMetric.favourites || queries.get_tweet_queries.metricCode === configAuth.twitterMetric.listed || queries.get_tweet_queries.metricCode === configAuth.twitterMetric.retweets_of_your_tweets) {
-
                             finalTwitterResponse = {
                                 data: tweets,
                                 metricId: queries.get_tweet_queries.metricId,
@@ -3506,9 +3504,6 @@ agenda.define(configAuth.batchJobs.alertName, function (job, done) {
     var storeOperator;
     var Criteria;
     var thresholdValue;
-    var getCountOfAlertdata = 0;
-    var getCountOfSatisfiedData = 0;
-    var failureAlert = [];
     var success = 0;
     var successArray = [];
 
@@ -3563,7 +3558,6 @@ agenda.define(configAuth.batchJobs.alertName, function (job, done) {
         };
         //check interval if,daily check threshold,else check today is friday
         if (utcTime < time || utcTime === null) {
-
             Data.findOne({
                 'objectId': alert.objectId,
                 'metricId': alert.metricId,
@@ -3602,8 +3596,8 @@ agenda.define(configAuth.batchJobs.alertName, function (job, done) {
                                         subject: 'Datapoolt Alerts:' + alert.name,
                                         // HTML Version
                                         html: '<div style="font-family: Helvetica,Arial,sans-serif">' + '<span>Dear Datapoolt User,</span>' +'<br>' + '<p>One of your configured alerts has been triggered.</p>' + '</div>'+
-                                        '<div style="width:400px;height:120px;padding:5px">'+'<div style="float:left;height:120px;padding:5%"><img stlyle="float:left;width:100px" src="https://cdn2.iconfinder.com/data/icons/bitsies/128/Alarm-64.png"></div>'+'<div style="float:right;border:1px solid #ff6c3a;width:250px;text-align:center;padding:5px;">'+'<br>'+alert.name+'<br>'+'<br>'+'<span style="color:#ffa000">'+valueToCheck+'</span>'+ '<br>'+'<br>'+
-                                    "Alert criteria:"+ metric.name +' '+Criteria+' '+thresholdValue+
+                                        '<div style="width:500px;height:120px;padding:5px">'+'<div style="float:left;height:120px;padding:5%"><img stlyle="float:left;width:100px" src="https://cdn2.iconfinder.com/data/icons/bitsies/128/Alarm-64.png"></div>'+'<div style="float:right;border:1px solid #ff6c3a;width:320px;text-align:center;padding:5px;"><span style="font-weight:bold">'+alert.name+'</span>'+'<br>'+'<br>'+'<span style="color:#ffa000;font-weight:bold;font-size:16px;">'+parseFloat(valueToCheck).toFixed(2)+'</span>'+ '<br>'+'<br>'+
+                                        '<span style="font-weight:bold">Alert criteria:</span>'+ metric.name +' '+Criteria+' '+thresholdValue+
                                         '</div>'+'</div>' + '</b>' + '<button style="margin-left:80px;margin-top:10px;background-color:#ff6c3a;border-radius: 5px;background-color: #ff6c3a;box-shadow: 1px 1px 2px rgba(0,0,0,.2), inset 0 -2px #fd845b;border: solid 1px #ff6c3a;display: inline-block;padding: 6px 20px;font-size: 11px;color: #fff;font-family: bold, sans-serif, Arial;text-transform: uppercase;"><a style="text-decoration: none;color:#fff" href="http://datapoolt.co/">Visit Datapoolt</a></button>'+ '<p>Cheers,</p>'+'<p>Datapoolt Team</p>'
                                     };
                                     if (checkingThreshold === false) {
@@ -3675,9 +3669,9 @@ agenda.on('ready', function () {
 
     agenda.on(configAuth.batchJobs.successAlertMessage, function (job) {
         if (getCountOfAlertdata != 0) {
-            var split = failureAlert.join('<br>')
-            var convertTostring = split.toString()
-            convertTostring = convertTostring.replace(/[{}]/g, '')
+            var split = failureAlert.join('<br>');
+            var convertTostring = split.toString();
+            convertTostring = convertTostring.replace(/[{}]/g, '');
             var mailOptions = {
                 from: 'Datapoolt Team <alerts@datapoolt.co>',
                 to: configAuth.batchJobsReceiverMailDetails.email,
