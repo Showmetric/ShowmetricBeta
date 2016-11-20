@@ -1,5 +1,12 @@
 showMetricApp.controller('UpgradeController', UpgradeController)
-function UpgradeController($scope, $http, $state, $rootScope) {
+function UpgradeController($scope, $http, $state, $rootScope,$window) {
+    $scope.docHeight = window.innerHeight;
+    $scope.docHeight = $scope.docHeight-60;
+    angular.element($window).on('resize', function (e) {
+        $scope.docHeight = window.innerHeight;
+        $scope.docHeight = $scope.docHeight-60;
+        $scope.$broadcast('resize');
+    });
     var codeMapping = {
         free:0,
         starter: 1,

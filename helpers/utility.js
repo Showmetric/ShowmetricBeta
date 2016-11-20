@@ -323,8 +323,8 @@ var self = module.exports = {
                             if (err)
                                 return done(err);
                             else {
-                                // HTML Version
-                                newUser.html= '<p>Hi ' + user.name + ',</p>' +
+                                    // HTML Version
+                                    newUser.html= '<p>Hi ' + user.name + ',</p>' +
                                     '<p> We have received your request for an invite.Click link below to activate your account</p><br><button style="background-color: #1a8bb3;border-radius: 12px;color:#fff;font-size: 24px;"><a style="text-decoration: none;color:#fff" href="'+configAuth.emailVerification.redirectLink+user.emailVerification.tokenId+'">Click to Activate</a></button> <p>Thanks for trying us out. Cheers!</p>'
                                 self.sendConfirmationMail(newUser,function(err){
                                     if(err){
@@ -384,7 +384,7 @@ var self = module.exports = {
                                 name:user.name
                             },
                         ],
-                        subject: 'Welcome to Datapoolt!',
+                        subject:user.subject,
                     },
                 ],
                 from: {

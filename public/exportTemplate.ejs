@@ -169,12 +169,12 @@
                                                                             <ul style="height:100%;font-size:12px;padding-left: 5px;">
                                                                                 <li  ng-repeat="data in chart.data" ng-class="{'summaryAlign': chart.data.length<=3}" style="text-align: center;padding-top: 1px;padding-left:0px;padding-right: 2px;font-size: 1.0em!important;" id="li-{{widget.id}}-{{$index}}" class="col col-lg-12" ng-style="calculateRowHeight(data,chart.data.length,widget.sizeY,aexppage.widgetData[widgetIndex].layoutOptionsX)"><!--size-watcher-width="data.mywidth"--><!--ng-class="calculateColumnWidth(chart.data.length,widget.sizeX,aexppage.widgetData[widgetIndex].layoutOptionsX)" ng-style="calculateRowHeight(data,chart.data.length,widget.sizeX,widget.sizeY,aexppage.widgetData[widgetIndex].layoutOptionsX)"-->
                                                                                     <div style="margin: 0px;height: 100%;overflow: hidden;white-space: nowrap;color: #232c3b;text-align: center;" >
-                                                                                        <p class="summaryKeyFont" ng-class="{'reportSummaryKeyDoubleFont': customReport.widgetData[widget.id].layoutOptionsX>1}" ng-if="chart.options.chart.type != 'pieChart'" ng-show="data.showComparision==false" ng-style="{ 'font-family' : 'Montserrat-Regular','text-transform':'uppercase',  'border-bottom': '4px solid', 'border-color': data.color, 'padding-left': '3px'}" style="margin:0px 0px 3px!important;font-weight: bold;padding-top: 2px;padding-bottom: 2px;"> {{data.key}} - {{data.summaryDisplay}} <i ng-if="data.arrow==='up' && data.variance !=0" style="font-size:1.0em;color:#2A8539" class="fa fa-arrow-up" aria-hidden="true"></i><i ng-if='data.arrow==="down" && data.variance !=0' style="font-size: 1.0em;color:#FF1B1B" class="fa fa-arrow-down" aria-hidden="true"></i></p>
-                                                                                        <p class="summaryKeyFont" ng-class="{'reportSummaryKeyDoubleFont': customReport.widgetData[widget.id].layoutOptionsX>1}" ng-if="chart.options.chart.type == 'pieChart'" ng-show="data.showComparision==false" ng-style="{ 'font-family' : 'Montserrat-Regular','text-transform':'uppercase',  'border-bottom': '4px solid', 'border-color': data.color, 'padding-left': '3px'}" style="margin:0px 0px 3px!important;font-weight: bold;padding-top: 2px;padding-bottom: 2px;"> {{data.key}} - {{data.summaryDisplay}}</p>
+                                                                                        <p class="summaryKeyFont" ng-class="{'reportSummaryKeyDoubleFont': customReport.widgetData[widget.id].layoutOptionsX>1}" ng-if="chart.options.chart.type != 'pieChart'" ng-show="data.showComparision==false" ng-style="{ 'font-family' : 'Montserrat-Regular','text-transform':'uppercase',  'border-bottom': '4px solid', 'border-color': data.color, 'padding-left': '3px'}" style="margin:0px 0px 3px!important;font-weight: bold;padding-top: 2px;padding-bottom: 2px;"> {{data.key}} - {{data.summaryDisplay}}{{data.unit}} <i ng-if="data.arrow==='up' && data.variance !=0" style="font-size:1.0em;color:#2A8539" class="fa fa-arrow-up" aria-hidden="true"></i><i ng-if='data.arrow==="down" && data.variance !=0' style="font-size: 1.0em;color:#FF1B1B" class="fa fa-arrow-down" aria-hidden="true"></i></p>
+                                                                                        <p class="summaryKeyFont" ng-class="{'reportSummaryKeyDoubleFont': customReport.widgetData[widget.id].layoutOptionsX>1}" ng-if="chart.options.chart.type == 'pieChart'" ng-show="data.showComparision==false" ng-style="{ 'font-family' : 'Montserrat-Regular','text-transform':'uppercase',  'border-bottom': '4px solid', 'border-color': data.color, 'padding-left': '3px'}" style="margin:0px 0px 3px!important;font-weight: bold;padding-top: 2px;padding-bottom: 2px;"> {{data.key}} - {{data.summaryDisplay}}{{data.unit}}</p>
                                                                                         <p class="summaryKeyFont" ng-class="{'reportSummaryKeyDoubleFont': customReport.widgetData[widget.id].layoutOptionsX>1}" ng-show="data.showComparision==true" ng-style="{ 'font-family' : 'Montserrat-Black','text-transform':'uppercase',  'border-bottom': '4px solid', 'border-color': data.color, 'padding-left': '3px'}" style="margin:0px 0px 3px!important;font-weight: bold;padding-top: 2px;padding-bottom: 2px;"> {{data.key}}</p>
                                                                                         <div class="col col-lg-12 col-sm-12 col-md-12 col-xs-12 " style="padding: 0px 0px 0px 0px!important;">
                                                                                             <div class="col col-lg-5 col-sm-5 col-md-5 col-xs-5">
-                                                                                                <p ng-show="data.showComparision==true" class="summaryFont" ng-class="{'summaryDoubleFont': aexppage.widgetData[widgetIndex].layoutOptionsX>1}"ng-style="{ 'font-family' : 'Montserrat-Black', 'text-transform':'uppercase', 'padding-left': '0px', 'border-right': '3px solid white','float':'left'}" style="margin:0px 0px 3px!important;font-weight: bold;"> {{data.summaryDisplay}}</p>
+                                                                                                <p ng-show="data.showComparision==true" class="summaryFont" ng-class="{'summaryDoubleFont': aexppage.widgetData[widgetIndex].layoutOptionsX>1}"ng-style="{ 'font-family' : 'Montserrat-Black', 'text-transform':'uppercase', 'padding-left': '0px', 'border-right': '3px solid white','float':'left'}" style="margin:0px 0px 3px!important;font-weight: bold;"> {{data.summaryDisplay}}{{data.unit}}</p>
                                                                                             </div>
                                                                                             <div class="col col-lg-7 col-sm-7 col-md-7 col-xs-7" style="padding: 0px 0px 0px 0px!important;">
                                                                                                 <!--<p ng-style="{'color': '#979797', 'font-family' : 'Montserrat-Regular','font-size':'12px', 'text-transform':'uppercase', 'background-color': 'whitesmoke'}" style="margin:0px 0px 3px!important;font-weight: bold;">{{data.key}} - <b ng-style="{'color':data.color, 'font-family' : 'Montserrat-Regular'}"> {{data.summaryDisplay}} </b></p>-->
@@ -252,18 +252,29 @@
                                                                         <div class="row" style="margin: 0px;height: 100%" id='chartTable-{{widget.id}}'>
                                                                             <div events="events" style="height: 99%" ng-if="aexppage.widgetData[widgetIndex].visibility == true">
                                                                                 <div class="scrollbar scrollInWidget" id="scroller">
-                                                                                    <div class="col-lg-12 listed"  ng-class-odd="'odd'" ng-class-even="'even'" ng-class="{responsiveInstagramListed:widget.sizeX<2}" ng-repeat="data in chart.data">
-                                                                                        <div class="col-lg-1 listed-image" >
-                                                                                            <a  href="{{data.links}}" target="_blank"><img ng-src="{{data.image}}" height="50px" widget="50px"/></a>
-                                                                                        </div>
-                                                                                        <div class="col-lg-11 aside">
-                                                                                            <div class="postComment"><a class="apiLink" href="{{data.links}} " target="_blank">{{data.postComment}}</a></div>
-                                                                                            <div class="impression">
-                                                                                                <div class="likes"><span>likes:{{data.likes}}</span></div>
-                                                                                                <div class="comment"><span>Comments:{{data.comments}}</span></div>
-                                                                                                <div class="date"><span class="date">{{data.date}}</span></div>
-                                                                                            </div>
-                                                                                        </div>
+                                                                                    <div class="col-lg-12 table-responsive" style="overflow-x: hidden;padding:0px;">
+                                                                                        <table  class="table table-striped" >
+                                                                                            <thead>
+                                                                                            <tr>
+                                                                                                <th style="padding:5px 5px;width:15%;text-align:center;" ></th>
+                                                                                                <th style="padding:5px 5px;width:40%;text-align:center;" >Post</th>
+                                                                                                <th style="padding:5px 5px;width:15%;text-align:center;" >Date</th>
+                                                                                                <th style="padding:5px 5px;width:15%;text-align:center;" >Likes</th>
+                                                                                                <th style="padding:5px 5px;width:15%;text-align:center;" >Comments</th>
+                                                                                            </tr>
+                                                                                            </thead>
+                                                                                            <tbody>
+                                                                                            <tr ng-repeat="data in chart.data"  ng-if="data.postComment">
+                                                                                                <td  style="padding:5px 5px;width:15%;"> <a  href="{{data.links}}" target="_blank"><img ng-src="{{data.image}}" height="50px" widget="50px"/></a></td>
+                                                                                                <td style="padding:5px 5px;width:40%;">
+                                                                                                    <div class="instapost"><a  href="{{data.links}} " target="_blank">{{data.postComment}}</a></div>
+                                                                                                </td>
+                                                                                                <td style="padding:5px 5px;width:15%;text-align:center;">{{data.date}}</td>
+                                                                                                <td style="padding:5px 5px;width:15%;text-align:center;">{{data.likes}}</td>
+                                                                                                <td style="padding:5px 5px;width:15%;text-align:center;">{{data.comments}}</td>
+                                                                                            </tr>
+                                                                                            </tbody>
+                                                                                        </table>
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
@@ -273,15 +284,25 @@
                                                                         <div class="row" style="margin: 0px;height: 100%" id='chartTable-{{widget.id}}'>
                                                                             <div events="events" style="height: 99%" ng-if="aexppage.widgetData[widgetIndex].visibility == true">
                                                                                 <div class="scrollbar scrollInWidget" id="scroller">
-                                                                                    <div class="col-lg-12 listed"  ng-class-odd="'odd'" ng-class-even="'even'" ng-repeat="data in chart.data" ng-if="data.postComment">
-                                                                                        <div class="col-lg-12">
-                                                                                            <div class="postComment"><a ng-if="data.links.media" class="apiLink" href="{{data.links.media[0].expanded_url}} " target="_blank">{{data.postComment}}</a><a ng-if="!data.links.media[0]" class="apiLink" href="https://twitter.com" target="_blank">{{data.postComment}}</a></div>
-                                                                                            <div class="impression">
-                                                                                                <div class="likes"><span>Likes: {{data.likes}}</span></div>
-                                                                                                <div class="comment"><span>Retweets: {{data.reTweet}}</span></div>
-                                                                                                <div class="date"><span>{{data.date}}</span></div>
-                                                                                            </div>
-                                                                                        </div>
+                                                                                    <div class="col-lg-12 table-responsive" style="overflow-x: hidden;padding:0px;">
+                                                                                        <table st-table="chart.data" class="table table-striped">
+                                                                                            <thead>
+                                                                                            <tr>
+                                                                                                <th style="padding:5px 5px;width:55%;text-align:center;" st-sort="postComment">Tweet</th>
+                                                                                                <th style="padding:5px 5px;width:15%;text-align:center;" st-sort="date">Date</th>
+                                                                                                <th style="padding:5px 5px;width:15%;text-align:center;" st-sort="likes">Likes</th>
+                                                                                                <th style="padding:5px 5px;width:15%;text-align:center;" st-sort="reTweet">Retweets</th>
+                                                                                            </tr>
+                                                                                            </thead>
+                                                                                            <tbody>
+                                                                                            <tr ng-repeat="data in chart.data " ng-if="data.postComment">
+                                                                                                <td style="padding:5px 5px;width:55%;"><a ng-if="data.links.media"  href="{{data.links.media[0].expanded_url}} " target="_blank">{{data.postComment}}</a><a ng-if="!data.links.media[0]" class="apiLink" href="https://twitter.com" target="_blank">{{data.postComment}}</a></td>
+                                                                                                <td style="padding:5px 5px;width:15%;text-align:center;">{{data.date}}</td>
+                                                                                                <td style="padding:5px 5px;width:15%;text-align:center;">{{data.likes}}</td>
+                                                                                                <td style="padding:5px 5px;width:15%;text-align:center;">{{data.reTweet}}</td>
+                                                                                            </tr>
+                                                                                            </tbody>
+                                                                                        </table>
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
@@ -291,19 +312,45 @@
                                                                         <div class="row" style="margin: 0px;height: 100%" id='chartTable-{{widget.id}}'>
                                                                             <div events="events" style="height: 99%" ng-if="aexppage.widgetData[widgetIndex].visibility == true">
                                                                                 <div class="scrollbar scrollInWidget" id="scroller">
-                                                                                    <div class="col-lg-12 listed"  ng-class-odd="'odd'" ng-class-even="'even'" ng-class="{responsiveListed:widget.sizeX<2}" ng-repeat="data in chart.data" ng-if="data.postComment">
-                                                                                        <div class="col-lg-12">
-                                                                                            <div class="postComment"><a class="apiLink" href="{{data.link}} " target="_blank">{{data.postComment}}</a></div>
-                                                                                            <div class="impression">
-                                                                                                <div class="likes"><span>Likes: {{data.likes}}</span></div>
-                                                                                                <div class="comment"><span>comments: {{data.comments}}</span></div>
-                                                                                                <div class="comment"><span>shares: {{data.shares}}</span></div>
-                                                                                                <div class="comment"><span>clicks: {{data.clicks}}</span></div>
-                                                                                                <div class="comment"><span>impressions: {{data.impressions}}</span></div>
-                                                                                                <div ng-style="widget.sizeX<=2  && {'float':'left'}  || widget.sizeX>2 && {'float':'right'}"><span>{{data.date}}</span></div>
-                                                                                            </div>
-                                                                                        </div>
+                                                                                    <div class="col-lg-12 table-responsive" style="overflow-x: hidden;padding:0px;">
+                                                                                        <table st-table="chart.data" class="table table-striped">
+                                                                                            <thead>
+                                                                                            <tr>
+                                                                                                <th style="padding:5px 5px;width:50%;text-align:center;" st-sort="postComment">Post</th>
+                                                                                                <th style="padding:5px 5px;width:12%;text-align:center;" st-sort="date">Date</th>
+                                                                                                <th style="padding:5px 5px;width:12%;text-align:center;" st-sort="likes">Likes</th>
+                                                                                                <th style="padding:5px 5px;width:12%;text-align:center;" st-sort="reTweet">Comments</th>
+                                                                                                <th style="padding:5px 5px;width:12%;text-align:center;" st-sort="reTweet">Shares</th>
+                                                                                                <th style="padding:5px 5px;width:12%;text-align:center;" st-sort="reTweet">Clicks</th>
+                                                                                                <th style="padding:5px 5px;width:12%;text-align:center;" st-sort="reTweet">Impressions</th>
+                                                                                            </tr>
+                                                                                            <tr>
+                                                                                                <th>
+                                                                                                    <input st-search="postComment" placeholder="Search Tweet " class="input-sm form-control" type="search"/>
+                                                                                                </th>
+                                                                                                <th></th>
+                                                                                                <th></th>
+                                                                                                <th></th>
+                                                                                            </tr>
+                                                                                            </thead>
+                                                                                            <tbody>
+                                                                                            <tr ng-repeat="data in chart.data | limitTo: limitScroll" ng-if="data.postComment">
+                                                                                                <td style="padding:5px 5px;width:55%;"><a ng-if="data.link"  href="{{data.link}}  " target="_blank">{{data.postComment}}</a><a ng-if="!data.links.media[0]" class="apiLink" href="https://twitter.com" target="_blank">{{data.postComment}}</a></td>
+                                                                                                <td style="padding:5px 5px;width:12%;text-align:center;">{{data.date}}</td>
+                                                                                                <td style="padding:5px 5px;width:12%;text-align:center;">{{data.likes}}</td>
+                                                                                                <td style="padding:5px 5px;width:12%;text-align:center;">{{data.comments}}</td>
+                                                                                                <td style="padding:5px 5px;width:12%;text-align:center;">{{data.shares}}</td>
+                                                                                                <td style="padding:5px 5px;width:12%;text-align:center;">{{data.clicks}}</td>
+                                                                                                <td style="padding:5px 5px;width:12%;text-align:center;">{{data.impressions}}</td>
+                                                                                            </tr>
+                                                                                            </tbody>
+                                                                                        </table>
                                                                                     </div>
+                                                                                    <div class="showmore" style="text-align:center" ng-show="chart.data.length>20">
+                                                                                        <a href ng-click="limitScroll=(limitScroll+10)" ng-show="limitScroll<chart.data.length">Show More</a>
+                                                                                        <span ng-show="limitScroll>20&&limitScroll<chart.data.length">|</span>
+                                                                                        <a href ng-click="limitScroll=(limitScroll-10)" ng-show="limitScroll>20">Show Less</a>
+                                                                                    </div><!--<div class="col-lg-12" style="position: relative;top:40%;text-align: center;" ng-if="!chart.data.postComment">-->
 
                                                                                 </div>
                                                                             </div>
@@ -463,7 +510,7 @@
                                                                                                 <td style="padding:5px 5px;width:5%;text-align:center;">{{data.CPCBid}}</td>
                                                                                                 <td style="padding:5px 5px;width:5%;text-align:center;">{{data.CPVBid}}</td>
                                                                                                 <td style="padding:5px 5px;width:5%;text-align:center;">{{data.Conversions}}</td>
-                                                                                                <td style="padding:5px 5px;width:5%;text-align:center;">{{data.Totalconvvalue}}</td>
+                                                                                                <td style="padding:5px 5px;width:5%;text-align:center;">{{data.Currency}}&nbsp{{data.Totalconvvalue}}</td>
                                                                                                 <td style="padding:5px 5px;width:5%;text-align:center;">{{data.Currency}} {{data.Spent}}</td>
                                                                                             </tr>
                                                                                             </tbody>
@@ -513,8 +560,8 @@
                                                                                                 <td style="padding:5px 5px;width:5%;text-align:center;">{{data.CTR}}%</td>
                                                                                                 <td style="padding:5px 5px;width:5%;text-align:center;">{{data.Currency}} {{data.CPC}}</td>
                                                                                                 <td style="padding:5px 5px;width:5%;text-align:center;">{{data.Conversions}}</td>
-                                                                                                <td style="padding:5px 5px;width:5%;text-align:center;">{{data.ConversionRate}}</td>
-                                                                                                <td style="padding:5px 5px;width:5%;text-align:center;">{{data.Totalconvvalue}}</td>
+                                                                                                <td style="padding:5px 5px;width:5%;text-align:center;">{{data.ConversionRate}}&nbsp%</td>
+                                                                                                <td style="padding:5px 5px;width:5%;text-align:center;">{{data.Currency}}&nbsp{{data.Totalconvvalue}}</td>
                                                                                                 <td style="padding:5px 5px;width:5%;text-align:center;">{{data.Currency}} {{data.Spent}}</td>
                                                                                             </tr>
                                                                                             </tbody>
@@ -556,8 +603,8 @@
                                                                                                 <td style="padding:5px 5px;width:12%;text-align:center;">{{data.Currency}} {{data.CTR}}</td>
                                                                                                 <td style="padding:5px 5px;width:12%;text-align:center;">{{data.CPC}} </td>
                                                                                                 <td style="padding:5px 5px;width:12%;text-align:center;">{{data.Conversions}}</td>
-                                                                                                <td style="padding:5px 5px;width:12%;text-align:center;">{{data.conversionRate}}</td>
-                                                                                                <td style="padding:5px 5px;width:12%;text-align:center;">{{data.Totalconvvalue}}</td>
+                                                                                                <td style="padding:5px 5px;width:12%;text-align:center;">{{data.conversionRate}}&nbsp%</td>
+                                                                                                <td style="padding:5px 5px;width:12%;text-align:center;">{{data.Currency}}&nbsp{{data.Totalconvvalue}}</td>
                                                                                                 <td style="padding:5px 5px;width:12%;text-align:center;">{{data.Currency}} {{data.Spent}}</td>
                                                                                             </tr>
                                                                                             </tbody>
@@ -580,7 +627,7 @@
                                                                                         <table class="table table-striped">
                                                                                             <thead>
                                                                                             <tr style="padding:2px 5px;width:100%">
-                                                                                                <th style="padding:5px 5px;width:55%;text-align:center;">HashTag</th>
+                                                                                                <th style="padding:5px 5px;width:55%;text-align:center;">Hashtag</th>
                                                                                                 <th style="padding:5px 5px;width:35%;text-align:center;">Engagement</th>
 
                                                                                             </tr>
@@ -751,16 +798,27 @@
                                                                         <div class="row" style="margin: 0px;height: 100%" id='chartTable-{{widget.id}}'>
                                                                             <div events="events" style="height: 99%" ng-if="aexppage.widgetData[widgetIndex].visibility == true">
                                                                                 <div class="scrollbar scrollInWidget" id="scroller">
-                                                                                    <div class="col-lg-12 listed"  ng-class-odd="'odd'" ng-class-even="'even'" ng-repeat="data in chart.data">
-                                                                                        <div class="col-lg-12">
-                                                                                            <div class="postComment"><a class="apiLink" href="{{data.links}} " target="_blank">{{data.postComment}}</a></div>
-                                                                                            <div class="impression">
-                                                                                                <div class="likes"><span>Likes: {{data.likes}}</span></div>
-                                                                                                <div class="comment"><span>comments: {{data.comments}}</span></div>
-                                                                                                <div class="comment"><span>Repins: {{data.repin}}</span></div>
-                                                                                                <div class="date"><span>{{data.date}}</span></div>
-                                                                                            </div>
-                                                                                        </div>
+                                                                                    <div class="col-lg-12 table-responsive" style="overflow-x: hidden;padding:0px;">
+                                                                                        <table st-table="chart.data" class="table table-striped" >
+                                                                                            <thead>
+                                                                                            <tr>
+                                                                                                <th st-sort="postComment">Pin</th>
+                                                                                                <th st-sort="date">Date</th>
+                                                                                                <th st-sort="likes">Likes</th>
+                                                                                                <th st-sort="comments">Comments</th>
+                                                                                                <th st-sort="repin">Repins</th>
+                                                                                            </tr>
+                                                                                            </thead>
+                                                                                            <tbody>
+                                                                                            <tr ng-repeat="data in chart.data " ng-if="data.postComment">
+                                                                                                <td><a style="color: #232c3b;" href="{{data.links}}" target="_blank">{{data.postComment}}<br></a></td></td>
+                                                                                                <td>{{data.date}}</td>
+                                                                                                <td>{{data.likes}}</td>
+                                                                                                <td>{{data.comments}}</td>
+                                                                                                <td>{{data.repin}}</td>
+                                                                                            </tr>
+                                                                                            </tbody>
+                                                                                        </table>
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
@@ -770,16 +828,34 @@
                                                                         <div class="row" style="margin: 0px;height: 100%" id='chartTable-{{widget.id}}'>
                                                                             <div events="events" style="height: 99%" ng-if="aexppage.widgetData[widgetIndex].visibility == true">
                                                                                 <div class="scrollbar scrollInWidget" id="scroller">
-                                                                                    <div class="col-lg-12 listed"  ng-class-odd="'odd'" ng-class-even="'even'" ng-repeat="data in chart.data">
-                                                                                        <div class="col-lg-12">
-                                                                                            <div class="postComment"><a class="apiLink" href="{{data.links}} " target="_blank">{{data.postComment}}</a></div>
-                                                                                            <div class="impression">
-                                                                                                <div class="likes"><span>collaborators: {{data.collaborators}}</span></div>
-                                                                                                <div class="comment"><span>pins: {{data.followers}}</span></div>
-                                                                                                <div class="comment"><span>followers: {{data.pins}}</span></div>
-                                                                                                <div class="date"><span>{{data.date}}</span></div>
-                                                                                            </div>
-                                                                                        </div>
+                                                                                    <div class="col-lg-12 table-responsive" style="overflow-x: hidden;padding:0px;">
+                                                                                        <table st-table="chart.data" class="table table-striped" >
+                                                                                            <thead>
+                                                                                            <tr>
+                                                                                                <th st-sort="postComment">Board</th>
+                                                                                                <th st-sort="date">Date</th>
+                                                                                                <th st-sort="collaborators">Collaborators</th>
+                                                                                                <th st-sort="pins">Pins</th>
+                                                                                                <th st-sort="followers">Followers</th>
+                                                                                            </tr>
+                                                                                            <tr>
+                                                                                                <th>
+                                                                                                    <input st-search="postComment" placeholder="Search Board " class="input-sm form-control" type="search"/>
+                                                                                                </th>
+                                                                                                <th></th>
+                                                                                                <th></th>
+                                                                                            </tr>
+                                                                                            </thead>
+                                                                                            <tbody>
+                                                                                            <tr ng-repeat="data in chart.data " ng-if="data.postComment">
+                                                                                                <td><a style="color: #232c3b;" href="{{data.links}}" target="_blank">{{data.postComment}}<br></a></td></td>
+                                                                                                <td>{{data.date}}</td>
+                                                                                                <td>{{data.collaborators}}</td>
+                                                                                                <td>{{data.pins}}</td>
+                                                                                                <td>{{data.followers}}</td>
+                                                                                            </tr>
+                                                                                            </tbody>
+                                                                                        </table>
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
@@ -790,19 +866,45 @@
                                                                         <div class="row" style="margin: 0px;height: 100%" id='chartTable-{{widget.id}}'>
                                                                             <div events="events" style="height: 99%" ng-if="aexppage.widgetData[widgetIndex].visibility == true">
                                                                                 <div class="scrollbar scrollInWidget" id="scroller">
-                                                                                    <div class="col-lg-12 listed"  ng-class-odd="'odd'" ng-class-even="'even'" ng-repeat="data in chart.data" ng-if="data.title">
-                                                                                        <div class="col-lg-1 listed-image" >
-                                                                                            <a  href="{{data.link }}" target="_blank"><img ng-src="{{data.picture}}" height="50px" widget="50px" /></a>
-                                                                                        </div>
-                                                                                        <div class="col-lg-11 aside">
-                                                                                            <div class="postComment"> <a  class="apiLink" href="{{data.link }}" target="_blank">  {{data.title}}</a></div>
-                                                                                            <div class="impression">
-                                                                                                <div class="likes"><span>Likes: {{data.likes}}</span></div>
-                                                                                                <div class="comment"><span>comments: {{data.comments}}</span></div>
-                                                                                                <div class="likes"><span>Views: {{data.views}}</span></div>
-                                                                                                <div class="date"><span>{{data.date}}</span></div>
-                                                                                            </div>
-                                                                                        </div>
+                                                                                    <div class="col-lg-12 table-responsive" style="overflow-x: hidden;padding:0px;">
+                                                                                        <table st-table="chart.data" class="table table-striped">
+                                                                                            <thead>
+                                                                                            <tr>
+                                                                                                <th  style="padding:5px 5px;width:12%;text-align:center;" ></th>
+                                                                                                <th style="padding:5px 5px;width:40%;text-align:center;" st-sort="title">Video</th>
+                                                                                                <th style="padding:5px 5px;width:12%;text-align:center;" st-sort="date">Date</th>
+                                                                                                <th style="padding:5px 5px;width:12%;text-align:center;" st-sort="likes">Likes</th>
+                                                                                                <th style="padding:5px 5px;width:12%;text-align:center;" st-sort="comments">Comments</th>
+                                                                                                <th style="padding:5px 5px;width:12%;text-align:center;" st-sort="views">Views</th>
+                                                                                            </tr>
+                                                                                            <tr>
+                                                                                                <th></th>
+                                                                                                <th>
+                                                                                                    <input st-search="title" placeholder="Search Video " class="input-sm form-control" type="search"/>
+                                                                                                </th>
+                                                                                                <th></th>
+                                                                                                <th></th>
+                                                                                                <th></th>
+                                                                                            </tr>
+                                                                                            </thead>
+                                                                                            <tbody>
+                                                                                            <tr ng-repeat="data in chart.data | limitTo:limitScroll" ng-if="data.title">
+                                                                                                <td  style="padding:5px 5px;width:12%;"> <a  href="{{data.link }}" target="_blank"><img ng-src="{{data.picture}}" height="50px" widget="50px" /></a></td>
+                                                                                                <td style="padding:5px 5px;width:40%;">
+                                                                                                    <div ><a  class="apiLink" href="{{data.link }}" target="_blank">  {{data.title}}</a></div>
+                                                                                                </td>
+                                                                                                <td style="padding:5px 5px;width:12%;text-align:center;">{{data.date}}</td>
+                                                                                                <td style="padding:5px 5px;width:12%;text-align:center;">{{data.likes}}</td>
+                                                                                                <td style="padding:5px 5px;width:12%;text-align:center;">{{data.comments}}</td>
+                                                                                                <td style="padding:5px 5px;width:12%;text-align:center;">{{data.views}}</td>
+                                                                                            </tr>
+                                                                                            </tbody>
+                                                                                        </table>
+                                                                                    </div>
+                                                                                    <div class="showmore" style="text-align:center" ng-show="chart.data.length>10">
+                                                                                        <a href ng-click="limitScroll=(limitScroll+10)" ng-show="limitScroll<chart.data.length">Show More</a>
+                                                                                        <span ng-show="limitScroll>20&&limitScroll<chart.data.length">|</span>
+                                                                                        <a href ng-click="limitScroll=(limitScroll-10)" ng-show="limitScroll>10">Show Less</a>
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
@@ -823,7 +925,7 @@
                                                                                         <table class="table table-striped">
                                                                                             <thead>
                                                                                             <tr style="padding:2px 5px;width:100%">
-                                                                                                <th style="padding:5px 5px;width:55%;text-align:center;">HashTag</th>
+                                                                                                <th style="padding:5px 5px;width:55%;text-align:center;">Hashtag</th>
                                                                                                 <th style="padding:5px 5px;width:15%;text-align:right;">Likes</th>
                                                                                                 <th style="padding:5px 5px;width:15%;text-align:right;">Comments</th>
                                                                                             </tr>

@@ -274,9 +274,10 @@ exports.generateToken = function (req, res, done) {
                     var verificationUrl = configAuth.emailVerification.redirectVerifyUserToken + tokenId;
 
                     // HTML Version
-                    userDetail.html= '<p style="align-content: center;font-weight: bold">Welcome to Datapoolt</p>' + '<br>' + '<div style="font-family: Helvetica,Arial,sans-serif">' + '<span>Hi </span>' + '' + '<span>' + userDetail.name + ',' + '</span>' +
-
-                        '<br>' + '<p>We have received your request to reset password.</p>' + '<p> Click the link below to reset your password.</p>' + '</div>' + '</b>' + '<button style="text-decoration: none;color: #FFF;background-color: #1a8bb3;border: solid #1a8bb3;border-width: 1px 10px;line-height: 2;font-weight: bold;text-align: center;cursor: pointer;display: inline-block;border-radius: 5px;background-color: #1a8bb3 ;border-radius: 12px;color:#fff;font-size: 14px;height: 33px;"><a style="text-decoration: none;color:#fff" href="' + verificationUrl + '">Click Here</a></button>'
+                    userDetail.html= '<div style="font-family: Helvetica,Arial,sans-serif">' + '<span>Dear </span>' + '' + '<span>' + userDetail.name + ',' + '</span>' +
+                        '<br>' + '<p>We sent you this email because you have asked for changing your Datapoolt password. If this request came from you and you would like to change it now, please click on the following link:</p>' + '</div>' + '</b>' + '<button style="background-color:#ff6c3a;border-radius: 5px;background-color: #ff6c3a;box-shadow: 1px 1px 2px rgba(0,0,0,.2), inset 0 -2px #fd845b;border: solid 1px #ff6c3a;display: inline-block;padding: 6px 20px;font-size: 11px;color: #fff;font-family: bold, sans-serif, Arial;text-transform: uppercase;"><a style="text-decoration: none;color:#fff" href="' + verificationUrl + '">Reset Password</a></button>'+
+                            '<p>If the request did not come from you, please ignore this mail.</p><p>Cheers,</p><p>Datapoolt Team</p>';
+                    userDetail.subject="Datapoolt: Reset your password";
                     utilityFunctions.sendConfirmationMail(userDetail, function (err, mail) {
                         if (err) done(err)
                         else done(null, {mailId: req.userEmail})

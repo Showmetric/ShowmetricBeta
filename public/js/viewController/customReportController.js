@@ -340,7 +340,7 @@ function customReportController($scope,$timeout,$rootScope,$http,$window,$state,
                         $("#reportPDFModalContent").addClass('md-show');
 
                         $(".loadingStatus").hide();
-                        $(".reportPdfHeadText").show().text("PDF has been generated successfully");
+                        $(".reportPdfHeadText").show().text("PDF has been generated successfully").css({"font-style": 'normal', "color": "#232c3b"});
 
                         $(".pdfContentText").html('<b><br/><a href="' + dwnldUrl + '" download style="color: green;"  id="yourLinkID">Click here to download your PDF</a></b>');
                         var jsonData = {
