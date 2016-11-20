@@ -307,7 +307,7 @@ module.exports = {
     },
     
     'batchJobs':{
-        dataBase:'mongodb://admin:admin@ds149567.mlab.com:49567/datapoolt_uat',
+        dataBase:'mongodb://datapoolt:datapooltUat@mongo-uat-1.1b0da96b.cont.dockerapp.io/DatapooltUat',
         mail:{
             user: 'alerts@datapoolt.co',
             password: 'DaTaPoOlT'
