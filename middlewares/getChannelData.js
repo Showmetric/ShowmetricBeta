@@ -2435,7 +2435,9 @@ exports.getChannelData = function (req, res, next) {
                                     channelTitle: result.items[j].channelTitle
                                 })
                             }
-                            var videoIds = videosListArray[0].videoId;
+                            if(videosListArray.length)
+                                var videoIds = videosListArray[0].videoId;
+                            else videoIds = null;
                             for (var k = 1; k < videosListArray.length; k++) {
                                 videoIds = videoIds + ',' + videosListArray[k].videoId;
                             }
@@ -2475,7 +2477,7 @@ exports.getChannelData = function (req, res, next) {
                                     var videoEngagementsArray = [];
                                     if(result.items.length)
                                         var videoDetailsLength = result.items.length;
-                                    else var videoDetailsLength=[];
+                                    else  videoEngagementsArray='No Data';
                                     for(var v = 0;v<videoDetailsLength;v++){
                                         videoEngagementsArray.push({
                                             channelId: result.items[v].snippet.channelId,
