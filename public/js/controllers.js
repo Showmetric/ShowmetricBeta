@@ -4998,9 +4998,14 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                         categories: dateArray,
                         labels: {
                             formatter: function () {
-                                var date = this.value.split('-');
-                                //return months[date.getMonth()] + ' ' + date.getDate();
-                                 return date[1] + ' ' + date[0];
+                                if(typeof this.value==='object'){
+                                    var date = new Date(this.value);
+                                    return months[date.getMonth()] + ' ' + date.getDate();
+                                }
+                                else{
+                                    var date = this.value.split('-');
+                                    return date[1] + ' ' + date[0];
+                                }
                             }
                         },
                         tickInterval: 7,
@@ -5116,10 +5121,14 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                 categories: dateArray,
                                 labels: {
                                     formatter: function () {
-                                        /*var date = new Date(this.value);
-                                        return months[date.getMonth()] + ' ' + date.getDate();*/
-                                        var date = this.value.split('-');
-                                        return date[1] + ' ' + date[0];
+                                        if(typeof this.value==='object'){
+                                            var date = new Date(this.value);
+                                            return months[date.getMonth()] + ' ' + date.getDate();
+                                        }
+                                        else{
+                                            var date = this.value.split('-');
+                                            return date[1] + ' ' + date[0];
+                                        }
                                     }
                                 },
                                 tickInterval: 7,
@@ -5180,8 +5189,14 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                             categories: dateArray,
                             labels: {
                                 formatter: function () {
-                                    var date = this.value.split('-');
-                                    return date[1] + ' ' + date[0];
+                                    if(typeof this.value==='object'){
+                                        var date = new Date(this.value);
+                                        return months[date.getMonth()] + ' ' + date.getDate();
+                                    }
+                                    else{
+                                        var date = this.value.split('-');
+                                        return date[1] + ' ' + date[0];
+                                    }
                                 }
                             },
                             tickInterval: 7,
@@ -5226,8 +5241,14 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                             categories: dateArray,
                             labels: {
                                 formatter: function () {
-                                    var date = this.value.split('-');
-                                    return date[1] + ' ' + date[0];
+                                    if(typeof this.value==='object'){
+                                        var date = new Date(this.value);
+                                        return months[date.getMonth()] + ' ' + date.getDate();
+                                    }
+                                    else{
+                                        var date = this.value.split('-');
+                                        return date[1] + ' ' + date[0];
+                                    }
                                 }
                             },
                             tickInterval: 7,
@@ -5380,8 +5401,14 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                 categories: dateArray,
                                 labels: {
                                     formatter: function () {
-                                        var date = this.value.split('-');
-                                        return date[1] + ' ' + date[0];
+                                        if(typeof this.value==='object'){
+                                            var date = new Date(this.value);
+                                            return months[date.getMonth()] + ' ' + date.getDate();
+                                        }
+                                        else{
+                                            var date = this.value.split('-');
+                                            return date[1] + ' ' + date[0];
+                                        }
                                     }
                                 },
                                 tickInterval: 7,
@@ -5428,10 +5455,14 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                 categories: dateArray,
                                 labels: {
                                     formatter: function () {
-                                       /* if(typeof this.value==='string') {var date = this.value.split('-');
-                                        return date[1] + ' ' + date[0];}*/
-                                        var date = new Date(this.value);
-                                         return months[date.getMonth()] + ' ' + date.getDate();
+                                        if(typeof this.value==='object'){
+                                            var date = new Date(this.value);
+                                            return months[date.getMonth()] + ' ' + date.getDate();
+                                        }
+                                        else{
+                                            var date = this.value.split('-');
+                                            return date[1] + ' ' + date[0];
+                                        }
                                     }
                                 },
                                 tickInterval: 7,
@@ -5616,8 +5647,14 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                         categories: dateArray,
                         labels: {
                             formatter: function () {
-                                var date = this.value.split('-');
-                                return date[1] + ' ' + date[0];
+                                if(typeof this.value==='object'){
+                                    var date = new Date(this.value);
+                                    return months[date.getMonth()] + ' ' + date.getDate();
+                                }
+                                else{
+                                    var date = this.value.split('-');
+                                    return date[1] + ' ' + date[0];
+                                }
                             }
                         },
                         tickInterval: 7,
@@ -5804,8 +5841,14 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                         categories: dateArray,
                         labels: {
                             formatter: function () {
-                                var date = this.value.split('-');
-                                return date[1] + ' ' + date[0];
+                                if(typeof this.value==='object'){
+                                    var date = new Date(this.value);
+                                    return months[date.getMonth()] + ' ' + date.getDate();
+                                }
+                                else{
+                                    var date = this.value.split('-');
+                                    return date[1] + ' ' + date[0];
+                                }
                             }
                         },
                         tickInterval: 7,
