@@ -36,7 +36,7 @@ function RecommendedDashboardController($scope, $http, $window, $q, $state, $roo
     $scope.googleCampaignChosen = false;
     $scope.groupChosen = false;
     $scope.adChosen = false;
-    $scope.messageEnable=false;
+    $scope.messageEnable=[];
     $scope.recommendedRefreshButton = [];
     $scope.otherRefreshButton=[];
     $scope.tokenExpired = [];
@@ -85,7 +85,6 @@ function RecommendedDashboardController($scope, $http, $window, $q, $state, $roo
             fbAdsComplete=false;
             googleAdsComplete=false;
             fbAdsPresent=false;
-            $scope.messageEnable=false;
             googleAdsPresent=false;
             objectTypeIds=[];
             $scope.fbSelectEnable=false;
@@ -231,6 +230,7 @@ function RecommendedDashboardController($scope, $http, $window, $q, $state, $roo
                 $scope.objectList[index] = [];
                 $scope.otherObjectList=[];
                 $scope.objectTypeList[index]=[];
+                $scope.messageEnable[index]=false;
                 var tempObjType=[];
                 $http({
                     method: 'GET', url: '/api/v1/get/objectType/' + profileId._id + '?buster=' + new Date()
@@ -273,7 +273,7 @@ function RecommendedDashboardController($scope, $http, $window, $q, $state, $roo
 
     $scope.getObjectsForChosenProfile = function (profileObj, index) {
         $scope.tokenExpired[index] = false;
-        $scope.messageEnable=false;
+        $scope.messageEnable[index]=false;
         if($scope.getChannelList[index].name == 'FacebookAds'){
             $scope.selectedLevel = null;
             document.getElementById('basicWidgetFinishButton').disabled = true;
@@ -572,7 +572,7 @@ function RecommendedDashboardController($scope, $http, $window, $q, $state, $roo
     };
 
     $scope.selectLevelChosen = function (level,index) {
-        $scope.messageEnable=false;
+        $scope.messageEnable[index]=false;
         if(level) {
             var setLimitation=0;
             for(var i=0;i<$scope.referenceWidgetsList.length;i++){
@@ -613,7 +613,7 @@ function RecommendedDashboardController($scope, $http, $window, $q, $state, $roo
         }
         if($scope.selectedLevel=='fbadaccount'){
             if(setLimitation){
-                $scope.messageEnable=true;
+                $scope.messageEnable[index]=true;
                 fbAdsComplete=false;
             }
             else {
@@ -641,7 +641,7 @@ function RecommendedDashboardController($scope, $http, $window, $q, $state, $roo
         }
         else if($scope.selectedLevel=='fbAdSet'){
             if(setLimitation){
-                $scope.messageEnable=true;
+                $scope.messageEnable[index]=true;
                 fbAdsComplete=false;
             }
             else {
@@ -669,7 +669,7 @@ function RecommendedDashboardController($scope, $http, $window, $q, $state, $roo
         }
         else if($scope.selectedLevel=='fbAdSetAds'){
             if(setLimitation){
-                $scope.messageEnable=true;
+                $scope.messageEnable[index]=true;
                 fbAdsComplete=false;
             }
             else {
@@ -942,7 +942,7 @@ function RecommendedDashboardController($scope, $http, $window, $q, $state, $roo
     };
 
     $scope.googleSelectLevelChosen = function (level,index) {
-        $scope.messageEnable=false;
+        $scope.messageEnable[index]=false;
         if(level) {
             var accountLimitation=0;
             var campaignLimitation=0;
@@ -1048,7 +1048,7 @@ function RecommendedDashboardController($scope, $http, $window, $q, $state, $roo
         }
         if($scope.selectedGoogleLevel=='adwordaccount'){
             if(accountLimitation){
-                $scope.messageEnable=true;
+                $scope.messageEnable[index]=true;
                 googleAdsComplete=false;
             }
             else{
@@ -1061,7 +1061,7 @@ function RecommendedDashboardController($scope, $http, $window, $q, $state, $roo
         }
         else if($scope.selectedGoogleLevel=='adwordCampaign'){
             if(campaignLimitation){
-                $scope.messageEnable=true;
+                $scope.messageEnable[index]=true;
                 googleAdsComplete=false;
             }
             else{
@@ -1082,7 +1082,7 @@ function RecommendedDashboardController($scope, $http, $window, $q, $state, $roo
         }
         else if($scope.selectedGoogleLevel=='adwordAdgroup'){
             if(adGroupLimitation){
-                $scope.messageEnable=true;
+                $scope.messageEnable[index]=true;
                 googleAdsComplete=false;
             }
             else{
@@ -1110,7 +1110,7 @@ function RecommendedDashboardController($scope, $http, $window, $q, $state, $roo
         }
         else if($scope.selectedGoogleLevel=='adwordsAd'){
             if(adSetLimitation){
-                $scope.messageEnable=true;
+                $scope.messageEnable[index]=true;
                 googleAdsComplete=false;
             }
             else{
