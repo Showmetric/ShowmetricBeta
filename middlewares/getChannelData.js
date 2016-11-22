@@ -2032,6 +2032,13 @@ exports.getChannelData = function (req, res, next) {
                 else {
                     Data.aggregate([
 
+                            {
+                                "$match": {
+                                    $and: [
+                                        {"objectId": widget[k].metrics[0].objectId},
+                                        {"metricId": widget[k].metrics[0].metricId}]
+                                }
+                            },
                             // Unwind the array to denormalize
                             {"$unwind": "$data"},
 
@@ -2039,8 +2046,7 @@ exports.getChannelData = function (req, res, next) {
                             {
                                 "$match": {
                                     $and: [{"data.date": {$gte: req.body.startDate}}, {"data.date": {$lte: req.body.endDate}},
-                                        {"objectId": widget[k].metrics[0].objectId},
-                                        {"metricId": widget[k].metrics[0].metricId}]
+                                    ]
                                 }
                             },
 
