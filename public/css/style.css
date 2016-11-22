@@ -383,7 +383,7 @@ svg:hover #Calendar-Icon { fill: #293846; }
     background-color: #fff !important;
     border-radius: 5px !important;
     font-size: 16px !important;
-    font-family: Montserrat-Bold !important ;
+    font-family: Montserrat-Medium !important ;
     font-style: normal !important;
     padding: 6.5px !important;
     border:none;
@@ -395,7 +395,7 @@ svg:hover #Calendar-Icon { fill: #293846; }
     color:#000 ;
     border-radius: 0px !important;
     font-size: 18px !important;
-    font-family: Montserrat-Bold !important ;
+    font-family: Montserrat-Medium !important ;
     font-style: normal !important;
     font-weight: bolder;
     padding: 6.5px !important;
@@ -403,13 +403,13 @@ svg:hover #Calendar-Icon { fill: #293846; }
     float: left;
     text-transform: capitalize;
 }
-.reportNameEdit p{text-align:center;color:#000;font-size:20px;font-family:Montserrat-Bold;padding:5px;text-transform: capitalize;float:left;}
+.reportNameEdit p{text-align:center;color:#000;font-size:20px;font-family:Montserrat-Medium;padding:5px;text-transform: capitalize;float:left;}
 .reportName pre{
     background-color: #ff6c3a !important;
     color:#ffffff ;
     border-radius: 0px !important;
     font-size: 18px !important;
-    font-family: Montserrat-Bold !important ;
+    font-family: Montserrat-Medium !important ;
     font-style: normal !important;
     font-weight: bolder;
     padding: 6.5px !important;
@@ -417,7 +417,7 @@ svg:hover #Calendar-Icon { fill: #293846; }
     float: left;
     text-transform: capitalize;
 }
-.reportName p{text-align:center;color:#000;font-size:20px;font-family:Montserrat-Bold;padding:5px;text-transform: capitalize;}
+.reportName p{text-align:center;color:#000;font-size:20px;font-family:Montserrat-Medium;padding:5px;text-transform: capitalize;}
 .textWidget {
     width:100% !important;
     height:100% !important;
@@ -442,7 +442,7 @@ svg:hover #Calendar-Icon { fill: #293846; }
     text-rendering: optimizeLegibility;overflow-y: scroll;
 }
 .head-widget{
-    width: 100%;height: 100%;font-size: 24px!important;font-family: Montserrat-Bold !important;line-height:1.2em !important;
+    width: 100%;height: 100%;font-size: 24px!important;font-family: Montserrat-Medium !important;line-height:1.2em !important;
     margin-bottom: 1.25em;
 }
 .dashboardName a:hover .hover-icon{
@@ -466,7 +466,7 @@ svg:hover #Calendar-Icon { fill: #293846; }
 }
 .dashboardName{width:325px }
 .daterange .dr-selections .dr-list-item .dr-item-aside{color: #000 !important;
-    font-size: 12px !important; font-family: Montserrat-Bold !important ; font-weight: bold;}
+    font-size: 12px !important; font-family: Montserrat-Medium !important ; font-weight: bold;}
 .main-content{
     margin-left: 0px;
 }
@@ -3049,7 +3049,7 @@ button.btn.btn-primary.closeModalContent {
     text-align: center;
     font-weight: 600;
     text-transform: none;
-    font-family: Montserrat-Bold;
+    font-family: Montserrat-Medium;
 }
 
 .exportCloseButton{
@@ -5302,19 +5302,19 @@ button.overlayCloseButton:hover{
 
 .exportDashbdNameStyle{
     font-size:18px!important;
-    font-family: Montserrat-Bold !important ;
+    font-family: Montserrat-Medium !important ;
     font-style: normal !important;
     font-weight:200 !important;
     text-transform: capitalize;
 }
 .grid-font{
-    font-family: Montserrat-Bold !important;
+    font-family: Montserrat-Medium !important;
     text-transform: capitalize !important;
     font-weight: bolder;
 }
 @media(min-width : 768px) {
     .dashboard-report{
-        font-family: Montserrat-Bold!important;
+        font-family: Montserrat-Medium!important;
         text-transform: capitalize !important;
         font-size: 20px;
         font-weight: 600;
@@ -5470,14 +5470,14 @@ input:focus{
     }
 }
 @media(max-width : 1000px) {
-    .reportText-header{color:#fff;margin-top:5px;font-size:15px;font-family:Montserrat-Bold;padding:5px}
+    .reportText-header{color:#fff;margin-top:5px;font-size:15px;font-family:Montserrat-Medium;padding:5px}
 }
 .reportGraph-icon{float: right; margin-top: 7px;margin-right: -25px;}
 .reportGraph-icon a{color:#232c3b !important;}
 .reportGraph-icon a:hover{color:#1074ae !important;}
 .logoImage-icons{max-width: 90%;max-height:40px;padding: 10px 0 0 0;}
 .logoText-icons{color:#000;font-size:20px;font-family:Montserrat-Light;padding:10px 5px}
-.reportText-header{color:#fff;margin-top:5px;font-size:18px;font-family:Montserrat-Bold;padding:5px}
+.reportText-header{color:#fff;margin-top:5px;font-size:18px;font-family:Montserrat-Medium;padding:5px}
 .reportDate-select{display: block !important;}
 .dashboardTitleIcons .dashboardIcons a:focus{
     outline:none !important;
