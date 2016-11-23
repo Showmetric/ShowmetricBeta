@@ -2118,11 +2118,16 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                     }
                                     var sortCountry = _.sortBy(formattedChartDataArray, 'sessions').reverse();
                                     if (sortCountry.length) {
-                                        for (var k = 0; k < 5; k++)
+                                        var countryLength = sortCountry.length<5?sortCountry.length:5;
+                                        for (var k = 0; k < countryLength; k++)
                                             topFiveValues[sortCountry[k].country] = sortCountry[k].sessions;
-                                        for (var j = 5; j < sortCountry.length; j++)
-                                            others = others + sortCountry[j].sessions;
-                                        topFiveValues['Others'] = others;
+                                        if(sortCountry.length>5){
+                                            for (var j = 5; j < sortCountry.length; j++)
+                                                others = others + sortCountry[j].sessions;
+                                            topFiveValues['Others'] = others;
+                                        }
+                                        else topFiveValues['Others'] = 0;
+
                                     }
                                 }
                             }
@@ -4998,7 +5003,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                         categories: dateArray,
                         labels: {
                             formatter: function () {
-                                if(typeof this.value==='object'){
+                                if(typeof this.value==='object' || typeof this.value==='number'){
                                     var date = new Date(this.value);
                                     return months[date.getMonth()] + ' ' + date.getDate();
                                 }
@@ -5010,7 +5015,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                         },
                         tickInterval: 7,
                         min: 0,
-                        max: dateArray.length,
+                        //max: dateArray[dateArray.length-1],
                     },
                     yAxis: [{ // left y axis
                         title: {
@@ -5121,7 +5126,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                 categories: dateArray,
                                 labels: {
                                     formatter: function () {
-                                        if(typeof this.value==='object'){
+                                        if(typeof this.value==='object' || typeof this.value==='number'){
                                             var date = new Date(this.value);
                                             return months[date.getMonth()] + ' ' + date.getDate();
                                         }
@@ -5133,7 +5138,6 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                 },
                                 tickInterval: 7,
                                 min: 0,
-                                max: dateArray.length,
                             },
                             title: {
                                 text: '',
@@ -5189,7 +5193,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                             categories: dateArray,
                             labels: {
                                 formatter: function () {
-                                    if(typeof this.value==='object'){
+                                    if(typeof this.value==='object'|| typeof this.value==='number'){
                                         var date = new Date(this.value);
                                         return months[date.getMonth()] + ' ' + date.getDate();
                                     }
@@ -5201,7 +5205,6 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                             },
                             tickInterval: 7,
                             min: 0,
-                            max: dateArray.length,
                         },
                         yAxis: [{
                             title: {
@@ -5241,7 +5244,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                             categories: dateArray,
                             labels: {
                                 formatter: function () {
-                                    if(typeof this.value==='object'){
+                                    if(typeof this.value==='object'|| typeof this.value==='number'){
                                         var date = new Date(this.value);
                                         return months[date.getMonth()] + ' ' + date.getDate();
                                     }
@@ -5253,7 +5256,6 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                             },
                             tickInterval: 7,
                             min: 0,
-                            max: dateArray.length,
                         },
                         title: {
                             text: '',
@@ -5401,7 +5403,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                 categories: dateArray,
                                 labels: {
                                     formatter: function () {
-                                        if(typeof this.value==='object'){
+                                        if(typeof this.value==='object'|| typeof this.value==='number'){
                                             var date = new Date(this.value);
                                             return months[date.getMonth()] + ' ' + date.getDate();
                                         }
@@ -5413,7 +5415,6 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                 },
                                 tickInterval: 7,
                                 min: 0,
-                                max: dateArray.length
                             },
                             plotOptions: {
                                 column: {
@@ -5455,7 +5456,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                 categories: dateArray,
                                 labels: {
                                     formatter: function () {
-                                        if(typeof this.value==='object'){
+                                        if(typeof this.value==='object'|| typeof this.value==='number'){
                                             var date = new Date(this.value);
                                             return months[date.getMonth()] + ' ' + date.getDate();
                                         }
@@ -5467,7 +5468,6 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                 },
                                 tickInterval: 7,
                                 min: 0,
-                                max: dateArray.length
                             },
                             title: {
                                 text: '',
@@ -5647,7 +5647,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                         categories: dateArray,
                         labels: {
                             formatter: function () {
-                                if(typeof this.value==='object'){
+                                if(typeof this.value==='object'|| typeof this.value==='number'){
                                     var date = new Date(this.value);
                                     return months[date.getMonth()] + ' ' + date.getDate();
                                 }
@@ -5659,7 +5659,6 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                         },
                         tickInterval: 7,
                         min: 0,
-                        max: dateArray.length
                     };
                 }
 
@@ -5841,7 +5840,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                         categories: dateArray,
                         labels: {
                             formatter: function () {
-                                if(typeof this.value==='object'){
+                                if(typeof this.value==='object'|| typeof this.value==='number'){
                                     var date = new Date(this.value);
                                     return months[date.getMonth()] + ' ' + date.getDate();
                                 }
@@ -5853,7 +5852,6 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                         },
                         tickInterval: 7,
                         min: 0,
-                        max: dateArray.length
                     }
                     chartOptions = {
                         chart: {
