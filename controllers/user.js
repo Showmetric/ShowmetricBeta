@@ -15,7 +15,7 @@ module.exports = function (app, passport) {
     // HOME PAGE (with login links)
     app.get('/', function (req, res) {
         if (req.user) res.redirect('profile');
-        else res.redirect('/api/v1/login'); // load the index.ejs file
+        else res.redirect('/login'); // load the index.ejs file
     });
 
 
@@ -42,7 +42,7 @@ module.exports = function (app, passport) {
     });
 
     // show the login form
-    app.get('/api/v1/login', function (req, res) {
+    app.get('/login', function (req, res) {
         if (req.user && req.user.emailVerified == true) res.redirect('/profile');
         else
         // render the page and pass in any flash data if it exists
@@ -50,9 +50,9 @@ module.exports = function (app, passport) {
     });
 
     // process the login form - app.post('/login', do all our passport stuff here);
-    app.post('/api/v1/login', passport.authenticate('local-login', {
+    app.post('/login', passport.authenticate('local-login', {
         successRedirect: '/profile', // redirect to the secure profile section
-        failureRedirect: '/api/v1/login', // redirect back to the signup page if there is an error
+        failureRedirect: '/login', // redirect back to the signup page if there is an error
         failureFlash: true // allow flash messages
     }));
 
@@ -86,7 +86,7 @@ module.exports = function (app, passport) {
             });
             res.render('../public/profile.ejs');
         }
-        else res.redirect('/api/v1/login');
+        else res.redirect('/login');
     });
     app.get('/reports', function (req, res) {
         res.render('../public/reports.ejs');
@@ -320,7 +320,7 @@ module.exports = function (app, passport) {
             else {
                 req.logout();
                 req.flash('loginMessage', 'Your link is expired !')
-                res.redirect('/api/v1/login');
+                res.redirect('/login');
             }
         });
     });
