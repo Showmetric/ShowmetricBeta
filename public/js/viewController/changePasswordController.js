@@ -39,7 +39,7 @@ function ChangePasswordController($scope, $http, $location,$window) {
         .then(
             function successCallback(response) {
                 if(response.status == '200')
-                    $location.path('/api/v1/login');
+                    $location.path('/login');
                 else
                     swal("Please enter correct current password");
         })
