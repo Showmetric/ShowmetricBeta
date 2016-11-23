@@ -251,6 +251,7 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
                                         'updated': response.data.referenceWidgets[i].updated,
                                         'widgetType': response.data.referenceWidgets[i].widgetType,
                                         'isAlert': response.data.referenceWidgets[i].isAlert,
+                                        'level': response.data.referenceWidgets[i].level!=undefined?response.data.referenceWidgets[i].level:'low',
                                         'isFusion': response.data.referenceWidgets[i].isFusion!=undefined?response.data.referenceWidgets[i].isFusion:true,
                                         'isSelectedMetric': isSelectedMetric,
                                         'border': '2px solid #04509B'
@@ -272,6 +273,7 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
                                     'updated': response.data.referenceWidgets[i].updated,
                                     'widgetType': response.data.referenceWidgets[i].widgetType,
                                     'isAlert': response.data.referenceWidgets[i].isAlert,
+                                    'level': response.data.referenceWidgets[i].level!=undefined?response.data.referenceWidgets[i].level:'low',
                                     'isFusion': response.data.referenceWidgets[i].isFusion!=undefined?response.data.referenceWidgets[i].isFusion:true,
                                     'isSelectedMetric': isSelectedMetric,
                                     'border': '2px solid #e7eaec',
@@ -294,8 +296,24 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
                     var index = _.findIndex($scope.referenceWidgetsList, function (o) {
                         return o.channelName == $scope.selectedTempChannelList[j].name
                     });
-                    if(index < 0)
-                        $scope.referenceWidgetsList.push({widgets:tempReferenceList,channelName:$scope.selectedTempChannelList[j].name})
+                    if(index < 0) {
+                        var sortedWidgets =[];
+                        var isCxoPresent = false;
+                        var isExecutivePresent = false;
+                        sortedWidgets = _.orderBy(tempReferenceList, ['updated'],['desc']);
+                        for(var wid in sortedWidgets){
+                            if(sortedWidgets[wid].level=='high')
+                                isCxoPresent = true;
+                            else if (sortedWidgets[wid].level=='low')
+                                isExecutivePresent = true;
+                        }
+                        $scope.referenceWidgetsList.push({
+                            widgets: sortedWidgets,
+                            channelName: $scope.selectedTempChannelList[j].name,
+                            isCxoPresent:isCxoPresent,
+                            isExecutivePresent:isExecutivePresent
+                        })
+                    }
                 }
             },
             function errorCallback(error) {
