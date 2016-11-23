@@ -153,7 +153,7 @@ function MainCtrl($scope,$rootScope,$http,$timeout) {
                     },
                     {
                         element: '#step14',
-                        intro: 'View and manage (create/edit/delete) all the social/digital profiles whose health you want to monitor in your dashboards.',
+                        intro: 'View your account plan and status, invoice history and manage/upgrade your account.',
                         position:'left'
                     },
                     {
@@ -220,7 +220,7 @@ function MainCtrl($scope,$rootScope,$http,$timeout) {
                     },
                     {
                         element: '#step14',
-                        intro: 'View and manage (create/edit/delete) all the social/digital profiles whose health you want to monitor in your dashboards.',
+                        intro: 'View your account plan and status, invoice history and manage/upgrade your account.',
                         position:'left'
                     },
                     {
