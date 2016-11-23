@@ -43,7 +43,7 @@ function AppController($http,$state,$scope,$rootScope) {
                 $rootScope.recentDashboards=[];
                 $scope.recentDashboardList=[];
                 if(response.status == '200'){
-                    var sortedDashboard= _.orderBy(response.data.dashboardList, ['updated'],['desc']);
+                    var sortedDashboard= _.orderBy(response.data.dashboardList, ['dashboard.updated'],['desc']);
                     if(sortedDashboard.length<=5)
                         $rootScope.recentDashboards = sortedDashboard;
                     else{
