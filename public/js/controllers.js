@@ -2118,10 +2118,10 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                     }
                                     var sortCountry = _.sortBy(formattedChartDataArray, 'sessions').reverse();
                                     if (sortCountry.length) {
-                                        var countryLength = sortCountry.length<5?sortCountry.length:5;
+                                        var countryLength = sortCountry.length < 5 ? sortCountry.length : 5;
                                         for (var k = 0; k < countryLength; k++)
                                             topFiveValues[sortCountry[k].country] = sortCountry[k].sessions;
-                                        if(sortCountry.length>5){
+                                        if (sortCountry.length > 5) {
                                             for (var j = 5; j < sortCountry.length; j++)
                                                 others = others + sortCountry[j].sessions;
                                             topFiveValues['Others'] = others;
@@ -3163,6 +3163,8 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                         if (typeof widget.charts[charts].chartData[0] != 'undefined') {
                             if (widget.charts[charts].chartData[0].x) {
                                 var summaryValue = 0;
+                                var hasSnapshotData = false;
+                                var nonZeroValueCount = 0;
                                 var nonZeroPoints = 0;
                                 var n = widget.charts[charts].chartData.length;
                                 var currentWeek = 0;
@@ -3285,8 +3287,11 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                             if (latestDate < moment(widget.charts[charts].chartData[data].x)) {
                                                 latestDate = moment(widget.charts[charts].chartData[data].x);
                                                 summaryValue = widget.charts[charts].chartData[data].y;
+                                                if (summaryValue != 0) nonZeroValueCount += 1;
                                             }
                                         }
+                                        if (nonZeroValueCount >= 1) hasSnapshotData = true;
+                                        else hasSnapshotData = false;
                                     }
                                 }
                                 if (chartType == 'bounceRateArea') {
@@ -3326,7 +3331,8 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                             'key': widget.charts[charts].chartName,
                                             'unit': widget.charts[charts].metricDetails.objectTypes[0].meta.unit != undefined ? widget.charts[charts].metricDetails.objectTypes[0].meta.unit[0] : "",//key  - the name of the series.
                                             'color': widget.charts[charts].chartColour[0],  //color - optional: choose your own line color.
-                                            'summaryDisplay': (parseFloat(summaryValue).toFixed(2) % Math.floor(parseFloat(summaryValue).toFixed(2))) > 0 ? parseFloat(summaryValue).toFixed(2) : parseFloat(summaryValue).toFixed(2) > 1 ? parseInt(summaryValue) : parseFloat(summaryValue) > 0 ? parseFloat(summaryValue).toFixed(2) : parseInt(summaryValue)
+                                            'summaryDisplay': (parseFloat(summaryValue).toFixed(2) % Math.floor(parseFloat(summaryValue).toFixed(2))) > 0 ? parseFloat(summaryValue).toFixed(2) : parseFloat(summaryValue).toFixed(2) > 1 ? parseInt(summaryValue) : parseFloat(summaryValue) > 0 ? parseFloat(summaryValue).toFixed(2) : parseInt(summaryValue),
+                                            'hasSnapshotData':hasSnapshotData
                                         });
                                     }
                                     else if ((chartType == 'bar' || chartType == 'column') && totalNonZeroPoints < 0 && summaryValue == 0) {
@@ -3340,7 +3346,8 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                             'arrow': comparingData,
                                             'variance': percentage,
                                             'period': granularity,
-                                            'summaryDisplay': Math.round(summaryValue * 100) / 100
+                                            'summaryDisplay': Math.round(summaryValue * 100) / 100,
+                                            'hasSnapshotData':hasSnapshotData
                                         });
                                     }
                                     else {
@@ -3356,7 +3363,8 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                             'variance': percentage,
                                             'period': granularity,
                                             'summaryDisplay': Math.round(summaryValue * 100) / 100,
-                                            'chartSubType': widget.charts[charts].chartSubType
+                                            'chartSubType': widget.charts[charts].chartSubType,
+                                            'hasSnapshotData':hasSnapshotData
                                         });
                                     }
                                 }
@@ -3383,7 +3391,8 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                             'variance': percentage,
                                             'period': granularity,
                                             'summaryDisplay': Math.round(summaryValue * 100) / 100,
-                                            'area': true
+                                            'area': true,
+                                            'hasSnapshotData':hasSnapshotData
                                         });
 
                                     }
@@ -3399,6 +3408,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                             'variance': percentage,
                                             'period': granularity,
                                             'summaryDisplay': Math.round(summaryValue * 100) / 100,
+                                            'hasSnapshotData':hasSnapshotData
                                         });
                                     }
                                 }
@@ -3415,7 +3425,8 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                         'variance': percentage,
                                         'period': granularity,
                                         'summaryDisplay': widget.charts[charts].metricDetails.name == 'Total Impressions' || widget.charts[charts].metricDetails.name == 'Engaged users/Reach (%)' ? summary + '%' : summary,
-                                        'area': true
+                                        'area': true,
+                                        'hasSnapshotData':hasSnapshotData
                                     });
                                 }
                                 else if (chartType == 'bounceRateArea') {
@@ -3430,7 +3441,8 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                         'arrow': comparingData,
                                         'variance': percentage,
                                         'period': granularity,
-                                        'summaryDisplay': Math.round(summaryValue * 100) / 100
+                                        'summaryDisplay': Math.round(summaryValue * 100) / 100,
+                                        'hasSnapshotData':hasSnapshotData
                                     });
                                 }
                                 else if (chartType == 'costPerClick' || chartType == 'costPerThosuandImpressions' || chartType == "clickThroughRate" || chartType == "ConversionRate" || chartType == "costPerConversion") {
@@ -3445,7 +3457,8 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                         'arrow': comparingData,
                                         'variance': percentage,
                                         'period': granularity,
-                                        'summaryDisplay': Math.round(summaryValue * 100) / 100
+                                        'summaryDisplay': Math.round(summaryValue * 100) / 100,
+                                        'hasSnapshotData':hasSnapshotData
                                     });
                                 }
                                 else if (chartType == 'costPerActionType') {
@@ -3458,7 +3471,8 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                         'arrow': comparingData,
                                         'variance': percentage,
                                         'period': granularity,
-                                        'summaryDisplay': Math.round(summaryValue * 100) / 100
+                                        'summaryDisplay': Math.round(summaryValue * 100) / 100,
+                                        'hasSnapshotData':hasSnapshotData
                                     });
                                 }
                                 else if (chartType == 'trafficSourcesBrkdwnLine') {
@@ -3472,7 +3486,8 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                         'arrow': comparingData,
                                         'variance': percentage,
                                         'period': granularity,
-                                        'summaryDisplay': Math.round(summaryValue * 100) / 100
+                                        'summaryDisplay': Math.round(summaryValue * 100) / 100,
+                                        'hasSnapshotData':hasSnapshotData
                                     });
                                 }
                                 else if (chartType == 'trafficSourcesBrkdwnPie') {
@@ -3487,7 +3502,8 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                         'arrow': comparingData,
                                         'variance': percentage,
                                         'period': granularity,
-                                        'summaryDisplay': Math.round(summaryValue * 100) / 100
+                                        'summaryDisplay': Math.round(summaryValue * 100) / 100,
+                                        'hasSnapshotData':hasSnapshotData
                                     });
                                 }
                                 else if (chartType == "percentageArea") {
@@ -3503,7 +3519,8 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                         'arrow': comparingData,
                                         'variance': percentage,
                                         'period': granularity,
-                                        'summaryDisplay': Math.round(summaryValue * 100) / 100
+                                        'summaryDisplay': Math.round(summaryValue * 100) / 100,
+                                        'hasSnapshotData':hasSnapshotData
                                     });
                                 }
                                 else {
@@ -3519,6 +3536,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                         'period': granularity,
                                         'variance': percentage,
                                         'summaryDisplay': Math.round(summaryValue * 100) / 100,
+                                        'hasSnapshotData':hasSnapshotData
                                     });
                                 }
                             }
@@ -3599,6 +3617,9 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                             }
                                             else if (widget.charts[charts].metricDetails.objectTypes[0].meta.summaryType == 'snapshot') {
                                                 var latestDate = '';
+                                                var findNonZeroValue = _.findIndex(widget.charts[charts].chartData[items].y, function (o) {
+                                                    return o.date !== 0;
+                                                });
                                                 for (var data in widget.charts[charts].chartData[items]) {
                                                     if (latestDate < moment(widget.charts[charts].chartData[items][data].x)) {
                                                         latestDate = moment(widget.charts[charts].chartData[items][data].x);
@@ -3620,7 +3641,8 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                                 'arrow': comparingData,
                                                 'variance': percentage,
                                                 'period': granularity,
-                                                'summaryDisplay': Math.round(summaryValue * 100) / 100
+                                                'summaryDisplay': Math.round(summaryValue * 100) / 100,
+                                                'hasSnapshotData':hasSnapshotData
                                             });
                                         }
                                         else
@@ -3634,7 +3656,8 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                                 'arrow': comparingData,
                                                 'variance': percentage,
                                                 'period': granularity,
-                                                'summaryDisplay': Math.round(summaryValue * 100) / 100
+                                                'summaryDisplay': Math.round(summaryValue * 100) / 100,
+                                                'hasSnapshotData':hasSnapshotData
                                             });
                                     }
                                     else if (chartType == 'trafficSourcesBrkdwnLine') {
@@ -3648,7 +3671,8 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                             'arrow': comparingData,
                                             'variance': percentage,
                                             'period': granularity,
-                                            'summaryDisplay': Math.round(summaryValue * 100) / 100
+                                            'summaryDisplay': Math.round(summaryValue * 100) / 100,
+                                            'hasSnapshotData':hasSnapshotData
                                         });
                                     }
                                     else if (chartType == 'trafficSourcesBrkdwnPie') {
@@ -3663,7 +3687,8 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                             'arrow': comparingData,
                                             'variance': percentage,
                                             'period': granularity,
-                                            'summaryDisplay': Math.round(summaryValue * 100) / 100
+                                            'summaryDisplay': Math.round(summaryValue * 100) / 100,
+                                            'hasSnapshotData':hasSnapshotData
                                         });
                                     }
                                     else if (chartType == 'area' || chartType == 'negativebar') {
@@ -3678,7 +3703,8 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                             'variance': percentage,
                                             'period': granularity,
                                             'summaryDisplay': Math.round(summaryValue * 100) / 100,
-                                            'area': true
+                                            'area': true,
+                                            'hasSnapshotData':hasSnapshotData
                                         });
                                     }
                                     else if (chartType == 'costPerActionType') {
@@ -3691,7 +3717,8 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                             'arrow': comparingData,
                                             'variance': percentage,
                                             'period': granularity,
-                                            'summaryDisplay': Math.round(summaryValue * 100) / 100
+                                            'summaryDisplay': Math.round(summaryValue * 100) / 100,
+                                            'hasSnapshotData':hasSnapshotData
                                         });
                                     }
                                     else {
@@ -3706,7 +3733,8 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                             'arrow': comparingData,
                                             'variance': percentage,
                                             'period': granularity,
-                                            'summaryDisplay': Math.round(summaryValue * 100) / 100
+                                            'summaryDisplay': Math.round(summaryValue * 100) / 100,
+                                            'hasSnapshotData':hasSnapshotData
                                         });
                                     }
                                 }
@@ -3730,7 +3758,8 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                 'key': index,
                                 'unit': widget.charts[charts].metricDetails.objectTypes[0].meta.unit != undefined ? widget.charts[charts].metricDetails.objectTypes[0].meta.unit[0] : "",
                                 'color': typeof widget.charts[charts].chartColour != 'undefined' ? (typeof widget.charts[charts].chartColour[colorIndex] != 'undefined' ? widget.charts[charts].chartColour[colorIndex] : '') : '',  //color - optional: choose your own line color.
-                                'summaryDisplay': Math.round(widget.charts[charts].chartData[index] * 100) / 100
+                                'summaryDisplay': Math.round(widget.charts[charts].chartData[index] * 100) / 100,
+                                'hasSnapshotData':hasSnapshotData
                             });
                             ++colorIndex;
                         }
@@ -3982,7 +4011,8 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                             'key': index,
                                             'displaySummary': false,
                                             'color': typeof widget.charts[charts].chartColour != 'undefined' ? (typeof widget.charts[charts].chartColour[colorIndex] != 'undefined' ? widget.charts[charts].chartColour[colorIndex] : '') : '',  //color - optional: choose your own line color.
-                                            'summaryDisplay': Math.round(widget.charts[charts].chartData[index] * 100) / 100
+                                            'summaryDisplay': Math.round(widget.charts[charts].chartData[index] * 100) / 100,
+                                            'hasSnapshotData':hasSnapshotData
                                         });
                                         ++colorIndex;
                                     }
@@ -3999,7 +4029,8 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                         'y': Math.round((widget.charts[charts].chartData / diffDays) * 100) / 100,   //values - represents the array of {x,y} data points
                                         'displaySummary': false,
                                         'color': typeof widget.charts[charts].chartColour != 'undefined' ? (typeof widget.charts[charts].chartColour[colorIndex] != 'undefined' ? widget.charts[charts].chartColour[colorIndex] : '') : '',  //color - optional: choose your own line color.
-                                        'summaryDisplay': Math.round((widget.charts[charts].chartData / diffDays) * 100) / 100
+                                        'summaryDisplay': Math.round((widget.charts[charts].chartData / diffDays) * 100) / 100,
+                                        'hasSnapshotData':hasSnapshotData
                                     });
                                 }
                             }
@@ -4014,7 +4045,8 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                         'y': parseFloat(widget.charts[charts].chartData[index]),      //values - represents the array of {x,y} data points
                                         'key': index,
                                         'color': typeof widget.charts[charts].chartColour != 'undefined' ? (typeof widget.charts[charts].chartColour[colorIndex] != 'undefined' ? widget.charts[charts].chartColour[colorIndex] : '') : '',  //color - optional: choose your own line color.
-                                        'summaryDisplay': Math.round(widget.charts[charts].chartData[index] * 100) / 100
+                                        'summaryDisplay': Math.round(widget.charts[charts].chartData[index] * 100) / 100,
+                                        'hasSnapshotData':hasSnapshotData
                                     });
                                     ++colorIndex;
                                 }
@@ -4031,7 +4063,8 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                         'y': parseFloat(widget.charts[charts].chartData[index]),      //values - represents the array of {x,y} data points
                                         'key': index,
                                         'color': typeof widget.charts[charts].chartColour != 'undefined' ? (typeof widget.charts[charts].chartColour[colorIndex] != 'undefined' ? widget.charts[charts].chartColour[colorIndex] : '') : '',  //color - optional: choose your own line color.
-                                        'summaryDisplay': (parseFloat(widget.charts[charts].chartData[index]).toFixed(2) % Math.floor(widget.charts[charts].chartData[index])) > 0 ? parseFloat(widget.charts[charts].chartData[index]).toFixed(2) : parseInt(widget.charts[charts].chartData[index])
+                                        'summaryDisplay': (parseFloat(widget.charts[charts].chartData[index]).toFixed(2) % Math.floor(widget.charts[charts].chartData[index])) > 0 ? parseFloat(widget.charts[charts].chartData[index]).toFixed(2) : parseInt(widget.charts[charts].chartData[index]),
+                                        'hasSnapshotData':hasSnapshotData
                                     });
                                     ++colorIndex;
                                 }
@@ -4061,6 +4094,8 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                     var summaryColor = 0;
                                     for (var key in groupData) {
                                         var summaryValue = 0;
+                                        var nonZeroValueCount = 0;
+                                        var hasSnapshotData = false;
                                         var nonZeroPoints = 0;
                                         var n = groupData[key].length;
                                         var currentWeek = 0;
@@ -4140,8 +4175,11 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                                         if (latestDate < moment(groupData[key][data].x)) {
                                                             latestDate = moment(groupData[key][data].x);
                                                             summaryValue = groupData[key][data].y.total;
+                                                            if(summaryValue!=0) nonZeroValueCount+=1;
                                                         }
                                                     }
+                                                    if (nonZeroValueCount >= 1) hasSnapshotData = true;
+                                                    else hasSnapshotData = false;
                                                 }
                                             }
                                         }
@@ -4157,7 +4195,8 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                             'totalChartLength': widget.charts[charts].chartData,
                                             'variance': percentage,
                                             'period': granularity,
-                                            'summaryDisplay': Math.round(summaryValue * 100) / 100
+                                            'summaryDisplay': Math.round(summaryValue * 100) / 100,
+                                            'hasSnapshotData':hasSnapshotData
                                         });
                                         summaryColor++;
 
@@ -5003,11 +5042,11 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                         categories: dateArray,
                         labels: {
                             formatter: function () {
-                                if(typeof this.value==='object' || typeof this.value==='number'){
+                                if (typeof this.value === 'object' || typeof this.value === 'number') {
                                     var date = new Date(this.value);
                                     return months[date.getMonth()] + ' ' + date.getDate();
                                 }
-                                else{
+                                else {
                                     var date = this.value.split('-');
                                     return date[1] + ' ' + date[0];
                                 }
@@ -5126,11 +5165,11 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                 categories: dateArray,
                                 labels: {
                                     formatter: function () {
-                                        if(typeof this.value==='object' || typeof this.value==='number'){
+                                        if (typeof this.value === 'object' || typeof this.value === 'number') {
                                             var date = new Date(this.value);
                                             return months[date.getMonth()] + ' ' + date.getDate();
                                         }
-                                        else{
+                                        else {
                                             var date = this.value.split('-');
                                             return date[1] + ' ' + date[0];
                                         }
@@ -5193,11 +5232,11 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                             categories: dateArray,
                             labels: {
                                 formatter: function () {
-                                    if(typeof this.value==='object'|| typeof this.value==='number'){
+                                    if (typeof this.value === 'object' || typeof this.value === 'number') {
                                         var date = new Date(this.value);
                                         return months[date.getMonth()] + ' ' + date.getDate();
                                     }
-                                    else{
+                                    else {
                                         var date = this.value.split('-');
                                         return date[1] + ' ' + date[0];
                                     }
@@ -5244,11 +5283,11 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                             categories: dateArray,
                             labels: {
                                 formatter: function () {
-                                    if(typeof this.value==='object'|| typeof this.value==='number'){
+                                    if (typeof this.value === 'object' || typeof this.value === 'number') {
                                         var date = new Date(this.value);
                                         return months[date.getMonth()] + ' ' + date.getDate();
                                     }
-                                    else{
+                                    else {
                                         var date = this.value.split('-');
                                         return date[1] + ' ' + date[0];
                                     }
@@ -5403,11 +5442,11 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                 categories: dateArray,
                                 labels: {
                                     formatter: function () {
-                                        if(typeof this.value==='object'|| typeof this.value==='number'){
+                                        if (typeof this.value === 'object' || typeof this.value === 'number') {
                                             var date = new Date(this.value);
                                             return months[date.getMonth()] + ' ' + date.getDate();
                                         }
-                                        else{
+                                        else {
                                             var date = this.value.split('-');
                                             return date[1] + ' ' + date[0];
                                         }
@@ -5456,11 +5495,11 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                 categories: dateArray,
                                 labels: {
                                     formatter: function () {
-                                        if(typeof this.value==='object'|| typeof this.value==='number'){
+                                        if (typeof this.value === 'object' || typeof this.value === 'number') {
                                             var date = new Date(this.value);
                                             return months[date.getMonth()] + ' ' + date.getDate();
                                         }
-                                        else{
+                                        else {
                                             var date = this.value.split('-');
                                             return date[1] + ' ' + date[0];
                                         }
@@ -5647,11 +5686,11 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                         categories: dateArray,
                         labels: {
                             formatter: function () {
-                                if(typeof this.value==='object'|| typeof this.value==='number'){
+                                if (typeof this.value === 'object' || typeof this.value === 'number') {
                                     var date = new Date(this.value);
                                     return months[date.getMonth()] + ' ' + date.getDate();
                                 }
-                                else{
+                                else {
                                     var date = this.value.split('-');
                                     return date[1] + ' ' + date[0];
                                 }
@@ -5840,11 +5879,11 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                         categories: dateArray,
                         labels: {
                             formatter: function () {
-                                if(typeof this.value==='object'|| typeof this.value==='number'){
+                                if (typeof this.value === 'object' || typeof this.value === 'number') {
                                     var date = new Date(this.value);
                                     return months[date.getMonth()] + ' ' + date.getDate();
                                 }
-                                else{
+                                else {
                                     var date = this.value.split('-');
                                     return date[1] + ' ' + date[0];
                                 }
