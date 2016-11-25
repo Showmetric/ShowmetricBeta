@@ -64,30 +64,37 @@ exports.widgetDetails = function (req, res, next) {
         userPermission.checkUserPermission(req, res, function (err) {
             if (err)
                 return res.status(500).json({error: 'Internal server error'});
-            else {
-                if(req.query.meta){
-                    widgetsList.update({'_id': req.params.widgetId}, {
-                        $setOnInsert: {updated: new Date(),meta:req.query.meta},
-                        $set: {
-                            updated: new Date(),
-                            meta:req.query.meta
-                        }
-                    },{upsert: true},  function (err,widget,widgetDetail) {
+            else getWidgetDetails();
+        })
+
+    }
+    else if(req.query.isPublic) getWidgetDetails();
+    else
+        res.status(401).json({error: 'Authentication required to perform this action'})
+    function getWidgetDetails(){
+        if(req.query.meta){
+            widgetsList.update({'_id': req.params.widgetId}, {
+                $setOnInsert: {updated: new Date(),meta:req.query.meta},
+                $set: {
+                    updated: new Date(),
+                    meta:req.query.meta
+                }
+            },{upsert: true},  function (err,widget,widgetDetail) {
+                if (err)
+                    return res.status(500).json({error: 'Internal server error'})
+                else if (!widget)
+                    return res.status(204).json({error: 'No records found'})
+                else{
+                    widgetsList.findOne({_id: req.params.widgetId},function(err,widgetDetail){
                         if (err)
-                            return res.status(500).json({error: 'Internal server error'})
-                        else if (!widget)
-                            return res.status(204).json({error: 'No records found'})
+                            return res.status(500).json({error: 'Internal server error'});
+                        else if (!widgetDetail)
+                            return res.status(501).json({error: 'Not implemented'});
                         else{
-                            widgetsList.findOne({_id: req.params.widgetId},function(err,widgetDetail){
-                                if (err)
-                                    return res.status(500).json({error: 'Internal server error'});
-                                else if (!widgetDetail)
-                                    return res.status(501).json({error: 'Not implemented'});
-                                else{
-                                    req.app.result = widgetDetail;
-                                    next();
-                                }
-                            })
+                            req.app.result = widgetDetail;
+                            next();
+                        }
+                    })
 
 
 
@@ -107,12 +114,6 @@ exports.widgetDetails = function (req, res, next) {
                     })
                 }
             }
-
-        })
-
-    }
-    else
-        res.status(401).json({error: 'Authentication required to perform this action'})
 
 };
 

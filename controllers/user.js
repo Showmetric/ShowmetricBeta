@@ -350,6 +350,7 @@ module.exports = function (app, passport) {
             return res.render('../public/signup.ejs', {message: 'Your activation link is invalid'});
     });
     app.get('/api/v1/getSubscriptionFromDashboard/:dashboardId',function (req,res) {
+        if(req.query.dashboardId) req.params.dashboardId = req.query.dashboardId;
         getSubscriptionDetails.getDashboardDetail(req,res,function (err,dashboard) {
             req.body.orgId = dashboard.orgId;
             getSubscriptionDetails.getSubscriptionType(req,res,function (err,subscription) {
