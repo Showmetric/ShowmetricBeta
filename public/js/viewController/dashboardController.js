@@ -96,6 +96,17 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
                 break;
         }
     };
+    $scope.summaryAlignLessThanThree = [];
+    $scope.toDisplayAllSummary = [];
+    $scope.checkAllGraphsZero = function (chart, widgetIndex) {
+        var count = 0;
+        for (var i = 0; i < chart.data.length; i++) {
+            if (chart.data[i].summaryDisplay === 0)
+                count += 1;
+        }
+        $scope.summaryAlignLessThanThree[widgetIndex]=chart.data.length - count;
+        if (count === chart.data.length) $scope.toDisplayAllSummary[widgetIndex] = true;
+    }
     var isExportOptionSet = '';
     $(".navbar").css('z-index','1');
     $(".md-overlay").css('background','rgba(0,0,0,0.5)');
@@ -315,32 +326,7 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
                                         $scope.dashboard.widgetData[ind].chart[i].data[j].myheight = elemHeight;
                                     }
                                 }
-                                /*                               else{
-                                 var getWigetId='#getWidgetColor-' + widget.id
-                                 var listed = $('#chartTable-'+widget.id).width();
-                                 if (listed <= 350){
-                                 $('#chartTable-'+widget.id).find('.date').addClass('responsiveDate').removeClass('date');
-                                 if($scope.dashboard.widgetData[ind].chart[i].options.chart.type !== 'instagramPosts')
-                                 $('#chartTable-'+widget.id).find('.listed').addClass('responsiveListed');
-                                 $('#chartTable-'+widget.id).find('.aside').css('padding-left','75px');
-                                 $('#chartTable-'+widget.id).find('.impression').css('padding-top','0px');
-                                 $('#chartTable-'+widget.id).find('.likes').css('float','none');
-                                 $('#chartTable-'+widget.id).find('.comment').css('float','none');
-                                 $('#chartTable-'+widget.id).find('.comment').css('margin-left','0px');
                                  }
-                                 else {
-                                 $('#chartTable-'+widget.id).find('.responsiveDate').addClass('date').removeClass('responsiveDate');
-                                 if($scope.dashboard.widgetData[ind].chart[i].options.chart.type !== 'instagramPosts')
-                                 $('#chartTable-'+widget.id).find('.listed').removeClass('responsiveListed');
-                                 $('#chartTable-'+widget.id).find('.comment').css('float','left');
-                                 $('#chartTable-'+widget.id).find('.comment').css('margin-left','5px');
-                                 $('#chartTable-'+widget.id).find('.likes').css('float','left');
-                                 $('#chartTable-'+widget.id).find('.impression').css('padding-top','15px');
-                                 $('#chartTable-'+widget.id).find('.aside').css('padding-left','83px');
-
-                                 }
-                                 }
-                                 */                           }
                             var ind = $scope.dashboard.widgets.indexOf(widget);
                             if(document.getElementById('chartOptions'+ind)!=null){
                                 var parentWidth = document.getElementById('chartOptions'+ind).offsetWidth;
@@ -354,7 +340,8 @@ function DashboardController($scope,$timeout,$rootScope,$http,$window,$state,$st
                             }
                         }
                     }
-                    $timeout(updateCharts(widget), 100);
+
+                    $timeout(updateCharts(widget), 400);
                 }
             }
         };
