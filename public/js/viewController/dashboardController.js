@@ -96,15 +96,15 @@ function DashboardController($scope, $timeout, $rootScope, $http, $window, $stat
                 break;
         }
     };
+    $scope.summaryAlignLessThanThree = [];
     $scope.checkAllGraphsZero = function (chart, widgetIndex) {
         $scope.toDisplayAllSummary = false;
-        $scope.summaryAlignLessThanThree = [];
         var count = 0;
         for (var i = 0; i < chart.data.length; i++) {
             if (chart.data[i].summaryDisplay === 0)
                 count += 1;
         }
-        $scope.summaryAlignLessThanThree[widgetIndex] = chart.data.length - count;
+        $scope.summaryAlignLessThanThree[widgetIndex]=chart.data.length - count;
         if (count === chart.data.length) $scope.toDisplayAllSummary[widgetIndex] = true;
     }
     var isExportOptionSet = '';

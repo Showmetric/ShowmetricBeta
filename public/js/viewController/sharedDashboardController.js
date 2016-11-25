@@ -6,8 +6,17 @@ function SharedDashboardController($scope,$timeout,$rootScope,$http,$window,$sta
     $scope.$window = $window;
     $scope.autoArrangeGrid = false;
     $scope.currentDate=moment(new Date()).format("YYYY-DD-MM");
-
-
+    $scope.summaryAlignLessThanThree = [];
+    $scope.checkAllGraphsZero = function (chart, widgetIndex) {
+        $scope.toDisplayAllSummary = false;
+        var count = 0;
+        for (var i = 0; i < chart.data.length; i++) {
+            if (chart.data[i].summaryDisplay === 0)
+                count += 1;
+        }
+        $scope.summaryAlignLessThanThree[widgetIndex]=chart.data.length - count;
+        if (count === chart.data.length) $scope.toDisplayAllSummary[widgetIndex] = true;
+    }
     //Sets up all the required parameters for the dashboard to function properly when it is initially loaded. This is called in the ng-init function of the dashboard template
     $scope.dashboardConfiguration = function () {
         //To set height for Window scroller in dashboard Template
