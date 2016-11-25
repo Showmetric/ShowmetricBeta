@@ -3992,7 +3992,8 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                             case "fbReachByAge":
                                 widgetCharts.push({
                                     'type': 'fbReachByAge',
-                                    'values': widget.charts[charts].chartData
+                                    'values': widget.charts[charts].chartData,
+                                    'channelName': objectChannelName[widget.channelName]
                                 });
                                 break;
                             case "instagramEngagements": {
@@ -6161,6 +6162,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                     for (var j = 0; j < finalCharts.fbReachByAge[0].values[2].length; j++)
                         summaryDisplay += finalCharts.fbReachByAge[0].values[2][j].data[i]
                     var sample = {
+                        channelName: finalCharts.fbReachByAge[0].channelName,
                         summaryDisplay: summaryDisplay,
                         type: 'pie',
                         key: finalCharts.fbReachByAge[0].values[1][i],

@@ -7,8 +7,8 @@ function SharedDashboardController($scope,$timeout,$rootScope,$http,$window,$sta
     $scope.autoArrangeGrid = false;
     $scope.currentDate=moment(new Date()).format("YYYY-DD-MM");
     $scope.summaryAlignLessThanThree = [];
+    $scope.toDisplayAllSummary = [];
     $scope.checkAllGraphsZero = function (chart, widgetIndex) {
-        $scope.toDisplayAllSummary = false;
         var count = 0;
         for (var i = 0; i < chart.data.length; i++) {
             if (chart.data[i].summaryDisplay === 0)

@@ -97,8 +97,8 @@ function DashboardController($scope, $timeout, $rootScope, $http, $window, $stat
         }
     };
     $scope.summaryAlignLessThanThree = [];
+    $scope.toDisplayAllSummary = [];
     $scope.checkAllGraphsZero = function (chart, widgetIndex) {
-        $scope.toDisplayAllSummary = false;
         var count = 0;
         for (var i = 0; i < chart.data.length; i++) {
             if (chart.data[i].summaryDisplay === 0)
