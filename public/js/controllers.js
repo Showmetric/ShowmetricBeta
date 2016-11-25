@@ -23,7 +23,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
         switch (widget.widgetType) {
             case 'customFusion': {
                 var sourceWidgetList = [], dataLoadedWidgetArray = [], widgetChartsArray = [];
-                sourceWidgetList.push(fetchCustomFusionWidgets(widget));
+                sourceWidgetList.push(fetchCustomFusionWidgets(widget,isPublic));
                 $q.all(sourceWidgetList).then(
                     function successCallback(sourceWidgetList) {
                         var widgetList = sourceWidgetList[0];
@@ -138,14 +138,14 @@ showMetricApp.service('createWidgets', function ($http, $q) {
         }
         return deferredWidget.promise;
 
-        function fetchCustomFusionWidgets(widget) {
+        function fetchCustomFusionWidgets(widget,isPublic) {
             var deferred = $q.defer();
             var sourceWidgetList = [];
 
             for (var widgetReferences in widget.widgets) {
                 var widgetType = widget.widgets[widgetReferences].widgetType;
                 if (widgetType == 'basic' || widgetType == 'adv' || widgetType == 'fusion' || widgetType == 'custom')
-                    sourceWidgetList.push(getWidgetData(widget.widgets[widgetReferences].widgetId));
+                    sourceWidgetList.push(getWidgetData(widget.widgets[widgetReferences].widgetId,isPublic));
             }
             $q.all(sourceWidgetList).then(
                 function successCallback(sourceWidgetList) {
@@ -157,14 +157,25 @@ showMetricApp.service('createWidgets', function ($http, $q) {
             );
             return deferred.promise;
 
-            function getWidgetData(widgetId) {
+            function getWidgetData(widgetId,isPublic) {
                 var data = $q.defer();
-                $http({
-                    method: 'GET',
-                    url: '/api/v1/widget/' + widgetId,
-                    timeout: cancel.promise, // cancel promise, standard thing in $http request
-                    cancel: cancel // this is where we do our magic
-                }).then(
+                if(isPublic) {
+                    var query ={
+                        method: 'GET',
+                        url: '/api/v1/widget/' + widgetId+'?isPublic='+isPublic,
+                        timeout: cancel.promise, // cancel promise, standard thing in $http request
+                        cancel: cancel // this is where we do our magic
+                    }
+                }
+                else {
+                    var query ={
+                        method: 'GET',
+                        url: '/api/v1/widget/' + widgetId,
+                        timeout: cancel.promise, // cancel promise, standard thing in $http request
+                        cancel: cancel // this is where we do our magic
+                    }
+                }
+                $http(query).then(
                     function successCallback(response) {
                         data.resolve(response.data[0]);
                     },
