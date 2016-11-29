@@ -13,11 +13,11 @@
             <div style="height: 10px; cursor: pointer;" ng-click="deleteDashboard(dashboard)" class="col-lg-1 pull-right"><i class="fa fa-times" aria-hidden="true"></i></div>
             <div style="height: 40px" class="contentName">
                 <div class="dashboards col-lg-2"  ng-if="(dashboard.name == null || dashboard.name==' ')">
-                    <a ui-sref="app.reporting.dashboard({id: dashboard._id})" style="color:#9A9A9A">Unnamed Dashboard</a>
+                    <a ui-sref="app.reporting.dashboard({id: dashboard._id})" style="color:#9A9A9A" onclick="drift.track('Opened Dashboard from Grid View');">Unnamed Dashboard</a>
                 </div>
 
                 <div class="dashboards col-lg-2" ng-if="dashboard.name != null">
-                    <a ui-sref="app.reporting.dashboard({id: dashboard._id})" style="color:#232c3b">{{dashboard.name}}</a>
+                    <a ui-sref="app.reporting.dashboard({id: dashboard._id})" style="color:#232c3b" onclick="drift.track('Opened Dashboard from Grid View');">{{dashboard.name}}</a>
                 </div>
             </div>
         </div>
