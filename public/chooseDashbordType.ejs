@@ -15,13 +15,13 @@
                                 <p class="chooseDashboardquestion"> Would you like to explore Pre-built templates?</p>
                                 <button style="width: 139px !important; height: 55px;" class="btn btn-primary button-mode changeButton buttonmargin" ng-click="enableTextField()">Proceed with <br>blank dashboard
                                 </button>
-                                <button style="width: 139px !important; height: 55px;" class="btn btn-primary button-mode changeButton" ng-click="goRecommendedDashboard();" >Explore
+                                <button style="width: 139px !important; height: 55px;" class="btn btn-primary button-mode changeButton" ng-click="drift.track('Explored templates');goRecommendedDashboard();" >Explore
                                 </button>
                             </div>
                             <div class="center "   ng-if="enabletextField === true">
                                 <form  ng-submit="createDashboard(dashboardName);ok()">
                                     <input class="chooseDashboardName" type="text" placeholder="Enter Dashboard Name " ng-model="dashboardName"  name="dashboardName" />
-                                    <button class="goButton glyphicon glyphicon-arrow-right"></button>
+                                    <button class="goButton glyphicon glyphicon-arrow-right" onclick="drift.track('Created a new blank dashboard');"></button>
                                 </form>
                             </div>
                         </div>
