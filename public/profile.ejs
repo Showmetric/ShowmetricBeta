@@ -27,6 +27,32 @@
    <!-- <link rel='stylesheet' id='nrghost-style-css' href='http://wp.datapoolt.co/wp-content/themes/nrghost/assets/css/style.css?ver=4.6.1' type='text/css' media='all'/>-->
    <!-- <link rel='stylesheet' id='nrghost-theme-style-css' href='http://wp.datapoolt.co/wp-content/themes/nrghost/style.css?ver=4.6.1' type='text/css' media='all'/>
     <link rel='stylesheet' id='vc_plugin_table_style_css-css' href='http://wp.datapoolt.co/wp-content/plugins/nrghost-plugin/nrghost-tables/assets/css/style.css?ver=1.0.0' type='text/css' media='all'/>-->
+    <!-- Start of Async Drift Code -->
+    <script>
+        !function() {
+            var t;
+            if (t = window.driftt = window.drift = window.driftt || [], !t.init) return t.invoked ? void (window.console && console.error && console.error("Drift snippet included twice.")) : (t.invoked = !0,
+                    t.methods = [ "identify", "config", "track", "reset", "debug", "show", "ping", "page", "hide", "off", "on" ],
+                    t.factory = function(e) {
+                        return function() {
+                            var n;
+                            return n = Array.prototype.slice.call(arguments), n.unshift(e), t.push(n), t;
+                        };
+                    }, t.methods.forEach(function(e) {
+                t[e] = t.factory(e);
+            }), t.load = function(t) {
+                var e, n, o, i;
+                e = 3e5, i = Math.ceil(new Date() / e) * e, o = document.createElement("script"),
+                        o.type = "text/javascript", o.async = !0, o.crossorigin = "anonymous", o.src = "https://js.driftt.com/include/" + i + "/" + t + ".js",
+                        n = document.getElementsByTagName("script")[0], n.parentNode.insertBefore(o, n);
+            });
+        }();
+
+
+        drift.SNIPPET_VERSION = '0.3.1';
+        drift.load('d933vv82x3ip');
+    </script>
+    <!-- End of Async Drift Code -->
 </head>
 
 <body ng-controller="MainCtrl as main" class="{{$state.current.data.specialClass}} " landing-scrollspy id="page-top">
@@ -139,7 +165,27 @@
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <!--<script type="text/javascript" src="/js/sha256.js"></script>-->
 
-<script type='text/javascript'>var fc_JS=document.createElement('script');fc_JS.type='text/javascript';fc_JS.src='https://assets1.freshchat.io/production/assets/widget.js?t='+Date.now();(document.body?document.body:document.getElementsByTagName('head')[0]).appendChild(fc_JS); window._fcWidgetCode='1MPX5KQO5V';window._fcURL='https://datapoolt.freshchat.io';</script>
+<!--<script type='text/javascript'>var fc_JS=document.createElement('script');fc_JS.type='text/javascript';fc_JS.src='https://assets1.freshchat.io/production/assets/widget.js?t='+Date.now();(document.body?document.body:document.getElementsByTagName('head')[0]).appendChild(fc_JS); window._fcWidgetCode='1MPX5KQO5V';window._fcURL='https://datapoolt.freshchat.io';</script>-->
+
+
+<script>
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET','/api/v1/me',true);
+    xhr.send();
+    xhr.addEventListener("readystatechange", processRequest, false);
+    function processRequest(e) {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            var response = JSON.parse(xhr.responseText);
+            var loggedInUserId = response.userDetails.user[0]._id;
+            var loggedInUserName = response.userDetails.user[0].name;
+            var loggedInUserEmail = response.userDetails.user[0].email;
+            var loggedInUserCreatedTime = response.userDetails.user[0].created;
+            var loggedInUserPlan = response.userDetails.subscriptionType.name;
+            drift.identify(loggedInUserId,{email:loggedInUserEmail,name:loggedInUserName,startDate:loggedInUserCreatedTime,plan:loggedInUserPlan});
+            drift.track('Logged In');
+        }
+    }
+</script>
 
 </body>
 </html>

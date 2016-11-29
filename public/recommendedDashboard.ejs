@@ -607,7 +607,7 @@
                     <div class="col-lg-12 text-right">
                         <div ng-if="currentView === 'step_one'" style="height:100px;margin: 15px 30px;"></div>
                         <button class="componentBtn btn-4 btn-4b icon-arrow-left" id="basicWidgetBackButton2" ng-if="currentView === 'step_two'" ng-click="changeViewsInBasicWidget('step_one')">Previous </button>
-                        <button class="ladda-button componentBtn btn-4 btn-4a" data-style="expand-right" id="basicWidgetFinishButton" ng-show="currentView === 'step_two'" disabled="disabled">
+                        <button class="ladda-button componentBtn btn-4 btn-4a" data-style="expand-right" id="basicWidgetFinishButton" ng-show="currentView === 'step_two'" disabled="disabled" onclick="drift.track('Created a dashboard template');">
                             <span class="ladda-label">Finish</span><span class="ladda-spinner"></span><div class="ladda-progress" style="width: 72px;"></div>
                         </button>
                     </div>
