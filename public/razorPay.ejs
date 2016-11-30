@@ -142,6 +142,34 @@
         ga('create', 'UA-79014424-1', 'auto');
         ga('send', 'pageview');
     </script>
+
+    <!-- Start of Async Drift Code -->
+    <script>
+        !function() {
+            var t;
+            if (t = window.driftt = window.drift = window.driftt || [], !t.init) return t.invoked ? void (window.console && console.error && console.error("Drift snippet included twice.")) : (t.invoked = !0,
+                    t.methods = [ "identify", "config", "track", "reset", "debug", "show", "ping", "page", "hide", "off", "on" ],
+                    t.factory = function(e) {
+                        return function() {
+                            var n;
+                            return n = Array.prototype.slice.call(arguments), n.unshift(e), t.push(n), t;
+                        };
+                    }, t.methods.forEach(function(e) {
+                t[e] = t.factory(e);
+            }), t.load = function(t) {
+                var e, n, o, i;
+                e = 3e5, i = Math.ceil(new Date() / e) * e, o = document.createElement("script"),
+                        o.type = "text/javascript", o.async = !0, o.crossorigin = "anonymous", o.src = "https://js.driftt.com/include/" + i + "/" + t + ".js",
+                        n = document.getElementsByTagName("script")[0], n.parentNode.insertBefore(o, n);
+            });
+        }();
+
+
+        drift.SNIPPET_VERSION = '0.3.1';
+        drift.load('d933vv82x3ip');
+    </script>
+    <!-- End of Async Drift Code -->
+
 </head>
 <body class="home page page-id-998 page-template-default colour-0 wpb-js-composer js-comp-ver-4.12.1 vc_responsive">
 <!-- Google Tag Manager -->
@@ -456,7 +484,7 @@
 <script type='text/javascript' src='https://datapoolt.co/wp-includes/js/wp-embed.min.js?ver=4.6.1'></script>
 <script type='text/javascript' src='https://datapoolt.co/wp-content/plugins/js_composer/assets/js/dist/js_composer_front.min.js?ver=4.12.1'></script>
 <script type='text/javascript' src='https://datapoolt.co/wp-content/plugins/js_composer/assets/lib/waypoints/waypoints.min.js?ver=4.12.1'></script>
-<script type='text/javascript'>var fc_JS=document.createElement('script');fc_JS.type='text/javascript';fc_JS.src='https://assets1.freshchat.io/production/assets/widget.js?t='+Date.now();(document.body?document.body:document.getElementsByTagName('head')[0]).appendChild(fc_JS); window._fcWidgetCode='1MPX5KQO5V';window._fcURL='https://datapoolt.freshchat.io';</script>
+<!--<script type='text/javascript'>var fc_JS=document.createElement('script');fc_JS.type='text/javascript';fc_JS.src='https://assets1.freshchat.io/production/assets/widget.js?t='+Date.now();(document.body?document.body:document.getElementsByTagName('head')[0]).appendChild(fc_JS); window._fcWidgetCode='1MPX5KQO5V';window._fcURL='https://datapoolt.freshchat.io';</script>-->
 <script>
     function  getRazorpayKey(code) {
         jQuery.ajax({
