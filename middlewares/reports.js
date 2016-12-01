@@ -3,6 +3,7 @@ var reportList = require('../models/reports');
 var exports = module.exports = {};
 var User = require('../models/user');
 var Widget = require('../models/widgets');
+var configAuth=require('../config/auth')
 var userPermission = require('../helpers/utility');
 var Q = require("q");
 var _ = require('lodash');
@@ -19,7 +20,11 @@ exports.getReportList = function (req, res, next) {
         return res.status(401).json({error: 'Authentication required to perform this action'})
     }
     else {
-        reportList.find({userId: req.user._id}, function (err, UserCollection) {
+        if(req.user.roleId === configAuth.userRoles.admin)
+            var query={orgId:req.user.orgId};
+        else
+            var query={userId:req.user._id};
+        reportList.find(query, function (err, UserCollection) {
             if (err)
                 return res.status(500).json({error: 'Internal server error'});
             else if (!UserCollection)
@@ -308,7 +313,11 @@ exports.removeReportFromUser = function (req, res, next) {
             else if (!reportDetails)
                 return res.status(204).json({error: 'No records found'});
             else{
-                if(req.user._id == reportDetails.userId){
+                if(req.user.roleId === configAuth.userRoles.admin)
+                    var condition=(req.user.orgId == reportDetails.orgId);
+                else
+                    var condition=(req.user._id == reportDetails.userId);
+                if(condition){
                     Widget.remove({'reportId': req.params.reportId}, function (err, widget) {
                         if (err)
                             return res.status(500).json({error: 'Internal server error'})

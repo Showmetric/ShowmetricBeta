@@ -779,7 +779,7 @@
                                                                             </svg>
                                                                             <span class="link-span">Link account</span></a>
                                                                     </div>
-                                                                    <div class="col-lg-6 col-sm-6 col-md-6 col-xs-5 remove-profile" style="">
+                                                                    <div ng-if="userDetail.roleId ==='admin'" class="col-lg-6 col-sm-6 col-md-6 col-xs-5 remove-profile" style="">
                                                                         <a class="link-img"
                                                                            ng-click="removeExistingProfile(profileOptionsModel[$index],channel.id)">
                                                                             <svg width="10px" height="10px"

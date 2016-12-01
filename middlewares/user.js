@@ -4,6 +4,9 @@ var organizations = require('../models/organizations');
 var subscriptionTypes = require('../models/subscriptionType');
 var payments = require('../models/payments');
 var dashboard = require('../models/dashboards');
+var reportList=require('../models/reports')
+var Widget = require('../models/widgets');
+var Alert = require('../models/alert');
 var UserActivity = require('../models/userActivity');
 var exports = module.exports = {};
 var bcrypt = require('bcrypt-nodejs');
@@ -312,4 +315,130 @@ exports.fetchUserActivityDetails = function (req, res, next) {
     }
     else
         res.status(401).json({error: 'Authentication required to perform this action'});
-}
+};
+exports.fetchUsersUnderAdmin = function (req, res, next) {
+    if(req.user) {
+        user.find({'orgId': req.user.orgId}, function (err, usersDetails) {
+            if (err)
+                return res.status(500).json({error: 'Internal server error'});
+            else if (!usersDetails.length || !usersDetails)
+                return res.status(204).json({error: 'No records found'});
+            else{
+                req.app.result = usersDetails;
+                next();
+            }
+        })
+    }
+    else
+        res.status(401).json({error: 'Authentication required to perform this action'});
+};
+exports.removeUserUnderAdmin = function (req, res, next) {
+    if(req.user && req.user.roleId == configAuth.userRoles.admin) {
+        var dashboardsIdArray =[];
+        user.findOne({'_id': req.body.userId}, function (err, usersDetails) {
+            if (err)
+                return res.status(500).json({error: 'Internal server error'});
+            else if(!usersDetails)
+                removeUser();
+            else {
+                for(var i=0;i<usersDetails.dashboards.length;i++)
+                    dashboardsIdArray.push(usersDetails.dashboards[i].dashboardId);
+                removeAlert(dashboardsIdArray);
+            }
+        });
+        function removeAlert(){
+            Widget.find({'dashboardId': {$in:dashboardsIdArray}}, function (err, widget) {
+                if (err)
+                    return res.status(500).json({error: 'Internal server error'});
+                else if(!widget) removeDashboard();
+                else{
+                    var widgets=[];
+                    for(var i=0;i<widget.length;i++)
+                        widgets.push(widget[i]._id);
+                    Alert.remove({'widgetId':{$in:widgets}},function (err, alert) {
+                        if (err)
+                            return res.status(500).json({error: 'Internal server error'});
+                        else removeWidget();
+                    })
+                }
+            })
+        };
+
+        function removeWidget() {
+            Widget.remove({'dashboardId': {$in:dashboardsIdArray}}, function (err, widget) {
+                if (err)
+                    return res.status(500).json({error: 'Internal server error'});
+                else
+                    removeDashboard();
+            })
+        };
+
+        function removeDashboard() {
+            dashboard.remove({'_id': {$in:dashboardsIdArray}}, function (err, dashboard) {
+                if (err)
+                    return res.status(500).json({error: 'Internal server error'});
+                else if (!dashboard)
+                    removeUser();
+                else {
+                    reportList.find({'userId': req.body.userId}, function (err, reportDetails) {
+                        if (err)
+                            return res.status(500).json({error: 'Internal server error'});
+                        else if (!reportDetails)
+                            removeUser();
+                        else{
+                            var reportIdArray=[];
+                            for(var i in reportDetails)
+                                reportIdArray.push(reportDetails[i]._id);
+                            Widget.remove({'reportId': {$in:reportIdArray}}, function (err, widget) {
+                                if (err)
+                                    return res.status(500).json({error: 'Internal server error'});
+                                else
+                                    removeReport();
+                            })
+                        }
+                    })
+                }
+            })
+        };
+        function removeUser(){
+            user.remove({'_id': req.body.userId}, function (err, usersDetails) {
+                if (err)
+                    return res.status(500).json({error: 'Internal server error'});
+                else{
+                    req.app.result = req.body.userId;
+                    next();
+                }
+            })
+        }
+        function removeReport() {
+            reportList.remove({'userId': req.body.userId}, function (err, report) {
+                if (err)
+                    return res.status(500).json({error: 'Internal server error'});
+                else if (!report)
+                    return res.status(501).json({error: 'Not Implemented'});
+                else {
+                    removeUser()                }
+            })
+        }
+    }
+    else
+        res.status(401).json({error: 'Authentication required to perform this action'});
+};
+exports.changeUserName = function (req, res, next) {
+    if(req.user) {
+        user.update({'_id': req.body.id},{
+            $set: {'name':req.body.name}
+        }, {upsert: true}, function (err, usersDetails) {
+            if (err)
+                return res.status(500).json({error: 'Internal server error'});
+            else if (!usersDetails)
+                return res.status(204).json({error: 'No records found'});
+            else{
+                req.app.result = usersDetails;
+                next();
+            }
+        })
+    }
+    else
+        res.status(401).json({error: 'Authentication required to perform this action'});
+};

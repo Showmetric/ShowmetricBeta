@@ -8,7 +8,7 @@ var getDashboards = require('../middlewares/dashboards');
  */
 module.exports = function (app) {
     app.get('/api/v1/get/dashboardList', getDashboards.getDashboardList, function (req, res) {
-        res.json({dashboardList: req.app.result});
+        res.json({dashboardList: req.app.result,user:req.user});
     });
 
     //Create/update a dashboard

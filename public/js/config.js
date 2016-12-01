@@ -279,6 +279,23 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider, IdlePro
                     templateUrl: "accountManagement.ejs"
                 }
             }
+        })
+        .state('app.reporting.userManagement', {
+                url: "/userManagement",
+            views: {
+                'main@app': {
+                    templateUrl: "userManagement.ejs",
+                }
+            }
+        })
+        .state('app.reporting.userManagement.addUser', {
+        url: "",
+        views: {
+            'main@app': {
+                templateUrl: "addNewUser.ejs",
+                controller: 'LightBoxController'
+            }
+        }
         });
 
 }

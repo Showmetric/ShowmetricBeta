@@ -38,7 +38,17 @@ function ExportController($scope, $http, $state, $rootScope, $window, $q, $state
         return {'height': (heightPercent + '%')};
 
     };
-
+    $scope.summaryAlignLessThanThree=[];
+    $scope.toDisplayAllSummary = [];
+    $scope.checkAllGraphsZero = function (chart, widgetIndex) {
+        var count = 0;
+        for (var i = 0; i < chart.data.length; i++) {
+            if (chart.data[i].summaryDisplay === 0)
+                count += 1;
+        }
+        $scope.summaryAlignLessThanThree[widgetIndex]=chart.data.length - count;
+        if (count === chart.data.length) $scope.toDisplayAllSummary[widgetIndex] = true;
+    }
     angular.element(document).ready(function () {
         $('.ladda-button').addClass('icon-arrow-right');
         Ladda.bind('.ladda-button', {

@@ -64,6 +64,7 @@ function FusionWidgetController($scope, $http, $q, $window, $state, $rootScope, 
             url: '/api/v1/get/referenceWidgets/' + $scope.widgetType+'?buster='+new Date()
         }).then(
             function successCallback(response) {
+                $scope.userDetail=response.data.user
                 $http({
                     method: 'GET',
                     url: '/api/v1/get/channels'

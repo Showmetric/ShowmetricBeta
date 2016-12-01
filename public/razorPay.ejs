@@ -504,7 +504,7 @@
             "description": "Purchase Description",
             "image": "https://www.datapoolt.co/wp-content/uploads/2016/10/Logo@3x.png",
             "handler": function (response) {
-                $.ajax({
+                jQuery.ajax({
                     type: 'post',
                     url: '/api/v1/savePayments',
                     data: {

@@ -10,6 +10,7 @@ function ProfileListController($scope, $http, $window, $stateParams) {
             url: '/api/v1/get/profileList'+'?buster='+new Date()
         }).then(
             function successCallback(response) {
+                $scope.userDetail=response.data.user;
                 $scope.profileListArray = response.data.profileList;
                // k=$scope.profileListArray.indexOf($scope.profile)
                 if($scope.profile._id !== undefined){

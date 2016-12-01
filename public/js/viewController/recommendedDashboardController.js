@@ -119,6 +119,7 @@ function RecommendedDashboardController($scope, $http, $window, $q, $state, $roo
                 }
             ).then(
                 function successCallback(response) {
+                    $scope.userDetail=response.data.user;
                     $scope.widgetCount = response.data.availableWidgets;
                 },
                 function errorCallback(error) {
@@ -942,7 +943,6 @@ function RecommendedDashboardController($scope, $http, $window, $q, $state, $roo
     };
 
     $scope.googleSelectLevelChosen = function (level,index) {
-        console.log('index',index);
         $scope.messageEnable[index]=false;
         if(level) {
             var accountLimitation=0;

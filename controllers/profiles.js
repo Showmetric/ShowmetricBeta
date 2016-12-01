@@ -16,6 +16,6 @@ module.exports = function (app) {
         res.json(req.app.result);
     });
     app.get('/api/v1/get/profileList',profilesList.profileslist, function (req, res) {
-        res.json({profileList: req.app.profiles});
+        res.json({profileList: req.app.profiles,user:req.user});
     });
 };
