@@ -158,6 +158,7 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
             }
         ).then(
             function successCallback(response) {
+                $scope.userDetail=response.data.user;
                 $rootScope.availableBasicWidgets = response.data.availableWidgets;
             },
             function errorCallback(error) {

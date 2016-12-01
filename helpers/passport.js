@@ -75,7 +75,8 @@ module.exports = function (passport) {
                     else {
                         // if there is no user with that email create the organization
                         var newOrganization = new Organization();
-                        newOrganization.name = req.body.organization, newOrganization.country = req.body.country;
+                        newOrganization.name = req.body.organization;
+                        // newOrganization.country = req.body.country;
                         newOrganization.created = new Date();
                         newOrganization.updated = new Date();
                         // save the Organization
@@ -97,6 +98,7 @@ module.exports = function (passport) {
                                 newUser.pwdHash = newUser.generateHash(req.body.password);
                                 newUser.phoneNo = newUser.phone;
                                 newUser.orgId = response._id;
+                                newUser.roleId = configAuth.userRoles.admin;
                                 newUser.emailVerified = false;
                                 newUser.emailVerification.expires = tokenExpiry;
                                 newUser.emailVerification.tokenId = tokenId;

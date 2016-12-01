@@ -8,6 +8,6 @@ var getReferenceWidgetsList = require('../middlewares/getReferenceWidgets');
  */
 module.exports = function (app) {
     app.get('/api/v1/get/referenceWidgets/:widgetType', getReferenceWidgetsList.referenceWidgets, function (req, res) {
-            res.json({referenceWidgets: req.app.referenceWidgets});
+            res.json({referenceWidgets: req.app.referenceWidgets,user:req.user});
     });
 };

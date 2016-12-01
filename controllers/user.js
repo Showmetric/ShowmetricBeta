@@ -1,7 +1,8 @@
 var userDetails = require('../middlewares/user');
 var userActivity = require('../helpers/user');
 var configAuth = require('../config/auth');
-var limitcheck = require('../helpers/pricing')
+var limitcheck = require('../helpers/pricing');
+var randomString = require("randomstring");
 var getSubscriptionDetails = require('../helpers/utility');
 var moment = require('moment');
 var request = require('request');
@@ -103,6 +104,7 @@ module.exports = function (app, passport) {
     app.get('/api/v1/subscriptionLimits', function (req, res) {
         if (req.user) {
             limitcheck.checkUserSubscriptionLimit(req, res, function (err, response) {
+                response.user=req.user;
                 res.json(response);
             });
         }
@@ -148,6 +150,80 @@ module.exports = function (app, passport) {
             }
             else return res.redirect('/payment?code=' + req.body.code);
         })(req, res, next);
+    });
+    app.post('/api/v1/signupByAdmin', function (req, res, next) {
+        //codeValue = req.query.code;
+        // req.body.code = codeValue;
+        if(req.user) {
+            User.findOne({'email': req.body.email}, function (err, user) {
+                // if there are any errors, return the error
+                if (err)
+                    return res.status(500).json({error: 'Internal server error'});
+
+                // check to see if theres already a user with that email
+                else if (user) {
+                    //return done(null, false, req.flash('signupMessage', 'That email is already taken.'));
+                    res.status(208).json({message: 'This email owner is already an existing Datapoolt user'});
+                }
+                else {
+                    //create token and expiry
+                    var tokenId = req.user.orgId + new Date().getTime() + randomString.generate({
+                            length: configAuth.emailVerification.length,
+                            charset: configAuth.emailVerification.charSet
+                        }) + new Date().getMilliseconds();
+                    var tokenExpiry = new Date().getTime() + configAuth.emailVerification.validity;
+                    // create the user
+                    var newUser = new User();
+                    // set the user's local credentials
+                    newUser.email = req.body.email;
+                    newUser.name = req.body.name;
+                    newUser.orgId = req.user.orgId;
+                    newUser.roleId = configAuth.userRoles.viewer;
+                    newUser.emailVerified = false;
+                    newUser.emailVerification.expires = tokenExpiry;
+                    newUser.emailVerification.tokenId = tokenId;
+                    newUser.created = new Date();
+                    newUser.updated = new Date();
+                    // newUser.code = req.body.code ? req.body.code : false;
+
+                    // save the user
+                    newUser.save(function (err, newUser) {
+                        if (err)
+                            return res.status(500).json({error: 'Internal server error'});
+                        else {
+                            req.orgId = req.user.orgId;
+                            // req.subscriptionId = newUser.subscriptionId;
+                            // req.validity = newUser.validity;
+                            // req.code = codeValue;
+                            newUser.html = '<p><img alt="" src="https://www.datapoolt.co/wp-content/uploads/2016/10/Logo@3x.png" width=150 height=50/></p>' + '<p>Hi ' + newUser.name + ',</p>' +
+                                '<p>Welcome to Datapoolt!</p>' +
+                                '<p> We are glad to on-board you with Datapoolt. Please activate your Datapoolt account by clicking the verification link below:</p><button style="background-color:#ff6c3a;border-radius: 5px;background-color: #ff6c3a;box-shadow: 1px 1px 2px rgba(0,0,0,.2), inset 0 -2px #fd845b;border: solid 1px #ff6c3a;display: inline-block;padding: 6px 20px;font-size: 11px;color: #fff;font-family: bold, sans-serif, Arial;text-transform: uppercase;"><a style="color:#ffffff;text-decoration:none" href="' + configAuth.emailVerification.redirectLinkAdduser + newUser.emailVerification.tokenId + '">Verification Link</a></button><br>' +
+                                '<p>Our team is here to assist you with any questions you may have. </p>' +
+                                "<p>Simply reply to this email if you'd like to get in touch.</p>"
+                                + ' <p>Cheers,</p><p>Datapoolt Team</p>';
+                            newUser.subject = "Welcome to Datapoolt!";
+                            getSubscriptionDetails.sendConfirmationMail(newUser, function (error, userDetails) {
+                                if (error) {
+                                    User.remove({_id: newUser._id}, function (err, result) {
+                                        if (err)
+                                            return res.status(500).json({error: 'Internal server error'});
+                                        else if (!result)
+                                            return res.status(501).json({error: 'Not implemented'});
+                                        else
+                                            res.status(500).json({message: 'Email sending has failed. Please try creating the user again.'})
+                                    });
+                                }
+                                else
+                                    res.status(200).json({message: 'An email has been sent to the entered mail ID for verification. The user will be activated once the verification is done by the user.'})
+                            });
+                        }
+                    });
+                }
+
+            });
+
+        }
+        else res.status(402).json({error: 'Authentication required to perform this action'});
     });
     app.get('/confirmation',function (req,res) {
         res.render('../public/confirmation.ejs');
@@ -349,6 +425,22 @@ module.exports = function (app, passport) {
         else if (req.app.result.status == configAuth.emailVerification.inValid)
             return res.render('../public/signup.ejs', {message: 'Your activation link is invalid'});
     });
+    app.get('/api/v1/userEmailVerification', userDetails.emailVerification, function (req, res) {
+        req.logout();
+        if (req.app.result.status == configAuth.emailVerification.verified) {
+            req.query.email=req.app.result.email
+            res.redirect('/createPassword');
+        }
+        else if (req.app.result.status == configAuth.emailVerification.alreadyVerified)
+            return res.render('../public/signup.ejs', {message: 'This account is already verified.Please login to use datapoolt.'});
+        else if (req.app.result.status == configAuth.emailVerification.mailResend)
+            return res.render('../public/signup.ejs', {message: 'Your activation link has expired.Please check your mail for new activation link'});
+        else if (req.app.result.status == configAuth.emailVerification.inValid)
+            return res.render('../public/signup.ejs', {message: 'Your activation link is invalid'});
+    });
+    app.get('/createPassword',function (req,res) {
+        res.render('../public/createPassword.ejs', {mailId:req.app.result.user.email});
+    })
     app.get('/api/v1/getSubscriptionFromDashboard/:dashboardId',function (req,res) {
         if(req.query.dashboardId) req.params.dashboardId = req.query.dashboardId;
         getSubscriptionDetails.getDashboardDetail(req,res,function (err,dashboard) {
@@ -375,4 +467,13 @@ module.exports = function (app, passport) {
     app.get('/api/v1/getUserActivityDetails/',userDetails.fetchUserActivityDetails,function (req, res){
         res.json({isFirstTimeLogin:req.app.result});
     })
+    app.get('/api/v1/getUsersUnderAdmin/',userDetails.fetchUsersUnderAdmin,function (req, res){
+        res.json({users:req.app.result});
+    });
+    app.post('/api/v1/removeUserUnderAdmin/',userDetails.removeUserUnderAdmin,function (req, res){
+        res.json({userId:req.app.result});
+    });
+    app.post('/api/v1/changeUserName/',userDetails.changeUserName,function (req, res){
+        res.json({userId:req.app.result});
+    });
 };

@@ -5619,3 +5619,17 @@ input:focus{
 a{
     color:black !important;
 }
+.modal-adduser{
+    width:420px !important;
+}
+.username:hover .hover-icon {
+    display: inline-block !important;
+}
+.username{
+    background-color: initial !important;
+    border-bottom: none !important;
+}
+.usernameTitle{
+    font-size: large;
+    font-family: Montserrat-Bold;
+}

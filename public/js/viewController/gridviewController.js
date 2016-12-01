@@ -2,7 +2,9 @@ showMetricApp.controller('GridviewController', GridviewController);
 
 function GridviewController($scope,$http,$window,$rootScope) {
     $scope.dashboardList = null;
+    $scope.allDashboards=null;
     $scope.gridloading=true;
+    $scope.sessionUser;
     $(".navbar").css('z-index','1');
     $(".md-overlay").css("background","rgba(0,0,0,0.5)");
 
@@ -19,8 +21,12 @@ function GridviewController($scope,$http,$window,$rootScope) {
         }).then(
             function successCallback(response){
                 $scope.gridloading=false;
-                if(response.status == '200')
-                    $scope.dashboardList = response.data.dashboardList; 
+                if(response.status == '200'){
+                    if(response.data.user.roleId === 'admin')
+                        $scope.allDashboards= _.groupBy(response.data.dashboardList,'userId');
+                    else
+                        $scope.dashboardList = response.data.dashboardList;
+                }
                 else
                     $scope.dashboardList = null;
             },

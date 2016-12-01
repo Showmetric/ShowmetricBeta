@@ -130,11 +130,14 @@ exports.getChannelData = function (req, res, next) {
     //To check whether the user has required permission to get the widget data
     Widget.findOne({_id: req.params.widgetId}, {dashboardId: 1, charts: 1, widgetType: 1}, function (err, response) {
         var dashboardId = response.dashboardId;
-        if (req.user) {
-            User.findOne({
+        if(req.user.roleId === configAuth.userRoles.admin)
+            var checkUser={_id: req.user._id,};
+        else
+            var checkUser={
                 _id: req.user._id,
-                dashboards: {$elemMatch: {dashboardId: dashboardId}}
-            }, function (err, user) {
+                dashboards: {$elemMatch: {dashboardId: dashboardId}}};
+        if (req.user) {
+            User.findOne(checkUser, function (err, user) {
                 if (err)
                     return res.status(500).json({error: 'Internal Server Error', id: req.params.widgetId});
                 else if (!user)

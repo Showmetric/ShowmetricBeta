@@ -410,6 +410,7 @@ module.exports = {
         username: 'alerts@datapoolt.co',
         password: 'DaTaPoOlT',
         redirectLink:'http://localhost:8080/api/v1/emailVerification?token=',
+        redirectLinkAdduser:'http://localhost:8080/api/v1/userEmailVerification?token=',
         verified:'verified',
         alreadyVerified:'alreadyVerified',
         mailResend:'mailResend',
@@ -453,6 +454,11 @@ module.exports = {
     },
     batchJobsReceiverMailDetails:{
         email:'batchjobs@datapoolt.co'
+    },
+    userRoles:{
+        superadmin:'superadmin',
+        admin:'admin',
+        viewer:'viewer'
     }
 
 };

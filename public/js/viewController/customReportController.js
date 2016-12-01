@@ -283,7 +283,7 @@ function customReportController($scope,$timeout,$rootScope,$http,$window,$state,
         $(".md-overlay").css("background","rgba(0,0,0,0.5)");
         $("#reportPDFModalContent").addClass('md-show');
         $(".reportPdfHeadText").hide();
-        $(".pdfContentText").html('<b>Please wait for few minutes while the PDF file is being generated</b>');
+        $(".pdfContentText").html('<b>Please wait while the PDF file is being generated</b>');
         $(".loadingStatus").show();
         var exportImages=[];
         //var dashboardExpLayout = document.getElementById('gridsterItems');
@@ -470,7 +470,18 @@ function customReportController($scope,$timeout,$rootScope,$http,$window,$state,
             }
 
         }
-
+        //hide summary have value zero
+        $scope.summaryAlignLessThanThree = [];
+        $scope.toDisplayAllSummary = [];
+        $scope.checkAllGraphsZero = function (chart, widgetIndex) {
+            var count = 0;
+            for (var i = 0; i < chart.data.length; i++) {
+                if (chart.data[i].summaryDisplay === 0)
+                    count += 1;
+            }
+            $scope.summaryAlignLessThanThree[widgetIndex]=chart.data.length - count;
+            if (count === chart.data.length) $scope.toDisplayAllSummary[widgetIndex] = true;
+        }
         $scope.fetchReportDetails = function () {
             var dateRange;
             var dahboardId='undefined'

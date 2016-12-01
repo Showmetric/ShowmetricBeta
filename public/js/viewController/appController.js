@@ -15,16 +15,19 @@ function AppController($http,$state,$scope,$rootScope) {
             function successCallback(response) {
                 if (response.data.userDetails.subscriptionType === 'free') {
                     $scope.userName = response.data.userDetails.user[0].name;
+                    $scope.userDetail=response.data.userDetails.user[0];
                 }
                 else {
                     if (response.data.userDetails.statusCode === 1002) {
                         $rootScope.isExpired = true;
                         $scope.userName = response.data.userDetails.user[0].name;
-                      $state.go('app.reporting.upgrade');
+                        $scope.userDetail=response.data.userDetails.user[0];
+                        $state.go('app.reporting.upgrade');
                     }
                     else {
                         $rootScope.isExpired = false;
                         $scope.userName = response.data.userDetails.user[0].name;
+                        $scope.userDetail=response.data.userDetails.user[0];
                     }
                 }
             },
