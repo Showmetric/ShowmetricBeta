@@ -291,6 +291,7 @@ function FusionWidgetController($scope, $http, $q, $window, $state, $rootScope, 
         $scope.tokenExpired[index]=false;
         if (!profileObj) {
             $scope.choosenProfile--;
+           // $scope.choosenProfile.splice(index,1);
             $scope.objectList[index] = null;
             if($scope.uniquechannelNames[index] === 'Google Analytics'){
                 this.objectOptionsModel1='';
@@ -301,7 +302,9 @@ function FusionWidgetController($scope, $http, $q, $window, $state, $rootScope, 
             }
         }
         else {
+            document.getElementById('basicWidgetFinishButton').disabled = true;
             $scope.choosenProfile++;
+            //$scope.choosenProfile.push(profileObj);
             $scope.hasNoAccess = profileObj.hasNoAccess;
             if($scope.uniquechannelNames[index] === 'Google Analytics'){
                 this.objectOptionsModel1='';
@@ -518,7 +521,7 @@ function FusionWidgetController($scope, $http, $q, $window, $state, $rootScope, 
         for (var i = 0; i < $scope.storedReferenceCharts.length; i++) {
             matchingMetric = [];
             for (var j = 0; j < $scope.storedUserChosenValues.length; j++) {
-                if (typeof $scope.storedUserChosenValues[j] != 'undefined' && $scope.storedReferenceCharts[i].channelId === $scope.storedUserChosenValues[j].profile.channelId) {
+                if (typeof $scope.storedUserChosenValues[j] != 'undefined' && $scope.storedUserChosenValues[j].profile!= null && $scope.storedReferenceCharts[i].channelId === $scope.storedUserChosenValues[j].profile.channelId) {
                     for (var k = 0; k < $scope.storedReferenceCharts[i].metrics.length; k++) {
                         if ($scope.storedReferenceCharts[i].metrics[k].objectTypeId === $scope.storedUserChosenValues[j].object.objectTypeId) {
                             matchingMetric.push($scope.storedReferenceCharts[i].metrics[k]);
