@@ -292,7 +292,7 @@ function FusionWidgetController($scope, $http, $q, $window, $state, $rootScope, 
         $scope.tokenExpired[index]=false;
         if (!profileObj) {
             //$scope.choosenProfile--;
-            choosenProfile.splice(index,1);
+            choosenProfile[index] = null;
             $scope.objectList[index] = null;
             if($scope.uniquechannelNames[index] === 'Google Analytics'){
                 this.objectOptionsModel1='';
@@ -306,6 +306,7 @@ function FusionWidgetController($scope, $http, $q, $window, $state, $rootScope, 
             //$scope.choosenProfile++;
             document.getElementById('basicWidgetFinishButton').disabled = true;
             choosenProfile[index]=profileObj;
+            $scope.storedUserChosenValues[index]=null;
             $scope.hasNoAccess = profileObj.hasNoAccess;
             if($scope.uniquechannelNames[index] === 'Google Analytics'){
                 this.objectOptionsModel1='';
@@ -403,6 +404,7 @@ function FusionWidgetController($scope, $http, $q, $window, $state, $rootScope, 
         }
         var chosenObjectCount = 0;
         var chosenProfileCount=0;
+
         for (var i = 0; i < $scope.storedUserChosenValues.length; i++) {
             if ($scope.storedUserChosenValues[i] != null) {
                 if ($scope.storedUserChosenValues[i].object != null) {
@@ -413,10 +415,11 @@ function FusionWidgetController($scope, $http, $q, $window, $state, $rootScope, 
 
         }
         for(var k=0;k<choosenProfile.length;k++){
-            if(typeof choosenProfile[k] != "undefined"){
+            if(typeof choosenProfile[k] != "undefined"  && choosenProfile[k] !=null){
                 chosenProfileCount++;
             }
         }
+
         if (chosenObjectCount!=0 && chosenObjectCount == chosenProfileCount && (  $scope.checkExpiresIn ===null || $scope.checkExpiresIn >= new Date()))
             document.getElementById('basicWidgetFinishButton').disabled = false;
         else
