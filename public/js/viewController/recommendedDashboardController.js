@@ -7,6 +7,7 @@ function RecommendedDashboardController($scope, $http, $window, $q, $state, $roo
     $scope.getChannelList = {};
     $scope.profileList = [];
     $scope.objectList = [];
+    $scope.profileCount=0;
     $scope.otherObjectList=[];
     $scope.objectTypeList=[];
     $scope.tempList = [];
@@ -172,6 +173,9 @@ function RecommendedDashboardController($scope, $http, $window, $q, $state, $roo
                 }
                 else {
                     $scope.changeViewsInBasicWidget('step_two');
+                    document.getElementById('basicWidgetFinishButton').disabled = true;
+                    fbAdsPresent=false;
+                    googleAdsPresent=false;
                     //if($rootScope.isExpired === false){
                     $scope.fullOfDashboard = dashboards;
                     $scope.getChannelList = dashboards.channels;
@@ -304,7 +308,32 @@ function RecommendedDashboardController($scope, $http, $window, $q, $state, $roo
 
         }
         if (!profileObj) {
-            document.getElementById('basicWidgetFinishButton').disabled = true;
+            if($scope.getChannelList[index].name == 'FacebookAds')
+                fbAdsPresent=false;
+                if(($scope.getChannelList[index].name == 'GoogleAdwords'))
+                    googleAdsPresent=false;
+           -- $scope.profileCount;
+            if($scope.profileCount) {
+                $scope.getChannelList[index].enable=true;
+                var k = $scope.getChannelList.map(function (e) {
+                    return (e.enable);
+                }).indexOf(false);
+                if (k != -1 ) {
+                    if ($scope.getChannelList[k].name === 'Twitter' || $scope.getChannelList[k].name === 'Instagram' || $scope.getChannelList[k].name ===$scope.getChannelList[index].name ) {
+
+                        document.getElementById('basicWidgetFinishButton').disabled = false;
+                    }
+                    else {
+                        document.getElementById('basicWidgetFinishButton').disabled = true;
+                    }
+                }
+                else
+                    document.getElementById('basicWidgetFinishButton').disabled = false;
+            }
+            else{
+                document.getElementById('basicWidgetFinishButton').disabled = true;
+            }
+
             $scope.objectList[index] = null;
             if($scope.getChannelList[index].name === 'Mailchimp' || $scope.getChannelList[index].name === 'Aweber'){
                 for(var i=0;i<$scope.otherObjectList[index].length;i++){
@@ -321,6 +350,9 @@ function RecommendedDashboardController($scope, $http, $window, $q, $state, $roo
             }
         }
         else {
+            $scope.profileCount++;
+            $scope.getChannelList[index].enable=false;
+            document.getElementById('basicWidgetFinishButton').disabled = true;
             $scope.otherObjectList[index]=[];
             if ($scope.getChannelList[index].name === 'Google Analytics') {
                 this.objectOptionsModel1 = '';
@@ -405,6 +437,7 @@ function RecommendedDashboardController($scope, $http, $window, $q, $state, $roo
     };
 
     $scope.objectForWidgetChosen = function (objectList, index,childIndex) {
+        $scope.getChannelList[index].enable=false;
         if(!$scope.storedUserChosenValues[index])
             $scope.storedUserChosenValues[index]=[];
         if ((typeof objectList === 'string') && (objectList != '')) {
@@ -413,6 +446,7 @@ function RecommendedDashboardController($scope, $http, $window, $q, $state, $roo
         }
         if (objectList != null && $scope.currentView == 'step_two') {
             if ((objectList != '') && (this.profileOptionsModel[index])) {
+                $scope.getChannelList[index].enable=true;
                 $scope.storedUserChosenValues[index][childIndex] = {
                     object: objectList,
                     profile: this.profileOptionsModel[index],
@@ -421,21 +455,15 @@ function RecommendedDashboardController($scope, $http, $window, $q, $state, $roo
                 };
             }
             else {
-                $scope.storedUserChosenValues[index][childIndex] = {
-                    object: null,
-                    profile: null,
-                    channelName:$scope.getChannelList[index].name,
-                    objectTypeLength:$scope.otherObjectList[index].length
-                };
+                $scope.storedUserChosenValues.splice(index,1)
             }
         }
         else if (objectList == null && $scope.currentView == 'step_two') {
-            $scope.storedUserChosenValues[index][childIndex] = {
-                object: null,
-                profile: null,
-                channelName:$scope.getChannelList[index].name,
-                objectTypeLength:$scope.otherObjectList[index].length
-            };
+           if (!this.profileOptionsModel[index]){
+               $scope.getChannelList[index].enable=true;
+           }else
+               $scope.getChannelList[index].enable=false;
+            $scope.storedUserChosenValues.splice(index,1)
         }
         else if (objectList != null && $scope.currentView == 'step_one') {
             $scope.storedUserChosenValues = null;
@@ -463,17 +491,18 @@ function RecommendedDashboardController($scope, $http, $window, $q, $state, $roo
                 }
             }
         }
-        for (var items in $scope.getChannelList){
-            if($scope.getChannelList[items].name=='FacebookAds')
-                fbAdsPresent=true;
-            if($scope.getChannelList[items].name=='GoogleAdwords')
-                googleAdsPresent=true;
-        }
-        if (chosenObjectCount == $scope.getChannelList.length)
+        // for (var items in $scope.getChannelList){
+        //     if($scope.getChannelList[items].name=='FacebookAds')
+        //         fbAdsPresent=true;
+        //     if($scope.getChannelList[items].name=='GoogleAdwords')
+        //         googleAdsPresent=true;
+        // }
+        if (chosenObjectCount )
             canFinishEnable=true;
         else
             canFinishEnable=false;
         if($scope.getChannelList[index].name === 'FacebookAds') {
+            fbAdsPresent=true;
             if (!objectList) {
                 $scope.selectedObjectType = null;
                 $scope.selectedLevel = null;
@@ -522,6 +551,7 @@ function RecommendedDashboardController($scope, $http, $window, $q, $state, $roo
             }
         }
         if($scope.getChannelList[index].name ==='GoogleAdwords'){
+            googleAdsPresent=true;
             if (!objectList) {
                 $scope.googleCampaignChosen = false;
                 $scope.adChosen = false;
@@ -1407,7 +1437,23 @@ function RecommendedDashboardController($scope, $http, $window, $q, $state, $roo
     };
 
     $scope.checkComplete=function(){
-        if(fbAdsPresent==false && googleAdsPresent==false){
+        var k = $scope.getChannelList.map(function (e) {
+            return (e.enable);
+        }).indexOf(false);
+        if (k != -1 && $scope.profileCount) {
+            if($scope.getChannelList[k].name === 'Twitter' || $scope.getChannelList[k].name === 'Instagram'  ){
+
+                document.getElementById('basicWidgetFinishButton').disabled = false;
+            }
+            else{
+                document.getElementById('basicWidgetFinishButton').disabled = true;
+            }
+        }
+        else if(!$scope.profileCount){
+            document.getElementById('basicWidgetFinishButton').disabled = true;
+        }
+
+        else if(fbAdsPresent==false && googleAdsPresent==false ){
             if(canFinishEnable==true)
                 document.getElementById('basicWidgetFinishButton').disabled = false;
             else
@@ -1667,97 +1713,110 @@ function RecommendedDashboardController($scope, $http, $window, $q, $state, $roo
                                         var inputParams = [];
                                         var dashboardId = response.data;
                                         for (var widget = 0; widget < $scope.referenceWidgetsList.length; widget++) {
+                                            var modifiedrefrenceWidgetArray=[]
                                             for (var chart = 0; chart < $scope.referenceWidgetsList[widget].charts.length; chart++) {
                                                 matchingMetric = [];
                                                 for (var j = 0; j < $scope.storedUserChosenValues.length; j++) {
-                                                    for(var i=0;i<$scope.storedUserChosenValues[j].length;i++){
-                                                        if ($scope.referenceWidgetsList[widget].charts[chart].channelId === $scope.storedUserChosenValues[j][i].profile.channelId) {
-                                                            for (var n = 0; n < $scope.getChannelList.length; n++) {
-                                                                var widgetName, channelName;
-                                                                if ($scope.storedUserChosenValues[j][i].profile.channelId === $scope.getChannelList[n]._id) {
-                                                                    var widgetColor = generateChartColours.fetchWidgetColor($scope.getChannelList[n].name);
-                                                                    if ($scope.getChannelList[n].name === 'Twitter' || $scope.getChannelList[n].name === 'Instagram' || $scope.getChannelList[n].name === 'Google Analytics')
-                                                                        widgetName = $scope.referenceWidgetsList[widget].name + ' - ' + $scope.storedUserChosenValues[j][i].profile.name;
-                                                                    else
-                                                                        widgetName = $scope.referenceWidgetsList[widget].name + ' - ' + $scope.storedUserChosenValues[j][i].object.name;
-                                                                    channelName = $scope.getChannelList[n].name;
-                                                                }
+                                                    if($scope.storedUserChosenValues[j] != undefined){
+                                                        for(var i=0;i<$scope.storedUserChosenValues[j].length;i++){
+                                                            if ($scope.referenceWidgetsList[widget].charts[chart].channelId === $scope.storedUserChosenValues[j][i].profile.channelId) {
+                                                                for (var n = 0; n < $scope.getChannelList.length; n++) {
+                                                                    var widgetName, channelName;
+                                                                    if ($scope.storedUserChosenValues[j][i].profile.channelId === $scope.getChannelList[n]._id) {
+                                                                        var widgetColor = generateChartColours.fetchWidgetColor($scope.getChannelList[n].name);
+                                                                        if ($scope.getChannelList[n].name === 'Twitter' || $scope.getChannelList[n].name === 'Instagram' || $scope.getChannelList[n].name === 'Google Analytics')
+                                                                            widgetName = $scope.referenceWidgetsList[widget].name + ' - ' + $scope.storedUserChosenValues[j][i].profile.name;
+                                                                        else
+                                                                            widgetName = $scope.referenceWidgetsList[widget].name + ' - ' + $scope.storedUserChosenValues[j][i].object.name;
+                                                                        channelName = $scope.getChannelList[n].name;
+                                                                    }
 
-                                                            }
-                                                            for (var m = 0; m < $scope.referenceWidgetsList[widget].charts[chart].metrics.length; m++) {
-                                                                if(channelName === 'FacebookAds'){
-                                                                    matchingMetric.push($scope.referenceWidgetsList[widget].charts[chart].metrics[m]);
-                                                                    if ($scope.selectedLevel == 'fbadaccount') {
-                                                                        matchingMetric[0].objectTypeId = $scope.selectedObjectType._id;
-                                                                        matchingMetric[0].objectId = $scope.storedUserChosenValues[j][i].object._id;
-                                                                    }
-                                                                    else if ($scope.selectedLevel == 'fbAdcampaign') {
-                                                                        matchingMetric[0].objectTypeId = $scope.selectedObjectType._id;
-                                                                        matchingMetric[0].objectId = $scope.campaign._id;
-                                                                        widgetName = $scope.referenceWidgetsList[widget].name + ' - ' + $scope.campaign.name;
-                                                                    }
-                                                                    else if ($scope.selectedLevel == 'fbAdSet') {
-                                                                        matchingMetric[0].objectTypeId = $scope.selectedObjectType._id;
-                                                                        matchingMetric[0].objectId = $scope.adSet._id;
-                                                                        widgetName = $scope.referenceWidgetsList[widget].name + ' - ' + $scope.adSet.name;
-                                                                    }
-                                                                    else if ($scope.selectedLevel == 'fbAdSetAds') {
-                                                                        matchingMetric[0].objectTypeId = $scope.selectedObjectType._id;
-                                                                        matchingMetric[0].objectId = $scope.adSetAds._id;
-                                                                        widgetName = $scope.referenceWidgetsList[widget].name + ' - ' + $scope.adSetAds.name;
-                                                                    }
                                                                 }
-                                                                else if(channelName ==='GoogleAdwords'){
-                                                                    matchingMetric.push($scope.referenceWidgetsList[widget].charts[chart].metrics[m]);
-                                                                    if ($scope.selectedGoogleLevel == 'adwordaccount') {
-                                                                        matchingMetric[0].objectTypeId = $scope.selectedGoogleObjectType._id;
-                                                                        matchingMetric[0].objectId = $scope.storedUserChosenValues[j][i].object._id;
-                                                                    }
-                                                                    else if ($scope.selectedGoogleLevel == 'adwordCampaign') {
-                                                                        matchingMetric[0].objectTypeId = $scope.selectedGoogleObjectType._id;
-                                                                        matchingMetric[0].objectId = $scope.googleCampaign._id;
-                                                                        widgetName = $scope.referenceWidgetsList[widget].name + ' - ' + $scope.googleCampaign.name;
-                                                                    }
-                                                                    else if ($scope.selectedGoogleLevel == 'adwordAdgroup') {
-                                                                        matchingMetric[0].objectTypeId = $scope.selectedGoogleObjectType._id;
-                                                                        matchingMetric[0].objectId = $scope.googleGroup._id;
-                                                                        widgetName = $scope.referenceWidgetsList[widget].name + ' - ' + $scope.googleGroup.name;
-                                                                    }
-                                                                    else if ($scope.selectedGoogleLevel == 'adwordsAd') {
-                                                                        matchingMetric[0].objectTypeId = $scope.selectedGoogleObjectType._id;
-                                                                        matchingMetric[0].objectId = $scope.googleAd._id;
-                                                                        widgetName = $scope.referenceWidgetsList[widget].name + ' - ' + $scope.googleAd.name;
-                                                                    }
-                                                                }
-                                                                else{
-                                                                    if ($scope.referenceWidgetsList[widget].charts[chart].metrics[m].objectTypeId === $scope.storedUserChosenValues[j][i].object.objectTypeId) {
+                                                                for (var m = 0; m < $scope.referenceWidgetsList[widget].charts[chart].metrics.length; m++) {
+                                                                    if(channelName === 'FacebookAds'){
                                                                         matchingMetric.push($scope.referenceWidgetsList[widget].charts[chart].metrics[m]);
-                                                                        matchingMetric[0].objectId = $scope.storedUserChosenValues[j][i].object._id;
+                                                                        if ($scope.selectedLevel == 'fbadaccount') {
+                                                                            matchingMetric[0].objectTypeId = $scope.selectedObjectType._id;
+                                                                            matchingMetric[0].objectId = $scope.storedUserChosenValues[j][i].object._id;
+                                                                        }
+                                                                        else if ($scope.selectedLevel == 'fbAdcampaign') {
+                                                                            matchingMetric[0].objectTypeId = $scope.selectedObjectType._id;
+                                                                            matchingMetric[0].objectId = $scope.campaign._id;
+                                                                            widgetName = $scope.referenceWidgetsList[widget].name + ' - ' + $scope.campaign.name;
+                                                                        }
+                                                                        else if ($scope.selectedLevel == 'fbAdSet') {
+                                                                            matchingMetric[0].objectTypeId = $scope.selectedObjectType._id;
+                                                                            matchingMetric[0].objectId = $scope.adSet._id;
+                                                                            widgetName = $scope.referenceWidgetsList[widget].name + ' - ' + $scope.adSet.name;
+                                                                        }
+                                                                        else if ($scope.selectedLevel == 'fbAdSetAds') {
+                                                                            matchingMetric[0].objectTypeId = $scope.selectedObjectType._id;
+                                                                            matchingMetric[0].objectId = $scope.adSetAds._id;
+                                                                            widgetName = $scope.referenceWidgetsList[widget].name + ' - ' + $scope.adSetAds.name;
+                                                                        }
+                                                                    }
+                                                                    else if(channelName ==='GoogleAdwords'){
+                                                                        matchingMetric.push($scope.referenceWidgetsList[widget].charts[chart].metrics[m]);
+                                                                        if ($scope.selectedGoogleLevel == 'adwordaccount') {
+                                                                            matchingMetric[0].objectTypeId = $scope.selectedGoogleObjectType._id;
+                                                                            matchingMetric[0].objectId = $scope.storedUserChosenValues[j][i].object._id;
+                                                                        }
+                                                                        else if ($scope.selectedGoogleLevel == 'adwordCampaign') {
+                                                                            matchingMetric[0].objectTypeId = $scope.selectedGoogleObjectType._id;
+                                                                            matchingMetric[0].objectId = $scope.googleCampaign._id;
+                                                                            widgetName = $scope.referenceWidgetsList[widget].name + ' - ' + $scope.googleCampaign.name;
+                                                                        }
+                                                                        else if ($scope.selectedGoogleLevel == 'adwordAdgroup') {
+                                                                            matchingMetric[0].objectTypeId = $scope.selectedGoogleObjectType._id;
+                                                                            matchingMetric[0].objectId = $scope.googleGroup._id;
+                                                                            widgetName = $scope.referenceWidgetsList[widget].name + ' - ' + $scope.googleGroup.name;
+                                                                        }
+                                                                        else if ($scope.selectedGoogleLevel == 'adwordsAd') {
+                                                                            matchingMetric[0].objectTypeId = $scope.selectedGoogleObjectType._id;
+                                                                            matchingMetric[0].objectId = $scope.googleAd._id;
+                                                                            widgetName = $scope.referenceWidgetsList[widget].name + ' - ' + $scope.googleAd.name;
+                                                                        }
+                                                                    }
+                                                                    else{
+                                                                        if ($scope.referenceWidgetsList[widget].charts[chart].metrics[m].objectTypeId === $scope.storedUserChosenValues[j][i].object.objectTypeId) {
+                                                                            matchingMetric.push($scope.referenceWidgetsList[widget].charts[chart].metrics[m]);
+                                                                            matchingMetric[0].objectId = $scope.storedUserChosenValues[j][i].object._id;
+                                                                        }
                                                                     }
                                                                 }
-                                                            }
 
+                                                            }
                                                         }
                                                     }
+
                                                 }
-                                                $scope.referenceWidgetsList[widget].charts[chart].metrics = matchingMetric;
+                                                if(matchingMetric.length){
+                                                    $scope.referenceWidgetsList[widget].charts[chart].metrics = matchingMetric;
+                                                    modifiedrefrenceWidgetArray.push($scope.referenceWidgetsList[widget].charts[chart])
+                                                }
                                             }
-                                            var jsonData = {
-                                                "dashboardId": response.data,
-                                                "widgetType": $scope.referenceWidgetsList[widget].widgetType,
-                                                "name": widgetName,
-                                                "description": $scope.referenceWidgetsList[widget].description,
-                                                "charts": $scope.referenceWidgetsList[widget].charts,
-                                                "order": $scope.referenceWidgetsList[widget].order,
-                                                "offset": $scope.referenceWidgetsList[widget].offset,
-                                                "size": $scope.referenceWidgetsList[widget].size,
-                                                "minSize": $scope.referenceWidgetsList[widget].minSize,
-                                                "maxSize": $scope.referenceWidgetsList[widget].maxSize,
-                                                "isAlert": $scope.referenceWidgetsList[widget].isAlert,
-                                                "color": widgetColor,
-                                                "channelName": channelName
-                                            };
-                                            inputParams.push(jsonData);
+                                            $scope.referenceWidgetsList[widget].charts=modifiedrefrenceWidgetArray
+                                            if($scope.referenceWidgetsList[widget].widgetType === 'fusion'){
+                                                channelName='custom'
+                                            }
+                                            if(modifiedrefrenceWidgetArray.length){
+                                                var jsonData = {
+                                                    "dashboardId": response.data,
+                                                    "widgetType": $scope.referenceWidgetsList[widget].widgetType,
+                                                    "name": widgetName,
+                                                    "description": $scope.referenceWidgetsList[widget].description,
+                                                    "charts": modifiedrefrenceWidgetArray,
+                                                    "order": $scope.referenceWidgetsList[widget].order,
+                                                    "offset": $scope.referenceWidgetsList[widget].offset,
+                                                    "size": $scope.referenceWidgetsList[widget].size,
+                                                    "minSize": $scope.referenceWidgetsList[widget].minSize,
+                                                    "maxSize": $scope.referenceWidgetsList[widget].maxSize,
+                                                    "isAlert": $scope.referenceWidgetsList[widget].isAlert,
+                                                    "color": widgetColor,
+                                                    "channelName": channelName
+                                                };
+                                                inputParams.push(jsonData);
+                                            }
                                         }
                                         $http({
                                             method: 'POST',
@@ -1765,7 +1824,7 @@ function RecommendedDashboardController($scope, $http, $window, $q, $state, $roo
                                             data: inputParams
                                         }).then(
                                             function successCallback(response) {
-                                               // $state.go('app.reporting.dashboard', {id: dashboardId});
+                                                // $state.go('app.reporting.dashboard', {id: dashboardId});
                                                 //progressStart=1;
                                                 changeState().then(
                                                     function () {
