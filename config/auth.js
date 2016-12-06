@@ -166,6 +166,7 @@ module.exports = {
 
     'twitterMetric':{
         keywordMentions : 'keyword_mentions',
+        potentialreach:'potential_reach',
         mentions : 'mentions',
         highEngagementTweets :'high_engagement_tweets',
         tweets: 'tweets',
