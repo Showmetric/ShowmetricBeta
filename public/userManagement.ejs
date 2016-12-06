@@ -1,0 +1,61 @@
+<div class="modal-header white-bg grid-header grid-font postitionRelative">
+    <p>User Management</p>
+</div>
+<div style="height:575px" ng-controller="UserManagementController" ng-init="fetchAllUser()" class="wrapper wrapper-content gridAlign greyish-bg postitionRelative" ng-style="{'height': docHeight+'px'}">
+    <div ng-show="userloading === true"  class="spiner-example">
+        <div class="sk-spinner sk-spinner-double-bounce">
+            <div class="sk-double-bounce1"></div>
+            <div class="sk-double-bounce2"></div>
+        </div>
+    </div>
+    <div>
+      <button style="border: none;font-wight:bold;color:white !important" class="componentBtn btn-4 btn-4a" ng-if="userDetail.roleId ==='admin' && userloading === false"><a style="font-wight:bold;color:white !important" ui-sref="app.reporting.userManagement.addUser" >Add New User</a></button>
+    </div>
+    <div class="row" ng-show="users != null && userloading === false ">
+        <h2 style="text-align: center;padding-top: 15px; ">Users in your Organization</h2>
+        <table style="" class="table table-striped">
+            <thead>
+            <tr style="padding:2px 5px;width:100%;background-color:#232c3b;color:white ">
+                <th style="padding:5px 5px;width:30%;text-align:center;" >
+                    User Name
+                </th>
+                <th style="padding:5px 5px;width:50%;text-align:center;">
+                    Email ID
+                </th>
+                <th style="padding:5px 5px;width:10%;text-align:center;">
+                    Status
+                </th>
+                <th ng-if="userDetail.roleId ==='admin'" style="padding:5px 5px;width:10%;text-align:center;">
+
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr style="padding:2px 5px;width:100%"
+                ng-repeat="data in users "
+                ng-if="data._id">
+                <td style="padding:5px 5px;width:30%;text-align:center;">
+                    <a class="username" style="background-color: initial !important" title="Click to rename this user" id='reset-btn' href="#"
+                       editable-text="data.name" onaftersave="changeUserName(data._id,data.name)"
+                       e-maxlength="26">{{data.name}}
+                        <i class="fa fa-pencil hover-icon" aria-hidden="true"
+                           style="font-size: 1em;margin-top: 6px;color:#232c3b;display:none"></i>
+                    </a>
+                </td>
+                <td style="padding:5px 5px;width:50%;text-align:center;">
+                  {{data.email}}
+                </td>
+                <td style="padding:5px 5px;width:10%;text-align:center;">
+                    {{data.emailVerified === true?'Active':'Inactive'}}
+                </td>
+                <td ng-if="userDetail.roleId ==='admin' " style="padding:5px 5px;width:10%;text-align:center;"   >
+                    <a ng-if="data.roleId != 'admin'" class="glyphicon glyphicon-trash"  ng-click="removeExistingUser(data._id)"></a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <!--<div class="row grid-font" ng-show="!dashboardList && gridloading === false">-->
+        <!--<p>You don't have access to any dashboards yet</p>-->
+    <!--</div>-->
+</div>

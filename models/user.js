@@ -22,7 +22,7 @@ var userSchema = mongoose.Schema({
         expires: Date,
         used: Boolean
     },
-    roleId: Object,
+    roleId: String,
     dashboards: Array,
     lastLoggedIn: Date,
     lastDashboardId: Object,

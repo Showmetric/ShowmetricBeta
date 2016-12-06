@@ -130,11 +130,14 @@ exports.getChannelData = function (req, res, next) {
     //To check whether the user has required permission to get the widget data
     Widget.findOne({_id: req.params.widgetId}, {dashboardId: 1, charts: 1, widgetType: 1}, function (err, response) {
         var dashboardId = response.dashboardId;
-        if (req.user) {
-            User.findOne({
+        if(req.user.roleId === configAuth.userRoles.admin)
+            var checkUser={_id: req.user._id,};
+        else
+            var checkUser={
                 _id: req.user._id,
-                dashboards: {$elemMatch: {dashboardId: dashboardId}}
-            }, function (err, user) {
+                dashboards: {$elemMatch: {dashboardId: dashboardId}}};
+        if (req.user) {
+            User.findOne(checkUser, function (err, user) {
                 if (err)
                     return res.status(500).json({error: 'Internal Server Error', id: req.params.widgetId});
                 else if (!user)
@@ -1603,6 +1606,47 @@ exports.getChannelData = function (req, res, next) {
                         }
                         else if (metric[j].code === configAuth.twitterMetric.highEngagementTweets) {
                             next(null, dataFromRemote[j]);
+                        }else if(metric[j].code === configAuth.twitterMetric.potentialreach){
+                            var tweetArray=[];
+                            var storeStartDate = new Date(req.body.startDate);
+                            var storeEndDate = new Date(req.body.endDate);
+                            var timeDiff = Math.abs(storeEndDate.getTime() - storeStartDate.getTime());
+                            var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+                            for (var i = 0; i <= diffDays; i++) {
+                                var finalDate = formatDate(storeStartDate);
+                                tweetArray.push({
+                                    date: finalDate,
+                                    total: 0
+                                })
+                                storeStartDate.setDate(storeStartDate.getDate() + 1);
+                            }
+                            if(dataFromRemote[j].data.length){
+                                var startdate=new Date(req.body.startDate);
+                                startdate.setDate(startdate.getDate() - 1);
+                                startdate=formatDate(startdate)
+                                var enddate=new Date(req.body.endDate);
+                                enddate.setDate(enddate.getDate() + 1);
+                                enddate=formatDate(enddate)
+                                for(var i=0;i<dataFromRemote[j].data.length;i++){
+                                    var date=formatDate(new Date(Date.parse(dataFromRemote[j].data[i].total.created_at.replace(/( +)/, ' UTC$1'))))
+                                    if(startdate < date && date < enddate ){
+                                        var k=tweetArray.map(function (e) {
+                                            return (e.date);
+                                        }).indexOf(date)
+                                        if(k != -1){
+                                            tweetArray[k].total=tweetArray[k].total+dataFromRemote[j].data[i].total['user']['followers_count']
+                                        }
+                                    }
+                                }
+                                dataFromRemote[j].data=tweetArray;
+                                next(null, dataFromRemote[j]);
+                            }
+                            else{
+                                dataFromRemote[j].data=tweetArray;
+                                next(null, dataFromRemote[j]);
+                            }
+
+
                         }
                         else return next(null, 'success');
                     }, done)
@@ -1975,6 +2019,15 @@ exports.getChannelData = function (req, res, next) {
                     next(null, wholeData)
                 }
                 else if (metric[k].code === configAuth.twitterMetric.highEngagementTweets && metric[k].objectTypes[0].meta.endpoint.length === 0) {
+                    wholeData = {
+                        "data": results.store_final_data[0].data,
+                        "metricId": results.store_final_data[0].metricId,
+                        "metricDetails":metric[k],
+                        "objectId": results.store_final_data[0].queryResults.object[0]._id
+                    }
+                    next(null, wholeData)
+                }
+                else if (metric[k].code === configAuth.twitterMetric.potentialreach ) {
                     wholeData = {
                         "data": results.store_final_data[0].data,
                         "metricId": results.store_final_data[0].metricId,
@@ -3390,15 +3443,14 @@ exports.getChannelData = function (req, res, next) {
                     else
                         setTweetQuery();
                     function setTweetQuery() {
-
-                        if (metricType === configAuth.twitterMetric.keywordMentions)
+                        if(metricType ===configAuth.twitterMetric.potentialreach )
+                            var inputs = {q: '%40' + profile[j].name, count: 200};
+                        else  if (metricType === configAuth.twitterMetric.keywordMentions)
                             var inputs = {q: '%23' + profile[j].name, count: count};
-
                         else if (metricType === configAuth.twitterMetric.mentions)
                             var inputs = {screen_name: profile[j].name, count: 200};
                         else
                             var inputs = {screen_name: profile[j].name, count: 200};
-
                         queries = {
                             inputs: inputs,
                             query: query,
@@ -3461,6 +3513,8 @@ exports.getChannelData = function (req, res, next) {
                     return res.status(500).json({error: 'Internal server error', id: req.params.widgetId});
                 }
                 else {
+                    if(queries.get_tweet_queries[j].metricCode === configAuth.twitterMetric.potentialreach )
+                        tweets=tweets.statuses;
                     if (queries.get_tweet_queries[j].metricCode === configAuth.twitterMetric.tweets || queries.get_tweet_queries[j].metricCode === configAuth.twitterMetric.followers || queries.get_tweet_queries[j].metricCode === configAuth.twitterMetric.following || queries.get_tweet_queries[j].metricCode === configAuth.twitterMetric.favourites || queries.get_tweet_queries[j].metricCode === configAuth.twitterMetric.listed || queries.get_tweet_queries[j].metricCode === configAuth.twitterMetric.retweets_of_your_tweets) {
                         finalTwitterResponse = {
                             data: tweets,
@@ -3480,7 +3534,6 @@ exports.getChannelData = function (req, res, next) {
                             };
                             callback(null, finalTwitterResponse);
                         }
-
                         else if (index == 0 && tweets.length != 0) {
                             oldMaxId = tweets[tweets.length - 1].id;
                             tweets.forEach(function (value, index) {
@@ -3488,11 +3541,15 @@ exports.getChannelData = function (req, res, next) {
                                 wholeTweetObjects.push({total: value, date: storeTweetDate});
                             });
 
-                            queries.get_tweet_queries[j].inputs = {
-                                screen_name: queries.get_tweet_queries[j].inputs.screen_name,
-                                count: queries.get_tweet_queries[j].inputs.count,
-                                max_id: oldMaxId
-                            };
+                            if(queries.get_tweet_queries[j].metricCode === configAuth.twitterMetric.potentialreach)
+                                queries.get_tweet_queries[j].inputs = {q: '%40' + queries.get_tweet_queries[j].inputs.screen_name, count: 200, max_id: oldMaxId};
+                            else {
+                                queries.get_tweet_queries[j].inputs = {
+                                    screen_name: queries.get_tweet_queries[j].inputs.screen_name,
+                                    count: queries.get_tweet_queries[j].inputs.count,
+                                    max_id: oldMaxId
+                                };
+                            }
                             index++;
                             callTwitterApi(queries, j, wholeTweetObjects, oldMaxId, index, callback);
                         }
@@ -3511,11 +3568,16 @@ exports.getChannelData = function (req, res, next) {
                                     storeTweetDate = formatDate(new Date(Date.parse(value.created_at.replace(/( +)/, ' UTC$1'))));
                                     wholeTweetObjects.push({total: value, date: storeTweetDate});
                                 });
-                                queries.get_tweet_queries[j].inputs = {
-                                    screen_name: queries.get_tweet_queries[j].inputs.screen_name,
-                                    count: queries.get_tweet_queries[j].inputs.count,
-                                    max_id: maxId
-                                };
+                                if(queries.get_tweet_queries[j].metricCode === configAuth.twitterMetric.potentialreach)
+                                    queries.get_tweet_queries[j].inputs = {q: '%40' + queries.get_tweet_queries[j].inputs.screen_name, count: 200, max_id: oldMaxId};
+                                else{
+                                    queries.get_tweet_queries[j].inputs = {
+                                        screen_name: queries.get_tweet_queries[j].inputs.screen_name,
+                                        count: queries.get_tweet_queries[j].inputs.count,
+                                        max_id: maxId
+                                    };
+                                }
+
                                 callTwitterApi(queries, j, wholeTweetObjects, oldMaxId, index, callback);
                             }
                         }
@@ -3523,7 +3585,7 @@ exports.getChannelData = function (req, res, next) {
                             storingProcess(wholeTweetObjects)
 
                         function storingProcess(wholeTweetObjects) {
-                            if (queries.get_tweet_queries[j].metricCode === configAuth.twitterMetric.twitterEngagements) {
+                            if (queries.get_tweet_queries[j].metricCode === configAuth.twitterMetric.twitterEngagements || queries.get_tweet_queries[j].metricCode  ===configAuth.twitterMetric.potentialreach) {
                                 finalTwitterResponse = {
                                     data: wholeTweetObjects,
                                     metricId: queries.get_tweet_queries[j].metricId,

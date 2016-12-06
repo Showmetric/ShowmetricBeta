@@ -8,6 +8,7 @@ var Alert = require('../models/alert');
 var userPermission = require('../helpers/utility');
 var Q = require("q");
 var _ = require('lodash');
+var configAuth = require('./../config/auth');
 
 /**
  Function to get the profiles's details such as name,access token,refresh token..
@@ -20,41 +21,77 @@ exports.getDashboardList = function (req, res, next) {
         return res.status(401).json({error: 'Authentication required to perform this action'})
     }
     else {
-        var userDashboard = [];
-        User.findOne({_id: req.user._id}, function (err, UserCollection) {
-            if (err)
-                return res.status(500).json({error: 'Internal server error'});
-            else if (!UserCollection)
-                return res.status(204).json({error: 'No records found'});
-            else {
-                for (var i = 0; i < UserCollection.dashboards.length; i++) {
-                    userDashboard.push(getDashboard(UserCollection.dashboards[i].dashboardId));
-                }
-                Q.all(userDashboard).then(function successCallback(userDashboard) {
-                    if (!userDashboard) {
-                        return res.status(501).json({error: 'Not implemented'})
-                    }
-                    else {
-
-                        req.app.result = _.without(userDashboard,null);
-                        next();
-                    }
-                }, function errorCallback(err) {
-                    return res.status(500).json({error: 'Internal server error'});
-                });
-            }
-        });
-
-        function getDashboard(UserCollection) {
+        function getDashboard(UserDashboardCollection,userId,userName) {
             var deferred = Q.defer();
-            dashboardList.findOne({_id: UserCollection}, function (err, dashboard) {
+            var dashboardDetails ={};
+            dashboardList.findOne({_id: UserDashboardCollection}, function (err, dashboard) {
                 if (err)
                     deferred.reject(new Error(err));
-                else
-                    deferred.resolve(dashboard);
+                else if(!dashboard)
+                    deferred.resolve(null);
+                else {
+                    dashboardDetails.dashboard = dashboard;
+                    dashboardDetails.userId = userId;
+                    dashboardDetails.userName = userName;
+                    deferred.resolve(dashboardDetails);
+                }
             });
             return deferred.promise;
         }
+        if(req.user.roleId==configAuth.userRoles.viewer){
+            var userDashboard = [];
+            User.findOne({_id: req.user._id}, function (err, UserCollection) {
+                if (err)
+                    return res.status(500).json({error: 'Internal server error'});
+                else if (!UserCollection)
+                    return res.status(204).json({error: 'No records found'});
+                else {
+                    for (var i = 0; i < UserCollection.dashboards.length; i++) {
+                        userDashboard.push(getDashboard(UserCollection.dashboards[i].dashboardId,UserCollection._id,UserCollection.name));
+                    }
+                    Q.all(userDashboard).then(function successCallback(userDashboard) {
+                        if (!userDashboard) {
+                            return res.status(501).json({error: 'Not implemented'})
+                        }
+                        else {
+
+                            req.app.result = _.without(userDashboard,null);
+                            next();
+                        }
+                    }, function errorCallback(err) {
+                        return res.status(500).json({error: 'Internal server error'});
+                    });
+                }
+            });
+        }
+        else if(req.user.roleId==configAuth.userRoles.admin){
+            var userDashboard = [];
+            User.find({orgId: req.user.orgId}, function (err, UserCollection) {
+                if (err)
+                    return res.status(500).json({error: 'Internal server error'});
+                else if (!UserCollection)
+                    return res.status(204).json({error: 'No records found'});
+                else {
+                    for(var j=0;j<UserCollection.length;j++) {
+                        for (var i = 0; i < UserCollection[j].dashboards.length; i++) {
+                            userDashboard.push(getDashboard(UserCollection[j].dashboards[i].dashboardId,UserCollection[j]._id,UserCollection[j].name));
+                        }
+                    }
+                    Q.all(userDashboard).then(function successCallback(userDashboard) {
+                        if (!userDashboard) {
+                            return res.status(501).json({error: 'Not implemented'})
+                        }
+                        else {
+                            req.app.result = _.without(userDashboard, null);
+                            next();
+                        }
+                    }, function errorCallback(err) {
+                        return res.status(500).json({error: 'Internal server error'});
+                    });
+                }
+            });
+        }
+        else return res.status(401).json({error: 'Authentication required to perform this action'});
     }
 };
 

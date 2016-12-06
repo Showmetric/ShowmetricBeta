@@ -49,6 +49,9 @@ function buildReportController($scope,$http,$window,$timeout) {
                 document.getElementById('reportFinishButton').disabled = true;
                 $('#reportFinishButton').addClass("exportDisabled");
                 if(response.status == '200'){
+                    if(response.data.user.roleId === 'admin'){
+                        $scope.allDashboards= _.groupBy(response.data.dashboardList,'userId')
+                    }else
                     $scope.dashboardList = response.data.dashboardList;
                 }
                 else
@@ -107,12 +110,12 @@ function buildReportController($scope,$http,$window,$timeout) {
         if(dashboard.isSelected == true) {
             dashboard.isSelected = false;
             // var temp = _.uniq( $scope.selectedDashboards);
-            var temp = _.pull($scope.selectedDashboards, dashboard._id);
+            var temp = _.pull($scope.selectedDashboards, dashboard.dashboard._id);
             $scope.selectedDashboards = temp;
         }
         else {
             dashboard.isSelected = true;
-            $scope.selectedDashboards.push(dashboard._id);
+            $scope.selectedDashboards.push(dashboard.dashboard._id);
         }
 
         if($scope.selectedDashboards.length>0) {

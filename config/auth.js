@@ -166,6 +166,7 @@ module.exports = {
 
     'twitterMetric':{
         keywordMentions : 'keyword_mentions',
+        potentialreach:'potential_reach',
         mentions : 'mentions',
         highEngagementTweets :'high_engagement_tweets',
         tweets: 'tweets',
@@ -407,6 +408,7 @@ module.exports = {
         username: 'alerts@datapoolt.co',
         password: 'DaTaPoOlT',
         redirectLink:'https://app.datapoolt.co/api/v1/emailVerification?token=',
+        redirectLinkAdduser:'https://app.datapoolt.co/api/v1/userEmailVerification?token=',
         verified:'verified',
         alreadyVerified:'alreadyVerified',
         mailResend:'mailResend',
@@ -450,6 +452,11 @@ module.exports = {
     },
     batchJobsReceiverMailDetails:{
         email:'batchjobs@datapoolt.co'
+    },
+    userRoles:{
+        superadmin:'superadmin',
+        admin:'admin',
+        viewer:'viewer'
     }
 };
 
