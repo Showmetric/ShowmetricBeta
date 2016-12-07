@@ -2669,7 +2669,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                         var splitArray = [];
                                         for (var k = 0; k < widget.charts[charts].chartData.length; k++) {
                                             if (typeof widget.charts[charts].chartData[k].total === 'object') {
-                                                widget.charts[charts].chartData[k].total.created_time = moment.unix(widget.charts[charts].chartData[k].total.created_time).format('YYYY-MMM-DD');
+                                                widget.charts[charts].chartData[k].total.created_time = moment.unix(widget.charts[charts].chartData[k].total.created_time).format('YYYY/MMM/DD');
                                                 widget.charts[charts].chartData[k].total.created_time = new Date(widget.charts[charts].chartData[k].total.created_time).getDay();
                                                 splitArray.push(widget.charts[charts].chartData[k].total);
                                             }

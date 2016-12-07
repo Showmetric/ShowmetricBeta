@@ -49,7 +49,7 @@
                         <div class="box-header" id="getWidgetColor-{{widget.id}}" ref="{{dashboard.widgetData[widgetIndex].color}}" style="background-color: #ffffff;"> <!--ng-style="{'background-color': dashboard.widgetData[widgetIndex].color}"-->
                             <div style="float: left;width: 93%;">
                                 <img src="image/thumbnail/{{widget.channelName}}.png" style="vertical-align: super;max-height: 31px; max-width: 50px; padding:5px"/>
-                                <h3 ng-style="widget.sizeX!=1  && {'width':'80%'}  || widget.sizeX==1 && {'width':'50%'} ">{{dashboard.widgetData[widgetIndex].name}}</h3>
+                                <h3 ng-style="widget.channelName !='customFusion'  && {'padding-bottom':'1%'}  || widget.channelName =='customFusion' && {'padding-bottom':'0.5%'} " ng-style="padding-bottom:widget.channelName !='Custom Fusion'?'1%':'0.5%' ">{{dashboard.widgetData[widgetIndex].name}}</h3>
                             </div>
                         </div>
                         <div class="box-content" style="vertical-align: middle" ng-style="{position:(isMobile?'static':'absolute')}">
