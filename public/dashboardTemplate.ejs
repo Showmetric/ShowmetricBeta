@@ -172,7 +172,7 @@
                                              style="margin:0px;height:100%;padding-left:5px;padding-right:5px;">
                                             <!--  ng-style="calculateSummaryHeight(widget.sizeY,chart.data.length)">-->
                                             <ul style="height:100%;font-size:12px;padding-left: 5px;">
-                                            <li ng-repeat="data in chart.data"
+                                            <li ng-repeat="data in chart.data track by $index"
                                                     ng-class=" (summaryAlignLessThanThree[widgetIndex]<3||chart.data.length<3)?'summaryAlign':'summaryAlignMoreThanThree'"
                                                     style="text-align: center;padding-top: 1px;padding-left:0px;padding-right: 2px;font-size: 1.0em!important;"
                                                     id="li-{{widget.id}}-{{$index}}" class="col col-lg-12"
@@ -189,7 +189,7 @@
                                                            style="margin:0px 0px 3px!important;font-weight: bold;padding-top: 2px;padding-bottom: 2px;">
                                                             {{data.key ==='(none)'?'Direct':data.key}} -
                                                             {{data.summaryDisplay}} {{data.unit || ""}}</p>
-                                                        <p ng-show="data.showComparision==true"
+                                                        <p ng-show="data.showComparision==true&&data.key != undefined"
                                                            ng-style="{ 'font-family' : 'Montserrat-Medium','font-size':'14px', 'text-transform':'uppercase',  'border-bottom': '4px solid', 'border-color': data.color, 'padding-left': '3px'}"
                                                            style="margin:0px 0px 3px!important;font-weight: bold;padding-top: 2px;padding-bottom: 2px;">
                                                             {{data.key ==='(none)'?'Direct':data.key}}<span
@@ -198,7 +198,7 @@
                                                         <div class="col col-lg-12 col-sm-12 col-md-12 col-xs-12 "
                                                              style="padding: 0px 0px 0px 0px!important;">
                                                             <div class="col col-lg-5 col-sm-5 col-md-5 col-xs-5">
-                                                                <p ng-show="data.showComparision==true"
+                                                                <p ng-show="data.showComparision==true&&data.key != undefined"
                                                                    class="summaryFont"
                                                                    ng-class="{'summaryDoubleFont': dashboard.widgetData[widgetIndex].layoutOptionsX>1}"
                                                                    ng-style="{ 'font-family' : 'Montserrat-Medium', 'text-transform':'uppercase', 'padding-left': '0px', 'border-right': '3px solid white','float':'left'}"
@@ -211,7 +211,7 @@
                                                                 <p ng-if="chart.options.chart.type != 'pieChart'"
                                                                    class="summaryKeyFont"
                                                                    ng-class="{'summaryKeyDoubleFont': dashboard.widgetData[widgetIndex].layoutOptionsX>1}"
-                                                                   ng-show="data.showComparision==true"
+                                                                   ng-show="data.showComparision==true&&data.key != undefined"
                                                                    style="padding-top:3px;margin:1px 0px 1px!important;overflow: hidden;float: right;">
                                                                     {{data.period}}: <span ng-if="data.variance !=0">{{data.variance}}%  </span><i
                                                                             ng-if="data.arrow==='up' && data.variance !=0"

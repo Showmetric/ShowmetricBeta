@@ -5106,8 +5106,6 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                 var chartOptionsArray = [];
                 var chartSeriesArray = [];
                 var chartType;
-                //wholedate array - wholeDateArray[[type1],[type2],[type1]]
-                //group datearray - type1:[{},{}],type2:[{}]
                 for (var charts in finalCharts.lineCharts) {
                     var dateArray = [];
                     var chartValues = [];
@@ -5992,12 +5990,13 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                 function getSum(total, num) {
                     return total + num;
                 }
-                for (var charts in finalCharts.barCharts) {
-                    if (finalCharts.multicharts[charts].type === "socialContributionToSiteTraffic") {
-                        for (var k = 0; k < finalCharts.multicharts[charts].values.length; k++) {
-                            dateArray.push(finalCharts.multicharts[charts].values[k].x);
+                //chartsCount++;
+                for (var charts in finalCharts.multicharts) {
+                    var j= charts;
+                    if (finalCharts.multicharts[j].type === "socialContributionToSiteTraffic") {
+                        for (var k = 0; k < finalCharts.multicharts[j].values.length; k++) {
+                            dateArray.push(finalCharts.multicharts[j].values[k].x);
                         }
-                        for (var j in finalCharts.multicharts) {
                             var dataArray = [];
                             for (var index = 0; index < finalCharts.multicharts[j].values.length; index++) {
                                 dataArray.push(String(finalCharts.multicharts[j].values[index].y).indexOf('.') ? parseFloat(finalCharts.multicharts[j].values[index].y) : parseInt(multicharts[j].values[index].y));
@@ -6012,13 +6011,12 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                             var summaryDisplay = dataArray.reduce(getSum);
                             var sample = {
                                 summaryDisplay: Math.round(summaryDisplay * 100) / 100,
-                                key: finalCharts.multicharts[j].metricName,
+                                key: undefined,
                                 showComparision: false,
                                 variance: 0,
                                 color: finalCharts.multicharts[j].color[j]
                             };
                             displaySummary.push(sample);
-                        }
                         var yAxisOption = [{ // left y axis
                             title: {
                                 text: 'Total sessions'
@@ -6049,7 +6047,6 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                             min: 0,
                         };
                     }
-
                     else {
                         var yAxisOption = [{ // left y axis
                             title: {
@@ -6066,7 +6063,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                             type: 'datetime',
                             categories: dateArray
                         };
-                        chartsCount++;
+                        //chartsCount++;
                         for (var k = 0; k < finalCharts.multicharts[charts].values.length; k++) {
                             dateArray.push(finalCharts.multicharts[charts].values[k].date);
                         }
@@ -6091,7 +6088,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                 var summaryDisplay = dataSample.reduce(getSum);
                                 var sample = {
                                     summaryDisplay: Math.round(summaryDisplay * 100) / 100,
-                                    key: 'Page views',
+                                    key: undefined,
                                     showComparision: false,
                                     variance: 0,
                                     color: finalCharts.multicharts[charts].color[i]
@@ -6126,7 +6123,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                 var summaryDisplay = dataSample.reduce(getSum);
                                 var sample = {
                                     summaryDisplay: Math.round(summaryDisplay * 100) / 100,
-                                    key: name,
+                                    key: undefined,
                                     showComparision: false,
                                     variance: 0,
                                     color: finalCharts.multicharts[charts].color[i]
@@ -6138,7 +6135,6 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                         }
                     }
                 }
-
                 chartOptions = {
                     chart: {
                         zoomType: 'x'
@@ -6161,9 +6157,10 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                     yAxis: yAxisOption,
                     series: chartSeriesArray
                 };
+                chartsCount++;
                 finalChartData.push({
                     'options': graphOptions.multiDataOptions,
-                    'data': finalCharts.multicharts,
+                    'data':displaySummary,
                     'api': {},
                     'chartOptions': chartOptions
                 });
@@ -6205,7 +6202,6 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                     }
                                 }
                             }
-
                             chartSeriesArray.push({
                                 type: 'area',
                                 color: finalCharts.percentageArea[j].color,
