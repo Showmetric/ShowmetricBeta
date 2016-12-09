@@ -98,14 +98,18 @@ function DashboardController($scope, $timeout, $rootScope, $http, $window, $stat
     };
     $scope.summaryAlignLessThanThree = [];
     $scope.toDisplayAllSummary = [];
-    $scope.checkAllGraphsZero = function (chart, widgetIndex) {
+    $scope.checkAllGraphsZero = function (chart, widgetIndex,chartIndex) {
+        if($scope.summaryAlignLessThanThree[widgetIndex] == undefined)
+        $scope.summaryAlignLessThanThree[widgetIndex]=[];
+        if($scope.toDisplayAllSummary[widgetIndex] == undefined)
+        $scope.toDisplayAllSummary[widgetIndex]=[];
         var count = 0;
         for (var i = 0; i < chart.data.length; i++) {
             if (chart.data[i].summaryDisplay === 0)
                 count += 1;
         }
-        $scope.summaryAlignLessThanThree[widgetIndex]=chart.data.length - count;
-        if (count === chart.data.length) $scope.toDisplayAllSummary[widgetIndex] = true;
+        $scope.summaryAlignLessThanThree[widgetIndex][chartIndex]=chart.data.length - count;
+        if (count === chart.data.length) $scope.toDisplayAllSummary[widgetIndex][chartIndex] = true;
     }
     var isExportOptionSet = '';
     $(".navbar").css('z-index', '1');
@@ -114,7 +118,6 @@ function DashboardController($scope, $timeout, $rootScope, $http, $window, $stat
 
     //Sets up all the required parameters for the dashboard to function properly when it is initially loaded. This is called in the ng-init function of the dashboard template
     $scope.dashboardConfiguration = function () {
-        ;
         $scope.fetchDateForDashboard = function () {
             $http({
                 method: 'GET',
