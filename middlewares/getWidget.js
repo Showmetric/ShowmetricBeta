@@ -378,16 +378,6 @@ exports.saveWidgets = function (req, res, next) {
     var bulk = widgetsList.collection.initializeOrderedBulkOp();
     var bulkExecute;
     if (req.user) {
-        // async.auto({storeAllWidgets: processAllWidgets},
-        //     function (err, result) {
-        //         if (err)
-        //             return res.status(500).json({error: 'Internal server error'});
-        //         else {
-        //             req.app.result = result.storeAllWidgets;
-        //             next();
-        //         }
-        //     }
-        // );
         var widgetSaveCallback=function (err, results) {
             if (err)
                 return res.status(500).json({error: 'Internal server error', id: req.params.widgetId})
@@ -442,7 +432,7 @@ exports.saveWidgets = function (req, res, next) {
                         return res.status(500).json({error: 'Internal server error'});
                     else {
                         var createWidget = new widgetsList();
-                        if (widgetType === configAuth.widgetType.customFusion ){
+                        if (widgetType === configAuth.widgetType.customFusion && result.widgetId === undefined  ){
                             req.dashboardId = result.dashboardId;
                             createWidget.dashboardId = dashboardId;
                             createWidget.widgetType = widgetType;
@@ -535,7 +525,7 @@ exports.saveWidgets = function (req, res, next) {
                         else {
                             var widget={
                                 widgetId:result.widgetId,
-                                name:req.body.name == undefined ? '' : widgetName,
+                                name: widgetName,
                                 row : rowCount == undefined ? '' : rowCount,
                                 col :colCount == undefined ? '' : colCount,
                                 size : widgetSize == undefined ? '' : widgetSize,
@@ -584,10 +574,13 @@ exports.saveWidgets = function (req, res, next) {
                 }else{
                     var id = mongoose.Types.ObjectId( widgetArray[i].widgetId);
                     var query = {_id: id};
-                    var update={
-                        $setOnInsert: {created: new Date()},
-                        $set: {
-                            //name: name,
+                    if(!widgetArray[i].row){
+                        var setParams={
+                            name: widgetArray[i].name,
+                        }
+                    }else {
+                        var setParams={
+                            name: widgetArray[i].name,
                             //description: description,
                             //widgetType: widgetType,
                             row: widgetArray[i].row,
@@ -600,10 +593,12 @@ exports.saveWidgets = function (req, res, next) {
                             updated: widgetArray[i].updated
                         }
                     }
+                    var update={
+                        $setOnInsert: {created: new Date()},
+                        $set: setParams
+                    }
                     bulk.find(query).update(update);
                 }
-
-
             }
             if(widgetArray.length){
                 bulk.execute(function (err,result) {
@@ -835,62 +830,4 @@ exports.saveCustomWidgets = function (req, res, next) {
 
 };
 
-exports.updateNameOfWidgets = function (req, res, next) {
-    if (req.user) {
-        async.auto({storeAllWidgets: processAllWidgets},
-            function (err, result) {
-                if (err)
-                    return res.status(500).json({error: 'Internal server error'});
-                else {
-                    req.app.result = result.storeAllWidgets;
-                    next();
-                }
-            })
-        function processAllWidgets(callback) {
-            var widgetName;
-            var widgets = req.body;
-            async.concatSeries(widgets, saveAllWidgets, callback);
 
-            function saveAllWidgets(result, callback) {
-                req.dashboardId = result.dashboardId;
-                widgetName = result.name;
-                userPermission.checkUserAccess(req, res, function (err, response) {
-                    if (err)
-                        return res.status(500).json({error: 'Internal server error'});
-                    else {
-                        var widgetId = result.widgetId;
-                        // update the dashboard data
-                        if (result.name != undefined) {
-                            widgetsList.update({_id: widgetId}, {
-                                $set: {
-                                    name: widgetName,
-                                }
-                            }, function (err, widget) {
-                                if (err)
-                                    return res.status(500).json({error: 'Internal server error'});
-                                else if (widget === 0)
-                                    return res.status(501).json({error: 'Not implemented'});
-                                else {
-                                    widgetsList.findOne({_id: widgetId}, function (err, widgetDetails) {
-                                        if (err)
-                                            return res.status(500).json({error: 'Internal server error'});
-                                        else if (!widgetDetails)
-                                            return res.status(204).json({error: 'No records found'});
-                                        else {
-                                            req.app.result = widgetId;
-                                            callback(null, widgetDetails);
-                                        }
-                                    })
-                                }
-                            });
-                        }
-                    }
-                })
-            }
-        }
-    }
-    else
-        res.status(401).json({error: 'Authentication required to perform this action'})
-
-
-};
