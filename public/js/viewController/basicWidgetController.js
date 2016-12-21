@@ -409,8 +409,13 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
         $scope.messageEnable=false;
         if(level) {
             var setLimitation=0;
+            var selectAccountLevel=false;
+            var selectAdgroupLevel=false;
             for (var getData in getReferenceWidgetsArr) {
                 if(getReferenceWidgetsArr[getData].name == "Cost per objective") setLimitation=1;
+                if(getReferenceWidgetsArr[getData].name == "Fb Ads Adgroup overview (Campaign level)") setLimitation=1;
+                if(getReferenceWidgetsArr[getData].name == "Fb Ads campaign overview (Account level)") selectAccountLevel=true;
+                if(getReferenceWidgetsArr[getData].name == "Fb Ads Ad overview (Adgroup level)") selectAdgroupLevel=true;
             }
             if(!this.objectTypeOptionsModel[index]){
                 document.getElementById('basicWidgetFinishButton').disabled = true;
@@ -447,7 +452,7 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
         }
         //   else
         if($scope.selectedLevel=='fbadaccount'){
-            if(setLimitation){
+            if(setLimitation ||selectAdgroupLevel){
                 $scope.messageEnable=true;
                 fbAdsComplete=false;
             }
@@ -460,22 +465,28 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
             $scope.checkComplete();
         }
         else if($scope.selectedLevel=='fbAdcampaign'){
-            if($scope.campaignChosen==false){
-                fbAdsComplete=false;
-                $scope.campaignEnable=true;
-                $scope.getCampaigns();
-            }
-            else {
-                if(($scope.profileId!=null)&&($scope.accountId!=null)&&($scope.campaign!=null))
-                    fbAdsComplete=true;
-                else{
-                    fbAdsComplete=false;
-                }
-            }
+           if(selectAccountLevel||selectAdgroupLevel){
+               $scope.messageEnable=true;
+               fbAdsComplete=false;
+           }
+           else{
+               if($scope.campaignChosen==false){
+                   fbAdsComplete=false;
+                   $scope.campaignEnable=true;
+                   $scope.getCampaigns();
+               }
+               else {
+                   if(($scope.profileId!=null)&&($scope.accountId!=null)&&($scope.campaign!=null))
+                       fbAdsComplete=true;
+                   else{
+                       fbAdsComplete=false;
+                   }
+               }
+           }
             $scope.checkComplete();
         }
         else if($scope.selectedLevel=='fbAdSet'){
-            if(setLimitation){
+            if(setLimitation||selectAccountLevel){
                 $scope.messageEnable=true;
                 fbAdsComplete=false;
             }
@@ -503,7 +514,7 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
             $scope.checkComplete();
         }
         else if($scope.selectedLevel=='fbAdSetAds'){
-            if(setLimitation){
+            if(setLimitation||selectAccountLevel||selectAdgroupLevel){
                 $scope.messageEnable=true;
                 fbAdsComplete=false;
             }
@@ -2280,32 +2291,59 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
         var accountLevel=false;
         var campaignLevel=false;
         var adgroupLevel=false;
-        if($scope.storedReferenceWidget.channelName=="GoogleAdwords"){
+        if($scope.storedReferenceWidget.channelName=="GoogleAdwords"||$scope.storedReferenceWidget.channelName=="FacebookAds"){
             if(!getReferenceWidgetsArr.length)
                 canProcess=1;
             else{
-                for (var getData in getReferenceWidgetsArr){
-                    if(getReferenceWidgetsArr[getData].name == "Adwords campaigns overview (Account level)")
-                        accountLevel=true;
-                    else if(getReferenceWidgetsArr[getData].name == "Adgroups overview (Campaign level)" || getReferenceWidgetsArr[getData].name == "Age Demographics (Campaign Level)" || getReferenceWidgetsArr[getData].name == "Gender Demographics (Campaign Level)"|| getReferenceWidgetsArr[getData].name == "Device Demographics (Campaign Level)")
-                        campaignLevel=true;
-                    else if(getReferenceWidgetsArr[getData].name == "Ads overview (Adgroup level)"|| getReferenceWidgetsArr[getData].name == "Age Demographics (Adgroup Level)"|| getReferenceWidgetsArr[getData].name == "Gender Demographics (Adgroup Level)"|| getReferenceWidgetsArr[getData].name == "Device Demographics (Adgroup Level)")
-                        adgroupLevel=true;
+                if($scope.storedReferenceWidget.channelName=="GoogleAdwords"){
+                    for (var getData in getReferenceWidgetsArr){
+                        if(getReferenceWidgetsArr[getData].name == "Adwords campaigns overview (Account level)")
+                            accountLevel=true;
+                        else if(getReferenceWidgetsArr[getData].name == "Adgroups overview (Campaign level)" || getReferenceWidgetsArr[getData].name == "Age Demographics (Campaign Level)" || getReferenceWidgetsArr[getData].name == "Gender Demographics (Campaign Level)"|| getReferenceWidgetsArr[getData].name == "Device Demographics (Campaign Level)")
+                            campaignLevel=true;
+                        else if(getReferenceWidgetsArr[getData].name == "Ads overview (Adgroup level)"|| getReferenceWidgetsArr[getData].name == "Age Demographics (Adgroup Level)"|| getReferenceWidgetsArr[getData].name == "Gender Demographics (Adgroup Level)"|| getReferenceWidgetsArr[getData].name == "Device Demographics (Adgroup Level)")
+                            adgroupLevel=true;
+                    }
+                    if(accountLevel==true && ($scope.storedReferenceWidget.name == "Adgroups overview (Campaign level)" || $scope.storedReferenceWidget.name == "Age Demographics (Campaign Level)" || $scope.storedReferenceWidget.name == "Gender Demographics (Campaign Level)"|| $scope.storedReferenceWidget.name == "Device Demographics (Campaign Level)" || $scope.storedReferenceWidget.name == "Ads overview (Adgroup level)" || $scope.storedReferenceWidget.name == "Age Demographics (Adgroup Level)" || $scope.storedReferenceWidget.name == "Gender Demographics (Adgroup Level)"|| $scope.storedReferenceWidget.name == "Device Demographics (Adgroup Level)")){
+                        canProcess=0;
+                        $scope.metricMessage=true;
+                    }
+                    else if(campaignLevel==true && ($scope.storedReferenceWidget.name == "Adwords campaigns overview (Account level)" || $scope.storedReferenceWidget.name == "Ads overview (Adgroup level)" || $scope.storedReferenceWidget.name == "Age Demographics (Adgroup Level)" || $scope.storedReferenceWidget.name == "Gender Demographics (Adgroup Level)"|| $scope.storedReferenceWidget.name == "Device Demographics (Adgroup Level)")){
+                        canProcess=0;
+                        $scope.metricMessage=true;
+                    }
+                    else if(adgroupLevel==true && ($scope.storedReferenceWidget.name == "Adwords campaigns overview (Account level)" || $scope.storedReferenceWidget.name == "Adgroups overview (Campaign level)" || $scope.storedReferenceWidget.name == "Age Demographics (Campaign Level)" || $scope.storedReferenceWidget.name == "Gender Demographics (Campaign Level)"|| $scope.storedReferenceWidget.name == "Device Demographics (Campaign Level)")){
+                        canProcess=0;
+                        $scope.metricMessage=true;
+                    }
+                    else
+                        canProcess=1;
                 }
-                if(accountLevel==true && ($scope.storedReferenceWidget.name == "Adgroups overview (Campaign level)" || $scope.storedReferenceWidget.name == "Age Demographics (Campaign Level)" || $scope.storedReferenceWidget.name == "Gender Demographics (Campaign Level)"|| $scope.storedReferenceWidget.name == "Device Demographics (Campaign Level)" || $scope.storedReferenceWidget.name == "Ads overview (Adgroup level)" || $scope.storedReferenceWidget.name == "Age Demographics (Adgroup Level)" || $scope.storedReferenceWidget.name == "Gender Demographics (Adgroup Level)"|| $scope.storedReferenceWidget.name == "Device Demographics (Adgroup Level)")){
-                    canProcess=0;
-                    $scope.metricMessage=true;
+                else{
+                    for (var getData in getReferenceWidgetsArr){
+                        if(getReferenceWidgetsArr[getData].name == "Fb Ads campaign overview (Account level)")
+                            accountLevel=true;
+                        else if(getReferenceWidgetsArr[getData].name == "Fb Ads Adgroup overview (Campaign level)" )
+                            campaignLevel=true;
+                        else if(getReferenceWidgetsArr[getData].name == "Fb Ads Ad overview (Adgroup level)")
+                            adgroupLevel=true;
+                    }
+                    if(accountLevel==true && ($scope.storedReferenceWidget.name == "Fb Ads Adgroup overview (Campaign level)" || $scope.storedReferenceWidget.name == "Fb Ads Ad overview (Adgroup level)")){
+                        canProcess=0;
+                        $scope.metricMessage=true;
+                    }
+                    else if(campaignLevel==true && ($scope.storedReferenceWidget.name == "Fb Ads campaign overview (Account level)" || $scope.storedReferenceWidget.name == "Fb Ads Ad overview (Adgroup level)")){
+                        canProcess=0;
+                        $scope.metricMessage=true;
+                    }
+                    else if(adgroupLevel==true && ($scope.storedReferenceWidget.name == "Fb Ads campaign overview (Account level)" || $scope.storedReferenceWidget.name == "Fb Ads Adgroup overview (Campaign level)" )){
+                        canProcess=0;
+                        $scope.metricMessage=true;
+                    }
+                    else
+                        canProcess=1;
                 }
-                else if(campaignLevel==true && ($scope.storedReferenceWidget.name == "Adwords campaigns overview (Account level)" || $scope.storedReferenceWidget.name == "Ads overview (Adgroup level)" || $scope.storedReferenceWidget.name == "Age Demographics (Adgroup Level)" || $scope.storedReferenceWidget.name == "Gender Demographics (Adgroup Level)"|| $scope.storedReferenceWidget.name == "Device Demographics (Adgroup Level)")){
-                    canProcess=0;
-                    $scope.metricMessage=true;
-                }
-                else if(adgroupLevel==true && ($scope.storedReferenceWidget.name == "Adwords campaigns overview (Account level)" || $scope.storedReferenceWidget.name == "Adgroups overview (Campaign level)" || $scope.storedReferenceWidget.name == "Age Demographics (Campaign Level)" || $scope.storedReferenceWidget.name == "Gender Demographics (Campaign Level)"|| $scope.storedReferenceWidget.name == "Device Demographics (Campaign Level)")){
-                    canProcess=0;
-                    $scope.metricMessage=true;
-                }
-                else
-                    canProcess=1;
+
             }
         }
         else

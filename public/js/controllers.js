@@ -2985,6 +2985,94 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                             widget.charts[charts].chartData = formattedChartDataArray;
                         }
                             break;
+                        case "fbAdsAdgroupOverview": {
+                            if (widget.charts[charts].chartData[0] != 'undefined') {
+                                formattedChartDataArray = [];
+                                var adGroupArray = [];
+                                for (var k = 0; k < widget.charts[charts].chartData.length; k++) {
+                                    for (var keys in widget.charts[charts].chartData[k].total) {
+                                        adGroupArray.push(widget.charts[charts].chartData[k].total[keys])
+                                    }
+                                }
+                                var uniqueCampaign = _.groupBy(adGroupArray, 'adset_id')
+                                for (var key in uniqueCampaign) {
+                                    var adGroupId = key;
+                                    var adGroup = 'adset_name';
+                                    var status = 'status';
+                                    var start_date='start_time';
+                                    var End_date='stop_time';
+                                    var Clicks = 0;
+                                    var Cost = 0;
+                                    var objective='objective';
+                                    var reach=0;
+                                   function sumAction(action){
+                                       var total=0;
+                                       for(var j=0;j<action.length;j++){
+                                           total+=parseFloat(action[j].value)
+                                       }
+                                       return total;
+                                   }
+                                    // var Currency = 'Currency';
+                                    // var Totalconvvalue = 0;
+                                    var Impressions = 0;
+                                    var Conversions = 0;
+                                    for (var i = 0; i < uniqueCampaign[key].length; i++) {
+                                        Cost += parseFloat(uniqueCampaign[key][i].spend);
+                                        reach += parseFloat(uniqueCampaign[key][i].reach);
+                                        // Currency = uniqueCampaign[key][i][Currency];
+                                        Impressions += parseFloat(uniqueCampaign[key][i].impressions);
+                                        // Totalconvvalue += parseFloat(uniqueCampaign[key][i]['Totalconvvalue']);
+                                        Clicks += parseFloat(uniqueCampaign[key][i].clicks);
+                                        Conversions += sumAction(uniqueCampaign[key][i].actions)
+                                    }
+                                    if (Cost === 0)
+                                        var CPM = Cost;
+                                    else
+                                        var CPM = ((Cost / Impressions) * 1000).toFixed(2);
+                                    if (Clicks === 0)
+                                        var CTR = Clicks;
+                                    else
+                                        var CTR = ((Clicks / Impressions) * 100).toFixed(2);
+
+                                    if (Cost === 0)
+                                        var CPC = Cost;
+                                    else
+                                        var CPC = (Cost / Clicks).toFixed(2);
+                                    if (Cost === 0)
+                                        var CostPerConv = Cost;
+                                    else
+                                        var CostPerConv = ((Cost / Conversions) * 100).toFixed(2);
+                                    var sourec = {
+                                        Id: adGroupId,
+                                        Name: uniqueCampaign[key][0][adGroup],
+                                        Objective:uniqueCampaign[key][0][objective],
+                                        status: uniqueCampaign[key][0][status],
+                                        // Currency: uniqueCampaign[key][0]['Currency'],
+                                        reach:reach,
+                                        Impressions: Impressions,
+                                        CPM: CPM === 'Infinity' ? 0 : CPM,
+                                        CTR: CTR === 'Infinity' ? 0 : CTR,
+                                        CPC: CPC === 'Infinity' ? 0 : CPC,
+                                        CostPerConv: CostPerConv === 'Infinity' ? 0 : CostPerConv,
+                                        Spent: Cost,
+                                        Conversions: Conversions,
+                                        // Totalconvvalue: Totalconvvalue,
+                                        Clicks: Clicks,
+                                        StartDate:uniqueCampaign[key][0][start_date],
+                                        EndDate:uniqueCampaign[key][0][End_date],
+                                        // CPMCBid: uniqueCampaign[key][0]['MaxCPM'] === " --" ? 0 : parseFloat(uniqueCampaign[key][0]['MaxCPM']) / 1000000,
+                                        // CPCBid: uniqueCampaign[key][0]['MaxCPC'] === " --" ? 0 : parseFloat(uniqueCampaign[key][0]['MaxCPC']) / 1000000,
+                                        // CPVBid: uniqueCampaign[key][0]['MaxCPV'] === " --" ? 0 : parseFloat(uniqueCampaign[key][0]['MaxCPV']) / 1000000
+                                    };
+                                    // var date = new Date(null);
+                                    // date.setSeconds(path.avgTimeOnPage)// specify value for SECONDS here
+                                    // path.avgTimeOnPage = date.toISOString().substr(11, 8);
+                                    formattedChartDataArray.push(sourec);
+                                }
+                            }
+                            widget.charts[charts].chartData = formattedChartDataArray;
+                        }
+                            break;
                         case "adOverview" : {
                             if (widget.charts[charts].chartData[0] != 'undefined') {
                                 formattedChartDataArray = [];
@@ -3138,6 +3226,207 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                     Impression[keyword] = formattedChartDataArray[i]['Impressions'];
                                 }
                                 formattedChartDataArray = Impression;
+                            }
+                            widget.charts[charts].chartData = formattedChartDataArray;
+                        }
+                            break;
+                        case "fbAdsCampaignOverview": {
+                            function sumCostPerAction(action){
+                                var total=0;
+                                for(var j=0;j<action.length;j++){
+                                    total+=parseFloat(action[j].value)
+                                }
+                                return total;
+                            }
+                            function sumCost(action){
+                                var total=0;
+                                for(var j=0;j<action.length;j++){
+                                    total+=parseFloat(action[j].value)
+                                }
+                                return total;
+                            }
+                            function sumAction(action){
+                                var total=0;
+                                for(var j=0;j<action.length;j++){
+                                    total+=parseFloat(action[j].value)
+                                }
+                                return total;
+                            }
+                            if (widget.charts[charts].chartData[0] != 'undefined') {
+                                formattedChartDataArray = [];
+                                var campaignArray = [];
+                                for (var k = 0; k < widget.charts[charts].chartData.length; k++) {
+                                    for (var keys in widget.charts[charts].chartData[k].total) {
+                                        campaignArray.push(widget.charts[charts].chartData[k].total[keys]);
+                                    }
+                                }
+
+                                var uniqueCampaign = _.groupBy(campaignArray, 'campaign_id');
+                                for (var key in uniqueCampaign) {
+                                    var campaignId = key;
+                                    var campaign = 'campaign_name';
+                                    var status = 'status';
+                                    var clicks = 0;
+                                    var conversions = 0;
+                                    var costPerUniqueActionByType=0;
+                                    var cost = 0;
+                                    var spend=0;
+                                    var appStoreClicks=0;
+                                    var frequency = 0;
+                                    var reach=0;
+                                    var videoAvgViewTime=0;
+                                    var currency = 'Currency';
+                                    var startDate = 'start_time';
+                                    var endDate = 'stop_time';
+                                    var impressions = 0;
+                                    var budget = 'Budget';
+                                    var ImpressionReachValue;
+                                    for (var i = 0; i < uniqueCampaign[key].length; i++) {
+                                        impressions += parseFloat(uniqueCampaign[key][i].impressions);
+                                        clicks += parseFloat(uniqueCampaign[key][i].clicks);
+                                        conversions += sumAction(uniqueCampaign[key][i].actions);
+                                        cost += sumCost(uniqueCampaign[key][i]['cost_per_action_type'])
+                                        costPerUniqueActionByType += sumCostPerAction(uniqueCampaign[key][i]['cost_per_unique_action_type']);
+                                        spend+=parseFloat(uniqueCampaign[key][i]['spend']);
+                                        appStoreClicks+=parseFloat(uniqueCampaign[key][0]['app_store_clicks']);
+                                        frequency+=parseFloat(uniqueCampaign[key][0]['frequency']);
+                                        videoAvgViewTime+=parseFloat(uniqueCampaign[key][0]['video_avg_percent_watched_actions']);
+                                        reach+=parseFloat(uniqueCampaign[key][0]['reach']);
+                                    }
+                                    if (cost === 0)
+                                        var CPM = cost;
+                                    else
+                                        var CPM = ((cost / impressions) * 1000).toFixed(2);
+                                    if (clicks === 0)
+                                        var CTR = clicks;
+                                    else
+                                        var CTR = ((clicks / impressions) * 100).toFixed(2);
+                                    if (cost === 0)
+                                        var CPC = cost;
+                                    else
+                                        var CPC = (cost / clicks).toFixed(2);
+                                    if (cost === 0)
+                                        var costPerConv = cost;
+                                    else
+                                        var costPerConv = ((cost / conversions) * 100).toFixed(2);
+                                    var source = {
+                                        Id: campaignId,
+                                        Name: uniqueCampaign[key][0][campaign],
+                                        Objective:uniqueCampaign[key][0]['objective'],
+                                        status: uniqueCampaign[key][0][status],
+                                        reach:reach,
+                                        Impressions: impressions,
+                                        cost:cost.toFixed(2),
+                                        CPM: CPM === 'Infinity' ? 0 : CPM,
+                                        CTR: CTR === 'Infinity' ? 0 : CTR,
+                                        CPC: CPC === 'Infinity' ? 0 : CPC,
+                                        Actions: conversions === 'Infinity' ? 0 : conversions,
+                                        Spent: spend,
+                                        Conversions: conversions,
+                                        Clicks: clicks,
+                                        StartDate:uniqueCampaign[key][0][startDate],
+                                        EndDate:uniqueCampaign[key][0][endDate],
+                                        AppStoreClicks:appStoreClicks,
+                                        CostPerUniqueActionByType:costPerUniqueActionByType.toFixed(2),
+                                        Frequency:frequency.toFixed(2),
+                                        VideoAvgViewTime:isNaN(videoAvgViewTime)?0:videoAvgViewTime,
+                                    };
+                                    formattedChartDataArray.push(source);
+                                }
+                            }
+                            widget.charts[charts].chartData = formattedChartDataArray;
+                        }
+                            break;
+                        case "fbAdsAdOverview": {
+                            function sumCostPerAction(action){
+                                var total=0;
+                                for(var j=0;j<action.length;j++){
+                                    total+=parseFloat(action[j].value)
+                                }
+                                return total;
+                            }
+                            function sumCost(action){
+                                var total=0;
+                                for(var j=0;j<action.length;j++){
+                                    total+=parseFloat(action[j].value)
+                                }
+                                return total;
+                            }
+                            function sumAction(action){
+                                var total=0;
+                                for(var j=0;j<action.length;j++){
+                                    total+=parseFloat(action[j].value)
+                                }
+                                return total;
+                            }
+                            if (widget.charts[charts].chartData[0] != 'undefined') {
+                                formattedChartDataArray = [];
+                                var adsArray = [];
+                                for (var k = 0; k < widget.charts[charts].chartData.length; k++) {
+                                    for (var keys in widget.charts[charts].chartData[k].total) {
+                                        adsArray.push(widget.charts[charts].chartData[k].total[keys]);
+                                    }
+                                }
+                                var uniqueAds = _.groupBy(adsArray, 'ad_id');
+                                for (var key in uniqueAds) {
+                                    var clicks = 0;
+                                    var actions = 0;
+                                    var costPerUniqueActionByType=0;
+                                    var cost = 0;
+                                    var spend=0;
+                                    var appStoreClicks=0;
+                                    var frequency = 0;
+                                    var reach=0;
+                                    var videoAvgViewTime=0;
+                                    var impressions = 0;
+                                    for (var i = 0; i < uniqueAds[key].length; i++) {
+                                        clicks += parseFloat(uniqueAds[key][i].clicks);
+                                        impressions += parseFloat(uniqueAds[key][i].impressions);
+                                        actions += sumAction(uniqueAds[key][i].actions);
+                                        costPerUniqueActionByType += sumCostPerAction(uniqueAds[key][i]['cost_per_unique_action_type']);
+                                        spend+=parseFloat(uniqueAds[key][i]['spend']);
+                                        appStoreClicks+=parseFloat(uniqueAds[key][0]['app_store_clicks']);
+                                        frequency+=parseFloat(uniqueAds[key][0]['frequency']);
+                                        reach+=parseFloat(uniqueAds[key][0]['reach']);
+                                    }
+                                    if (cost === 0)
+                                        var cost = cost;
+                                    else
+                                        var cost = (cost / 1000000).toFixed(2);
+                                    if (cost === 0)
+                                        var CPM = cost;
+                                    else
+                                        var CPM = ((cost / impressions) * 1000).toFixed(2);
+                                    if (clicks === 0)
+                                        var CTR = clicks;
+                                    else
+                                        var CTR = ((clicks / impressions) * 100).toFixed(2);
+
+                                    if (cost === 0)
+                                        var CPC = cost;
+                                    else
+                                        var CPC = (cost / clicks).toFixed(2);
+                                    var source = {
+                                        Id:key,
+                                        AdName: uniqueAds[key][0]['ad_name'],
+                                        AdSetName: uniqueAds[key][0]['adset_name'],
+                                        CampaignName: uniqueAds[key][0]['campaign_name'],
+                                        Objective:uniqueAds[key][0]['objective'],
+                                        Status: uniqueAds[key][0]['status'],
+                                        Reach:reach,
+                                        Impressions: impressions,
+                                        CPM: CPM === 'Infinity' ? 0 : CPM,
+                                        CTR: CTR === 'Infinity' ? 0 : CTR,
+                                        Actions: actions === 'Infinity' ? 0 : actions,
+                                        Spend: cost,
+                                        StartDate:uniqueAds[key][0]['start_time'],
+                                        EndDate:uniqueAds[key][0]['end_time'],
+                                        AppStoreClicks:appStoreClicks,
+                                        CostPerUniqueActionByType:costPerUniqueActionByType.toFixed(2),
+                                        Frequency:frequency.toFixed(2),
+                                    };
+                                    formattedChartDataArray.push(source);
+                                }
                             }
                             widget.charts[charts].chartData = formattedChartDataArray;
                         }
@@ -3833,6 +4122,12 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                     'values': widget.charts[charts].chartData
                                 });
                                 break;
+                            case 'fbAdsAdgroupOverview':
+                                widgetCharts.push({
+                                    'type': widget.charts[charts].chartType,
+                                    'values': widget.charts[charts].chartData
+                                });
+                                break;
                             case 'adOverview':
                                 widgetCharts.push({
                                     'type': widget.charts[charts].chartType,
@@ -4243,6 +4538,18 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                 }
                             }
                                 break;
+                            case 'fbAdsCampaignOverview':
+                                widgetCharts.push({
+                                    'type': widget.charts[charts].chartType,
+                                    'values': widget.charts[charts].chartData
+                                });
+                                break;
+                            case 'fbAdsAdOverview':
+                                widgetCharts.push({
+                                    'type': widget.charts[charts].chartType,
+                                    'values': widget.charts[charts].chartData
+                                });
+                                break;
                             default:
                                 break;
                         }
@@ -4269,7 +4576,8 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                 finalCharts.campaignOverview = [],
                 finalCharts.adOverview = [],
                 finalCharts.adgroupOverview = [],
-                finalCharts.fbReachByAge = [], finalCharts.mozoverview = [], finalCharts.fbReachByCity = [], finalCharts.vimeoTopVideos = [], finalCharts.costPerActionType = [], finalCharts.topReferringSites = [], finalCharts.instagramHashtagLeaderBoard = [], finalCharts.gaPageContentEfficiencyTable = [], finalCharts.gaPageTechnicalEfficiencyTable = [], finalCharts.gaVisitorAcquisitionEfficiencyAnalysisTable = [], finalCharts.pageTechnicalEfficiency = [], finalCharts.pageContentEfficiency = [], finalCharts.visitorAcquisitionEfficiency = [], finalCharts.percentageArea = [], finalCharts.topReferringSites = [], finalCharts.topReferringSitesTable = [], finalCharts.gaSocialMediaOverview = [], finalCharts.stackbar = [];
+                finalCharts.fbAdsAdgroupOverview = [],
+                finalCharts.fbReachByAge = [], finalCharts.mozoverview = [], finalCharts.fbReachByCity = [], finalCharts.vimeoTopVideos = [], finalCharts.costPerActionType = [], finalCharts.topReferringSites = [], finalCharts.instagramHashtagLeaderBoard = [], finalCharts.gaPageContentEfficiencyTable = [], finalCharts.gaPageTechnicalEfficiencyTable = [], finalCharts.gaVisitorAcquisitionEfficiencyAnalysisTable = [], finalCharts.pageTechnicalEfficiency = [], finalCharts.pageContentEfficiency = [], finalCharts.visitorAcquisitionEfficiency = [], finalCharts.percentageArea = [], finalCharts.topReferringSites = [], finalCharts.topReferringSitesTable = [], finalCharts.gaSocialMediaOverview = [], finalCharts.stackbar = [],finalCharts.fbAdsCampaignOverview = [],finalCharts.fbAdsAdOverview = [];
             var graphOptions = {
                 lineDataOptions: {
                     chart: {
@@ -4431,6 +4739,11 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                         type: 'adgroupOverview'
                     }
                 },
+                fbAdsAdgroupOverview: {
+                    chart: {
+                        type: 'fbAdsAdgroupOverview'
+                    }
+                },
                 highEngagementTweets: {
                     chart: {
                         type: 'highEngagementTweets'
@@ -4510,6 +4823,16 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                 costPerActionType: {
                     chart: {
                         type: 'costPerActionType'
+                    }
+                },
+                fbAdsCampaignOverview:{
+                    chart: {
+                       type: 'fbAdsCampaignOverview'
+                    }
+                },
+                fbAdsAdOverview:{
+                    chart: {
+                        type: 'fbAdsAdOverview'
                     }
                 },
                 emptyCharts: {
@@ -4764,7 +5087,6 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                 {W: 6, H: 3, N: 7, r: 2, c: 4},
                 {W: 6, H: 3, N: 8, r: 2, c: 4}
             ];
-
             if (widget.widgetType == 'customFusion') {
                 for (var charts in widgetCharts) {
                     if (widgetCharts[charts].type == 'costPerActionType' && !widget.meta) finalCharts.costPerActionType.push(widgetCharts[charts]);
@@ -4851,6 +5173,9 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                             case 'adgroupOverview':
                                 finalCharts.adgroupOverview.push(widgetCharts[charts]);
                                 break;
+                            case 'fbAdsAdgroupOverview':
+                                finalCharts.fbAdsAdgroupOverview.push(widgetCharts[charts]);
+                                break;
                             case 'adOverview':
                                 finalCharts.adOverview.push(widgetCharts[charts]);
                                 break;
@@ -4879,6 +5204,12 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                 break;
                             case 'youtubeVideosOverview':
                                 finalCharts.youtubeVideosOverview.push(widgetCharts[charts]);
+                                break;
+                            case 'fbAdsCampaignOverview':
+                                finalCharts.fbAdsCampaignOverview.push(widgetCharts[charts]);
+                                break;
+                            case 'fbAdsAdOverview':
+                                finalCharts.fbAdsAdOverview.push(widgetCharts[charts]);
                                 break;
                             default:
                                 break;
@@ -4967,6 +5298,9 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                             case 'adgroupOverview':
                                 finalCharts.adgroupOverview.push(widgetCharts[charts]);
                                 break;
+                            case 'fbAdsAdgroupOverview':
+                                finalCharts.fbAdsAdgroupOverview.push(widgetCharts[charts]);
+                                break;
                             case 'adOverview':
                                 finalCharts.adOverview.push(widgetCharts[charts]);
                                 break;
@@ -4993,6 +5327,12 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                 break;
                             case 'youtubeVideosOverview':
                                 finalCharts.youtubeVideosOverview.push(widgetCharts[charts]);
+                                break;
+                            case 'fbAdsCampaignOverview':
+                                finalCharts.fbAdsCampaignOverview.push(widgetCharts[charts]);
+                                break;
+                            case 'fbAdsAdOverview':
+                                finalCharts.fbAdsAdOverview.push(widgetCharts[charts]);
                                 break;
                             default:
                                 break;
@@ -6598,6 +6938,15 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                     });
                 }
             }
+            if (finalCharts.fbAdsAdgroupOverview.length > 0) {
+                if (finalCharts.fbAdsAdgroupOverview[0].values.length > 0) {
+                    chartsCount++;
+                    finalChartData.push({
+                        'options': graphOptions.fbAdsAdgroupOverview,
+                        'data': finalCharts.fbAdsAdgroupOverview[0].values
+                    });
+                }
+            }
             if (finalCharts.adOverview.length > 0) {
                 if (finalCharts.adOverview[0].values.length > 0) {
                     chartsCount++;
@@ -7603,6 +7952,24 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                         });
                 }
             }
+            if (finalCharts.fbAdsCampaignOverview.length > 0) {
+                if (finalCharts.fbAdsCampaignOverview[0].values.length > 0) {
+                    chartsCount++;
+                    finalChartData.push({
+                        'options': graphOptions.fbAdsCampaignOverview,
+                        'data': finalCharts.fbAdsCampaignOverview[0].values
+                    });
+                }
+            }
+            if (finalCharts.fbAdsAdOverview.length > 0) {
+                if (finalCharts.fbAdsAdOverview[0].values.length > 0) {
+                    chartsCount++;
+                    finalChartData.push({
+                        'options': graphOptions.fbAdsAdOverview,
+                        'data': finalCharts.fbAdsAdOverview[0].values
+                    });
+                }
+            }
             if (finalChartData.length == 0) {
                 if (widget.widgetType == 'custom') {
                     var customDataUrl = '';
@@ -7733,4 +8100,5 @@ showMetricApp.service('generateChartColours', function () {
         }
         return widgetColor;
     };
+
 });

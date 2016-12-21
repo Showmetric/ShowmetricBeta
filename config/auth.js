@@ -460,6 +460,11 @@ module.exports = {
         superadmin:'superadmin',
         admin:'admin',
         viewer:'viewer'
+    },
+    fbAdsStaticValues:{
+        fbAdsCampaignOverview:'fbAds_campaign_Overview',
+        fbAdsAdgroupOverview:'fbAds_adset_Overview',
+        fbAdsAdOverview:'fbAds_ad_Overview'
     }
 
 };
