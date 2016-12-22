@@ -35,17 +35,23 @@ exports.removeProfile = function (req, res, next) {
                                         else if (data === 0)
                                             callback('error', null);
                                         else {
-                                            Data.remove({objectId: {$in: objectResults}}, function (err, dbdata) {
-                                                if (err)
-                                                    callback('error', null);
-                                                else if (dbdata === 0)
-                                                    callback('error', null);
-                                                else {
+                                            if(data.length){
+                                                Data.remove({objectId: {$in: objectResults}}, function (err, dbdata) {
+                                                    if (err)
+                                                        callback('error', null);
+                                                    else if (dbdata === 0)
+                                                        callback('error', null);
+                                                    else {
 
-                                                    var finalData = {Data: data, result: data};
-                                                    checkNullData(callback(null, finalData))
-                                                }
-                                            })
+                                                        var finalData = {Data: data, result: data};
+                                                        checkNullData(callback(null, finalData))
+                                                    }
+                                                })
+                                            }
+                                            else{
+                                                var finalData = {Data: data, result: data};
+                                                checkNullData(callback(null, finalData))
+                                            }
                                         }
                                     });
                         }
@@ -94,18 +100,18 @@ exports.removeProfile = function (req, res, next) {
                 for (var i = 0; i < responseData.length; i++)
                     objectResults.push(responseData[i].id);
                 if (objectResults.length)
-                    alertsRemove( objectResults,callback);
+                    async.map(objectResults, alertsRemove, callback);
                 else
                     callback(null, {Object: {data: 'No data'}, result: 1});
                 function alertsRemove(responseData, callback) {
-                    Alert.find({objectId: {$in: responseData}}, function (err, alertData) {
+                    Alert.find({objectId: responseData}, function (err, alertData) {
                         if (err)
                             callback('error', null);
                         else if (!alertData.length)
                             callback(null, {Alert: {data: 'No data'}, result: 1});
                         else {
                             Alert.remove({
-                                objectId :{$in: responseData}
+                                objectId : responseData
                             }, function (err, alert) {
                                 if (err)
                                     callback('error', null);
@@ -125,11 +131,11 @@ exports.removeProfile = function (req, res, next) {
                 for (var i = 0; i < responseData.length; i++)
                     objectResults.push(responseData[i].id);
                 if (objectResults.length)
-                    widgetRemove( objectResults,callback);
+                    async.map(objectResults, widgetRemove, callback);
                 else
                     callback(null, {Object: {data: 'No data'}, result: 1});
                 function widgetRemove(responseData, callback) {
-                    Widget.find({'charts.metrics.objectId': {$in: responseData}}, function (err, widgetData) {
+                    Widget.find({'charts.metrics.objectId': responseData}, function (err, widgetData) {
                         if (err)
                             callback('error', null);
                         else if (!widgetData.length)
@@ -143,7 +149,7 @@ exports.removeProfile = function (req, res, next) {
                                 callback(null, dataArray);
                                 else{
                                    Widget.remove({
-                                       'charts.metrics.objectId': {$in: responseData}
+                                       'charts.metrics.objectId': responseData
                                    }, function (err, object) {
                                        if (err)
                                            callback('error', null);
