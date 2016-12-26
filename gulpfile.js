@@ -20,11 +20,27 @@ gulp.task('sass', function () {
         .pipe(gulp.dest('./public/minifiedcss'))
         .pipe(livereload());
 });
+gulp.task('reports',function(){
+    gulp.src(['./public/js/toastr.js','./public/js/reportApp.js','./public/js/modalEffectsClassie.js','./public/js/modalEffects.js','./public/js/translations.js','./public/js/directives.js','./public/js/controllers.js','./public/js/viewController/mainController.js','./public/js/viewController/customWidgetController.js','./public/js/viewController/customReportController.js','./public/js/viewController/navigationController.js'])
+        .pipe(concat('reports.min.js'))
+        .pipe(annotate())
+        .pipe(uglify())
+        .pipe(gulp.dest('./public/minifiedjs'))
+        .pipe(livereload());
+})
+gulp.task('shareUrl',function(){
+    gulp.src(['./public/js/app.js','./public/js/translations.js','./public/js/directives.js','./public/js/controllers.js','./public/js/viewController/mainController.js','./public/js/viewController/customWidgetController.js','./public/js/viewController/sharedDashboardController.js','./public/js/viewController/navigationController.js'])
+        .pipe(concat('shareUrl.min.js'))
+        .pipe(annotate())
+        .pipe(uglify())
+        .pipe(gulp.dest('./public/minifiedjs'))
+        .pipe(livereload());
+})
 gulp.task('watch',function(){
     livereload.listen();
-    gulp.watch('./public/js/**/*.js',['minification']);
+    gulp.watch('./public/js/**/*.js',['minification','reports','shareUrl']);
     gulp.watch('./public/css/*.css',['sass']);
 })
-gulp.task('default',['minification','sass','watch'])
+gulp.task('default',['minification','sass','reports','shareUrl','watch'])
 
 
