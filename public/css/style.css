@@ -139,7 +139,7 @@
     padding:0px !important;}
 .likes{float: left;font-size: 11px;}
 .listed-image{float: left;}
-.responsiveDate{float: left;!important;font-size: 11px;}
+.responsiveDate{float: left !important;font-size: 11px;}
 .scrollInWidget{height: 100% !important;}
 .apiLink{color: #232c3b !important;}
 .apiLink:hover{text-decoration: underline; }
@@ -332,7 +332,7 @@ svg:hover #Calendar-Icon { fill: #293846; }
 
 .nav li a:hover .nav-label{color: #232c3b !important;}
 .nav li a:focus .nav-label{color: #FFFFFF !important;}
-.add-profile{float: left;margin: 0px ; text-align: left;!important}
+.add-profile{float: left;margin: 0px ; text-align: left!important}
 .fa-3x{font-size: 28px!important;color:#fff;padding-left: 5px;}
 .remove-profile{float: right;margin: 0px ;text-align: right;}
 .refresh{margin-left: -10px;}
@@ -370,11 +370,11 @@ svg:hover #Calendar-Icon { fill: #293846; }
 }
 .daterange .dr-selections .dr-calendar .dr-day-list{
     font-size: 14px !important;}
-.daterange .dr-selections .dr-calendar{min-width: 305px; !important}
+.daterange .dr-selections .dr-calendar{min-width: 305px !important}
 .daterange .dr-selections .dr-preset-list{font-size: 12px !important;
     font-family: Montserrat-Regular !important;
     color: #293846 !important;}
-.daterange .dr-selections .dr-list-item .dr-item-aside{font-size: 11px;!important}
+.daterange .dr-selections .dr-list-item .dr-item-aside{font-size: 11px !important}
 .daterange .dr-input .dr-presets.dr-preset{}
 .daterange .dr-input .dr-presets {width: 100px !important;
     padding-left:3px;}
@@ -4831,9 +4831,9 @@ body.rtls.top-navigation .footer.fixed {
     .fixed-nav #wrapper {margin-top: -10px;}
 }
 @media(max-width : 386px){
-    .widget-icons { width: 80% !important; margin-left: 30px; !important}
-    .logo-icons { width: 30% !important; margin-left: 30px; !important}
-    .minimalize-styl-2{margin: 5px 4px 5px 15px; !important}
+    .widget-icons { width: 80% !important; margin-left: 30px !important}
+    .logo-icons { width: 30% !important; margin-left: 30px !important}
+    .minimalize-styl-2{margin: 5px 4px 5px 15px !important}
     .remove-profile{float: none !important;}
 
 }
