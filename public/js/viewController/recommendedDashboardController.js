@@ -610,9 +610,9 @@ function RecommendedDashboardController($scope, $http, $window, $q, $state, $roo
             var selectAdgroupLevel=false;
             for(var i=0;i<$scope.referenceWidgetsList.length;i++){
                 if($scope.referenceWidgetsList[i].name == "Cost per objective") setLimitation=1;
-                if($scope.referenceWidgetsList[i].name == "Fb Ads Adgroup overview (Campaign level)") setLimitation=1;
-                if($scope.referenceWidgetsList[i].name == "Fb Ads campaign overview (Account level)") selectAccountLevel=true;
-                if($scope.referenceWidgetsList[i].name == "Fb Ads Ad overview (Adgroup level)") selectAdgroupLevel=true;
+                if($scope.referenceWidgetsList[i].name == "Adset Overview (Campaign level)") setLimitation=1;
+                if($scope.referenceWidgetsList[i].name == "Campaign Overview (Account level)") selectAccountLevel=true;
+                if($scope.referenceWidgetsList[i].name == "Ad Overview (Adset level)") selectAdgroupLevel=true;
             }
             if(!this.objectTypeOptionsModel[index]){
                 document.getElementById('basicWidgetFinishButton').disabled = true;
