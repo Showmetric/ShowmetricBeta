@@ -3017,13 +3017,13 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                     var Impressions = 0;
                                     var Conversions = 0;
                                     for (var i = 0; i < uniqueCampaign[key].length; i++) {
-                                        Cost += parseFloat(uniqueCampaign[key][i].spend);
-                                        reach += parseFloat(uniqueCampaign[key][i].reach);
+                                        Cost += uniqueCampaign[key][i].spend!=undefined?parseFloat(uniqueCampaign[key][i].spend):0;
+                                        reach += uniqueCampaign[key][i].reach!=undefined?parseFloat(uniqueCampaign[key][i].reach):0;
                                         // Currency = uniqueCampaign[key][i][Currency];
-                                        Impressions += parseFloat(uniqueCampaign[key][i].impressions);
+                                        Impressions +=uniqueCampaign[key][i].impressions!=undefined?parseFloat(uniqueCampaign[key][i].impressions):0;
                                         // Totalconvvalue += parseFloat(uniqueCampaign[key][i]['Totalconvvalue']);
-                                        Clicks += parseFloat(uniqueCampaign[key][i].clicks);
-                                        Conversions += sumAction(uniqueCampaign[key][i].actions)
+                                        Clicks += uniqueCampaign[key][i].clicks!=undefined?parseFloat(uniqueCampaign[key][i].clicks):0;
+                                        Conversions += uniqueCampaign[key][i].actions!=undefined?sumAction(uniqueCampaign[key][i].actions):0;
                                     }
                                     if (Cost === 0)
                                         var CPM = Cost;
@@ -3054,7 +3054,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                         CTR: CTR === 'Infinity' ? 0 : CTR,
                                         CPC: CPC === 'Infinity' ? 0 : CPC,
                                         CostPerConv: CostPerConv === 'Infinity' ? 0 : CostPerConv,
-                                        Spent: Cost,
+                                        Spent: Cost.toFixed(2),
                                         Conversions: Conversions,
                                         // Totalconvvalue: Totalconvvalue,
                                         Clicks: Clicks,
@@ -3282,16 +3282,16 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                     var budget = 'Budget';
                                     var ImpressionReachValue;
                                     for (var i = 0; i < uniqueCampaign[key].length; i++) {
-                                        impressions += parseFloat(uniqueCampaign[key][i].impressions);
-                                        clicks += parseFloat(uniqueCampaign[key][i].clicks);
-                                        conversions += sumAction(uniqueCampaign[key][i].actions);
-                                        cost += sumCost(uniqueCampaign[key][i]['cost_per_action_type'])
-                                        costPerUniqueActionByType += sumCostPerAction(uniqueCampaign[key][i]['cost_per_unique_action_type']);
-                                        spend+=parseFloat(uniqueCampaign[key][i]['spend']);
-                                        appStoreClicks+=parseFloat(uniqueCampaign[key][0]['app_store_clicks']);
-                                        frequency+=parseFloat(uniqueCampaign[key][0]['frequency']);
-                                        videoAvgViewTime+=parseFloat(uniqueCampaign[key][0]['video_avg_percent_watched_actions']);
-                                        reach+=parseFloat(uniqueCampaign[key][0]['reach']);
+                                        impressions +=uniqueCampaign[key][i].impressions!=undefined? parseFloat(uniqueCampaign[key][i].impressions):0;
+                                        clicks +=uniqueCampaign[key][i].clicks!=undefined? parseFloat(uniqueCampaign[key][i].clicks):0;
+                                        conversions += uniqueCampaign[key][i].actions!=undefined?sumAction(uniqueCampaign[key][i].actions):0;
+                                       // cost += uniqueCampaign[key][i]['cost_per_action_type']!=undefined?sumCost(uniqueCampaign[key][i]['cost_per_action_type']):0
+                                        costPerUniqueActionByType +=uniqueCampaign[key][i]['cost_per_unique_action_type']!=undefined? sumCostPerAction(uniqueCampaign[key][i]['cost_per_unique_action_type']):0;
+                                        cost+=uniqueCampaign[key][i]['spend']!=undefined?parseFloat(uniqueCampaign[key][i]['spend']):0;
+                                        appStoreClicks+=uniqueCampaign[key][i]['app_store_clicks']!=undefined?parseFloat(uniqueCampaign[key][i]['app_store_clicks']):0;
+                                        frequency+=uniqueCampaign[key][i]['frequency']!=undefined?parseFloat(uniqueCampaign[key][i]['frequency']):0;
+                                        videoAvgViewTime+=uniqueCampaign[key][i]['video_avg_percent_watched_actions']!=undefined?parseFloat(uniqueCampaign[key][i]['video_avg_percent_watched_actions']):0;
+                                        reach+=uniqueCampaign[key][i]['reach']!=undefined?parseFloat(uniqueCampaign[key][i]['reach']):0;
                                     }
                                     if (cost === 0)
                                         var CPM = cost;
@@ -3321,7 +3321,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                         CTR: CTR === 'Infinity' ? 0 : CTR,
                                         CPC: CPC === 'Infinity' ? 0 : CPC,
                                         Actions: conversions === 'Infinity' ? 0 : conversions,
-                                        Spent: spend,
+                                        Spent: cost.toFixed(2),
                                         Conversions: conversions,
                                         Clicks: clicks,
                                         StartDate:uniqueCampaign[key][0][startDate],
@@ -3380,19 +3380,15 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                     var videoAvgViewTime=0;
                                     var impressions = 0;
                                     for (var i = 0; i < uniqueAds[key].length; i++) {
-                                        clicks += parseFloat(uniqueAds[key][i].clicks);
-                                        impressions += parseFloat(uniqueAds[key][i].impressions);
-                                        actions += sumAction(uniqueAds[key][i].actions);
-                                        costPerUniqueActionByType += sumCostPerAction(uniqueAds[key][i]['cost_per_unique_action_type']);
-                                        spend+=parseFloat(uniqueAds[key][i]['spend']);
-                                        appStoreClicks+=parseFloat(uniqueAds[key][0]['app_store_clicks']);
-                                        frequency+=parseFloat(uniqueAds[key][0]['frequency']);
-                                        reach+=parseFloat(uniqueAds[key][0]['reach']);
+                                        clicks +=uniqueAds[key][i].clicks!=undefined? parseFloat(uniqueAds[key][i].clicks):0;
+                                        impressions += uniqueAds[key][i].impressions!=undefined?parseFloat(uniqueAds[key][i].impressions):0;
+                                        actions += uniqueAds[key][i].actions!=undefined?sumAction(uniqueAds[key][i].actions):0;
+                                        costPerUniqueActionByType += uniqueAds[key][i]['cost_per_unique_action_type']!=undefined?sumCostPerAction(uniqueAds[key][i]['cost_per_unique_action_type']):0;
+                                        cost+=uniqueAds[key][i]['spend']!=undefined?parseFloat(uniqueAds[key][i]['spend']):0;
+                                        appStoreClicks+=uniqueAds[key][i]['app_store_clicks']!=undefined?parseFloat(uniqueAds[key][i]['app_store_clicks']):0;
+                                        frequency+=uniqueAds[key][i]['frequency']!=undefined?parseFloat(uniqueAds[key][i]['frequency']):0;
+                                        reach+=uniqueAds[key][i]['reach']!=undefined?parseFloat(uniqueAds[key][i]['reach']):0;
                                     }
-                                    if (cost === 0)
-                                        var cost = cost;
-                                    else
-                                        var cost = (cost / 1000000).toFixed(2);
                                     if (cost === 0)
                                         var CPM = cost;
                                     else

@@ -576,6 +576,7 @@ exports.listAccounts = function (req, res, next) {
                                 callback(null, objectList)
                             }
                         }
+                        else return res.status(500).json({error: "No Objects"});
                     }
                 });
         }
