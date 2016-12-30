@@ -465,6 +465,15 @@ module.exports = {
         fbAdsCampaignOverview:'fbAds_campaign_Overview',
         fbAdsAdgroupOverview:'fbAds_adset_Overview',
         fbAdsAdOverview:'fbAds_ad_Overview'
+    },
+    batchJobsLog:{
+        name:'./batchJobsLogFiles',
+        mailTransportName:'SMTP',
+        service:'Zoho',
+        email:'alerts@datapoolt.co',
+        password:'DaTaPoOlT',
+        mailSubject: 'Crash Report Mail',
+        mailTo:'rajalakshmi.c@habile.in'
     }
 
 };
