@@ -1,8 +1,10 @@
 //BatchJobs - Used to update the channel data periodically
+var fs = require('fs');
 var _ = require('lodash');
 //job scheduling library
 var Agenda = require('agenda');
-var AdwordsReport = require('node-adwords').AdwordsReport
+var AdwordsReport = require('node-adwords').AdwordsReport;
+var crashReporter =  require('./lib/crashreporter');
 //set googleAdwords node module
 /*
  var googleAds = require('./lib/googleAdwords');
@@ -11,7 +13,6 @@ var AdwordsReport = require('node-adwords').AdwordsReport
  */
 
 var objectType = require('./models/objectTypes');
-
 var request = require('request');
 //To use google api's
 //importing pinterest node module
@@ -80,21 +81,32 @@ var failureAlert = [];
 var Profile = require('./models/profiles');
 var mongoose = require('mongoose');
 mongoose.connect(mongoConnectionString);//Connection with mongoose
-mongoose.set('debug', true);
+mongoose.set('debug', false);
 var Alert = require('./models/alert');
 
 //set Twitter module
 var Twitter = require('twitter');
 var utility = require('./helpers/utility');
-var transporter = nodemailer.createTransport({
-    service: 'Zoho',
-    auth: {
-        user: configAuth.batchJobs.mail.user,
-        pass: configAuth.batchJobs.mail.password
-    }
-});
 var errorDataList = [];
 var countOfData;
+var dir = configAuth.batchJobsLog.name;
+ if (!fs.existsSync(dir)){
+ fs.mkdirSync(dir);
+ }
+crashReporter.configure({
+    mailEnabled: true,
+    mailTransportName: configAuth.batchJobsLog.mailTransportName,
+    mailTransportConfig: {
+        service: configAuth.batchJobsLog.service,
+        auth: {
+            user: configAuth.batchJobsLog.email,
+            pass: configAuth.batchJobsLog.password
+        }
+    },
+    mailSubject: configAuth.batchJobsLog.mailSubject,
+    mailFrom: 'Datapoolt <alerts@datapoolt.co>',
+    mailTo:configAuth.batchJobsLog.mailTo
+});
 agenda.define('Update channel data', {lockLifetime: 36000000}, function (job, done) {
 
     Data.find({bgFetch: true}).count(function (err, count) {
@@ -501,7 +513,6 @@ agenda.define('Update channel data', {lockLifetime: 36000000}, function (job, do
                 }
 
                 else {
-                    //console.log('queries',results.data);
                     var startDate = results.data.updated;
                     var finalTwitterResponse = {}
                     callTwitterApi(queries, wholeTweetObjects, startDate, function (err, response) {
@@ -623,7 +634,6 @@ agenda.define('Update channel data', {lockLifetime: 36000000}, function (job, do
             async.auto({
                 get_instagram_queries: getInstagramQueries,
                 get_instagram_data_from_remote: ['get_instagram_queries', getInstagramDataFromRemote]
-
             }, function (err, results) {
                 if (err) {
                     return callback(null);
@@ -3639,7 +3649,7 @@ agenda.define(configAuth.batchJobs.alertName, function (job, done) {
 agenda.on('ready', function () {
     agenda.cancel({name: configAuth.batchJobs.alertJobName}, function (err, numRemoved) {
     });
-     agenda.every('2 hours', configAuth.batchJobs.alertJobName);
+    agenda.every('8 hours', configAuth.batchJobs.alertJobName);
     //agenda.now( configAuth.batchJobs.alertJobName);
     agenda.start();
     agenda.on(configAuth.batchJobs.successBatchJobMessage, function (job) {
@@ -3689,5 +3699,5 @@ agenda.on('ready', function () {
 
 });
 agenda.on('start', function (job) {
-    console.log("Job %s starting", job.attrs.name);
+    console.log("Job %s starting:"+new Date(), job.attrs.name);
 });
