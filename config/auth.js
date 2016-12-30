@@ -314,8 +314,8 @@ module.exports = {
     'batchJobs':{
         dataBase:'mongodb://admin:admin@ds149437.mlab.com:49437/datapooltdevelopment',
         mail:{
-            user: 'rajalakshmi.c@habile.in',
-            password: 'habile3238'
+            user: 'alerts@datapoolt.co',
+            password: 'Datapoolt'
         },
         alertName:'Send Alert',
         alertJobName:'Update channel data',
@@ -473,7 +473,7 @@ module.exports = {
         email:'alerts@datapoolt.co',
         password:'DaTaPoOlT',
         mailSubject: 'Crash Report Mail',
-        mailTo:'rajalakshmi.c@habile.in'
+        mailTo:'batchjobs@datapoolt.co'
     }
 
 };
