@@ -310,9 +310,9 @@ function RecommendedDashboardController($scope, $http, $window, $q, $state, $roo
         if (!profileObj) {
             if($scope.getChannelList[index].name == 'FacebookAds')
                 fbAdsPresent=false;
-            if(($scope.getChannelList[index].name == 'GoogleAdwords'))
-                googleAdsPresent=false;
-            -- $scope.profileCount;
+                if(($scope.getChannelList[index].name == 'GoogleAdwords'))
+                    googleAdsPresent=false;
+           -- $scope.profileCount;
             if($scope.profileCount) {
                 $scope.getChannelList[index].enable=true;
                 var k = $scope.getChannelList.map(function (e) {
@@ -459,10 +459,10 @@ function RecommendedDashboardController($scope, $http, $window, $q, $state, $roo
             }
         }
         else if (objectList == null && $scope.currentView == 'step_two') {
-            if (!this.profileOptionsModel[index]){
-                $scope.getChannelList[index].enable=true;
-            }else
-                $scope.getChannelList[index].enable=false;
+           if (!this.profileOptionsModel[index]){
+               $scope.getChannelList[index].enable=true;
+           }else
+               $scope.getChannelList[index].enable=false;
             $scope.storedUserChosenValues.splice(index,1)
         }
         else if (objectList != null && $scope.currentView == 'step_one') {
@@ -606,8 +606,13 @@ function RecommendedDashboardController($scope, $http, $window, $q, $state, $roo
         $scope.messageEnable[index]=false;
         if(level) {
             var setLimitation=0;
+            var selectAccountLevel=false;
+            var selectAdgroupLevel=false;
             for(var i=0;i<$scope.referenceWidgetsList.length;i++){
                 if($scope.referenceWidgetsList[i].name == "Cost per objective") setLimitation=1;
+                if($scope.referenceWidgetsList[i].name == "Adset Overview (Campaign level)") setLimitation=1;
+                if($scope.referenceWidgetsList[i].name == "Campaign Overview (Account level)") selectAccountLevel=true;
+                if($scope.referenceWidgetsList[i].name == "Ad Overview (Adset level)") selectAdgroupLevel=true;
             }
             if(!this.objectTypeOptionsModel[index]){
                 document.getElementById('basicWidgetFinishButton').disabled = true;
@@ -643,7 +648,7 @@ function RecommendedDashboardController($scope, $http, $window, $q, $state, $roo
             }
         }
         if($scope.selectedLevel=='fbadaccount'){
-            if(setLimitation){
+            if(setLimitation || selectAdgroupLevel){
                 $scope.messageEnable[index]=true;
                 fbAdsComplete=false;
             }
@@ -656,22 +661,28 @@ function RecommendedDashboardController($scope, $http, $window, $q, $state, $roo
             $scope.checkComplete();
         }
         else if($scope.selectedLevel=='fbAdcampaign'){
-            if($scope.campaignChosen==false){
+            if(selectAccountLevel||selectAdgroupLevel){
+                $scope.messageEnable[index]=true;
                 fbAdsComplete=false;
-                $scope.campaignEnable=true;
-                $scope.getCampaigns();
             }
-            else {
-                if(($scope.profileId!=null)&&($scope.accountId!=null)&&($scope.campaign!=null))
-                    fbAdsComplete=true;
-                else{
+            else{
+                if($scope.campaignChosen==false){
                     fbAdsComplete=false;
+                    $scope.campaignEnable=true;
+                    $scope.getCampaigns();
+                }
+                else {
+                    if(($scope.profileId!=null)&&($scope.accountId!=null)&&($scope.campaign!=null))
+                        fbAdsComplete=true;
+                    else{
+                        fbAdsComplete=false;
+                    }
                 }
             }
             $scope.checkComplete();
         }
         else if($scope.selectedLevel=='fbAdSet'){
-            if(setLimitation){
+            if(setLimitation || selectAccountLevel){
                 $scope.messageEnable[index]=true;
                 fbAdsComplete=false;
             }
@@ -699,7 +710,7 @@ function RecommendedDashboardController($scope, $http, $window, $q, $state, $roo
             $scope.checkComplete();
         }
         else if($scope.selectedLevel=='fbAdSetAds'){
-            if(setLimitation){
+            if(setLimitation || selectAccountLevel || selectAdgroupLevel){
                 $scope.messageEnable[index]=true;
                 fbAdsComplete=false;
             }

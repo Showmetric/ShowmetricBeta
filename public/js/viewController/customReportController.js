@@ -394,6 +394,8 @@ function customReportController($scope,$timeout,$rootScope,$http,$window,$state,
     };
     $scope.reportPdfPreview=function (opt) {
         if(opt=='step3') {
+            $scope.summaryAlignLessThanThree = [];
+            $scope.toDisplayAllSummary = [];
             $scope.reportLoading = true;
             // $scope.stepActive=true;
             for(var widData in $scope.customReport.widgetData)
@@ -473,15 +475,48 @@ function customReportController($scope,$timeout,$rootScope,$http,$window,$state,
         //hide summary have value zero
         $scope.summaryAlignLessThanThree = [];
         $scope.toDisplayAllSummary = [];
-        $scope.checkAllGraphsZero = function (chart, widgetIndex) {
+        $scope.summaryAlignLessThanThreePdf = [];
+        $scope.toDisplayAllSummaryPdf = [];
+        $scope.checkAllGraphsZero = function (chart, widgetIndex,chartIndex) {
+            if($scope.summaryAlignLessThanThree[widgetIndex] == undefined)
+                $scope.summaryAlignLessThanThree[widgetIndex]=[];
+            if($scope.toDisplayAllSummary[widgetIndex] == undefined)
+                $scope.toDisplayAllSummary[widgetIndex]=[];
             var count = 0;
             for (var i = 0; i < chart.data.length; i++) {
                 if (chart.data[i].summaryDisplay === 0)
                     count += 1;
             }
-            $scope.summaryAlignLessThanThree[widgetIndex]=chart.data.length - count;
-            if (count === chart.data.length) $scope.toDisplayAllSummary[widgetIndex] = true;
+            $scope.summaryAlignLessThanThree[widgetIndex][chartIndex]=chart.data.length - count;
+            if (count === chart.data.length) $scope.toDisplayAllSummary[widgetIndex][chartIndex] = true;
+            else $scope.toDisplayAllSummary[widgetIndex][chartIndex] = false
         }
+        $scope.checkAllGraphsZeroForReportPdf = function (chart,pageIntex, widgetIndex,chartIndex) {
+            if($scope.summaryAlignLessThanThreePdf[pageIntex] == undefined){
+                $scope.summaryAlignLessThanThreePdf[pageIntex]=[];
+                $scope.summaryAlignLessThanThreePdf[pageIntex][widgetIndex]=[];
+
+            }
+            else if($scope.summaryAlignLessThanThreePdf[pageIntex][widgetIndex] == undefined){
+                $scope.summaryAlignLessThanThreePdf[pageIntex][widgetIndex]=[];
+            }
+            if($scope.toDisplayAllSummaryPdf[pageIntex] == undefined){
+                $scope.toDisplayAllSummaryPdf[pageIntex]=[];
+                $scope.toDisplayAllSummaryPdf[pageIntex][widgetIndex]=[];
+            }
+            else if($scope.toDisplayAllSummaryPdf[pageIntex][widgetIndex] == undefined){
+                $scope.toDisplayAllSummaryPdf[pageIntex][widgetIndex]=[];
+            }
+            var count = 0;
+            for (var i = 0; i < chart.data.length; i++) {
+                if (chart.data[i].summaryDisplay === 0)
+                    count += 1;
+            }
+            $scope.summaryAlignLessThanThreePdf[pageIntex][widgetIndex][chartIndex]=chart.data.length - count;
+            if (count === chart.data.length) $scope.toDisplayAllSummaryPdf[pageIntex][widgetIndex][chartIndex] = true;
+            else $scope.toDisplayAllSummaryPdf[pageIntex][widgetIndex][chartIndex] = false
+        }
+
         $scope.fetchReportDetails = function () {
             var dateRange;
             var dahboardId='undefined'
@@ -494,7 +529,7 @@ function customReportController($scope,$timeout,$rootScope,$http,$window,$state,
                         dateRange=response.data.response.limits.dateRange;
                     }
                     else{
-                        dateRange=365;
+                         dateRange=365;
                     }
                 }
             )

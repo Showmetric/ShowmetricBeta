@@ -249,21 +249,21 @@
                                         </div>
                                     </div>
                                     <div class="row getWidgetGraph" style="height: 100%;margin:0px;" ng-if="customReport.widgetData[widget.id].visibility == true">
-                                        <div ng-repeat="(chartIndex,chart) in customReport.widgetData[widget.id].chart" ng-if="chart.options.chart.type=== 'lineChart' || chart.options.chart.type=== 'engagedUsersReach' || chart.options.chart.type=== 'area' ||chart.options.chart.type=== 'pieChart' || chart.options.chart.type=== 'reachVsImpressions' || chart.options.chart.type=== 'multiBarChart' || chart.options.chart.type=== 'multiChart'" style="float: left;padding-left: 2px;padding-right: 2px;" ng-style="{'height': (100/customReport.widgetData[widget.id].layoutOptionsY)+'%', 'width': (100/customReport.widgetData[widget.id].layoutOptionsX)+'%'}">
+                                        <div ng-repeat="(chartIndex,chart) in customReport.widgetData[widget.id].chart" ng-init="checkAllGraphsZero(chart,widgetIndex,chartIndex)" ng-if="chart.options.chart.type=== 'lineChart' || chart.options.chart.type=== 'engagedUsersReach' || chart.options.chart.type=== 'area' ||chart.options.chart.type=== 'pieChart' || chart.options.chart.type=== 'reachVsImpressions' || chart.options.chart.type=== 'multiBarChart' || chart.options.chart.type=== 'multiChart'" style="float: left;padding-left: 2px;padding-right: 2px;" ng-style="{'height': (100/customReport.widgetData[widget.id].layoutOptionsY)+'%', 'width': (100/customReport.widgetData[widget.id].layoutOptionsX)+'%'}">
                                             <div class="col col-lg-4 col-sm-4 col-md-4 scrollbar scroller" ng-if="customReport.widgetData[widget.id].showSummary !=false" style="margin:0px;height:100%;padding-left:5px;padding-right:5px;"><!--  ng-style="calculateSummaryHeight(widget.sizeY,chart.data.length)">-->
                                                 <ul style="height:100%;font-size:12px;padding-left: 5px;">
-                                                    <li  ng-repeat="data in chart.data" ng-class=" (summaryAlignLessThanThree[widgetIndex]<3||chart.data.length<3)?'summaryAlign':'summaryAlignMoreThanThree'" style="text-align: center;padding-top: 1px;padding-left:0px;padding-right: 2px;font-size: 1.0em!important;" id="li-{{widget.id}}-{{$index}}" class="col col-lg-12" ng-style="calculateRowHeight(data,chart.data.length,widget.sizeY,customReport.widgetData[widget.id].layoutOptionsX)"><!--size-watcher-width="data.mywidth"--><!--ng-class="calculateColumnWidth(chart.data.length,widget.sizeX,customReport.widgetData[widget.id].layoutOptionsX)" ng-style="calculateRowHeight(data,chart.data.length,widget.sizeX,widget.sizeY,customReport.widgetData[widget.id].layoutOptionsX)"-->
-                                                        <div style="margin: 0px;height: 100%;overflow: hidden;white-space: nowrap;color: #000000;text-align: center;" ng-if="toDisplayAllSummary[widgetIndex]?data.key != undefined:(chart.data.length===1 && data.key != undefined ) || (chart.data.length >1 && data.hasSnapshotData && data.summaryDisplay===0) || (chart.data.length >1 && data.summaryDisplay!==0)  "  >
+                                                    <li  ng-repeat="data in chart.data track by $index" ng-class=" (summaryAlignLessThanThree[widgetIndex][chartIndex]<3||chart.data.length<3)?'summaryAlign':'summaryAlignMoreThanThree'" style="text-align: center;padding-top: 1px;padding-left:0px;padding-right: 2px;font-size: 1.0em!important;" id="li-{{widget.id}}-{{$index}}" class="col col-lg-12" ng-style="calculateRowHeight(data,chart.data.length,widget.sizeY,customReport.widgetData[widget.id].layoutOptionsX)"><!--size-watcher-width="data.mywidth"--><!--ng-class="calculateColumnWidth(chart.data.length,widget.sizeX,customReport.widgetData[widget.id].layoutOptionsX)" ng-style="calculateRowHeight(data,chart.data.length,widget.sizeX,widget.sizeY,customReport.widgetData[widget.id].layoutOptionsX)"-->
+                                                        <div style="margin: 0px;height: 100%;overflow: hidden;white-space: nowrap;color: #000000;text-align: center;" ng-if="toDisplayAllSummary[widgetIndex][chartIndex]?data.key != undefined:(chart.data.length===1 && data.key != undefined ) || (chart.data.length >1 && data.hasSnapshotData && data.summaryDisplay===0) || (chart.data.length >1 && data.summaryDisplay!==0)  "  >
                                                             <p class="summaryKeyFont" ng-class="{'reportSummaryKeyDoubleFont': customReport.widgetData[widget.id].layoutOptionsX>1}" ng-if="chart.options.chart.type != 'pieChart'" ng-show="data.showComparision==false" ng-style="{ 'font-family' : 'Montserrat-Regular','text-transform':'uppercase',  'border-bottom': '4px solid', 'border-color': data.color, 'padding-left': '3px'}" style="margin:0px 0px 3px!important;font-weight: bold;padding-top: 2px;padding-bottom: 2px;"> {{data.key}} <span ng-if="widget.widgetType=='customFusion'">{{' ('+data.channelName+')'}}</span> - {{data.summaryDisplay}}{{data.unit}} <i ng-if="data.arrow==='up' && data.variance !=0" style="font-size:1.0em;color:#2A8539" class="fa fa-arrow-up" aria-hidden="true"></i><i ng-if='data.arrow==="down" && data.variance !=0' style="font-size: 1.0em;color:#FF1B1B" class="fa fa-arrow-down" aria-hidden="true"></i></p>
                                                             <p class="summaryKeyFont" ng-class="{'reportSummaryKeyDoubleFont': customReport.widgetData[widget.id].layoutOptionsX>1}" ng-if="chart.options.chart.type == 'pieChart'" ng-show="data.showComparision==false" ng-style="{ 'font-family' : 'Montserrat-Regular', 'text-transform':'uppercase',  'border-bottom': '4px solid', 'border-color': data.color, 'padding-left': '3px'}" style="margin:0px 0px 3px!important;font-weight: bold;padding-top: 2px;padding-bottom: 2px;"> {{data.key}} <span ng-if="widget.widgetType=='customFusion'">{{' ('+data.channelName+')'}}</span>- {{data.summaryDisplay}}{{data.unit}}</p>
-                                                            <p class="summaryKeyFont" ng-class="{'reportSummaryKeyDoubleFont': customReport.widgetData[widget.id].layoutOptionsX>1}" ng-show="data.showComparision==true" ng-style="{ 'font-family' : 'Montserrat-Black', 'text-transform':'uppercase',  'border-bottom': '4px solid', 'border-color': data.color, 'padding-left': '3px'}" style="margin:0px 0px 3px!important;font-weight: bold;padding-top: 2px;padding-bottom: 2px;"> {{data.key}}<span ng-if="widget.widgetType=='customFusion'">{{' ('+data.channelName+')'}}</span></p>
+                                                            <p class="summaryKeyFont" ng-class="{'reportSummaryKeyDoubleFont': customReport.widgetData[widget.id].layoutOptionsX>1}" ng-show="data.showComparision==true&&data.key != undefined" ng-style="{ 'font-family' : 'Montserrat-Black', 'text-transform':'uppercase',  'border-bottom': '4px solid', 'border-color': data.color, 'padding-left': '3px'}" style="margin:0px 0px 3px!important;font-weight: bold;padding-top: 2px;padding-bottom: 2px;"> {{data.key}}<span ng-if="widget.widgetType=='customFusion'">{{' ('+data.channelName+')'}}</span></p>
                                                             <div class="col col-lg-12 col-sm-12 col-md-12 col-xs-12 " style="padding: 0px 0px 0px 0px!important;">
                                                                 <div class="col col-lg-5 col-sm-5 col-md-5 col-xs-5">
-                                                                    <p ng-show="data.showComparision==true" class="summaryFont" ng-class="{'summaryDoubleFont': customReport.widgetData[widget.id].layoutOptionsX>1}"ng-style="{ 'font-family' : 'Montserrat-Black', 'text-transform':'uppercase', 'padding-left': '0px', 'border-right': '3px solid white','float':'left'}" style="margin:0px 0px 3px!important;font-weight: bold;"> {{data.summaryDisplay}}{{data.unit}}</p>
+                                                                    <p ng-show="data.showComparision==true&&data.key != undefined" class="summaryFont" ng-class="{'summaryDoubleFont': customReport.widgetData[widget.id].layoutOptionsX>1}"ng-style="{ 'font-family' : 'Montserrat-Black', 'text-transform':'uppercase', 'padding-left': '0px', 'border-right': '3px solid white','float':'left'}" style="margin:0px 0px 3px!important;font-weight: bold;"> {{data.summaryDisplay}}{{data.unit}}</p>
                                                                 </div>
                                                                 <div class="col col-lg-7 col-sm-7 col-md-7 col-xs-7" style="padding: 0px 0px 0px 0px!important;">
                                                                     <!--<p ng-style="{'color': '#979797', 'font-family' : 'Heebo-Medium','font-size':'12px', 'text-transform':'uppercase', 'background-color': 'whitesmoke'}" style="margin:0px 0px 3px!important;font-weight: bold;">{{data.key}} - <b ng-style="{'color':data.color, 'font-family' : 'Heebo-Medium'}"> {{data.summaryDisplay}} </b></p>-->
-                                                                    <p ng-if="chart.options.chart.type != 'pieChart'" class="summaryKeyFont" ng-class="{'reportSummaryKeyDoubleFont': customReport.widgetData[widget.id].layoutOptionsX>1}" ng-show="data.showComparision==true" style="padding-top:3px;margin:1px 0px 1px!important;overflow: hidden;float: right;">{{data.period}}: <span ng-if="data.variance !=0">{{data.variance}}%  </span><i ng-if="data.arrow==='up' && data.variance !=0" style="font-size:0.8em;color:#2A8539" class="fa fa-arrow-up" aria-hidden="true"></i><i ng-if='data.arrow==="down" && data.variance !=0' style="font-size: 0.8em;color:#FF1B1B" class="fa fa-arrow-down" aria-hidden="true"></i></p>
+                                                                    <p ng-if="chart.options.chart.type != 'pieChart'" class="summaryKeyFont" ng-class="{'reportSummaryKeyDoubleFont': customReport.widgetData[widget.id].layoutOptionsX>1}" ng-show="data.showComparision==true&&data.key != undefined" style="padding-top:3px;margin:1px 0px 1px!important;overflow: hidden;float: right;">{{data.period}}: <span ng-if="data.variance !=0">{{data.variance}}%  </span><i ng-if="data.arrow==='up' && data.variance !=0" style="font-size:0.8em;color:#2A8539" class="fa fa-arrow-up" aria-hidden="true"></i><i ng-if='data.arrow==="down" && data.variance !=0' style="font-size: 0.8em;color:#FF1B1B" class="fa fa-arrow-down" aria-hidden="true"></i></p>
                                                                 </div>
                                                             </div>
                                                             <!--<p ng-if="chart.options.chart.type != 'pieChart'" style="font-size: 14px;font-family: Heebo-Light;">{{data.period}}- <span ng-if="data.variance !=0">{{data.variance}}%</span><i ng-if="data.arrow==='up' && data.variance !=0" style="font-size: 0.8em;color:#2A8539" class="fa fa-arrow-up" aria-hidden="true"></i><i ng-if='data.arrow==="down" && data.variance !=0' style="font-size: 0.8em;color:#FF1B1B" class="fa fa-arrow-down" aria-hidden="true"></i></p>-->
@@ -1078,6 +1078,173 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        <div ng-repeat="chart in customReport.widgetData[widget.id].chart" ng-if="chart.options.chart.type=== 'fbAdsAdgroupOverview'" style="float: left;padding-left: 2px;padding-right: 2px;" ng-style="{'height': (100/customReport.widgetData[widget.id].layoutOptionsY)+'%', 'width': (100/customReport.widgetData[widget.id].layoutOptionsX)+'%'}">
+                                            <div class="row" style="margin: 0px;height: 100%" >
+                                                <div events="events" style="height: 99%" ng-if="customReport.widgetData[widget.id].visibility == true" ng-init="limitScroll=20">
+                                                    <div class="scrollbar scrollInWidget" id="scroller">
+                                                        <div class="col-lg-12 table-responsive" style="overflow-x: hidden;padding:0px;">
+                                                            <table  class="table table-striped">
+                                                                <thead>
+                                                                <tr style="padding:2px 5px;width:100%">
+                                                                    <th style="padding:5px 5px;width:5%;text-align:center;">Id</th>
+                                                                    <th style="padding:5px 5px;width:20%;text-align:center;">Name</th>
+                                                                    <th style="padding:5px 5px;width:6%;text-align:center;">Start Date</th>
+                                                                    <th style="padding:5px 5px;width:6%;text-align:center;">End Date</th>
+                                                                    <th style="padding:5px 5px;width:6%;text-align:center;">Status</th>
+                                                                    <th style="padding:5px 5px;width:6%;text-align:center;">Objective</th>
+                                                                    <th style="padding:5px 5px;width:6%;text-align:center;">Reach</th>
+                                                                    <th style="padding:5px 5px;width:6%;text-align:center;">Impressions</th>
+                                                                    <th style="padding:5px 5px;width:6%;text-align:center;">Spent</th>
+                                                                    <th style="padding:5px 5px;width:6%;text-align:center;">CPM</th>
+                                                                    <th style="padding:5px 5px;width:6%;text-align:center;">Clicks</th>
+                                                                    <th style="padding:5px 5px;width:6%;text-align:center;">CTR</th>
+                                                                    <th style="padding:5px 5px;width:6%;text-align:center;">CPC</th>
+                                                                    <th style="padding:5px 5px;width:6%;text-align:center;">Action</th>
+                                                                </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                <tr style="padding:2px 5px;width:100%" ng-repeat="data in chart.data | limitTo: limitScroll" ng-if="data.Id">
+                                                                    <td style="padding:5px 5px;width:5%;text-align:left;">{{data.Id}}</td>
+                                                                    <td style="padding:5px 5px;width:20%;text-align:center;">{{data.Name}}</td>
+                                                                    <td style="padding:5px 5px;width:5%;text-align:center;">{{data.StartDate}}</td>
+                                                                    <td style="padding:5px 5px;width:5%;text-align:center;">{{data.EndDate}}</td>
+                                                                    <td style="padding:5px 5px;width:5%;text-align:center;">{{data.status}}</td>
+                                                                    <td style="padding:5px 5px;width:5%;text-align:center;">{{data.Objective}}</td>
+                                                                    <td style="padding:5px 5px;width:5%;text-align:center;">{{data.reach}}</td>
+                                                                    <td style="padding:5px 5px;width:5%;text-align:center;">{{data.Impressions}}</td>
+                                                                    <td style="padding:5px 5px;width:5%;text-align:center;">{{data.Spent}}</td>
+                                                                    <td style="padding:5px 5px;width:5%;text-align:center;">{{data.CPM}}</td>
+                                                                    <td style="padding:5px 5px;width:5%;text-align:center;">{{data.Clicks}}</td>
+                                                                    <td style="padding:5px 5px;width:5%;text-align:center;">{{data.CTR}}</td>
+                                                                    <td style="padding:5px 5px;width:5%;text-align:center;">{{data.CPC}}</td>
+                                                                    <td style="padding:5px 5px;width:5%;text-align:center;">{{data.Conversions}}</td>
+                                                                </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                        <div class="showmore" style="text-align:center" ng-show="chart.data.length>20">
+                                                            <a href ng-click="limitScroll=(limitScroll+10)" ng-show="limitScroll<chart.data.length">Show More</a>
+                                                            <span ng-show="limitScroll>20&&limitScroll<chart.data.length">|</span>
+                                                            <a href ng-click="limitScroll=(limitScroll-10)" ng-show="limitScroll>20">Show Less</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div ng-repeat="chart in customReport.widgetData[widget.id].chart" ng-if="chart.options.chart.type=== 'fbAdsCampaignOverview'" style="float: left;padding-left: 2px;padding-right: 2px;" ng-style="{'height': (100/customReport.widgetData[widget.id].layoutOptionsY)+'%', 'width': (100/customReport.widgetData[widget.id].layoutOptionsX)+'%'}">
+                                            <div class="row" style="margin: 0px;height: 100%" >
+                                                <div events="events" style="height: 99%" ng-if="customReport.widgetData[widget.id].visibility == true" ng-init="limitScroll=20">
+                                                    <div class="scrollbar scrollInWidget" id="scroller">
+                                                        <div class="col-lg-12 table-responsive" style="overflow-x: hidden;padding:0px;">
+                                                            <table  class="table table-striped">
+                                                                <thead>
+                                                                <tr style="padding:2px 5px;width:100%">
+                                                                    <th style="padding:5px 5px;width:5%;text-align:center;">Id</th>
+                                                                    <th style="padding:5px 5px;width:20%;text-align:center;">Name</th>
+                                                                    <th style="padding:5px 5px;width:5%;text-align:center;">Start Date</th>
+                                                                    <th style="padding:5px 5px;width:5%;text-align:center;">End Date</th>
+                                                                    <th style="padding:5px 5px;width:5%;text-align:center;">Status</th>
+                                                                    <th style="padding:5px 5px;width:10%;text-align:center;">Objective</th>
+                                                                    <th style="padding:5px 5px;width:5%;text-align:center;">Reach</th>
+                                                                    <th style="padding:5px 5px;width:5%;text-align:center;">Impressions</th>
+                                                                    <th style="padding:5px 5px;width:5%;text-align:center;">Spend</th>
+                                                                    <th style="padding:5px 5px;width:5%;text-align:center;">CPM</th>
+                                                                    <th style="padding:5px 5px;width:5%;text-align:center;">Actions</th>
+                                                                    <th style="padding:5px 5px;width:5%;text-align:center;">CTR</th>
+                                                                    <th style="padding:5px 5px;width:5%;text-align:center;">App Store Clicks</th>
+                                                                    <th style="padding:5px 5px;width:5%;text-align:center;">Cost per unique action by type</th>
+                                                                    <th style="padding:5px 5px;width:5%;text-align:center;">Frequency</th>
+                                                                    <th style="padding:5px 5px;width:5%;text-align:center;">Video avg view time</th>
+                                                                </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                <tr style="padding:2px 5px;width:100%" ng-repeat="data in chart.data | limitTo: limitScroll" ng-if="data.Id">
+                                                                    <td style="padding:5px 5px;width:5%;text-align:left;">{{data.Id}}</td>
+                                                                    <td style="padding:5px 5px;width:20%;text-align:center;">{{data.Name}}</td>
+                                                                    <td style="padding:5px 5px;width:5%;text-align:center;">{{data.StartDate}}</td>
+                                                                    <td style="padding:5px 5px;width:5%;text-align:center;">{{data.EndDate}}</td>
+                                                                    <td style="padding:5px 5px;width:5%;text-align:center;">{{data.status}}</td>
+                                                                    <td style="padding:5px 5px;width:10%;text-align:center;">{{data.Objective}}</td>
+                                                                    <td style="padding:5px 5px;width:5%;text-align:center;">{{data.reach}}</td>
+                                                                    <td style="padding:5px 5px;width:5%;text-align:center;">{{data.Impressions}}</td>
+                                                                    <td style="padding:5px 5px;width:5%;text-align:center;">{{data.Spent}}</td>
+                                                                    <td style="padding:5px 5px;width:5%;text-align:center;">{{data.CPM}}</td>
+                                                                    <td style="padding:5px 5px;width:5%;text-align:center;">{{data.Actions}}</td>
+                                                                    <td style="padding:5px 5px;width:5%;text-align:center;">{{data.CTR}}</td>
+                                                                    <td style="padding:5px 5px;width:5%;text-align:center;">{{data.AppStoreClicks}}</td>
+                                                                    <td style="padding:5px 5px;width:5%;text-align:center;">{{data.CostPerUniqueActionByType}}</td>
+                                                                    <td style="padding:5px 5px;width:5%;text-align:center;">{{data.Frequency}}</td>
+                                                                    <td style="padding:5px 5px;width:5%;text-align:center;">{{data.VideoAvgViewTime}}</td>
+                                                                </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                        <div class="showmore" style="text-align:center" ng-show="chart.data.length>20">
+                                                            <a href ng-click="limitScroll=(limitScroll+10)" ng-show="limitScroll<chart.data.length">Show More</a>
+                                                            <span ng-show="limitScroll>20&&limitScroll<chart.data.length">|</span>
+                                                            <a href ng-click="limitScroll=(limitScroll-10)" ng-show="limitScroll>20">Show Less</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div ng-repeat="chart in customReport.widgetData[widget.id].chart" ng-if="chart.options.chart.type=== 'fbAdsAdOverview'" style="float: left;padding-left: 2px;padding-right: 2px;" ng-style="{'height': (100/customReport.widgetData[widget.id].layoutOptionsY)+'%', 'width': (100/customReport.widgetData[widget.id].layoutOptionsX)+'%'}">
+                                            <div class="row" style="margin: 0px;height: 100%" >
+                                                <div events="events" style="height: 99%" ng-if="customReport.widgetData[widget.id].visibility == true" ng-init="limitScroll=20">
+                                                    <div class="scrollbar scrollInWidget" id="scroller">
+                                                        <div class="col-lg-12 table-responsive" style="overflow-x: hidden;padding:0px;">
+                                                            <table  class="table table-striped">
+                                                                <thead>
+                                                                <tr style="padding:2px 5px;width:100%">
+                                                                    <th style="padding:5px 5px;width:5%;text-align:center;">Ad Name</th>
+                                                                    <th style="padding:5px 5px;width:15%;text-align:center;">Adset Name</th>
+                                                                    <th style="padding:5px 5px;width:15%;text-align:center;">Campaign Name</th>
+                                                                    <th style="padding:5px 5px;width:4.5%;text-align:center;">Start Date</th>
+                                                                    <th style="padding:5px 5px;width:4.5%;text-align:center;">End Date</th>
+                                                                    <th style="padding:5px 5px;width:4.5%;text-align:center;">Status</th>
+                                                                    <th style="padding:5px 5px;width:10%;text-align:center;">Objective</th>
+                                                                    <th style="padding:5px 5px;width:4.5%;text-align:center;">Reach</th>
+                                                                    <th style="padding:5px 5px;width:4.5%;text-align:center;">Impressions</th>
+                                                                    <th style="padding:5px 5px;width:4.5%;text-align:center;">Spend</th>
+                                                                    <th style="padding:5px 5px;width:4.5%;text-align:center;">CPM</th>
+                                                                    <th style="padding:5px 5px;width:4.5%;text-align:center;">Actions</th>
+                                                                    <th style="padding:5px 5px;width:4.5%;text-align:center;">CTR</th>
+                                                                    <th style="padding:5px 5px;width:4.5%;text-align:center;">App Store Clicks</th>
+                                                                    <th style="padding:5px 5px;width:4.5%;text-align:center;">Cost per unique action by type</th>
+                                                                    <th style="padding:5px 5px;width:4.5%;text-align:center;">Frequency</th>
+                                                                </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                <tr style="padding:2px 5px;width:100%" ng-repeat="data in chart.data | limitTo: limitScroll" ng-if="data.Id">
+                                                                    <td style="padding:5px 5px;width:5%;text-align:left;">{{data.AdName}}</td>
+                                                                    <td style="padding:5px 5px;width:15%;text-align:center;">{{data.AdSetName}}</td>
+                                                                    <td style="padding:5px 5px;width:16%;text-align:center;">{{data.CampaignName}}</td>
+                                                                    <td style="padding:5px 5px;width:4.5%;text-align:center;">{{data.StartDate}}</td>
+                                                                    <td style="padding:5px 5px;width:4.5%;text-align:center;">{{data.EndDate}}</td>
+                                                                    <td style="padding:5px 5px;width:4.5%;text-align:center;">{{data.Status}}</td>
+                                                                    <td style="padding:5px 5px;width:10%;text-align:center;">{{data.Objective}}</td>
+                                                                    <td style="padding:5px 5px;width:4.5%;text-align:center;">{{data.Reach}}</td>
+                                                                    <td style="padding:5px 5px;width:4.5%;text-align:center;">{{data.Impressions}}</td>
+                                                                    <td style="padding:5px 5px;width:4.5%;text-align:center;">{{data.Spend}}</td>
+                                                                    <td style="padding:5px 5px;width:4.5%;text-align:center;">{{data.CPM}}</td>
+                                                                    <td style="padding:5px 5px;width:4.5%;text-align:center;">{{data.Actions}}</td>
+                                                                    <td style="padding:5px 5px;width:4.5%;text-align:center;">{{data.CTR}}</td>
+                                                                    <td style="padding:5px 5px;width:4.5%;text-align:center;">{{data.AppStoreClicks}}</td>
+                                                                    <td style="padding:5px 5px;width:4.5%;text-align:center;">{{data.CostPerUniqueActionByType}}</td>
+                                                                    <td style="padding:5px 5px;width:4.5%;text-align:center;">{{data.Frequency}}</td>
+                                                                </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                        <div class="showmore" style="text-align:center" ng-show="chart.data.length>20">
+                                                            <a href ng-click="limitScroll=(limitScroll+10)" ng-show="limitScroll<chart.data.length">Show More</a>
+                                                            <span ng-show="limitScroll>20&&limitScroll<chart.data.length">|</span>
+                                                            <a href ng-click="limitScroll=(limitScroll-10)" ng-show="limitScroll>20">Show Less</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                     <!--<div class="context widgetTransparentImage" id="widgetTransparentImage-{{widget.id}}" ng-hide="tempDashboard" ng-click="callThePosition($event,widget.id)" style="width: 100%;height: 100%;"></div>-->
                                 </div>
@@ -1234,21 +1401,21 @@
                                                 </div>
                                             </div>
                                             <div class="row getWidgetGraph" style="height: 100%;margin:0px;" ng-if="customReport.widgetData[widget.id].visibility == true">
-                                                <div ng-repeat="(chartIndex,chart) in customReport.widgetData[widget.id].chart" ng-if="chart.options.chart.type=== 'lineChart' || chart.options.chart.type=== 'engagedUsersReach' || chart.options.chart.type=== 'area' ||chart.options.chart.type=== 'pieChart' || chart.options.chart.type=== 'reachVsImpressions' || chart.options.chart.type=== 'multiBarChart' || chart.options.chart.type=== 'multiChart'" style="float: left;padding-left: 2px;padding-right: 2px;" ng-style="{'height': (100/customReport.widgetData[widget.id].layoutOptionsY)+'%', 'width': (100/customReport.widgetData[widget.id].layoutOptionsX)+'%'}">
+                                                <div ng-repeat="(chartIndex,chart) in customReport.widgetData[widget.id].chart" ng-init="checkAllGraphsZeroForReportPdf(chart,pageIndex,widgetIndex,chartIndex)"  ng-if="chart.options.chart.type=== 'lineChart' || chart.options.chart.type=== 'engagedUsersReach' || chart.options.chart.type=== 'area' ||chart.options.chart.type=== 'pieChart' || chart.options.chart.type=== 'reachVsImpressions' || chart.options.chart.type=== 'multiBarChart' || chart.options.chart.type=== 'multiChart'" style="float: left;padding-left: 2px;padding-right: 2px;" ng-style="{'height': (100/customReport.widgetData[widget.id].layoutOptionsY)+'%', 'width': (100/customReport.widgetData[widget.id].layoutOptionsX)+'%'}">
                                                     <div class="col col-lg-4 col-sm-4 col-md-4" ng-if="customReport.widgetData[widget.id].showSummary !=false" style="margin:0px;height:100%;padding-left:5px;padding-right:5px;"><!--  ng-style="calculateSummaryHeight(widget.sizeY,chart.data.length)">-->
                                                         <ul style="height:100%;font-size:12px;padding-left: 5px;">
-                                                            <li  ng-repeat="data in chart.data" ng-class="{'summaryAlign': chart.data.length<=3}" style="text-align: center;padding-top: 1px;padding-left:0px;padding-right: 2px;font-size: 1.0em!important;" id="li-{{widget.id}}-{{$index}}" class="col col-lg-12" ng-style="calculateRowHeight(data,chart.data.length,widget.sizeY,customReport.widgetData[widget.id].layoutOptionsX)"><!--size-watcher-width="data.mywidth"--><!--ng-class="calculateColumnWidth(chart.data.length,widget.sizeX,customReport.widgetData[widget.id].layoutOptionsX)" ng-style="calculateRowHeight(data,chart.data.length,widget.sizeX,widget.sizeY,customReport.widgetData[widget.id].layoutOptionsX)"-->
-                                                                <div style="margin: 0px;height: 100%;overflow: hidden;white-space: nowrap;color: #000000;text-align: center;" >
+                                                            <li  ng-repeat="data in chart.data track by $index" ng-class=" (summaryAlignLessThanThree[pageIndex][widgetIndex][chartIndex]<3||chart.data.length<3)?'summaryAlign':'summaryAlignMoreThanThree'" style="text-align: center;padding-top: 1px;padding-left:0px;padding-right: 2px;font-size: 1.0em!important;" id="li-{{widget.id}}-{{$index}}" class="col col-lg-12" ng-style="calculateRowHeight(data,chart.data.length,widget.sizeY,customReport.widgetData[widget.id].layoutOptionsX)"><!--size-watcher-width="data.mywidth"--><!--ng-class="calculateColumnWidth(chart.data.length,widget.sizeX,customReport.widgetData[widget.id].layoutOptionsX)" ng-style="calculateRowHeight(data,chart.data.length,widget.sizeX,widget.sizeY,customReport.widgetData[widget.id].layoutOptionsX)"-->
+                                                                <div style="margin: 0px;height: 100%;overflow: hidden;white-space: nowrap;color: #000000;text-align: center;"  ng-if="toDisplayAllSummaryPdf[pageIndex][widgetIndex][chartIndex]?data.key != undefined:((chart.data.length===1 && data.key != undefined ) || (chart.data.length >1 && data.hasSnapshotData && data.summaryDisplay===0) || (chart.data.length >1 && data.summaryDisplay!==0))  " >
                                                                     <p class="summaryKeyFont" ng-class="{'reportSummaryKeyDoubleFont': customReport.widgetData[widget.id].layoutOptionsX>1}" ng-if="chart.options.chart.type != 'pieChart'" ng-show="data.showComparision==false" ng-style="{ 'font-family' : 'Montserrat-Regular','text-transform':'uppercase',  'border-bottom': '4px solid', 'border-color': data.color, 'padding-left': '3px'}" style="margin:0px 0px 3px!important;font-weight: bold;padding-top: 2px;padding-bottom: 2px;"> {{data.key}} - {{data.summaryDisplay}}{{data.unit}} <i ng-if="data.arrow==='up' && data.variance !=0" style="font-size:1.0em;color:#2A8539" class="fa fa-arrow-up" aria-hidden="true"></i><i ng-if='data.arrow==="down" && data.variance !=0' style="font-size: 1.0em;color:#FF1B1B" class="fa fa-arrow-down" aria-hidden="true"></i></p>
                                                                     <p class="summaryKeyFont" ng-class="{'reportSummaryKeyDoubleFont': customReport.widgetData[widget.id].layoutOptionsX>1}" ng-if="chart.options.chart.type == 'pieChart'" ng-show="data.showComparision==false" ng-style="{ 'font-family' : 'Montserrat-Regular','text-transform':'uppercase',  'border-bottom': '4px solid', 'border-color': data.color, 'padding-left': '3px'}" style="margin:0px 0px 3px!important;font-weight: bold;padding-top: 2px;padding-bottom: 2px;"> {{data.key}} - {{data.summaryDisplay}}{{data.unit}}</p>
-                                                                    <p class="summaryKeyFont" ng-class="{'reportSummaryKeyDoubleFont': customReport.widgetData[widget.id].layoutOptionsX>1}" ng-show="data.showComparision==true" ng-style="{ 'font-family' : 'Montserrat-Medium','text-transform':'uppercase',  'border-bottom': '4px solid', 'border-color': data.color, 'padding-left': '3px'}" style="margin:0px 0px 3px!important;font-weight: bold;padding-top: 2px;padding-bottom: 2px;"> {{data.key}}</p>
+                                                                    <p class="summaryKeyFont" ng-class="{'reportSummaryKeyDoubleFont': customReport.widgetData[widget.id].layoutOptionsX>1}" ng-show="data.showComparision==true&&data.key != undefined" ng-style="{ 'font-family' : 'Montserrat-Medium','text-transform':'uppercase',  'border-bottom': '4px solid', 'border-color': data.color, 'padding-left': '3px'}" style="margin:0px 0px 3px!important;font-weight: bold;padding-top: 2px;padding-bottom: 2px;"> {{data.key}}</p>
                                                                     <div class="col col-lg-12 col-sm-12 col-md-12 col-xs-12 " style="padding: 0px 0px 0px 0px!important;">
                                                                         <div class="col col-lg-5 col-sm-5 col-md-5 col-xs-5">
-                                                                            <p ng-show="data.showComparision==true" class="summaryFont" ng-class="{'summaryDoubleFont': customReport.widgetData[widget.id].layoutOptionsX>1}"ng-style="{ 'font-family' : 'Montserrat-Medium', 'text-transform':'uppercase', 'padding-left': '0px', 'border-right': '3px solid white','float':'left'}" style="margin:0px 0px 3px!important;font-weight: bold;"> {{data.summaryDisplay}}{{data.unit}}</p>
+                                                                            <p ng-show="data.showComparision==true&&data.key != undefined" class="summaryFont" ng-class="{'summaryDoubleFont': customReport.widgetData[widget.id].layoutOptionsX>1}"ng-style="{ 'font-family' : 'Montserrat-Medium', 'text-transform':'uppercase', 'padding-left': '0px', 'border-right': '3px solid white','float':'left'}" style="margin:0px 0px 3px!important;font-weight: bold;"> {{data.summaryDisplay}}{{data.unit}}</p>
                                                                         </div>
                                                                         <div class="col col-lg-7 col-sm-7 col-md-7 col-xs-7" style="padding: 0px 0px 0px 0px!important;">
                                                                             <!--<p ng-style="{'color': '#979797', 'font-family' : 'Heebo-Medium','font-size':'12px', 'text-transform':'uppercase', 'background-color': 'whitesmoke'}" style="margin:0px 0px 3px!important;font-weight: bold;">{{data.key}} - <b ng-style="{'color':data.color, 'font-family' : 'Heebo-Medium'}"> {{data.summaryDisplay}} </b></p>-->
-                                                                            <p ng-if="chart.options.chart.type != 'pieChart'" class="summaryKeyFont" ng-class="{'reportSummaryKeyDoubleFont': customReport.widgetData[widget.id].layoutOptionsX>1}" ng-show="data.showComparision==true" style="padding-top:3px;margin:1px 0px 1px!important;overflow: hidden;float: right;">{{data.period}}: <span ng-if="data.variance !=0">{{data.variance}}%  </span><i ng-if="data.arrow==='up' && data.variance !=0" style="font-size:0.8em;color:#2A8539" class="fa fa-arrow-up" aria-hidden="true"></i><i ng-if='data.arrow==="down" && data.variance !=0' style="font-size: 0.8em;color:#FF1B1B" class="fa fa-arrow-down" aria-hidden="true"></i></p>
+                                                                            <p ng-if="chart.options.chart.type != 'pieChart'" class="summaryKeyFont" ng-class="{'reportSummaryKeyDoubleFont': customReport.widgetData[widget.id].layoutOptionsX>1}" ng-show="data.showComparision==true&&data.key != undefined" style="padding-top:3px;margin:1px 0px 1px!important;overflow: hidden;float: right;">{{data.period}}: <span ng-if="data.variance !=0">{{data.variance}}%  </span><i ng-if="data.arrow==='up' && data.variance !=0" style="font-size:0.8em;color:#2A8539" class="fa fa-arrow-up" aria-hidden="true"></i><i ng-if='data.arrow==="down" && data.variance !=0' style="font-size: 0.8em;color:#FF1B1B" class="fa fa-arrow-down" aria-hidden="true"></i></p>
                                                                         </div>
                                                                     </div>
                                                                     <!--<p ng-if="chart.options.chart.type != 'pieChart'" style="font-size: 14px;font-family: Heebo-Light;">{{data.period}}- <span ng-if="data.variance !=0">{{data.variance}}%</span><i ng-if="data.arrow==='up' && data.variance !=0" style="font-size: 0.8em;color:#2A8539" class="fa fa-arrow-up" aria-hidden="true"></i><i ng-if='data.arrow==="down" && data.variance !=0' style="font-size: 0.8em;color:#FF1B1B" class="fa fa-arrow-down" aria-hidden="true"></i></p>-->
@@ -1937,18 +2104,18 @@
                                                             <button class="btn btn-primary gobutton-mode">Configure</button>
                                                         </div>
                                                         <!--<div class="col-md-12" style="width:100%;padding-top: 5px">-->
-                                                        <!--<div class="col-md-8" style="padding: 0px!important;float: left">-->
-                                                        <!--<select class="form-control m-b choose-text"-->
-                                                        <!--ng-show="actionTypeEnable[customReport.widgetData[widget.id].id]==true"-->
-                                                        <!--ng-model="actionTypeOptionsModel"-->
-                                                        <!--ng-options="str.name for str in actionTypeList"-->
-                                                        <!--ng-change="saveMeta(customReport.widgetData[widget.id].id,actionTypeOptionsModel)">-->
-                                                        <!--<option value="">Choose Objective</option>-->
-                                                        <!--</select>-->
-                                                        <!--</div>-->
-                                                        <!--<div class="col-md-2" style="float: left">-->
-                                                        <!--<button  ng-show="submitEnable[customReport.widgetData[widget.id].id]==true" class="btn btn-primary gobutton-mode" ng-click="reloadDashboard(customReport.widgetData[widget.id].id,actionTypeOptionsModel)">Go</button>-->
-                                                        <!--</div>-->
+                                                            <!--<div class="col-md-8" style="padding: 0px!important;float: left">-->
+                                                                <!--<select class="form-control m-b choose-text"-->
+                                                                        <!--ng-show="actionTypeEnable[customReport.widgetData[widget.id].id]==true"-->
+                                                                        <!--ng-model="actionTypeOptionsModel"-->
+                                                                        <!--ng-options="str.name for str in actionTypeList"-->
+                                                                        <!--ng-change="saveMeta(customReport.widgetData[widget.id].id,actionTypeOptionsModel)">-->
+                                                                    <!--<option value="">Choose Objective</option>-->
+                                                                <!--</select>-->
+                                                            <!--</div>-->
+                                                            <!--<div class="col-md-2" style="float: left">-->
+                                                                <!--<button  ng-show="submitEnable[customReport.widgetData[widget.id].id]==true" class="btn btn-primary gobutton-mode" ng-click="reloadDashboard(customReport.widgetData[widget.id].id,actionTypeOptionsModel)">Go</button>-->
+                                                            <!--</div>-->
                                                         <!--</div>-->
                                                         <!--<p ng-show="messageEnable[customReport.widgetData[widget.id].id]==true" style="margin:0px 0px 3px!important;font-weight: normal;color: #000000; font-family : Montserrat-Regular;font-size : 14px ; text-transform : uppercase ; text-align:center ; padding-left : 3px ; border-right : 3px solid white;"> Actions related to objective not yet registered </p>-->
                                                     </div>
@@ -2038,6 +2205,173 @@
                                                                             <td style="padding:5px 5px;width:12%;text-align:center;">{{data.likes}}</td>
                                                                             <td style="padding:5px 5px;width:12%;text-align:center;">{{data.dislikes}}</td>
                                                                             <td style="padding:5px 5px;width:12%;text-align:center;">{{data.shares}}</td>
+                                                                        </tr>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                                <div class="showmore" style="text-align:center" ng-show="chart.data.length>20">
+                                                                    <a href ng-click="limitScroll=(limitScroll+10)" ng-show="limitScroll<chart.data.length">Show More</a>
+                                                                    <span ng-show="limitScroll>20&&limitScroll<chart.data.length">|</span>
+                                                                    <a href ng-click="limitScroll=(limitScroll-10)" ng-show="limitScroll>20">Show Less</a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div ng-repeat="chart in customReport.widgetData[widget.id].chart" ng-if="chart.options.chart.type=== 'fbAdsAdgroupOverview'" style="float: left;padding-left: 2px;padding-right: 2px;" ng-style="{'height': (100/customReport.widgetData[widget.id].layoutOptionsY)+'%', 'width': (100/customReport.widgetData[widget.id].layoutOptionsX)+'%'}">
+                                                    <div class="row" style="margin: 0px;height: 100%" >
+                                                        <div events="events" style="height: 99%" ng-if="customReport.widgetData[widget.id].visibility == true" ng-init="limitScroll=20">
+                                                            <div class="scrollbar scrollInWidget" id="scroller">
+                                                                <div class="col-lg-12 table-responsive" style="overflow-x: hidden;padding:0px;">
+                                                                    <table  class="table table-striped">
+                                                                        <thead>
+                                                                        <tr style="padding:2px 5px;width:100%">
+                                                                            <th style="padding:5px 5px;width:5%;text-align:center;">Id</th>
+                                                                            <th style="padding:5px 5px;width:20%;text-align:center;">Name</th>
+                                                                            <th style="padding:5px 5px;width:6%;text-align:center;">Start Date</th>
+                                                                            <th style="padding:5px 5px;width:6%;text-align:center;">End Date</th>
+                                                                            <th style="padding:5px 5px;width:6%;text-align:center;">Status</th>
+                                                                            <th style="padding:5px 5px;width:6%;text-align:center;">Objective</th>
+                                                                            <th style="padding:5px 5px;width:6%;text-align:center;">Reach</th>
+                                                                            <th style="padding:5px 5px;width:6%;text-align:center;">Impressions</th>
+                                                                            <th style="padding:5px 5px;width:6%;text-align:center;">Spent</th>
+                                                                            <th style="padding:5px 5px;width:6%;text-align:center;">CPM</th>
+                                                                            <th style="padding:5px 5px;width:6%;text-align:center;">Clicks</th>
+                                                                            <th style="padding:5px 5px;width:6%;text-align:center;">CTR</th>
+                                                                            <th style="padding:5px 5px;width:6%;text-align:center;">CPC</th>
+                                                                            <th style="padding:5px 5px;width:6%;text-align:center;">Action</th>
+                                                                        </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                        <tr style="padding:2px 5px;width:100%" ng-repeat="data in chart.data | limitTo: limitScroll" ng-if="data.Id">
+                                                                            <td style="padding:5px 5px;width:5%;text-align:left;">{{data.Id}}</td>
+                                                                            <td style="padding:5px 5px;width:20%;text-align:center;">{{data.Name}}</td>
+                                                                            <td style="padding:5px 5px;width:5%;text-align:center;">{{data.StartDate}}</td>
+                                                                            <td style="padding:5px 5px;width:5%;text-align:center;">{{data.EndDate}}</td>
+                                                                            <td style="padding:5px 5px;width:5%;text-align:center;">{{data.status}}</td>
+                                                                            <td style="padding:5px 5px;width:5%;text-align:center;">{{data.Objective}}</td>
+                                                                            <td style="padding:5px 5px;width:5%;text-align:center;">{{data.reach}}</td>
+                                                                            <td style="padding:5px 5px;width:5%;text-align:center;">{{data.Impressions}}</td>
+                                                                            <td style="padding:5px 5px;width:5%;text-align:center;">{{data.Spent}}</td>
+                                                                            <td style="padding:5px 5px;width:5%;text-align:center;">{{data.CPM}}</td>
+                                                                            <td style="padding:5px 5px;width:5%;text-align:center;">{{data.Clicks}}</td>
+                                                                            <td style="padding:5px 5px;width:5%;text-align:center;">{{data.CTR}}</td>
+                                                                            <td style="padding:5px 5px;width:5%;text-align:center;">{{data.CPC}}</td>
+                                                                            <td style="padding:5px 5px;width:5%;text-align:center;">{{data.Conversions}}</td>
+                                                                        </tr>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                                <div class="showmore" style="text-align:center" ng-show="chart.data.length>20">
+                                                                    <a href ng-click="limitScroll=(limitScroll+10)" ng-show="limitScroll<chart.data.length">Show More</a>
+                                                                    <span ng-show="limitScroll>20&&limitScroll<chart.data.length">|</span>
+                                                                    <a href ng-click="limitScroll=(limitScroll-10)" ng-show="limitScroll>20">Show Less</a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div ng-repeat="chart in customReport.widgetData[widget.id].chart" ng-if="chart.options.chart.type=== 'fbAdsCampaignOverview'" style="float: left;padding-left: 2px;padding-right: 2px;" ng-style="{'height': (100/customReport.widgetData[widget.id].layoutOptionsY)+'%', 'width': (100/customReport.widgetData[widget.id].layoutOptionsX)+'%'}">
+                                                    <div class="row" style="margin: 0px;height: 100%" >
+                                                        <div events="events" style="height: 99%" ng-if="customReport.widgetData[widget.id].visibility == true" ng-init="limitScroll=20">
+                                                            <div class="scrollbar scrollInWidget" id="scroller">
+                                                                <div class="col-lg-12 table-responsive" style="overflow-x: hidden;padding:0px;">
+                                                                    <table  class="table table-striped">
+                                                                        <thead>
+                                                                        <tr style="padding:2px 5px;width:100%">
+                                                                            <th style="padding:5px 5px;width:5%;text-align:center;">Id</th>
+                                                                            <th style="padding:5px 5px;width:20%;text-align:center;">Name</th>
+                                                                            <th style="padding:5px 5px;width:5%;text-align:center;">Start Date</th>
+                                                                            <th style="padding:5px 5px;width:5%;text-align:center;">End Date</th>
+                                                                            <th style="padding:5px 5px;width:5%;text-align:center;">Status</th>
+                                                                            <th style="padding:5px 5px;width:10%;text-align:center;">Objective</th>
+                                                                            <th style="padding:5px 5px;width:5%;text-align:center;">Reach</th>
+                                                                            <th style="padding:5px 5px;width:5%;text-align:center;">Impressions</th>
+                                                                            <th style="padding:5px 5px;width:5%;text-align:center;">Spend</th>
+                                                                            <th style="padding:5px 5px;width:5%;text-align:center;">CPM</th>
+                                                                            <th style="padding:5px 5px;width:5%;text-align:center;">Actions</th>
+                                                                            <th style="padding:5px 5px;width:5%;text-align:center;">CTR</th>
+                                                                            <th style="padding:5px 5px;width:5%;text-align:center;">App Store Clicks</th>
+                                                                            <th style="padding:5px 5px;width:5%;text-align:center;">Cost per unique action by type</th>
+                                                                            <th style="padding:5px 5px;width:5%;text-align:center;">Frequency</th>
+                                                                            <th style="padding:5px 5px;width:5%;text-align:center;">Video avg view time</th>
+                                                                        </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                        <tr style="padding:2px 5px;width:100%" ng-repeat="data in chart.data | limitTo: limitScroll" ng-if="data.Id">
+                                                                            <td style="padding:5px 5px;width:5%;text-align:left;">{{data.Id}}</td>
+                                                                            <td style="padding:5px 5px;width:20%;text-align:center;">{{data.Name}}</td>
+                                                                            <td style="padding:5px 5px;width:5%;text-align:center;">{{data.StartDate}}</td>
+                                                                            <td style="padding:5px 5px;width:5%;text-align:center;">{{data.EndDate}}</td>
+                                                                            <td style="padding:5px 5px;width:5%;text-align:center;">{{data.status}}</td>
+                                                                            <td style="padding:5px 5px;width:10%;text-align:center;">{{data.Objective}}</td>
+                                                                            <td style="padding:5px 5px;width:5%;text-align:center;">{{data.reach}}</td>
+                                                                            <td style="padding:5px 5px;width:5%;text-align:center;">{{data.Impressions}}</td>
+                                                                            <td style="padding:5px 5px;width:5%;text-align:center;">{{data.Spent}}</td>
+                                                                            <td style="padding:5px 5px;width:5%;text-align:center;">{{data.CPM}}</td>
+                                                                            <td style="padding:5px 5px;width:5%;text-align:center;">{{data.Actions}}</td>
+                                                                            <td style="padding:5px 5px;width:5%;text-align:center;">{{data.CTR}}</td>
+                                                                            <td style="padding:5px 5px;width:5%;text-align:center;">{{data.AppStoreClicks}}</td>
+                                                                            <td style="padding:5px 5px;width:5%;text-align:center;">{{data.CostPerUniqueActionByType}}</td>
+                                                                            <td style="padding:5px 5px;width:5%;text-align:center;">{{data.Frequency}}</td>
+                                                                            <td style="padding:5px 5px;width:5%;text-align:center;">{{data.VideoAvgViewTime}}</td>
+                                                                        </tr>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                                <div class="showmore" style="text-align:center" ng-show="chart.data.length>20">
+                                                                    <a href ng-click="limitScroll=(limitScroll+10)" ng-show="limitScroll<chart.data.length">Show More</a>
+                                                                    <span ng-show="limitScroll>20&&limitScroll<chart.data.length">|</span>
+                                                                    <a href ng-click="limitScroll=(limitScroll-10)" ng-show="limitScroll>20">Show Less</a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div ng-repeat="chart in customReport.widgetData[widget.id].chart" ng-if="chart.options.chart.type=== 'fbAdsAdOverview'" style="float: left;padding-left: 2px;padding-right: 2px;" ng-style="{'height': (100/customReport.widgetData[widget.id].layoutOptionsY)+'%', 'width': (100/customReport.widgetData[widget.id].layoutOptionsX)+'%'}">
+                                                    <div class="row" style="margin: 0px;height: 100%" >
+                                                        <div events="events" style="height: 99%" ng-if="customReport.widgetData[widget.id].visibility == true" ng-init="limitScroll=20">
+                                                            <div class="scrollbar scrollInWidget" id="scroller">
+                                                                <div class="col-lg-12 table-responsive" style="overflow-x: hidden;padding:0px;">
+                                                                    <table  class="table table-striped">
+                                                                        <thead>
+                                                                        <tr style="padding:2px 5px;width:100%">
+                                                                            <th style="padding:5px 5px;width:5%;text-align:center;">Ad Name</th>
+                                                                            <th style="padding:5px 5px;width:15%;text-align:center;">Adset Name</th>
+                                                                            <th style="padding:5px 5px;width:15%;text-align:center;">Campaign Name</th>
+                                                                            <th style="padding:5px 5px;width:4.5%;text-align:center;">Start Date</th>
+                                                                            <th style="padding:5px 5px;width:4.5%;text-align:center;">End Date</th>
+                                                                            <th style="padding:5px 5px;width:4.5%;text-align:center;">Status</th>
+                                                                            <th style="padding:5px 5px;width:10%;text-align:center;">Objective</th>
+                                                                            <th style="padding:5px 5px;width:4.5%;text-align:center;">Reach</th>
+                                                                            <th style="padding:5px 5px;width:4.5%;text-align:center;">Impressions</th>
+                                                                            <th style="padding:5px 5px;width:4.5%;text-align:center;">Spend</th>
+                                                                            <th style="padding:5px 5px;width:4.5%;text-align:center;">CPM</th>
+                                                                            <th style="padding:5px 5px;width:4.5%;text-align:center;">Actions</th>
+                                                                            <th style="padding:5px 5px;width:4.5%;text-align:center;">CTR</th>
+                                                                            <th style="padding:5px 5px;width:4.5%;text-align:center;">App Store Clicks</th>
+                                                                            <th style="padding:5px 5px;width:4.5%;text-align:center;">Cost per unique action by type</th>
+                                                                            <th style="padding:5px 5px;width:4.5%;text-align:center;">Frequency</th>
+                                                                        </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                        <tr style="padding:2px 5px;width:100%" ng-repeat="data in chart.data | limitTo: limitScroll" ng-if="data.Id">
+                                                                            <td style="padding:5px 5px;width:5%;text-align:left;">{{data.AdName}}</td>
+                                                                            <td style="padding:5px 5px;width:20%;text-align:center;">{{data.AdsetName}}</td>
+                                                                            <td style="padding:5px 5px;width:20%;text-align:center;">{{data.CampaignName}}</td>
+                                                                            <td style="padding:5px 5px;width:5%;text-align:center;">{{data.StartDate}}</td>
+                                                                            <td style="padding:5px 5px;width:5%;text-align:center;">{{data.EndDate}}</td>
+                                                                            <td style="padding:5px 5px;width:5%;text-align:center;">{{data.Status}}</td>
+                                                                            <td style="padding:5px 5px;width:5%;text-align:center;">{{data.Objective}}</td>
+                                                                            <td style="padding:5px 5px;width:5%;text-align:center;">{{data.reach}}</td>
+                                                                            <td style="padding:5px 5px;width:5%;text-align:center;">{{data.Impressions}}</td>
+                                                                            <td style="padding:5px 5px;width:5%;text-align:center;">{{data.Spend}}</td>
+                                                                            <td style="padding:5px 5px;width:5%;text-align:center;">{{data.CPM}}</td>
+                                                                            <td style="padding:5px 5px;width:5%;text-align:center;">{{data.Actions}}</td>
+                                                                            <td style="padding:5px 5px;width:5%;text-align:center;">{{data.CTR}}</td>
+                                                                            <td style="padding:5px 5px;width:5%;text-align:center;">{{data.AppStoreClicks}}</td>
+                                                                            <td style="padding:5px 5px;width:5%;text-align:center;">{{data.CostPerUniqueActionByType}}</td>
+                                                                            <td style="padding:5px 5px;width:5%;text-align:center;">{{data.Frequency}}</td>
                                                                         </tr>
                                                                         </tbody>
                                                                     </table>
