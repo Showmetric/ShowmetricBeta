@@ -7642,8 +7642,8 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                         }
                                     }
                                 },
-                                tickInterval:7,
-                                max:categoriesArray.length-1
+                                tickInterval:1,
+                                // max:categoriesArray.length-1
                             },
                             yAxis: {
                                 title: {
@@ -7681,7 +7681,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                         };
                         finalChartData.push({
                             'options': chart,
-                            'data': finalCharts.twitterEngagements[0].values
+                            'data': finalCharts.twitterEngagements[charts].values
                         });
                     }
                     else if (finalCharts.twitterEngagements[charts].values.length > 0 && (finalCharts.twitterEngagements[charts].chartSubType === 'engagementByUsersTalkedAbout' || finalCharts.twitterEngagements[charts].chartSubType === 'hashTag')) {
