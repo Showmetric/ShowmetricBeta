@@ -1,15 +1,15 @@
-function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider, IdleProvider, KeepaliveProvider) {
-
+function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider, IdleProvider, KeepaliveProvider,$locationProvider,$qProvider) {
+    //To remove transition superseded error
+    $qProvider.errorOnUnhandledRejections(false);
+    //Remove ! symbol after # in url
+    $locationProvider.hashPrefix('');
     // Configure Idle settings
     IdleProvider.idle(5); // in seconds
     IdleProvider.timeout(120); // in seconds
-
     $urlRouterProvider.otherwise("/reporting");
-
     $ocLazyLoadProvider.config({
         debug: false
     });
-
     $stateProvider
 
         .state('app', {
