@@ -2741,6 +2741,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                                     comments: sortdata[key][i]['comments']['count']
                                                 })
                                             }
+
                                             var sortTime = _.groupBy(tempArray, 'time');
                                             for (var data in sortTime) {
                                                 var likes = 0;
@@ -7599,6 +7600,10 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                 })
                             }
                      //   }
+                        if(categoriesArray.length > 7)
+                            var timedifference=7
+                        else
+                            var timedifference=1
                         chartOptions = {
                             chart: {
                                 reflow: true,
@@ -7642,7 +7647,7 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                                         }
                                     }
                                 },
-                                tickInterval:1,
+                                tickInterval:timedifference,
                                 // max:categoriesArray.length-1
                             },
                             yAxis: {
