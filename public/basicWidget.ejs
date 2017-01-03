@@ -620,10 +620,10 @@
                                      ng-click="storeChannel(data);"
                                      id="channellist-{{data._id}}"
                                      ng-class="{'channelSelect': data.isSelected==1}">
-                                    <img ng-hide="data.name==='CustomData'" src="image/lightbox/{{data.name}}.png"
+                                        <img ng-hide="data.name==='CustomData'" src="image/lightbox/{{data.name}}.png"
                                          style="max-width: 100%;max-height:100%;padding: 15px 5px; "/>
-                                    <p ng-show="data.name==='CustomData'" class="model-title"
-                                       style="padding: 25px 5px;">Custom Data</p>
+                                        <p ng-show="data.name==='CustomData'" class="model-title"
+                                           style="padding: 25px 5px;">Custom Data</p>
                                 </div>
                                 <div><!--style="float:left"--><!--<h4>Coming soon</h4>-->
                                     <div ng-repeat="data in channelList | filter:{integrated: false}"
@@ -640,62 +640,62 @@
                                 <div class="col-lg-12" ng-repeat="referenceWidgetsList in referenceWidgetsList">
                                     <div class="col-xs-12"><img src="image/lightbox/{{referenceWidgetsList.channelName}}.png" style="width:150px;" ng-class="{'mozImage': referenceWidgetsList.channelName=='Moz'}"/></div>
                                     <div class="row" ng-if="referenceWidgetsList.isCxoPresent==true" ng-show="referenceWidgetsList.isCxoPresent==true">
-                                        <div class="col-xs-12 center" style="font-family: Montserrat-Bold"><h3>See an Overview</h3></div>
-                                        <div ng-repeat="referenceWidgets in referenceWidgetsList.widgets | filter:{level:'high'}"
-                                             name="{{referenceWidgets.name}}" ref="{{referenceWidgets.isSelectedMetric}}"
-                                             id="referenceWidgets-{{referenceWidgets._id}}"
-                                             style="border:{{referenceWidgets.border}}" ng-hide="metricContent"
-                                             class="col-lg-2 widget-icons showReferenceWidgets"
-                                             ng-click="storeReferenceWidget();">
-                                            <div ng-if="referenceWidgets.isSelectedMetric==1">
-                                                <div id="triangle-topright-{{referenceWidgets._id}}" class="triangle-topright">
-                                                    <i id="getCheck-{{referenceWidgets._id}}" class="fa fa-check getCheck"
-                                                       style="display:block;"></i>
-                                                </div>
-
-                                                <p id="metricNames-{{referenceWidgets._id}}" class="metricNames getMetricName">
-                                                    {{referenceWidgets.name}}</p>
+                                    <div class="col-xs-12 center" style="font-family: Montserrat-Bold"><h3>See an Overview</h3></div>
+                                    <div ng-repeat="referenceWidgets in referenceWidgetsList.widgets | filter:{level:'high'}"
+                                         name="{{referenceWidgets.name}}" ref="{{referenceWidgets.isSelectedMetric}}"
+                                         id="referenceWidgets-{{referenceWidgets._id}}"
+                                         style="border:{{referenceWidgets.border}}" ng-hide="metricContent"
+                                         class="col-lg-2 widget-icons showReferenceWidgets"
+                                         ng-click="storeReferenceWidget();">
+                                        <div ng-if="referenceWidgets.isSelectedMetric==1">
+                                            <div id="triangle-topright-{{referenceWidgets._id}}" class="triangle-topright">
+                                                <i id="getCheck-{{referenceWidgets._id}}" class="fa fa-check getCheck"
+                                                   style="display:block;"></i>
                                             </div>
 
-                                            <div ng-if="!(referenceWidgets.isSelectedMetric==1)">
-                                                <div id="triangle-topright-{{referenceWidgets._id}}">
-                                                    <i id="getCheck-{{referenceWidgets._id}}" class="fa fa-check getCheck"></i>
-                                                </div>
-
-                                                <p id="metricNames-{{referenceWidgets._id}}" class="metricNames">
-                                                    {{referenceWidgets.name}}</p>
-                                            </div>
-                                            <!-- <P class="metricDescription" >{{referenceWidgets.description}}</P> -->
+                                            <p id="metricNames-{{referenceWidgets._id}}" class="metricNames getMetricName">
+                                                {{referenceWidgets.name}}</p>
                                         </div>
+
+                                        <div ng-if="!(referenceWidgets.isSelectedMetric==1)">
+                                            <div id="triangle-topright-{{referenceWidgets._id}}">
+                                                <i id="getCheck-{{referenceWidgets._id}}" class="fa fa-check getCheck"></i>
+                                            </div>
+
+                                            <p id="metricNames-{{referenceWidgets._id}}" class="metricNames">
+                                                {{referenceWidgets.name}}</p>
+                                        </div>
+                                        <!-- <P class="metricDescription" >{{referenceWidgets.description}}</P> -->
+                                    </div>
                                     </div>
                                     <div class="row" ng-if="referenceWidgetsList.isExecutivePresent==true" ng-show="referenceWidgetsList.isExecutivePresent==true">
-                                        <div class="col-xs-12 center" style="font-family: Montserrat-Bold"><h3>Detailed Analysis</h3></div>
-                                        <div ng-repeat="referenceWidgets in referenceWidgetsList.widgets | filter:{level:'low'}"
-                                             name="{{referenceWidgets.name}}" ref="{{referenceWidgets.isSelectedMetric}}"
-                                             id="referenceWidgets-{{referenceWidgets._id}}"
-                                             style="border:{{referenceWidgets.border}}" ng-hide="metricContent"
-                                             class="col-lg-2 widget-icons showReferenceWidgets"
-                                             ng-click="storeReferenceWidget();">
-                                            <div ng-if="referenceWidgets.isSelectedMetric==1">
-                                                <div id="triangle-topright-{{referenceWidgets._id}}" class="triangle-topright">
-                                                    <i id="getCheck-{{referenceWidgets._id}}" class="fa fa-check getCheck"
-                                                       style="display:block;"></i>
-                                                </div>
-
-                                                <p id="metricNames-{{referenceWidgets._id}}" class="metricNames getMetricName">
-                                                    {{referenceWidgets.name}}</p>
+                                    <div class="col-xs-12 center" style="font-family: Montserrat-Bold"><h3>Detailed Analysis</h3></div>
+                                    <div ng-repeat="referenceWidgets in referenceWidgetsList.widgets | filter:{level:'low'}"
+                                         name="{{referenceWidgets.name}}" ref="{{referenceWidgets.isSelectedMetric}}"
+                                         id="referenceWidgets-{{referenceWidgets._id}}"
+                                         style="border:{{referenceWidgets.border}}" ng-hide="metricContent"
+                                         class="col-lg-2 widget-icons showReferenceWidgets"
+                                         ng-click="storeReferenceWidget();">
+                                        <div ng-if="referenceWidgets.isSelectedMetric==1">
+                                            <div id="triangle-topright-{{referenceWidgets._id}}" class="triangle-topright">
+                                                <i id="getCheck-{{referenceWidgets._id}}" class="fa fa-check getCheck"
+                                                   style="display:block;"></i>
                                             </div>
 
-                                            <div ng-if="!(referenceWidgets.isSelectedMetric==1)">
-                                                <div id="triangle-topright-{{referenceWidgets._id}}">
-                                                    <i id="getCheck-{{referenceWidgets._id}}" class="fa fa-check getCheck"></i>
-                                                </div>
-
-                                                <p id="metricNames-{{referenceWidgets._id}}" class="metricNames">
-                                                    {{referenceWidgets.name}}</p>
-                                            </div>
-                                            <!-- <P class="metricDescription" >{{referenceWidgets.description}}</P> -->
+                                            <p id="metricNames-{{referenceWidgets._id}}" class="metricNames getMetricName">
+                                                {{referenceWidgets.name}}</p>
                                         </div>
+
+                                        <div ng-if="!(referenceWidgets.isSelectedMetric==1)">
+                                            <div id="triangle-topright-{{referenceWidgets._id}}">
+                                                <i id="getCheck-{{referenceWidgets._id}}" class="fa fa-check getCheck"></i>
+                                            </div>
+
+                                            <p id="metricNames-{{referenceWidgets._id}}" class="metricNames">
+                                                {{referenceWidgets.name}}</p>
+                                        </div>
+                                        <!-- <P class="metricDescription" >{{referenceWidgets.description}}</P> -->
+                                    </div>
                                     </div>
                                 </div>
 
@@ -728,7 +728,7 @@
                                                 <div class="ibox float-e-margins">
                                                     <div class="ibox-title" style="vertical-align: middle">
                                                         <img src="image/lightbox/{{channel.name}}.png" align="left"
-                                                             style="max-height: 30px;max-width: 60px"/><span>{{channel.name}} Account</span>
+                                                                 style="max-height: 30px;max-width: 60px"/><span>{{channel.name}} Account</span>
                                                     </div>
                                                     <div class="ibox-content" style="display: block;">
                                                         <form class="form-horizontal">
@@ -1168,7 +1168,7 @@
                                                 <div class="ibox float-e-margins">
                                                     <div class="ibox-title" style="vertical-align: middle">
                                                         <img src="image/lightbox/{{channel.name}}.png" align="left"
-                                                             style="max-height: 15px;max-width: 60px"/>&nbsp&nbsp&nbsp{{channel.name}}
+                                                                 style="max-height: 15px;max-width: 60px"/>&nbsp&nbsp&nbsp{{channel.name}}
                                                     </div>
                                                     <div class="ibox-content" style="display: block;">
                                                         <form name="form1" class="form-horizontal">

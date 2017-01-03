@@ -2,6 +2,7 @@
 
 // set up ======================================================================
 // get all the tools we need
+var compression = require('compression')
 var express = require('express');
 var router = express.Router();
 var app = express();
@@ -75,6 +76,7 @@ app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
 app.use(flash()); // use connect-flash for flash messages stored in session
 app.use(fileUpload()); // use express-fileupload for uploading files
+app.use(compression()); //use compression
 app.use(express.static(__dirname + '/public'));
 app.use('/bower_components',  express.static(__dirname + '/bower_components'));
 app.use('/userFiles', express.static('../userFiles'));

@@ -69,15 +69,15 @@ function sideNavigation($timeout) {
  */
 
 function hcChart($timeout){
-    return {
-        restrict: 'E',
-        template: '<div></div>',
-        scope: {
-            options: '='
-        },
-        link: function (scope, element) {
-            $timeout(drawCharts, 200);
-            function drawCharts(){
+        return {
+            restrict: 'E',
+            template: '<div></div>',
+            scope: {
+                options: '='
+            },
+            link: function (scope, element) {
+                $timeout(drawCharts, 200);
+                function drawCharts(){
                 Highcharts.chart(element[0], scope.options);
             }
         }
@@ -131,11 +131,11 @@ function iboxTools($timeout) {
                     ibox.find('[id^=map-]').resize();
                 }, 50);
             };
-            // Function for close ibox
-            $scope.closebox = function () {
-                var ibox = $element.closest('div.ibox');
-                ibox.remove();
-            }
+                // Function for close ibox
+                $scope.closebox = function () {
+                    var ibox = $element.closest('div.ibox');
+                    ibox.remove();
+                }
         }
     };
 }
@@ -185,7 +185,7 @@ function iboxToolsFullScreen($timeout) {
 
 /**
  * minimalizaSidebar - Directive for minimalize sidebar
- */
+*/
 function minimalizaSidebar($timeout) {
     return {
         restrict: 'A',
@@ -195,20 +195,20 @@ function minimalizaSidebar($timeout) {
                 $("body").toggleClass("mini-navbar");
                 var screenWidth=$( window ).width();
                 if(screenWidth==768){
-                    if (!$('body').hasClass('mini-navbar')) {
-                        $("#side-menu").css("display", "none");
-                    }
-                    else {
-                        $("#side-menu").css("display", "block");
-                        //$('#side-menu').show();
-                    }
+                        if (!$('body').hasClass('mini-navbar')) {
+                            $("#side-menu").css("display", "none");
+                        }
+                        else {
+                            $("#side-menu").css("display", "block");
+                            //$('#side-menu').show();
+                        }
 
                 }
                 if (!$('body').hasClass('mini-navbar') || $('body').hasClass('body-small')) {
                     $('.tooltip').hide();
                     var width = document.getElementById('CustomTemplate').offsetWidth;
                     if(width<900){
-                        // $('#dashboardTitleIcons').hide();
+                       // $('#dashboardTitleIcons').hide();
                     }
                     // Hide menu in order to smoothly turn on when maximize menu
                     $('#side-menu').hide();
@@ -217,8 +217,8 @@ function minimalizaSidebar($timeout) {
                         function () {
                             $('#side-menu').fadeIn(500);
                             if (!$('body').hasClass('body-small')){
-                                /*document.getElementById('tabs-container-desk-view').setAttribute('style','padding-left: 221px;');
-                                 document.getElementById('tabs-container-response-view').setAttribute('style','padding-left: 221px;');*/
+                                    /*document.getElementById('tabs-container-desk-view').setAttribute('style','padding-left: 221px;');
+                                    document.getElementById('tabs-container-response-view').setAttribute('style','padding-left: 221px;');*/
                             }
                             else{
                                 //$('#dashboardTitleIcons').hide()
@@ -240,8 +240,8 @@ function minimalizaSidebar($timeout) {
                     if ($('body').hasClass('mini-navbar')){
                         $('.tooltip').show();
                         $('#dashboardTitleIcons').show();
-                        /* document.getElementById('tabs-container-desk-view').setAttribute('style','padding-left: 71px;');
-                         document.getElementById('tabs-container-response-view').setAttribute('style','padding-left: 71px;');*/
+                           /* document.getElementById('tabs-container-desk-view').setAttribute('style','padding-left: 71px;');
+                            document.getElementById('tabs-container-response-view').setAttribute('style','padding-left: 71px;');*/
 
                     }
 
@@ -346,17 +346,17 @@ function icheck($timeout) {
                     radioClass: 'iradio_square-green'
 
                 }).on('ifChanged', function(event) {
-                    if ($(element).attr('type') === 'checkbox' && $attrs['ngModel']) {
-                        $scope.$apply(function() {
-                            return ngModel.$setViewValue(event.target.checked);
-                        });
-                    }
-                    if ($(element).attr('type') === 'radio' && $attrs['ngModel']) {
-                        return $scope.$apply(function() {
-                            return ngModel.$setViewValue(value);
-                        });
-                    }
-                });
+                        if ($(element).attr('type') === 'checkbox' && $attrs['ngModel']) {
+                            $scope.$apply(function() {
+                                return ngModel.$setViewValue(event.target.checked);
+                            });
+                        }
+                        if ($(element).attr('type') === 'radio' && $attrs['ngModel']) {
+                            return $scope.$apply(function() {
+                                return ngModel.$setViewValue(value);
+                            });
+                        }
+                    });
             });
         }
     };
@@ -495,7 +495,7 @@ function clockPicker() {
     return {
         restrict: 'A',
         link: function(scope, element) {
-            element.clockpicker();
+                element.clockpicker();
         }
     };
 };
@@ -573,8 +573,8 @@ function sizeWatcher (){
             }
             else {
                 if (scope.sizeWatcherHeight == undefined && scope.sizeWatcherHeight == 0) {
-                    scope.sizeWatcherHeight = elem.prop('offsetHeight');
-                }
+                scope.sizeWatcherHeight = elem.prop('offsetHeight');
+            }
             }
         }
     };
@@ -586,14 +586,14 @@ function expSizeWatcher (){
             expSizeWatcherHeight:'='
         },
         link: function( scope, elem, attrs,expChartSizeCtrl) {
-            if(scope.expSizeWatcherHeight == undefined && scope.expSizeWatcherHeight == 0){
+                if(scope.expSizeWatcherHeight == undefined && scope.expSizeWatcherHeight == 0){
                 scope.expSizeWatcherHeight = elem.prop('offsetHeight');
             }
         }
     };
 }
 
-function fileModel($parse){
+ function fileModel($parse){
     return {
         restrict: 'A',
         link: function(scope, element, attrs){

@@ -1,0 +1,72 @@
+execPath: /usr/local/bin/node
+-----------------------
+argv: node, /Users/sebastiend/Dev/Perso/Node/node-crashreporter/example/basic.js
+-----------------------
+current directory: /Users/sebastiend/Dev/Perso/Node/node-crashreporter
+-----------------------
+env:
+{ TERM_PROGRAM: 'Apple_Terminal',
+  SHELL: '/bin/bash',
+  TERM: 'xterm-256color',
+  TMPDIR: '/var/folders/cs/v0377d5552n7ldgn9mwf9xt40000gn/T/',
+  Apple_PubSub_Socket_Render: '/tmp/launch-EMR344/Render',
+  TERM_PROGRAM_VERSION: '309',
+  TERM_SESSION_ID: '077AAADB-D2CC-4A31-99F2-6CEE8CED6237',
+  USER: 'sebastiend',
+  COMMAND_MODE: 'unix2003',
+  SSH_AUTH_SOCK: '/tmp/launch-jumGvE/Listeners',
+  Apple_Ubiquity_Message: '/tmp/launch-bgWET7/Apple_Ubiquity_Message',
+  __CF_USER_TEXT_ENCODING: '0x1F5:0:91\n',
+  PATH: '/Users/sebastiend/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/local/git/bin',
+  PWD: '/Users/sebastiend/Dev/Perso/Node/node-crashreporter',
+  EDITOR: 'subl -w',
+  LANG: 'fr_FR.UTF-8',
+  HOME: '/Users/sebastiend',
+  'COM_GOOGLE_CHROME_FRAMEWORK_SERVICE_PROCESS/USERS/SEBASTIEND/LIBRARY/APPLICATION_SUPPORT/GOOGLE/CHROME_SOCKET': '/tmp/launch-8PBznG/ServiceProcessSocket',
+  SHLVL: '1',
+  LOGNAME: 'sebastiend',
+  SECURITYSESSIONID: '186a4',
+  _: '/usr/local/bin/node',
+  OLDPWD: '/Users/sebastiend/Dev/Perso/Node' }
+-----------------------
+gid: 20
+-----------------------
+uid: 501
+-----------------------
+pid: 12204
+-----------------------
+process title: node
+-----------------------
+uptime (sec): 0
+-----------------------
+arch: x64
+-----------------------
+versions:
+{ http_parser: '1.0',
+  node: '0.8.20',
+  v8: '3.11.10.25',
+  ares: '1.7.5-DEV',
+  uv: '0.8',
+  zlib: '1.2.3',
+  openssl: '1.0.0f' }
+-----------------------
+memory usage:
+{ rss: 13627392, heapTotal: 6131200, heapUsed: 2298728 }
+-----------------------
+require.cache:
+/Users/sebastiend/Dev/Perso/Node/node-crashreporter/lib/crashreporter.js
+-----------------------
+active handle:
+[]
+-----------------------
+active request:
+[]
+-----------------------
+Error: foo
+    at Object.<anonymous> (/Users/sebastiend/Dev/Perso/Node/node-crashreporter/example/basic.js:2:7)
+    at Module._compile (module.js:449:26)
+    at Object.Module._extensions..js (module.js:467:10)
+    at Module.load (module.js:356:32)
+    at Function.Module._load (module.js:312:12)
+    at Module.runMain (module.js:492:10)
+    at process.startup.processNextTick.process._tickCallback (node.js:244:9)

@@ -44,7 +44,7 @@ function LightBoxController($scope, $uibModal, $log, $state,$rootScope) {
         });
         modalInstance.result.then(function (selectedItem) {
             $scope.selected = selectedItem;
-            $state.go('app.reporting.dashboards');
+                $state.go('app.reporting.dashboards');
         }, function () {
             $state.go('app.reporting.dashboards');
         });

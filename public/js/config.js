@@ -3,13 +3,10 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider, IdlePro
     // Configure Idle settings
     IdleProvider.idle(5); // in seconds
     IdleProvider.timeout(120); // in seconds
-
     $urlRouterProvider.otherwise("/reporting");
-
     $ocLazyLoadProvider.config({
         debug: false
     });
-
     $stateProvider
 
         .state('app', {
@@ -41,46 +38,46 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider, IdlePro
                             function successCallback(response) {
                                 $rootScope.subscriptionDetails = response.data.userDetails;
                                 if(repeat==0) {
-                                    if (response.data.userDetails.statusCode === 1002) {
-                                        $rootScope.isExpired = true;
-                                        $state.go('.upgrade');
-                                    }
-                                    else {
-                                        $rootScope.isExpired = false;
-                                        var expiryDate = moment(response.data.userDetails.organization[0].subscriptionExpiresOn);
-                                        var currentDate = moment(new Date).format("YYYY-MM-DD");
-                                        currentDate = moment(currentDate);
-                                        var diffDays = expiryDate.diff(currentDate, 'days');
-                                        if (diffDays < 4) {
-                                            toastr.info("Hi, welcome to Datapoolt.Your pricing plan is going to expire soon.Please upgrade to access Datapoolt", 'Expiry Warning', {
-                                                "closeButton": true,
-                                                "debug": false,
-                                                "progressBar": true,
-                                                "preventDuplicates": false,
-                                                "positionClass": "toast-top-right",
-                                                "onclick": null,
-                                                "showDuration": "4000",
-                                                "hideDuration": "1000",
-                                                "timeOut": "7000",
-                                                "extendedTimeOut": "1000",
-                                                "showEasing": "swing",
-                                                "hideEasing": "linear",
-                                                "showMethod": "fadeIn",
-                                                "hideMethod": "fadeOut"
-                                            });
-                                        }
-                                        if (response.data.userDetails.user[0].lastDashboardId) {
-                                            $scope.loadingVariable = '';
-                                            if (response.data.userDetails.user[0].lastDashboardId != 'undefined')
-                                                $state.go('.dashboards');
-                                            else
-                                                $scope.createNewDashboard();
+                                        if (response.data.userDetails.statusCode === 1002) {
+                                            $rootScope.isExpired = true;
+                                            $state.go('.upgrade');
                                         }
                                         else {
-                                            $scope.createNewDashboard();
-                                        }
+                                            $rootScope.isExpired = false;
+                                            var expiryDate = moment(response.data.userDetails.organization[0].subscriptionExpiresOn);
+                                            var currentDate = moment(new Date).format("YYYY-MM-DD");
+                                            currentDate = moment(currentDate);
+                                            var diffDays = expiryDate.diff(currentDate, 'days');
+                                            if (diffDays < 4) {
+                                                toastr.info("Hi, welcome to Datapoolt.Your pricing plan is going to expire soon.Please upgrade to access Datapoolt", 'Expiry Warning', {
+                                                    "closeButton": true,
+                                                    "debug": false,
+                                                    "progressBar": true,
+                                                    "preventDuplicates": false,
+                                                    "positionClass": "toast-top-right",
+                                                    "onclick": null,
+                                                    "showDuration": "4000",
+                                                    "hideDuration": "1000",
+                                                    "timeOut": "7000",
+                                                    "extendedTimeOut": "1000",
+                                                    "showEasing": "swing",
+                                                    "hideEasing": "linear",
+                                                    "showMethod": "fadeIn",
+                                                    "hideMethod": "fadeOut"
+                                                });
+                                            }
+                                            if (response.data.userDetails.user[0].lastDashboardId) {
+                                                $scope.loadingVariable = '';
+                                                if (response.data.userDetails.user[0].lastDashboardId != 'undefined')
+                                                    $state.go('.dashboards');
+                                                else
+                                                    $scope.createNewDashboard();
+                                            }
+                                            else {
+                                                $scope.createNewDashboard();
+                                            }
 
-                                    }
+                                        }
                                     repeat++;
                                 }
                                 else {
@@ -273,7 +270,7 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider, IdlePro
             }
         })
         .state('app.reporting.accountManagement', {
-            url: "/accountManagement",
+                url: "/accountManagement",
             views: {
                 'main@app': {
                     templateUrl: "accountManagement.ejs"

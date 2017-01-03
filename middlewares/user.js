@@ -306,9 +306,9 @@ exports.fetchUserActivityDetails = function (req, res, next) {
                 return res.status(204).json({error: 'No records found'});
             else{
                 if(UserActivityDetails.length==1)
-                    req.app.result = true;
+                req.app.result = true;
                 else
-                    req.app.result = false;
+                req.app.result = false;
                 next();
             }
         })
@@ -338,7 +338,7 @@ exports.removeUserUnderAdmin = function (req, res, next) {
         user.findOne({'_id': req.body.userId}, function (err, usersDetails) {
             if (err)
                 return res.status(500).json({error: 'Internal server error'});
-            else if(!usersDetails)
+                else if(!usersDetails)
                 removeUser();
             else {
                 for(var i=0;i<usersDetails.dashboards.length;i++)
@@ -378,7 +378,7 @@ exports.removeUserUnderAdmin = function (req, res, next) {
                 if (err)
                     return res.status(500).json({error: 'Internal server error'});
                 else if (!dashboard)
-                    removeUser();
+                  removeUser();
                 else {
                     reportList.find({'userId': req.body.userId}, function (err, reportDetails) {
                         if (err)
@@ -389,12 +389,12 @@ exports.removeUserUnderAdmin = function (req, res, next) {
                             var reportIdArray=[];
                             for(var i in reportDetails)
                                 reportIdArray.push(reportDetails[i]._id);
-                            Widget.remove({'reportId': {$in:reportIdArray}}, function (err, widget) {
-                                if (err)
-                                    return res.status(500).json({error: 'Internal server error'});
-                                else
-                                    removeReport();
-                            })
+                                Widget.remove({'reportId': {$in:reportIdArray}}, function (err, widget) {
+                                    if (err)
+                                        return res.status(500).json({error: 'Internal server error'});
+                                    else
+                                        removeReport();
+                                })
                         }
                     })
                 }

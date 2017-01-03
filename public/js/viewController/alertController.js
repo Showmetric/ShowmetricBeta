@@ -77,7 +77,7 @@ function AlertController($scope, $http, $q, $state, $rootScope, $window, $stateP
 
         }
 
-    };
+};
 
     $scope.fetchWidgetAlerts = function () {
         $http({

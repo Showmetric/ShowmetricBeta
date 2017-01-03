@@ -104,20 +104,20 @@
     <div class="gridAlign scroller"  ng-show="allDashboards != null && gridloading === false " ng-style="{'height': dashboardHeight+'px'}">
         <div class="row" ng-repeat="dashboardList in allDashboards">
             <div class="usernameTitle">{{dashboardList[0].userName}}</div>
-            <div class="col col-lg-2 grid-font grid-text"  ng-repeat="dashboards in dashboardList" ng-click="selectDashboard(dashboards)" ng-style="dashboards.isSelected==true  && {'border': '2px solid #04509B'}  || dashboards.isSelected==true && {'border': '0px solid #eaeff3'} " >
-                <div style="height: 10px; cursor: pointer;" ng-if="dashboards.isSelected==true" class="col-lg-1 pull-right"><i class="fa fa-check" style="color: green" aria-hidden="true"></i></div>
-                <div style="height: 40px" class="contentName">
-                    <div class="dashboards col-lg-2"  ng-if="(dashboards.dashboard.name == null || dashboards.dashboard.name==' ')" >
-                        <a style="color:#9A9A9A">Unnamed Dashboard</a>
-                    </div>
+        <div class="col col-lg-2 grid-font grid-text"  ng-repeat="dashboards in dashboardList" ng-click="selectDashboard(dashboards)" ng-style="dashboards.isSelected==true  && {'border': '2px solid #04509B'}  || dashboards.isSelected==true && {'border': '0px solid #eaeff3'} " >
+            <div style="height: 10px; cursor: pointer;" ng-if="dashboards.isSelected==true" class="col-lg-1 pull-right"><i class="fa fa-check" style="color: green" aria-hidden="true"></i></div>
+            <div style="height: 40px" class="contentName">
+                <div class="dashboards col-lg-2"  ng-if="(dashboards.dashboard.name == null || dashboards.dashboard.name==' ')" >
+                    <a style="color:#9A9A9A">Unnamed Dashboard</a>
+                </div>
 
-                    <div class="dashboards col-lg-2" ng-if="dashboards.dashboard.name != null">
-                        <a style="color:#000">{{dashboards.dashboard.name}}</a>
-                    </div>
+                <div class="dashboards col-lg-2" ng-if="dashboards.dashboard.name != null">
+                    <a style="color:#000">{{dashboards.dashboard.name}}</a>
                 </div>
             </div>
         </div>
-        <div class="center grid-font" ng-if="allDashboards.length===0 || allDashboards==null "><p>You don't have access to any dashboards yet</p></div>
+        </div>
+            <div class="center grid-font" ng-if="allDashboards.length===0 || allDashboards==null "><p>You don't have access to any dashboards yet</p></div>
     </div>
     <!--<div class="col col-sm-12 col-md-12 col-lg-12 text-right" ng-show="dashboardList != null && gridloading === false "  style="height: 100px !important;margin:10px !important;">-->
     <!--<button class="componentBtn btn-4 btn-4b icon-arrow-left" id="reportBackButton"-->

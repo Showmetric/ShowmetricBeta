@@ -12,7 +12,7 @@ function ProfileListController($scope, $http, $window, $stateParams) {
             function successCallback(response) {
                 $scope.userDetail=response.data.user;
                 $scope.profileListArray = response.data.profileList;
-                // k=$scope.profileListArray.indexOf($scope.profile)
+               // k=$scope.profileListArray.indexOf($scope.profile)
                 if($scope.profile._id !== undefined){
                     k = $scope.profileListArray.map(function(e) { return e._id; }).indexOf($scope.profile._id);
                     if( k !== -1){
@@ -47,7 +47,7 @@ function ProfileListController($scope, $http, $window, $stateParams) {
         }).then(
             function successCallback(response) {
                 var channels = response.data;
-                for(i in channels)
+                    for(i in channels)
                     $scope.channelList=channels
             },
             function errorCallback(error) {
@@ -120,7 +120,7 @@ function ProfileListController($scope, $http, $window, $stateParams) {
         popupwindow(url, title, 1000, 500);
     };
     $scope.refreshProfile = function (profile) {
-        var storedChannelName= profile.channelName;
+      var storedChannelName= profile.channelName;
         $scope.profile=profile;
         var url, title;
         function popupwindow(url, title, w, h) {
@@ -181,7 +181,7 @@ function ProfileListController($scope, $http, $window, $stateParams) {
         popupwindow(url, title, 1000, 500);
     };
     $window.afterAuthentication = function () {
-        $scope.configProfileListModal();
+         $scope.configProfileListModal();
         if ($scope.currentView === 'step_one') {
             $scope.configProfileListModal()
         }

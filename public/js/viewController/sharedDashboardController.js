@@ -8,14 +8,19 @@ function SharedDashboardController($scope,$timeout,$rootScope,$http,$window,$sta
     $scope.currentDate=moment(new Date()).format("YYYY-DD-MM");
     $scope.summaryAlignLessThanThree = [];
     $scope.toDisplayAllSummary = [];
-    $scope.checkAllGraphsZero = function (chart, widgetIndex) {
+    $scope.checkAllGraphsZero = function (chart, widgetIndex,chartIndex) {
+        if($scope.summaryAlignLessThanThree[widgetIndex] == undefined)
+            $scope.summaryAlignLessThanThree[widgetIndex]=[];
+        if($scope.toDisplayAllSummary[widgetIndex] == undefined)
+            $scope.toDisplayAllSummary[widgetIndex]=[];
         var count = 0;
         for (var i = 0; i < chart.data.length; i++) {
             if (chart.data[i].summaryDisplay === 0)
                 count += 1;
         }
-        $scope.summaryAlignLessThanThree[widgetIndex]=chart.data.length - count;
-        if (count === chart.data.length) $scope.toDisplayAllSummary[widgetIndex] = true;
+        $scope.summaryAlignLessThanThree[widgetIndex][chartIndex]=chart.data.length - count;
+        if (count === chart.data.length) $scope.toDisplayAllSummary[widgetIndex][chartIndex] = true;
+        else $scope.toDisplayAllSummary[widgetIndex][chartIndex] = false;
     }
     //Sets up all the required parameters for the dashboard to function properly when it is initially loaded. This is called in the ng-init function of the dashboard template
     $scope.dashboardConfiguration = function () {
@@ -47,9 +52,9 @@ function SharedDashboardController($scope,$timeout,$rootScope,$http,$window,$sta
                         dateRange = response.data.response.limits.dateRange;
                         $scope.userModifyDate(dateRange)
                     }
-                    else{
-                        $scope.userModifyDate(365)
-                    }
+                        else{
+                            $scope.userModifyDate(365)
+                        }
                     // $scope.userModifyDate(startDate,endDate)
                 }
             )
@@ -75,16 +80,16 @@ function SharedDashboardController($scope,$timeout,$rootScope,$http,$window,$sta
 
 
         $scope.setChartSize = function (index, childIndex) {
-            $timeout(callAtTimeout, 100);
-            function callAtTimeout() {
-                if (document.getElementById('chartOptions' + index) != null) {
-                    var parentWidth = document.getElementById('chartOptions' + index).offsetWidth;
-                    var parentHeight = document.getElementById('chartOptions' + index).offsetHeight;
-                    document.getElementById('chartRepeat' + index + '-' + childIndex).style.height = parentHeight + 'px'
-                    document.getElementById('chartRepeat' + index + '-' + childIndex).style.width = parentWidth + 'px';
+                $timeout(callAtTimeout, 100);
+                function callAtTimeout() {
+                    if (document.getElementById('chartOptions' + index) != null) {
+                        var parentWidth = document.getElementById('chartOptions' + index).offsetWidth;
+                        var parentHeight = document.getElementById('chartOptions' + index).offsetHeight;
+                        document.getElementById('chartRepeat' + index + '-' + childIndex).style.height = parentHeight + 'px'
+                        document.getElementById('chartRepeat' + index + '-' + childIndex).style.width = parentWidth + 'px';
+                    }
                 }
             }
-        }
 
 
         //Setting up grid configuration for widgets
@@ -202,40 +207,40 @@ function SharedDashboardController($scope,$timeout,$rootScope,$http,$window,$sta
         };
 
         $scope.calculateRowHeight = function(data,noOfItems,widgetWidth,widgetHeight,noOfCharts) {
-            /*
-             widgetWidth = Math.floor(widgetWidth/noOfCharts);
-             if(widgetWidth < 1)
-             widgetWidth = 1;
+                    /*
+            widgetWidth = Math.floor(widgetWidth/noOfCharts);
+            if(widgetWidth < 1)
+                widgetWidth = 1;
 
-             var cols;
+            var cols;
 
-             if(widgetWidth == 1)
-             cols =1;
-             else {
-             if(widgetWidth == 2){
-             if(noOfItems <= 2)
-             cols=1;
-             else
-             cols =2;
-             }
-             else {
-             if(noOfItems <= 2)
-             cols = 1;
-             else if(noOfItems > 2  && noOfItems <= 4)
-             cols = 2;
-             else
-             cols = 3;
-             }
-             }
-             if(cols === 1){
-             if(widgetHeight > 1 && noOfItems <= 2)
-             data.showComparision = true;
-             else
-             data.showComparision = false;
-             }
-             else
-             data.showComparision = true;
-             */
+            if(widgetWidth == 1)
+                cols =1;
+            else {
+                if(widgetWidth == 2){
+                    if(noOfItems <= 2)
+                        cols=1;
+                    else
+                        cols =2;
+                }
+                else {
+                    if(noOfItems <= 2)
+                        cols = 1;
+                    else if(noOfItems > 2  && noOfItems <= 4)
+                        cols = 2;
+                    else
+                        cols = 3;
+                }
+            }
+            if(cols === 1){
+                if(widgetHeight > 1 && noOfItems <= 2)
+                    data.showComparision = true;
+                else
+                    data.showComparision = false;
+            }
+            else
+                data.showComparision = true;
+                     */
             data.showComparision = true;
         };
 

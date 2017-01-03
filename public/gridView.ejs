@@ -8,7 +8,7 @@
             <div class="sk-double-bounce2"></div>
         </div>
     </div>
-    <div class="row" ng-show="dashboardList != null && gridloading === false ">
+    <div class="row" ng-show="dashboardList != null && gridloading === false">
         <div class="col col-lg-2 grid-font grid-text"  ng-repeat="dashboards in dashboardList" >
             <div style="height: 10px; cursor: pointer;" ng-click="deleteDashboard(dashboards.dashboard)" class="col-lg-1 pull-right"><i class="fa fa-times" aria-hidden="true"></i></div>
             <div style="height: 40px" class="contentName">
@@ -27,18 +27,18 @@
     <div class="row" ng-show="allDashboards != null && gridloading === false ">
         <div class="row" ng-repeat="dashboardList in allDashboards">
             <div class="usernameTitle">{{dashboardList[0].userName}}'s Dashboards </div>
-            <div class="col col-lg-2 grid-font grid-text"  ng-repeat="dashboards in dashboardList" >
-                <div style="height: 10px; cursor: pointer;" ng-click="deleteDashboard(dashboards.dashboard)" class="col-lg-1 pull-right"><i class="fa fa-times" aria-hidden="true"></i></div>
-                <div style="height: 40px" class="contentName">
-                    <div class="dashboards col-lg-2"  ng-if="(dashboards.dashboard.name == null || dashboards.dashboard.name==' ')">
-                        <a ui-sref="app.reporting.dashboard({id: dashboards.dashboard._id})" style="color:#9A9A9A">Unnamed Dashboard</a>
-                    </div>
+        <div class="col col-lg-2 grid-font grid-text"  ng-repeat="dashboards in dashboardList" >
+            <div style="height: 10px; cursor: pointer;" ng-click="deleteDashboard(dashboards.dashboard)" class="col-lg-1 pull-right"><i class="fa fa-times" aria-hidden="true"></i></div>
+            <div style="height: 40px" class="contentName">
+                <div class="dashboards col-lg-2"  ng-if="(dashboards.dashboard.name == null || dashboards.dashboard.name==' ')">
+                    <a ui-sref="app.reporting.dashboard({id: dashboards.dashboard._id})" style="color:#9A9A9A">Unnamed Dashboard</a>
+                </div>
 
-                    <div class="dashboards col-lg-2" ng-if="dashboards.dashboard.name != null">
-                        <a ui-sref="app.reporting.dashboard({id: dashboards.dashboard._id})" style="color:#232c3b">{{dashboards.dashboard.name}}</a>
-                    </div>
+                <div class="dashboards col-lg-2" ng-if="dashboards.dashboard.name != null">
+                    <a ui-sref="app.reporting.dashboard({id: dashboards.dashboard._id})" style="color:#232c3b">{{dashboards.dashboard.name}}</a>
                 </div>
             </div>
+        </div>
         </div><br>
         <div class="grid-font" ng-if="allDashboards.length===0"><p>No Dashboard Available</p></div>
 

@@ -27,7 +27,7 @@ exports.getDashboardList = function (req, res, next) {
             dashboardList.findOne({_id: UserDashboardCollection}, function (err, dashboard) {
                 if (err)
                     deferred.reject(new Error(err));
-                else if(!dashboard)
+                 else if(!dashboard)
                     deferred.resolve(null);
                 else {
                     dashboardDetails.dashboard = dashboard;
@@ -39,31 +39,31 @@ exports.getDashboardList = function (req, res, next) {
             return deferred.promise;
         }
         if(req.user.roleId==configAuth.userRoles.viewer){
-            var userDashboard = [];
-            User.findOne({_id: req.user._id}, function (err, UserCollection) {
-                if (err)
-                    return res.status(500).json({error: 'Internal server error'});
-                else if (!UserCollection)
-                    return res.status(204).json({error: 'No records found'});
-                else {
-                    for (var i = 0; i < UserCollection.dashboards.length; i++) {
-                        userDashboard.push(getDashboard(UserCollection.dashboards[i].dashboardId,UserCollection._id,UserCollection.name));
-                    }
-                    Q.all(userDashboard).then(function successCallback(userDashboard) {
-                        if (!userDashboard) {
-                            return res.status(501).json({error: 'Not implemented'})
-                        }
-                        else {
-
-                            req.app.result = _.without(userDashboard,null);
-                            next();
-                        }
-                    }, function errorCallback(err) {
-                        return res.status(500).json({error: 'Internal server error'});
-                    });
+        var userDashboard = [];
+        User.findOne({_id: req.user._id}, function (err, UserCollection) {
+            if (err)
+                return res.status(500).json({error: 'Internal server error'});
+            else if (!UserCollection)
+                return res.status(204).json({error: 'No records found'});
+            else {
+                for (var i = 0; i < UserCollection.dashboards.length; i++) {
+                    userDashboard.push(getDashboard(UserCollection.dashboards[i].dashboardId,UserCollection._id,UserCollection.name));
                 }
-            });
-        }
+                Q.all(userDashboard).then(function successCallback(userDashboard) {
+                    if (!userDashboard) {
+                        return res.status(501).json({error: 'Not implemented'})
+                    }
+                    else {
+
+                        req.app.result = _.without(userDashboard,null);
+                        next();
+                    }
+                }, function errorCallback(err) {
+                    return res.status(500).json({error: 'Internal server error'});
+                });
+            }
+        });
+    }
         else if(req.user.roleId==configAuth.userRoles.admin){
             var userDashboard = [];
             User.find({orgId: req.user.orgId}, function (err, UserCollection) {
@@ -87,8 +87,8 @@ exports.getDashboardList = function (req, res, next) {
                         }
                     }, function errorCallback(err) {
                         return res.status(500).json({error: 'Internal server error'});
-                    });
-                }
+            });
+        }
             });
         }
         else return res.status(401).json({error: 'Authentication required to perform this action'});
@@ -100,7 +100,7 @@ exports.getDashboardList = function (req, res, next) {
  * @param req contains the dashboard id
  */
 exports.getDashboardDetails = function (req, res, next) {
-    if (req.user && req.query.dashboardId===undefined) {
+        if (req.user && req.query.dashboardId===undefined) {
         var dashboardId = req.params.dashboardId;
         dashboardList.findOne({'_id': dashboardId}, function (err, dashboardDetails) {
             if (err)
@@ -113,7 +113,7 @@ exports.getDashboardDetails = function (req, res, next) {
             }
         })
     }
-    else if(String(req.params.dashboardId) === String(null)){
+        else if(String(req.params.dashboardId) === String(null)){
         var dashboardId = req.query.dashboardId;
         dashboardList.findOne({'_id': dashboardId}, function (err, dashboardDetails) {
             if (err)
@@ -309,9 +309,9 @@ exports.removeDashboardFromUser = function (req, res, next) {
                     for(var i=0;i<widget.length;i++)
                         widgets.push(widget[i]._id);
                     Alert.remove({'widgetId':{$in:widgets}},function (err, alert) {
-                        if (err)
-                            return res.status(500).json({error: 'Internal server error'});
-                        else removeWidget();
+                            if (err)
+                                return res.status(500).json({error: 'Internal server error'});
+                            else removeWidget();
                     })
                 }
             })
@@ -345,21 +345,21 @@ exports.removeDashboardFromUser = function (req, res, next) {
 //To get dashboard details based on reportid
 exports.getDashboardDetailsFromReportId = function (req, res, done) {
     dashboardList.findOne({reportId: req.reportId}, function (err, dashboardDetails) {
-        if (err)
-            return res.status(500).json({error: 'Internal server error'});
-        else if (!dashboardDetails)
-            return res.status(204).json({error: 'No records found'});
-        else {
-            Widget.find({dashboardId: dashboardDetails._id}, function (err, widget) {
-                if (err)
-                    return res.status(500).json({error: 'Internal server error'});
-                else if (!widget.length)
-                    return res.status(206).json({error: 'No records found'});
-                else {
-                    done(null,{widget:widget,dashboardDetails:dashboardDetails});
-                }
-            })
+            if (err)
+                return res.status(500).json({error: 'Internal server error'});
+            else if (!dashboardDetails)
+                return res.status(204).json({error: 'No records found'});
+            else {
+                Widget.find({dashboardId: dashboardDetails._id}, function (err, widget) {
+                    if (err)
+                        return res.status(500).json({error: 'Internal server error'});
+                    else if (!widget.length)
+                        return res.status(206).json({error: 'No records found'});
+                    else {
+                        done(null,{widget:widget,dashboardDetails:dashboardDetails});
+                    }
+                })
 
-        }
-    })
+            }
+        })
 };

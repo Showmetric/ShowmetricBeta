@@ -27,31 +27,33 @@ exports.removeProfile = function (req, res, next) {
                     else {
                         for (var i = 0; i < responseData.length; i++)
                             objectResults.push(responseData[i]._id);
-                        async.map(objectResults, dataRemove, function (err, dataArray) {
-                            callback(null, dataArray[0]);
-                        });
-
+                        dataRemove(objectResults,callback)
                         function dataRemove(objectResults, callback) {
-                            Data.find({objectId: objectResults}, function (err, datadb) {
-                                if (err)
-                                    callback('error', null);
-                                else if (!datadb.length)
-                                    callback(null, {Data: {data: 'No data'}, result: 1});
-                                else {
-                                    Data.remove({objectId: objectResults}, function (err, data) {
+                                    Data.find({objectId: {$in: objectResults}}, function (err, data) {
                                         if (err)
                                             callback('error', null);
                                         else if (data === 0)
                                             callback('error', null);
                                         else {
-                                            var finalData = {Data: datadb, result: data};
-                                            checkNullData(callback(null, finalData))
+                                            if(data.length){
+                                                Data.remove({objectId: {$in: objectResults}}, function (err, dbdata) {
+                                                    if (err)
+                                                        callback('error', null);
+                                                    else if (dbdata === 0)
+                                                        callback('error', null);
+                                                    else {
+
+                                                        var finalData = {Data: data, result: data};
+                                                        checkNullData(callback(null, finalData))
+                                                    }
+                                                })
+                                            }
+                                            else{
+                                                var finalData = {Data: data, result: data};
+                                                checkNullData(callback(null, finalData))
+                                            }
                                         }
                                     });
-                                }
-
-                            })
-
                         }
                     }
                 });
@@ -98,18 +100,18 @@ exports.removeProfile = function (req, res, next) {
                 for (var i = 0; i < responseData.length; i++)
                     objectResults.push(responseData[i].id);
                 if (objectResults.length)
-                    async.map(objectResults, alertsRemove, callback);
+                    alertsRemove( objectResults,callback);
                 else
                     callback(null, {Object: {data: 'No data'}, result: 1});
                 function alertsRemove(responseData, callback) {
-                    Alert.find({objectId: responseData}, function (err, alertData) {
+                    Alert.find({objectId: {$in: responseData}}, function (err, alertData) {
                         if (err)
                             callback('error', null);
                         else if (!alertData.length)
                             callback(null, {Alert: {data: 'No data'}, result: 1});
                         else {
                             Alert.remove({
-                                objectId : responseData
+                                objectId :{$in: responseData}
                             }, function (err, alert) {
                                 if (err)
                                     callback('error', null);
@@ -129,11 +131,11 @@ exports.removeProfile = function (req, res, next) {
                 for (var i = 0; i < responseData.length; i++)
                     objectResults.push(responseData[i].id);
                 if (objectResults.length)
-                    async.map(objectResults, widgetRemove, callback);
+                    widgetRemove( objectResults,callback);
                 else
                     callback(null, {Object: {data: 'No data'}, result: 1});
                 function widgetRemove(responseData, callback) {
-                    Widget.find({'charts.metrics.objectId': responseData}, function (err, widgetData) {
+                    Widget.find({'charts.metrics.objectId': {$in: responseData}}, function (err, widgetData) {
                         if (err)
                             callback('error', null);
                         else if (!widgetData.length)
@@ -143,22 +145,22 @@ exports.removeProfile = function (req, res, next) {
                             for(var k=0;k<widgetData.length;k++)
                                 widgetList.push(widgetData[k]._id)
                             async.map(widgetList, removeCustomFustion, function (err, dataArray) {
-                                if(err)
-                                    callback(null, dataArray);
+                               if(err)
+                                callback(null, dataArray);
                                 else{
-                                    Widget.remove({
-                                        'charts.metrics.objectId': responseData
-                                    }, function (err, object) {
-                                        if (err)
-                                            callback('error', null);
-                                        else if (object == 0)
-                                            callback('error', null);
-                                        else {
-                                            var finalData = {Widget: widgetData, result: object};
-                                            checkNullData(callback(null, finalData));
-                                        }
-                                    });
-                                }
+                                   Widget.remove({
+                                       'charts.metrics.objectId': {$in: responseData}
+                                   }, function (err, object) {
+                                       if (err)
+                                           callback('error', null);
+                                       else if (object == 0)
+                                           callback('error', null);
+                                       else {
+                                           var finalData = {Widget: widgetData, result: object};
+                                           checkNullData(callback(null, finalData));
+                                       }
+                                   });
+                               }
 
                             });
                             function removeCustomFustion(objectResults, callback) {
@@ -304,45 +306,45 @@ exports.removeProfile = function (req, res, next) {
                                 else callback(null, 'success')
                             });
                         }
-                        /* else if (key[0] === 'CustomWidget') {
-                         Widget.update({id: allData._id}, {$set: allData}, {upsert: true}, function (err, savedObject) {
-                         if (err)
-                         return res.status(500).json({error: 'Internal server error'});
-                         else if (savedObject == 0)
-                         return res.status(501).json({error: 'Not implemented'});
-                         else
-                         {
-                         bulkExecute = false;
-                         if(widgetDetail.widgets.length)
-                         bulkExecute = true;
+                       /* else if (key[0] === 'CustomWidget') {
+                            Widget.update({id: allData._id}, {$set: allData}, {upsert: true}, function (err, savedObject) {
+                                if (err)
+                                    return res.status(500).json({error: 'Internal server error'});
+                                else if (savedObject == 0)
+                                    return res.status(501).json({error: 'Not implemented'});
+                                else
+                                {
+                                        bulkExecute = false;
+                                        if(widgetDetail.widgets.length)
+                                            bulkExecute = true;
 
-                         //set the update parameters for query
-                         for (var i = 0; i < widgetDetail.widgets.length; i++) {
-                         var id = mongoose.Types.ObjectId(widgetDetail.widgets[i].widgetId);
-                         //set query condition
-                         var query = {
-                         _id:id
-                         };
+                                        //set the update parameters for query
+                                        for (var i = 0; i < widgetDetail.widgets.length; i++) {
+                                            var id = mongoose.Types.ObjectId(widgetDetail.widgets[i].widgetId);
+                                            //set query condition
+                                            var query = {
+                                                _id:id
+                                            };
 
-                         //set the values
-                         var update = {
-                         $set: {
-                         visibility:true,
-                         updated: new Date()
-                         }
-                         };
-                         //form the query
-                         bulk.find(query).update(update);
-                         }
-                         if(bulkExecute === true){
-                         bulk.execute(function (err, response) {
-                         callback(null, 'success')
-                         });
-                         }
-                         }
+                                            //set the values
+                                            var update = {
+                                                $set: {
+                                                    visibility:true,
+                                                    updated: new Date()
+                                                }
+                                            };
+                                            //form the query
+                                            bulk.find(query).update(update);
+                                        }
+                                    if(bulkExecute === true){
+                                        bulk.execute(function (err, response) {
+                                            callback(null, 'success')
+                                        });
+                                    }
+                                }
 
-                         });
-                         }*/
+                            });
+                        }*/
                         else {
                             if (allData.data != 'No data') {
                                 Widget.update({id: allData._id}, {$set: allData}, {upsert: true}, function (err, savedObject) {

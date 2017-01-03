@@ -457,6 +457,20 @@ module.exports = {
         superadmin:'superadmin',
         admin:'admin',
         viewer:'viewer'
+    },
+    fbAdsStaticValues:{
+        fbAdsCampaignOverview:'fbAds_campaign_Overview',
+        fbAdsAdgroupOverview:'fbAds_adset_Overview',
+        fbAdsAdOverview:'fbAds_ad_Overview'
+    },
+    batchJobsLog:{
+        name:'./batchJobsLogFiles',
+        mailTransportName:'SMTP',
+        service:'Zoho',
+        email:'alerts@datapoolt.co',
+        password:'DaTaPoOlT',
+        mailSubject: 'Crash Report Mail',
+        mailTo:'batchjobs@datapoolt.co'
     }
 };
 

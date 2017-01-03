@@ -1,0 +1,88 @@
+{
+  "_args": [
+    [
+      "crashreporter",
+      "E:\\ShowmetricBeta"
+    ]
+  ],
+  "_from": "crashreporter@latest",
+  "_id": "crashreporter@0.0.4",
+  "_inCache": true,
+  "_installable": true,
+  "_location": "/crashreporter",
+  "_npmUser": {
+    "email": "sdolard@gmail.com",
+    "name": "sdolard"
+  },
+  "_npmVersion": "1.2.12",
+  "_phantomChildren": {
+    "mailcomposer": "3.9.0",
+    "optimist": "0.6.1",
+    "simplesmtp": "0.3.35"
+  },
+  "_requested": {
+    "name": "crashreporter",
+    "raw": "crashreporter",
+    "rawSpec": "",
+    "scope": null,
+    "spec": "latest",
+    "type": "tag"
+  },
+  "_requiredBy": [
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/crashreporter/-/crashreporter-0.0.4.tgz",
+  "_shasum": "c0bfe13c9fe463de217a30d2881ed5bea6f91a0d",
+  "_shrinkwrap": null,
+  "_spec": "crashreporter",
+  "_where": "E:\\ShowmetricBeta",
+  "author": {
+    "name": "sdolard@gmail.com"
+  },
+  "bugs": {
+    "url": "https://github.com/sdolard/node-crashreporter/issues"
+  },
+  "dependencies": {
+    "mkdirp": "0.3.x",
+    "nodemailer": "0.3.x"
+  },
+  "description": "Dump node context into a file on process crash, send it by mail",
+  "devDependencies": {
+    "jsrevival": "0.1.x",
+    "mocha": "x.x.x"
+  },
+  "directories": {},
+  "dist": {
+    "shasum": "c0bfe13c9fe463de217a30d2881ed5bea6f91a0d",
+    "tarball": "https://registry.npmjs.org/crashreporter/-/crashreporter-0.0.4.tgz"
+  },
+  "engines": {
+    "node": ">= 0.8.0"
+  },
+  "homepage": "https://github.com/sdolard/node-crashreporter#readme",
+  "keywords": [
+    "crash",
+    "report"
+  ],
+  "license": "BSD",
+  "main": "lib/crashreporter.js",
+  "maintainers": [
+    {
+      "email": "sdolard@gmail.com",
+      "name": "sdolard"
+    }
+  ],
+  "name": "crashreporter",
+  "optionalDependencies": {},
+  "readme": "node-crashreporter\n==================\n\nDump node context into a file on process crash, send it by mail\n\n\n## Installing crashreporter\n\n```\n[sudo] npm install [-g] crashreporter\n```\n\n## Usage\n### Basic\n```javascript\nrequire('crashreporter');                               \n\t\t\n```\n\n### More\n```javascript\nrequire('crashreporter').configure({\n\toutDir: [your out directory], // default to cwd\n\texitOnCrash: [true|false] // if you want that crash reporter exit(1) for you, default to true,\n\tmaxCrashFile: [number] // older files will be removed up, default 5 files are kept\n});\n\t\t\n```\n\n### Advanced: send mail\nSee http://www.nodemailer.com/ for support\n```javascript\nrequire('crashreporter').configure({\n\tmailEnabled: true,\n\tmailTransportName: 'SMTP',\n\tmailTransportConfig: {\n\t\tservice: 'Gmail',\n\t\tauth: {\n\t\t\tuser: \"yourmail@gmail.com\",\n\t\t    pass: \"yourpass\"\n\t\t}\n\t},\n\tmailSubject: 'advanced.js crashreporter test',\n\tmailFrom: 'crashreporter <yourmail@gmail.com>',\n\tmailTo: 'yourmail@gmail.com'\n});                            \n\t\t\n```\n\n## File\n### Name\ncrash_YYYY-MM-DD_HH-mm-ss_zzz_UTC.txt\n\n### Dump\n```\nDate time: \n-----------------------\nexecPath: \n-----------------------\nargv: \n-----------------------\ncurrent directory: \n-----------------------\nenv:\n-----------------------\ngid:\n-----------------------\nuid:\n-----------------------\npid:\n-----------------------\nprocess title:\n-----------------------\nuptime (sec): \n-----------------------\narch: x\n-----------------------\nversions:\n-----------------------\nmemory usage:\n-----------------------\nrequire.cache:\n-----------------------\nactive handle:\n-----------------------\nactive request:\n-----------------------\nstack\n\n```",
+  "readmeFilename": "README.md",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/sdolard/node-crashreporter.git"
+  },
+  "scripts": {
+    "pretest": "jsrevival -p \"describe, it\" -o \"properties: false, maxlen: 0, debug: false, bitwise: false, eqeq: false, newcap: false, undef: false, unparam: false, vars: false\" -r cli-hide-valid -R lib/ test/",
+    "test": "mocha -R spec"
+  },
+  "version": "0.0.4"
+}

@@ -9,7 +9,7 @@ function ChooseDashboardController($scope,$state,$q,$http,$stateParams,$rootScop
     $scope.closemodal=function(){
         changeState().then(
             function () {
-                $state.go('app.reporting.dashboards');
+                    $state.go('app.reporting.dashboards');
             }
         )
     }

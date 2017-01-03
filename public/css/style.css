@@ -11,47 +11,47 @@
     margin :40px auto
 }
 /*.sideBar-wrapper .tooltip {*/
-/*background: #2b3947;*/
-/*bottom: 100%;*/
-/*color: #fff;*/
-/*display: block;*/
-/*left: 70px;*/
-/*margin-bottom: -51px;*/
-/*opacity: 0;*/
-/*padding: 18px 11px 17px 16px;;*/
-/*pointer-events: none;*/
-/*position: absolute;*/
-/*width: 205px;*/
-/*-webkit-transform: translateX(-10px);*/
-/*-moz-transform: translateX(-10px);*/
-/*-ms-transform: translateX(-10px);*/
-/*-o-transform: translateX(-10px);*/
-/*transform: translateX(-10px);*/
-/*-webkit-transition: all .25s ease-out;*/
-/*-moz-transition: all .25s ease-out;*/
-/*-ms-transition: all .25s ease-out;*/
-/*-o-transition: all .25s ease-out;*/
-/*transition: all .25s ease-out;*/
-/*-webkit-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);*/
-/*-moz-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);*/
-/*-ms-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);*/
-/*-o-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);*/
-/*box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);*/
+    /*background: #2b3947;*/
+    /*bottom: 100%;*/
+    /*color: #fff;*/
+    /*display: block;*/
+    /*left: 70px;*/
+    /*margin-bottom: -51px;*/
+    /*opacity: 0;*/
+    /*padding: 18px 11px 17px 16px;;*/
+    /*pointer-events: none;*/
+    /*position: absolute;*/
+    /*width: 205px;*/
+    /*-webkit-transform: translateX(-10px);*/
+    /*-moz-transform: translateX(-10px);*/
+    /*-ms-transform: translateX(-10px);*/
+    /*-o-transform: translateX(-10px);*/
+    /*transform: translateX(-10px);*/
+    /*-webkit-transition: all .25s ease-out;*/
+    /*-moz-transition: all .25s ease-out;*/
+    /*-ms-transition: all .25s ease-out;*/
+    /*-o-transition: all .25s ease-out;*/
+    /*transition: all .25s ease-out;*/
+    /*-webkit-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);*/
+    /*-moz-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);*/
+    /*-ms-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);*/
+    /*-o-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);*/
+    /*box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);*/
 /*}*/
 /*.sideBar-wrapper:hover .tooltip {*/
-/*opacity: 1;*/
-/*pointer-events: auto;*/
-/*-webkit-transform: translateX(0px);*/
-/*-moz-transform: translateX(0px);*/
-/*-ms-transform: translateX(0px);*/
-/*-o-transform: translateX(0px);*/
-/*transform: translateX(0px);*/
+    /*opacity: 1;*/
+    /*pointer-events: auto;*/
+    /*-webkit-transform: translateX(0px);*/
+    /*-moz-transform: translateX(0px);*/
+    /*-ms-transform: translateX(0px);*/
+    /*-o-transform: translateX(0px);*/
+    /*transform: translateX(0px);*/
 /*}*/
 .btn.active:focus, .btn.focus, .btn:active.focus, .btn:active:focus, .btn:focus {
     outline: 0px !important;
     outline-offset: -2px;
 }
-.gobutton-mode{
+    .gobutton-mode{
     background-color: #efefef  !important;
     color:#000000  !important;
     border: 1px solid #efefef  !important;
@@ -139,7 +139,7 @@
     padding:0px !important;}
 .likes{float: left;font-size: 11px;}
 .listed-image{float: left;}
-.responsiveDate{float: left;!important;font-size: 11px;}
+.responsiveDate{float: left !important;font-size: 11px;}
 .scrollInWidget{height: 100% !important;}
 .apiLink{color: #232c3b !important;}
 .apiLink:hover{text-decoration: underline; }
@@ -332,7 +332,7 @@ svg:hover #Calendar-Icon { fill: #293846; }
 
 .nav li a:hover .nav-label{color: #232c3b !important;}
 .nav li a:focus .nav-label{color: #FFFFFF !important;}
-.add-profile{float: left;margin: 0px ; text-align: left;!important}
+.add-profile{float: left;margin: 0px ; text-align: left!important}
 .fa-3x{font-size: 28px!important;color:#fff;padding-left: 5px;}
 .remove-profile{float: right;margin: 0px ;text-align: right;}
 .refresh{margin-left: -10px;}
@@ -370,11 +370,11 @@ svg:hover #Calendar-Icon { fill: #293846; }
 }
 .daterange .dr-selections .dr-calendar .dr-day-list{
     font-size: 14px !important;}
-.daterange .dr-selections .dr-calendar{min-width: 305px; !important}
+.daterange .dr-selections .dr-calendar{min-width: 305px !important}
 .daterange .dr-selections .dr-preset-list{font-size: 12px !important;
     font-family: Montserrat-Regular !important;
     color: #293846 !important;}
-.daterange .dr-selections .dr-list-item .dr-item-aside{font-size: 11px;!important}
+.daterange .dr-selections .dr-list-item .dr-item-aside{font-size: 11px !important}
 .daterange .dr-input .dr-presets.dr-preset{}
 .daterange .dr-input .dr-presets {width: 100px !important;
     padding-left:3px;}
@@ -389,7 +389,7 @@ svg:hover #Calendar-Icon { fill: #293846; }
     border:none;
     float: left;
     font-weight: bolder;
-}
+ }
 .reportNameEdit pre{
     background-color: #ffffff !important;
     color:#000 ;
@@ -458,8 +458,8 @@ svg:hover #Calendar-Icon { fill: #293846; }
     display:block !important;
 }
 .pageBreak a:hover .hover-icon{
-    display:block !important;
-}
+     display:block !important;
+ }
 
 .box-header a:hover .hover-icon{
     display:block !important;
@@ -2141,8 +2141,8 @@ a:focus {
     padding: 0px 0px 10px 10px;
     height:420px;
 }.modalExp-body {
-     padding: 0px 5px 10px 5px;
- }
+    padding: 0px 5px 10px 5px;
+}
 
 .animated.modal.fade .modal-dialog {
     -webkit-transform: none;
@@ -3016,7 +3016,7 @@ button.btn.btn-primary.closeModalContent {
 }
 
 #submitExportButton{
-    float:right;
+       float:right;
 }
 #submitInsightButton{
     border: none;
@@ -4706,7 +4706,7 @@ body.rtls.top-navigation .footer.fixed {
 }
 @media(max-width : 340px) {
     .recentDashboard {
-        width:143px
+       width:143px
     }
 }
 @media(min-width: 319px) and (max-width : 367px) {
@@ -4729,11 +4729,11 @@ body.rtls.top-navigation .footer.fixed {
     .navbar-static-side {
         width:70px;
         position: absolute;
-        /*  -webkit-transition: all .5s ease-in-out !important;
-          -moz-transition: all .075s ease-in-out !important;
-          -ms-transition: all .075s ease-in-out !important;
-          -o-transition: all .075s ease-in-out !important;
-          transition: all .5s ease-in-out !important;*/
+      /*  -webkit-transition: all .5s ease-in-out !important;
+        -moz-transition: all .075s ease-in-out !important;
+        -ms-transition: all .075s ease-in-out !important;
+        -o-transition: all .075s ease-in-out !important;
+        transition: all .5s ease-in-out !important;*/
     }
     .navbar-static-side:hover {
         height:100%;
@@ -4831,9 +4831,9 @@ body.rtls.top-navigation .footer.fixed {
     .fixed-nav #wrapper {margin-top: -10px;}
 }
 @media(max-width : 386px){
-    .widget-icons { width: 80% !important; margin-left: 30px; !important}
-    .logo-icons { width: 30% !important; margin-left: 30px; !important}
-    .minimalize-styl-2{margin: 5px 4px 5px 15px; !important}
+    .widget-icons { width: 80% !important; margin-left: 30px !important}
+    .logo-icons { width: 30% !important; margin-left: 30px !important}
+    .minimalize-styl-2{margin: 5px 4px 5px 15px !important}
     .remove-profile{float: none !important;}
 
 }
@@ -5007,23 +5007,23 @@ body.rtls.top-navigation .footer.fixed {
     */
 }
 /*.logo-Clienticons {*/
-/*padding: 5px;*/
-/*margin: 5px;*/
-/*text-align: center;*/
-/*border: 2px solid #e7eaec;*/
-/*width: 30%;*/
-/*height:70px;*/
-/*float: left;*/
-/*cursor: pointer;*/
+    /*padding: 5px;*/
+    /*margin: 5px;*/
+    /*text-align: center;*/
+    /*border: 2px solid #e7eaec;*/
+    /*width: 30%;*/
+    /*height:70px;*/
+    /*float: left;*/
+    /*cursor: pointer;*/
 /*}*/
 /*.logo-Clienticons:hover,*/
 /*.logo-Clienticons.active {*/
-/*border: 2px solid #04509B;*/
-/*!**/
-/*-webkit-box-shadow: 0px -3px -3px 0px #a8a8a8;*/
-/*-moz-box-shadow: 0px -3px -3px 0px #a8a8a8;*/
-/*box-shadow: 0px -3px 0px 0px #a8a8a8;*/
-/**!*/
+    /*border: 2px solid #04509B;*/
+    /*!**/
+    /*-webkit-box-shadow: 0px -3px -3px 0px #a8a8a8;*/
+    /*-moz-box-shadow: 0px -3px -3px 0px #a8a8a8;*/
+    /*box-shadow: 0px -3px 0px 0px #a8a8a8;*/
+    /**!*/
 /*}*/
 .gobutton-mode{
     background-color: #efefef !important;
@@ -5447,7 +5447,7 @@ input:focus{
     background-color:#ffffff;
     padding: 0 30px 0 10px;
     border-bottom: 0px solid #ffffff !important;
-    /*position: relative;*/
+/*position: relative;*/
 }
 .widgetBoxBorder{
     border: 1px solid #efefef !important ;
