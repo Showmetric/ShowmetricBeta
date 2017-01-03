@@ -473,7 +473,7 @@ module.exports = {
         email:'alerts@datapoolt.co',
         password:'DaTaPoOlT',
         mailSubject: 'Crash Report Mail',
-        mailTo:'rajalakshmi.c@habile.in'
+        mailTo:'batchjobs@datapoolt.co'
     }
 
 };

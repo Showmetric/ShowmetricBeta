@@ -100,9 +100,9 @@ function DashboardController($scope, $timeout, $rootScope, $http, $window, $stat
     $scope.toDisplayAllSummary = [];
     $scope.checkAllGraphsZero = function (chart, widgetIndex,chartIndex) {
         if($scope.summaryAlignLessThanThree[widgetIndex] == undefined)
-        $scope.summaryAlignLessThanThree[widgetIndex]=[];
+            $scope.summaryAlignLessThanThree[widgetIndex]=[];
         if($scope.toDisplayAllSummary[widgetIndex] == undefined)
-        $scope.toDisplayAllSummary[widgetIndex]=[];
+            $scope.toDisplayAllSummary[widgetIndex]=[];
         var count = 0;
         for (var i = 0; i < chart.data.length; i++) {
             if (chart.data[i].summaryDisplay === 0)
@@ -306,12 +306,13 @@ function DashboardController($scope, $timeout, $rootScope, $http, $window, $stat
                     if (document.getElementById('chartOptions' + ind) != null) {
                         var parentWidth = document.getElementById('chartOptions' + ind).offsetWidth;
                         var parentHeight = document.getElementById('chartOptions' + ind).offsetHeight;
-                        for (var i = 0; i < Highcharts.charts.length; i++) {
-                            if (Highcharts.charts[i].container.parentElement.id.includes('chartRepeat' + ind)) {
-                                Highcharts.charts[i].setSize(parentWidth, parentHeight); // reflow the first chart..
-                                Highcharts.charts[i].reflow(); // reflow the chart..
+                        var m = Highcharts.charts.map(function (e) {
+                            return e.container.parentElement.id.split('-')[0];
+                        }).indexOf('chartRepeat' + ind);
+                            if (m!=-1) {
+                                Highcharts.charts[m].setSize(parentWidth, parentHeight); // reflow the first chart..
+                                Highcharts.charts[m].reflow(); // reflow the chart..
                             }
-                        }
                     }
                 },
                 stop: function (event, $element, widget) {
@@ -335,17 +336,24 @@ function DashboardController($scope, $timeout, $rootScope, $http, $window, $stat
                             if (document.getElementById('chartOptions' + ind) != null) {
                                 var parentWidth = document.getElementById('chartOptions' + ind).offsetWidth;
                                 var parentHeight = document.getElementById('chartOptions' + ind).offsetHeight;
-                                for (var i = 0; i < Highcharts.charts.length; i++) {
+                                var m = Highcharts.charts.map(function (e) {
+                                    return e.container.parentElement.id.split('-')[0];
+                                }).indexOf('chartRepeat' + ind);
+                                if (m!=-1) {
+                                    Highcharts.charts[m].setSize(parentWidth, parentHeight); // reflow the first chart..
+                                    Highcharts.charts[m].reflow(); // reflow the chart..
+                                }
+                                /*for (var i = 0; i < Highcharts.charts.length; i++) {
                                     if (Highcharts.charts[i].container.parentElement.id.includes('chartRepeat' + ind)) {
                                         Highcharts.charts[i].setSize(parentWidth, parentHeight); // reflow the first chart..
                                         Highcharts.charts[i].reflow(); // reflow the chart..
                                     }
-                                }
+                                }*/
                             }
                         }
                     }
 
-                    $timeout(updateCharts(widget), 400);
+                    $timeout(updateCharts(widget), 300);
                 }
             }
         };
@@ -385,12 +393,13 @@ function DashboardController($scope, $timeout, $rootScope, $http, $window, $stat
                     if (document.getElementById('chartOptions' + k) != null) {
                         var parentWidth = document.getElementById('chartOptions' + k).offsetWidth;
                         var parentHeight = document.getElementById('chartOptions' + k).offsetHeight;
-                        for (var i = 0; i < Highcharts.charts.length; i++) {
-                            if (Highcharts.charts[i].container.parentElement.id.includes('chartRepeat' + k)) {
-                                Highcharts.charts[i].setSize(parentWidth, parentHeight); // reflow the first chart..
-                                Highcharts.charts[i].reflow(); // reflow the chart..
+                        var m = Highcharts.charts.map(function (e) {
+                            return e.container.parentElement.id.split('-')[0];
+                        }).indexOf('chartRepeat' + k);
+                            if (m!=-1) {
+                                Highcharts.charts[m].setSize(parentWidth, parentHeight); // reflow the first chart..
+                                Highcharts.charts[m].reflow(); // reflow the chart..
                             }
-                        }
                     }
                 };
             }
@@ -482,11 +491,12 @@ function DashboardController($scope, $timeout, $rootScope, $http, $window, $stat
                     if (document.getElementById('chartOptions' + k) != null) {
                         var parentWidth = document.getElementById('chartOptions' + k).offsetWidth;
                         var parentHeight = document.getElementById('chartOptions' + k).offsetHeight;
-                        for (var i = 0; i < Highcharts.charts.length; i++) {
-                            if (Highcharts.charts[i].container.parentElement.id.includes('chartRepeat' + k)) {
-                                Highcharts.charts[i].setSize(parentWidth, parentHeight); // reflow the first chart..
-                                Highcharts.charts[i].reflow(); // reflow the chart..
-                            }
+                        var m = Highcharts.charts.map(function (e) {
+                            return e.container.parentElement.id;
+                        }).indexOf('chartRepeat' + k);
+                        if (m!=-1) {
+                            Highcharts.charts[m].setSize(parentWidth, parentHeight); // reflow the first chart..
+                            Highcharts.charts[m].reflow(); // reflow the chart..
                         }
                     }
                 };

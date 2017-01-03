@@ -3,13 +3,10 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider, IdlePro
     // Configure Idle settings
     IdleProvider.idle(5); // in seconds
     IdleProvider.timeout(120); // in seconds
-
     $urlRouterProvider.otherwise("/reporting");
-
     $ocLazyLoadProvider.config({
         debug: false
     });
-
     $stateProvider
 
         .state('app', {

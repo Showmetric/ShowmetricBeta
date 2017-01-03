@@ -2883,14 +2883,13 @@ exports.getChannelData = function (req, res, next) {
                        var  batchRequestQuery=[];
                         uniqueIdsArray.forEach(function (values) {
                             if(results.metric.code === configAuth.fbAdsStaticValues.fbAdsCampaignOverview){
-                                var queryForOverview =  + values+'?fields=stop_time,start_time,name,status&include_headers=false'
+                                var queryForOverview =   values+'?fields=stop_time,start_time,name,status&include_headers=false'
                             }
                             else if(results.metric.code === configAuth.fbAdsStaticValues.fbAdsAdgroupOverview){
-                                var queryForOverview =  + values+'?fields=end_time,start_time,name,status&include_headers=false'
+                                var queryForOverview =   values+'?fields=end_time,start_time,name,status&include_headers=false'
                             }
                             else
-                                var queryForOverview =  + values+'?fields=updated_time,created_time,name,status&include_headers=false'
-
+                                var queryForOverview =   values+'?fields=updated_time,created_time,name,status&include_headers=false'
                         batchRequestQuery.push({
                          method: 'GET',
                          relative_url: queryForOverview
@@ -2939,7 +2938,7 @@ exports.getChannelData = function (req, res, next) {
                                             }
                                             else if(results.metric.code === configAuth.fbAdsStaticValues.fbAdsAdgroupOverview){
                                                 var startTime='start_time';
-                                                var endTime='stop_time'
+                                                var endTime='end_time'
                                             }
                                             else{
                                                 var startTime='created_time';

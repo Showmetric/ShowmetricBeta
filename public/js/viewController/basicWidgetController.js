@@ -413,9 +413,9 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
             var selectAdgroupLevel=false;
             for (var getData in getReferenceWidgetsArr) {
                 if(getReferenceWidgetsArr[getData].name == "Cost per objective") setLimitation=1;
-                if(getReferenceWidgetsArr[getData].name == "Fb Ads Adgroup overview (Campaign level)") setLimitation=1;
-                if(getReferenceWidgetsArr[getData].name == "Fb Ads campaign overview (Account level)") selectAccountLevel=true;
-                if(getReferenceWidgetsArr[getData].name == "Fb Ads Ad overview (Adgroup level)") selectAdgroupLevel=true;
+                if(getReferenceWidgetsArr[getData].name == "Adset Overview (Campaign level)") setLimitation=1;
+                if(getReferenceWidgetsArr[getData].name == "Campaign Overview (Account level)") selectAccountLevel=true;
+                if(getReferenceWidgetsArr[getData].name == "Ad Overview (Adset level)") selectAdgroupLevel=true;
             }
             if(!this.objectTypeOptionsModel[index]){
                 document.getElementById('basicWidgetFinishButton').disabled = true;
@@ -2321,22 +2321,22 @@ function BasicWidgetController($scope, $http, $state, $rootScope, $window, $stat
                 }
                 else{
                     for (var getData in getReferenceWidgetsArr){
-                        if(getReferenceWidgetsArr[getData].name == "Fb Ads campaign overview (Account level)")
+                        if(getReferenceWidgetsArr[getData].name == "Campaign Overview (Account level)")
                             accountLevel=true;
-                        else if(getReferenceWidgetsArr[getData].name == "Fb Ads Adgroup overview (Campaign level)" )
+                        else if(getReferenceWidgetsArr[getData].name == "Adset Overview (Campaign level)" )
                             campaignLevel=true;
-                        else if(getReferenceWidgetsArr[getData].name == "Fb Ads Ad overview (Adgroup level)")
+                        else if(getReferenceWidgetsArr[getData].name == "Ad Overview (Adset level)")
                             adgroupLevel=true;
                     }
-                    if(accountLevel==true && ($scope.storedReferenceWidget.name == "Fb Ads Adgroup overview (Campaign level)" || $scope.storedReferenceWidget.name == "Fb Ads Ad overview (Adgroup level)")){
+                    if(accountLevel==true && ($scope.storedReferenceWidget.name == "Adset Overview (Campaign level)" || $scope.storedReferenceWidget.name == "Ad Overview (Adset level)")){
                         canProcess=0;
                         $scope.metricMessage=true;
                     }
-                    else if(campaignLevel==true && ($scope.storedReferenceWidget.name == "Fb Ads campaign overview (Account level)" || $scope.storedReferenceWidget.name == "Fb Ads Ad overview (Adgroup level)")){
+                    else if(campaignLevel==true && ($scope.storedReferenceWidget.name == "Campaign Overview (Account level)" || $scope.storedReferenceWidget.name == "Ad Overview (Adset level)")){
                         canProcess=0;
                         $scope.metricMessage=true;
                     }
-                    else if(adgroupLevel==true && ($scope.storedReferenceWidget.name == "Fb Ads campaign overview (Account level)" || $scope.storedReferenceWidget.name == "Fb Ads Adgroup overview (Campaign level)" )){
+                    else if(adgroupLevel==true && ($scope.storedReferenceWidget.name == "Campaign Overview (Account level)" || $scope.storedReferenceWidget.name == "Adset Overview (Campaign level)" )){
                         canProcess=0;
                         $scope.metricMessage=true;
                     }
