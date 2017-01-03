@@ -447,7 +447,7 @@ module.exports = {
         apiKeySecret:'DyftA4AIdVt6J5j8QbqfQlcw'
     },
     sendGridDetails: {
-        apiKey: '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',
+        apiKey: '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'
     },
     batchJobsReceiverMailDetails:{
         email:'batchjobs@datapoolt.co'
@@ -456,6 +456,20 @@ module.exports = {
         superadmin:'superadmin',
         admin:'admin',
         viewer:'viewer'
+    },
+    fbAdsStaticValues:{
+        fbAdsCampaignOverview:'fbAds_campaign_Overview',
+        fbAdsAdgroupOverview:'fbAds_adset_Overview',
+        fbAdsAdOverview:'fbAds_ad_Overview'
+    },
+    batchJobsLog:{
+        name:'./batchJobsLogFiles',
+        mailTransportName:'SMTP',
+        service:'Zoho',
+        email:'alerts@datapoolt.co',
+        password:'DaTaPoOlT',
+        mailSubject: 'Crash Report Mail',
+        mailTo:'batchjobs@datapoolt.co'
     }
 };
 

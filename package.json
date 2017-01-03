@@ -19,6 +19,7 @@
     "bcrypt-nodejs": "latest",
     "bluebird": "^3.3.4",
     "body-parser": "~1.0.0",
+    "compression":"*",
     "connect-flash": "~0.1.1",
     "connect-mongo": "^1.1.0",
     "cookie-parser": "^1.0.1",
