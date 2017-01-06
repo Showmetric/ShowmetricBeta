@@ -1,10 +1,7 @@
 showMetricApp.controller('ExportController', ExportController)
 
 function ExportController($scope, $http, $state, $rootScope, $window, $q, $stateParams, $timeout) {
-
-
     $scope.currentDate = moment(new Date()).format("YYYY-DD-MM");
-
     var dashboardName = "NoName";
     var dashboardRepId = null;
     $rootScope.showExport = true;
@@ -1003,6 +1000,9 @@ function ExportController($scope, $http, $state, $rootScope, $window, $q, $state
                             || $scope.exportObject.widgetData[n].chart[chart].options.chart.type == 'campaignOverViewbyAge'
                             || $scope.exportObject.widgetData[n].chart[chart].options.chart.type == 'adOverview'
                             || $scope.exportObject.widgetData[n].chart[chart].options.chart.type == 'youtubeVideosOverview'
+                            || $scope.exportObject.widgetData[n].chart[chart].options.chart.type =='fbAdsCampaignOverview'
+                            || $scope.exportObject.widgetData[n].chart[chart].options.chart.type =='fbAdsAdgroupOverview'
+                            || $scope.exportObject.widgetData[n].chart[chart].options.chart.type =='fbAdsAdOverview'
                         ) {
                             var noPushInArray;
                             var formatJson = []
