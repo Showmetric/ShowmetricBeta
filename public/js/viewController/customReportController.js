@@ -1198,14 +1198,14 @@ function customReportController($scope,$timeout,$rootScope,$http,$window,$state,
                                     // }
                                     // if(widgetsInReport[getWidgetInfo].sizeLeftInPage==10 && widgetsInReport[getWidgetInfo].widgetType !='pageBreakWidget' ){
                                     //     if((widgetsInReport[getWidgetInfo].isFirstWidgetInPage!='undefined'&&widgetsInReport[getWidgetInfo].isFirstWidgetInPage==true)||widgetsInReport[getWidgetInfo].row==($scope.customReport.widgets[widInd].pageNumber*11)+1){
-                                    if((widgetsInReport[getWidgetInfo].isFirstWidgetInPage!='undefined'&&widgetsInReport[getWidgetInfo].isFirstWidgetInPage==true)){
-                                        var widInd = $scope.customReport.widgets.length-1;
+                             if((widgetsInReport[getWidgetInfo].isFirstWidgetInPage!='undefined'&&widgetsInReport[getWidgetInfo].isFirstWidgetInPage==true && $scope.customReport.widgets.length )){
+                                     var widInd = $scope.customReport.widgets.length-1;
                                         $scope.customReport.widgets[widInd].isFirstWidgetInPage=true;
                                         $scope.reportPagesDetails[widgetsInReport[getWidgetInfo].pageNumber] = {
                                             firstWidgetIndex: widInd
                                         }
                                     }
-                                    if(widgetsInReport[getWidgetInfo].isLastWidgetInPage!='undefined'&&widgetsInReport[getWidgetInfo].isLastWidgetInPage==true){
+                                    if(widgetsInReport[getWidgetInfo].isLastWidgetInPage!='undefined'&&widgetsInReport[getWidgetInfo].isLastWidgetInPage==true && $scope.customReport.widgets.length){
                                         var widInd = $scope.customReport.widgets.length-1;
                                         $scope.reportPagesDetails[widgetsInReport[getWidgetInfo].pageNumber] = $scope.reportPagesDetails[widgetsInReport[getWidgetInfo].pageNumber]||{};
                                         $scope.reportPagesDetails[widgetsInReport[getWidgetInfo].pageNumber].sizeFilled = widgetsInReport[getWidgetInfo].sizeFilledInPage;

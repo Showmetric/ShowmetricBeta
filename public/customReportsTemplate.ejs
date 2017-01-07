@@ -1348,8 +1348,8 @@
                     </div>
                 </div>
             </div>
-            <div ng-if="stepActive=='step3'&& !reportNotSupported" ng-show="stepActive=='step3'&& !reportNotSupported" ng-repeat="(pageIndex,pageDetails) in exportReportPages" style="padding:40px 0px ">
-                <div id="gridsterItemsInReport-{{pageIndex}}">
+            <div ng-if="stepActive=='step3'&& !reportNotSupported" ng-show="stepActive=='step3'&& !reportNotSupported" ng-repeat="(pageIndex,pageDetails) in exportReportPages"  style="padding:40px 0px ">
+                <div ng-if="pageDetails.length" id="gridsterItemsInReport-{{pageIndex}}">
                     <div class="row  white-bg border-bottom" style="max-height:50px;padding:50px 0px 70px 0px;margin-left: 0px;margin-right:0px;">
                         <div class="col col-sm-12 col-md-12 col-lg-12">
                             <div class="expdashboardTemplate-items">

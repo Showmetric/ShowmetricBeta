@@ -106,7 +106,7 @@ function UpgradeController($scope, $http, $state, $rootScope,$window) {
                         "amount": finalSubscriptionAmount * 100, // 2000 paise = INR 20
                         "name": "Datapoolt",
                         "description": "Purchase Description",
-                        "image": "https://www.datapoolt.co/wp-content/uploads/2016/10/Logo@3x.png",
+                        "image": "https://datapoolt.co/wp-content/uploads/2016/10/Logo@3x.png",
                         "handler": function (paymentResponse) {
                             jsonData["paymentId"] = paymentResponse.razorpay_payment_id,
                                 jsonData["amount"] = finalSubscriptionAmount * 100, // 2000 paise = INR 20
