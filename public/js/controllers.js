@@ -402,10 +402,10 @@ showMetricApp.service('createWidgets', function ($http, $q) {
                 'Pinterest': 'Pi',
                 'Mailchimp': 'Mc',
                 'Vimeo': 'Vi',
-                'Linkedin': 'Lin',
+                'linkedin': 'Lin',
                 'YouTube': 'YT',
                 'Moz': 'Moz',
-                'Google Sheets': 'GSheet',
+                'GoogleSheets': 'GSheet',
                 'Aweber': 'AW'
             }
             var totalNonZeroPoints = -1;
